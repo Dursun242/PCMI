@@ -26,7 +26,7 @@ export const site: {
   parentUrl: "https://www.id-maitrise.com",
   email: "contact@id-maitrise.com",
   // Laisser vide pour masquer le téléphone sur le site
-  phone: "",
+  phone: "06 79 11 60 85",
   address: {
     street: "9 rue Henry Genestal",
     zip: "76600",

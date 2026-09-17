@@ -39,9 +39,12 @@ export default function Footer() {
               Nous écrire
             </Link>
             {site.phone && (
-              <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="block mt-1 hover:text-brass-2">
-                {site.phone}
-              </a>
+              <>
+                <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="block mt-1 hover:text-brass-2">
+                  {site.phone}
+                </a>
+                <span className="block text-xs text-paper/55">Laissez-nous un message, on vous rappelle.</span>
+              </>
             )}
             <p className="mt-4 text-paper/70 leading-relaxed">
               Réponse sous 48 h ouvrées.
