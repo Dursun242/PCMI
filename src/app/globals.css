@@ -1,0 +1,321 @@
+@import "tailwindcss";
+@import "@fontsource/lato/400.css";
+@import "@fontsource/lato/400-italic.css";
+@import "@fontsource/lato/700.css";
+@import "@fontsource/cormorant-garamond/500.css";
+@import "@fontsource/cormorant-garamond/500-italic.css";
+@import "@fontsource/cormorant-garamond/600.css";
+
+/* ---------- Jetons de design ----------
+   Cabinet d'architecture haut de gamme : pierre claire, encre presque noire,
+   vert profond pour les grandes surfaces, laiton pour les détails.
+   Cormorant Garamond pour les titres, Lato (typo du logo) pour le texte.
+*/
+@theme {
+  --color-paper: #fcfbf9;
+  --color-stone: #f2f0eb;
+  --color-stone-2: #e4e0d7;
+  --color-ink: #1b1f1d;
+  --color-ink-2: #5a645e;
+  --color-ink-3: #939b96;
+  --color-forest: #22352c;
+  --color-forest-2: #2d4639;
+  --color-brass: #a9884f;
+  --color-brass-2: #d9c69d;
+  --color-alert: #a3402c;
+
+  --font-sans: "Lato", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Cormorant Garamond", "Times New Roman", serif;
+
+  --radius-sm: 2px;
+  --radius-md: 3px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-size: 17px;
+}
+
+::selection {
+  background: var(--color-brass-2);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brass);
+  outline-offset: 4px;
+}
+
+/* Titres */
+.display {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.012em;
+}
+.display em {
+  font-style: italic;
+  font-weight: 500;
+}
+.h-section {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+.numeral {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-variant-numeric: lining-nums;
+  letter-spacing: -0.01em;
+}
+.lead {
+  font-size: 1.15rem;
+  line-height: 1.65;
+  color: var(--color-ink-2);
+}
+
+/* Filet laiton court : marque un début de section */
+.rule {
+  display: block;
+  width: 56px;
+  height: 1px;
+  background: var(--color-brass);
+}
+
+/* Tampon « Accordé » — laiton, encre sèche */
+.stamp {
+  --stamp: var(--color-brass);
+  display: inline-grid;
+  place-items: center;
+  gap: 3px;
+  padding: 0.6em 1em;
+  border: 2px solid var(--stamp);
+  border-radius: 3px;
+  color: var(--stamp);
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+  transform: rotate(-7deg);
+  mask-image:
+    radial-gradient(circle at 30% 40%, transparent 0 1.3px, #000 1.8px),
+    radial-gradient(circle at 70% 65%, transparent 0 1px, #000 1.4px);
+  mask-size: 11px 11px, 7px 7px;
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+  opacity: 0.95;
+}
+.stamp small {
+  font-family: var(--font-sans);
+  font-size: 0.36em;
+  letter-spacing: 0.22em;
+  font-weight: 700;
+}
+.stamp--land {
+  animation: stamp-land 0.6s cubic-bezier(0.2, 1.3, 0.4, 1) 0.7s both;
+}
+@keyframes stamp-land {
+  0% {
+    transform: rotate(-7deg) scale(2);
+    opacity: 0;
+  }
+  65% {
+    transform: rotate(-7deg) scale(0.97);
+    opacity: 0.97;
+  }
+  100% {
+    transform: rotate(-7deg) scale(1);
+    opacity: 0.95;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .stamp--land {
+    animation: none;
+  }
+}
+
+/* Boutons : angles vifs, hauteur généreuse */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3.25rem;
+  padding: 0 1.75rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+.btn-ink {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+.btn-ink:hover {
+  background: var(--color-forest);
+}
+.btn-paper {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+.btn-paper:hover {
+  background: var(--color-brass-2);
+}
+.btn-line {
+  background: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-ink);
+}
+.btn-line:hover {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+.btn-line-light {
+  background: transparent;
+  color: var(--color-paper);
+  border: 1px solid rgba(252, 251, 249, 0.55);
+}
+.btn-line-light:hover {
+  border-color: var(--color-paper);
+  background: rgba(252, 251, 249, 0.08);
+}
+
+/* Formulaires : champs soulignés, pas de boîtes */
+.field {
+  display: grid;
+  gap: 0.35rem;
+  align-content: start;
+}
+.field label,
+.field legend {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-2);
+}
+.field input:not([type="radio"]):not([type="checkbox"]),
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.65rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--color-ink-3);
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 1.05rem;
+}
+.field textarea {
+  min-height: 6.5rem;
+  resize: vertical;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-bottom-color: var(--color-brass);
+  border-bottom-width: 2px;
+  outline: none;
+}
+.field ::placeholder {
+  color: var(--color-ink-3);
+}
+.field .hint {
+  color: var(--color-ink-2);
+  font-size: 0.85rem;
+}
+
+/* Cartouche de pied de page */
+.cartouche {
+  border: 1px solid var(--color-ink);
+}
+.cartouche > * {
+  border-color: var(--color-ink);
+}
+
+/* Prose : guide et pages légales */
+.prose-guide h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.9rem, 3vw, 2.5rem);
+  line-height: 1.1;
+  margin: 3.5rem 0 1.1rem;
+}
+.prose-guide h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 2rem 0 0.6rem;
+}
+.prose-guide p,
+.prose-guide li {
+  font-size: 1.06rem;
+  line-height: 1.75;
+  max-width: 66ch;
+}
+.prose-guide p + p {
+  margin-top: 1rem;
+}
+.prose-guide ul {
+  margin: 1rem 0;
+  padding-left: 1.2rem;
+  list-style: disc;
+}
+.prose-guide li + li {
+  margin-top: 0.45rem;
+}
+.prose-guide a {
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--color-brass);
+  text-underline-offset: 4px;
+}
+.prose-guide table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.98rem;
+}
+.prose-guide th,
+.prose-guide td {
+  border-bottom: 1px solid var(--color-stone-2);
+  padding: 0.8rem 0.9rem 0.8rem 0;
+  text-align: left;
+  vertical-align: top;
+}
+.prose-guide th {
+  border-bottom: 1px solid var(--color-ink);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-2);
+}
+
+/* Options radio : libellés en casse normale (le label du champ, lui, reste en capitales) */
+.field label.opt {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--color-ink);
+}

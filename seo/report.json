@@ -1,0 +1,174 @@
+{
+  "generatedAt": "2026-09-17T19:28:47.853Z",
+  "mode": "seed",
+  "articles": 3,
+  "opportunities": [
+    {
+      "query": "surface de plancher 150 m2 architecte obligatoire",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 90,
+      "source": "seed",
+      "intent": "info"
+    },
+    {
+      "query": "notice descriptive PCMI 4 exemple",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 80,
+      "source": "seed",
+      "intent": "info"
+    },
+    {
+      "query": "calcul surface de plancher maison",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 80,
+      "source": "seed",
+      "intent": "info"
+    },
+    {
+      "query": "déclaration préalable ou permis de construire extension",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 70,
+      "source": "seed",
+      "intent": "info"
+    },
+    {
+      "query": "emprise au sol définition permis de construire",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 70,
+      "source": "seed",
+      "intent": "info"
+    },
+    {
+      "query": "PLUi Le Havre Seine Métropole zone UB",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 70,
+      "source": "seed",
+      "intent": "local"
+    },
+    {
+      "query": "validité permis de construire prorogation",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 60,
+      "source": "seed",
+      "intent": "info"
+    },
+    {
+      "query": "maison toit plat PLU interdit",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 60,
+      "source": "seed",
+      "intent": "info"
+    },
+    {
+      "query": "permis de construire terrain en pente",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 60,
+      "source": "seed",
+      "intent": "info"
+    },
+    {
+      "query": "permis de construire zone ABF monument historique",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 60,
+      "source": "seed",
+      "intent": "info"
+    },
+    {
+      "query": "étude eaux pluviales permis de construire",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 60,
+      "source": "seed",
+      "intent": "info"
+    },
+    {
+      "query": "certificat d'urbanisme opérationnel",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 60,
+      "source": "seed",
+      "intent": "info"
+    },
+    {
+      "query": "déclaration préalable Le Havre",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 60,
+      "source": "seed",
+      "intent": "local"
+    },
+    {
+      "query": "taxe d'aménagement maison individuelle calcul",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 60,
+      "source": "seed",
+      "intent": "info"
+    },
+    {
+      "query": "DAACT déclaration achèvement travaux",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 50,
+      "source": "seed",
+      "intent": "info"
+    }
+  ],
+  "metaFixes": [],
+  "refresh": []
+}
