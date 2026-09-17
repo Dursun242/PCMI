@@ -32,7 +32,10 @@ Sans `RESEND_API_KEY`, le formulaire répond « envoyé » mais n'expédie rien 
 1. Pousser le dépôt sur GitHub.
 2. Vercel → New Project → importer le dépôt (préréglage Next.js détecté automatiquement).
 3. Variables d'environnement : `RESEND_API_KEY`, `MAIL_FROM`, `MAIL_TO`, `NEXT_PUBLIC_SITE_URL`.
-4. Domaine : ajouter `permis.id-maitrise.com` dans Vercel, puis créer chez Hostinger un enregistrement `CNAME permis → cname.vercel-dns.com`.
+4. Domaine : ajouter `permis-maison-individuelle.fr` dans Vercel (Project → Settings → Domains), puis chez Hostinger (hPanel → Domaines → DNS / Zone DNS) :
+   - `A` `@` → `76.76.21.21`
+   - `CNAME` `www` → `cname.vercel-dns.com`
+   Vercel indique aussi ces valeurs (et le statut de vérification) sur la page du domaine une fois ajouté.
 5. Dans Resend, le domaine `id-maitrise.com` doit être vérifié (SPF + DKIM) pour que `contact@id-maitrise.com` puisse expédier.
 
 ## SEO déjà en place
@@ -69,8 +72,8 @@ Chaque lundi, le workflow GitHub Actions `.github/workflows/seo-weekly.yml` :
 | Secret | `ANTHROPIC_API_KEY` | clé API Anthropic |
 | Secret | `GSC_SERVICE_ACCOUNT_JSON` | JSON du compte de service Google, ajouté comme utilisateur (lecture) de la propriété Search Console |
 | Secret | `INDEXNOW_KEY` | 32 caractères hexadécimaux au choix ; le même dans les variables Vercel |
-| Variable | `GSC_PROPERTY` | `sc-domain:id-maitrise.com` (ou `https://permis.id-maitrise.com/`) |
-| Variable | `NEXT_PUBLIC_SITE_URL` | `https://permis.id-maitrise.com` |
+| Variable | `GSC_PROPERTY` | `sc-domain:permis-maison-individuelle.fr` (ou `https://permis-maison-individuelle.fr/`) |
+| Variable | `NEXT_PUBLIC_SITE_URL` | `https://permis-maison-individuelle.fr` |
 | Variable | `SEO_MODEL` | facultatif, `claude-sonnet-4-5` par défaut |
 
 En local : `npm run seo:analyze` (rapport), `npm run seo:article -- --query "…"` (forcer un sujet), `npm run seo:article -- --refresh <slug>` (réécrire un article), `npm run seo` (cycle complet). Le workflow se lance aussi à la main depuis l'onglet Actions, avec un sujet imposé si besoin.

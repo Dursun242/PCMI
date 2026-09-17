@@ -21,8 +21,8 @@ export const site: {
   shortName: "Permis",
   parent: "ID Maîtrise",
   tagline: "Le permis de construire de votre maison, dessiné par un maître d'œuvre, au prix juste.",
-  // Domaine de production (sous-domaine conseillé : permis.id-maitrise.com)
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://permis.id-maitrise.com",
+  // Domaine de production
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://permis-maison-individuelle.fr",
   parentUrl: "https://www.id-maitrise.com",
   email: "contact@id-maitrise.com",
   // Laisser vide pour masquer le téléphone sur le site
