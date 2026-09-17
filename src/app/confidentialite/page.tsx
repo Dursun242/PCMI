@@ -14,7 +14,7 @@ export default function ConfidentialitePage() {
 
       <h2>Responsable du traitement</h2>
       <p>
-        {site.legal.company}, {site.address.street}, {site.address.zip} {site.address.city} — <a href={`mailto:${site.email}`}>{site.email}</a>.
+        {site.legal.company}, {site.address.street}, {site.address.zip} {site.address.city}.
       </p>
 
       <h2>Données collectées</h2>
@@ -39,7 +39,7 @@ export default function ConfidentialitePage() {
 
       <h2>Vos droits</h2>
       <p>
-        Vous disposez d&apos;un droit d&apos;accès, de rectification, d&apos;effacement, de limitation et d&apos;opposition. Écrivez à <a href={`mailto:${site.email}`}>{site.email}</a>. Vous pouvez également saisir la CNIL.
+        Vous disposez d&apos;un droit d&apos;accès, de rectification, d&apos;effacement, de limitation et d&apos;opposition. Écrivez-nous via notre <a href="/contact">formulaire de contact</a>. Vous pouvez également saisir la CNIL.
       </p>
     </div>
   );

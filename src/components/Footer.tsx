@@ -35,9 +35,9 @@ export default function Footer() {
 
           <div>
             <div className={label}>Contact</div>
-            <a href={`mailto:${site.email}`} className="hover:text-brass-2 break-all">
-              {site.email}
-            </a>
+            <Link href="/contact" className="hover:text-brass-2">
+              Nous écrire
+            </Link>
             {site.phone && (
               <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="block mt-1 hover:text-brass-2">
                 {site.phone}
