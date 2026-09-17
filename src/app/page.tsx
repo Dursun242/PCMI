@@ -209,10 +209,10 @@ export default function HomePage() {
           <span className="rule" aria-hidden="true" />
           <h2 className="h-section mt-6">Questions fréquentes</h2>
           <p className="mt-6 text-ink-2 leading-relaxed max-w-[32ch]">
-            Une autre question ? Écrivez-nous à{" "}
-            <a href={`mailto:${site.email}`} className="text-ink underline decoration-brass underline-offset-4">
-              {site.email}
-            </a>
+            Une autre question ?{" "}
+            <Link href="/contact" className="text-ink underline decoration-brass underline-offset-4">
+              Écrivez-nous
+            </Link>
             .
           </p>
         </div>

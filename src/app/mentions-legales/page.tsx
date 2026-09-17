@@ -23,7 +23,7 @@ export default function MentionsPage() {
         <br />
         Directeur de la publication : {l.director}
         <br />
-        Contact : <a href={`mailto:${site.email}`}>{site.email}</a>
+        Contact : <a href="/contact">formulaire de contact</a>
         {site.phone && <> — {site.phone}</>}
       </p>
 

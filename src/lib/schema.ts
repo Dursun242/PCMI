@@ -7,7 +7,6 @@ export const organizationSchema = {
   name: site.name,
   legalName: site.legal.company,
   url: site.url,
-  email: site.email,
   ...(site.phone ? { telephone: site.phone } : {}),
   parentOrganization: { "@type": "Organization", name: site.parent, url: site.parentUrl },
   address: {

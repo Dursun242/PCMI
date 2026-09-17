@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
 import DevisForm from "@/components/DevisForm";
-import { site } from "@/config/site";
 import { withSeo } from "@/lib/seo";
 
 export const metadata: Metadata = withSeo("/devis", {
@@ -44,9 +43,9 @@ export default function DevisPage() {
         </div>
         <p className="mt-8 text-sm text-ink-2">
           Vous préférez écrire directement ?{" "}
-          <a href={`mailto:${site.email}`} className="text-ink underline decoration-brass underline-offset-4">
-            {site.email}
-          </a>
+          <Link href="/contact" className="text-ink underline decoration-brass underline-offset-4">
+            Contactez-nous
+          </Link>
         </p>
       </div>
 

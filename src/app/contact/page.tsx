@@ -26,8 +26,7 @@ export default function ContactPage() {
             <Link href="/dossier" className="btn btn-line mt-4">Remplir la fiche projet</Link>
           </div>
           <div>
-            <p className="display text-2xl">Vous préférez l&apos;e-mail ?</p>
-            <a href={`mailto:${site.email}`} className="mt-1 inline-block text-ink underline decoration-brass underline-offset-4">{site.email}</a>
+            <p className="display text-2xl">Nos coordonnées</p>
             <p className="mt-2 text-sm text-ink-2">{site.legal.company}, {site.address.street}, {site.address.zip} {site.address.city}</p>
           </div>
         </div>
