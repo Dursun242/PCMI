@@ -71,12 +71,15 @@ export default function HomePage() {
       <section className="bg-forest text-paper">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 pt-16 pb-20 sm:pt-24 sm:pb-28 grid gap-14 lg:grid-cols-[1fr_1.1fr] lg:items-center">
           <div>
-            <span className="rule" aria-hidden="true" />
+            <div className="flex items-center gap-3">
+              <span className="rule" aria-hidden="true" />
+              <span className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">100 % en ligne · partout en France</span>
+            </div>
             <h1 className="display mt-7 text-[2.9rem] sm:text-6xl lg:text-[4.6rem] max-w-[13ch]">
               Le permis de construire de votre maison, <em>au prix juste.</em>
             </h1>
             <p className="mt-8 text-lg sm:text-xl leading-relaxed text-paper/75 max-w-[44ch]">
-              Dossier complet, rendus 3D, dépôt en mairie et suivi jusqu&apos;à l&apos;accord. Conçu par un maître d&apos;œuvre, partout en France, à partir de{" "}
+              Dossier complet, rendus 3D, dépôt en mairie et suivi jusqu&apos;à l&apos;accord — à distance, sans rendez-vous physique. Conçu par un maître d&apos;œuvre, à partir de{" "}
               <span className="text-paper">{new Intl.NumberFormat("fr-FR").format(plans[0].priceTTC)}&nbsp;€&nbsp;TTC</span>.
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
