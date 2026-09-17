@@ -26,8 +26,14 @@ export default function ContactPage() {
             <Link href="/dossier" className="btn btn-line mt-4">Remplir la fiche projet</Link>
           </div>
           <div>
-            <p className="display text-2xl">Nos coordonnées</p>
-            <p className="mt-2 text-sm text-ink-2">{site.legal.company}, {site.address.street}, {site.address.zip} {site.address.city}</p>
+            <p className="display text-2xl">Vous préférez le téléphone ?</p>
+            {site.phone && (
+              <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="mt-1 inline-block text-ink underline decoration-brass underline-offset-4">
+                {site.phone}
+              </a>
+            )}
+            <p className="mt-1 text-sm text-ink-2">Laissez-nous un message, on vous rappelle.</p>
+            <p className="mt-4 text-sm text-ink-2">{site.legal.company}, {site.address.street}, {site.address.zip} {site.address.city}</p>
           </div>
         </div>
       </div>
