@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${site.url}/devis`, lastModified: now, changeFrequency: "yearly", priority: 0.8 },
     { url: `${site.url}/dossier`, lastModified: now, changeFrequency: "yearly", priority: 0.7 },
     { url: `${site.url}/contact`, lastModified: now, changeFrequency: "yearly", priority: 0.6 },
+    { url: `${site.url}/cgv`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${site.url}/conseils`, lastModified: articles[0] ? new Date(articles[0].updated ?? articles[0].date) : now, changeFrequency: "weekly", priority: 0.8 },
     ...articles.map((a) => ({
       url: `${site.url}/conseils/${a.slug}`,

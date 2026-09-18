@@ -3,6 +3,7 @@ import { site } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Politique de confidentialité",
+  description: "Comment Permis by ID Maîtrise collecte, utilise et conserve vos données personnelles, et comment exercer vos droits RGPD.",
   robots: { index: false, follow: true },
   alternates: { canonical: "/confidentialite" },
 };

@@ -86,6 +86,7 @@ export default function Footer() {
             </table>
             <ul className="mt-5 grid gap-1.5 text-xs text-paper/60">
               <li><Link href="/mentions-legales" className="hover:text-brass-2">Mentions légales</Link></li>
+              <li><Link href="/cgv" className="hover:text-brass-2">CGV</Link></li>
               <li><Link href="/confidentialite" className="hover:text-brass-2">Confidentialité</Link></li>
             </ul>
           </div>

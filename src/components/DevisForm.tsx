@@ -150,6 +150,21 @@ export default function DevisForm() {
         </span>
       </label>
 
+      <label className="flex items-start gap-3 text-sm text-ink-2">
+        <input type="checkbox" name="acceptCgv" required className="mt-1 accent-ink h-4 w-4" />
+        <span>
+          J&apos;accepte les{" "}
+          <Link href="/cgv" className="underline decoration-brass underline-offset-2">conditions générales de vente</Link>.
+        </span>
+      </label>
+
+      <label className="flex items-start gap-3 text-sm text-ink-2">
+        <input type="checkbox" name="executionAnticipee" className="mt-1 accent-ink h-4 w-4" />
+        <span>
+          Je demande le démarrage de la prestation avant la fin du délai de rétractation de 14 jours, et je reconnais perdre mon droit de rétractation une fois la prestation intégralement exécutée (voir <Link href="/cgv" className="underline decoration-brass underline-offset-2">CGV</Link>, article 8).
+        </span>
+      </label>
+
       {status === "error" && (
         <p role="alert" className="border-l-2 border-alert pl-4 text-sm text-alert">
           {errorMsg} Vous pouvez aussi nous écrire directement par e-mail.
