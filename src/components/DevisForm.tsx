@@ -108,7 +108,7 @@ export default function DevisForm() {
         <div className="field">
           <label htmlFor="surface">Surface de plancher approximative (m²)</label>
           <input id="surface" name="surface" type="number" inputMode="numeric" min={5} max={600} placeholder="ex. 120" />
-          <span className="hint">Formules à prix fixe jusqu&apos;à 149 m². Au-delà, un architecte est obligatoire : devis sur mesure.</span>
+          <span className="hint">Formules à prix fixe jusqu&apos;à 149 m². Au-delà, devis sur mesure (architecte légalement obligatoire au-delà de 150 m²).</span>
         </div>
       </div>
 

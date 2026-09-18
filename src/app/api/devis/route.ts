@@ -74,7 +74,7 @@ export async function POST(req: Request) {
   const executionAnticipee = Boolean(body.executionAnticipee);
 
   const surfaceNum = Number(surface);
-  const architectFlag = surfaceNum > 149 ? " ⚠️ ≥ 150 m² : hors formules, sur devis avec architecte" : "";
+  const architectFlag = surfaceNum > 149 ? " ⚠️ > 149 m² : hors formules, devis sur mesure (architecte obligatoire au-delà de 150 m²)" : "";
 
   const rows: [string, string][] = [
     ["Nom", name],

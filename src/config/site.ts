@@ -86,7 +86,7 @@ export const plans: Plan[] = [
       "Contrôle de conformité au PLU / PLUi de votre commune",
       "Une série de modifications avant dépôt",
     ],
-    notIncluded: ["Dépôt et suivi en mairie", "Rendus 3D réalistes", "Attestation RE2020"],
+    notIncluded: ["Dépôt et suivi en mairie", "Rendus 3D réalistes", "Attestation RE2020 (fournie par votre constructeur ou thermicien, ou en option à 350 € TTC)"],
   },
   {
     id: "complet",
@@ -100,7 +100,7 @@ export const plans: Plan[] = [
       "Tout Essentiel",
       "Dépôt dématérialisé ou papier auprès de votre mairie",
       "Réponses aux demandes de pièces complémentaires",
-      "Modifications illimitées jusqu'à l'obtention du permis",
+      "Modifications illimitées jusqu'à l'obtention du permis (même terrain, même programme)",
       "Insertion 3D réaliste de la maison sur son terrain (PCMI 6)",
       "Attestation de prise en compte de la RE2020",
       "Panneau d'affichage réglementaire prêt à imprimer",
@@ -144,7 +144,7 @@ export const stats = [
 export const faq = [
   {
     q: "Ai-je besoin d'un architecte pour ma maison ?",
-    a: "Non, tant que la surface de plancher de votre maison ne dépasse pas 149 m². C'est le périmètre de nos trois formules à prix fixe : un maître d'œuvre conçoit et dépose votre permis. À partir de 150 m², le recours à un architecte est obligatoire et le permis est établi sur devis uniquement, avec notre architecte partenaire.",
+    a: "Non, tant que la surface de plancher de votre maison ne dépasse pas 150 m² (c'est le seuil légal). Nos trois formules à prix fixe s'appliquent jusqu'à 149 m² : un maître d'œuvre conçoit et dépose votre permis. Au-delà de 149 m², le permis est établi sur devis, avec notre architecte partenaire dès que le recours à un architecte devient légalement obligatoire (surface de plancher supérieure à 150 m²).",
   },
   {
     q: "Travaillez-vous partout en France ?",
@@ -156,11 +156,11 @@ export const faq = [
   },
   {
     q: "Que se passe-t-il si la mairie demande des pièces complémentaires ?",
-    a: "Avec les formules Complet et Premium, nous répondons à toutes les demandes de la mairie et modifions le dossier autant de fois que nécessaire jusqu'à l'obtention du permis, sans supplément.",
+    a: "Avec les formules Complet et Premium, nous répondons à toutes les demandes de la mairie et modifions le dossier autant de fois que nécessaire jusqu'à l'obtention du permis, sans supplément, pour un même terrain et un même programme.",
   },
   {
     q: "L'attestation RE2020 est-elle incluse ?",
-    a: "Elle est incluse dans les formules Complet et Premium et disponible en option dans la formule Essentiel. Cette attestation est obligatoire au dépôt du permis pour toute construction neuve.",
+    a: "Elle est incluse dans les formules Complet et Premium. Dans la formule Essentiel, elle est fournie par votre constructeur ou thermicien si vous en avez déjà un, ou proposée en option à 350 € TTC. Cette attestation est obligatoire au dépôt du permis pour toute construction neuve.",
   },
   {
     q: "Ma maison fait plus de 149 m². Que se passe-t-il ?",

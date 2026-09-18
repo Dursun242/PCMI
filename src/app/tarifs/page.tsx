@@ -12,16 +12,18 @@ export const metadata: Metadata = withSeo("/tarifs", {
     "Prix d'un permis de construire de maison individuelle jusqu'à 149 m² de surface de plancher, réalisé par un maître d'œuvre : Essentiel, Complet ou Premium, à prix fixe, partout en France. Au-delà, sur devis.",
 });
 
+const re2020Price = options.find((o) => o.name === "Attestation RE2020 seule")?.priceTTC ?? 0;
+
 const rows: { label: string; values: (boolean | string)[] }[] = [
   { label: "Pièces PCMI 1 à 8 à l'échelle", values: [true, true, true] },
   { label: "Notice descriptive et CERFA", values: [true, true, true] },
   { label: "Contrôle du PLU / PLUi", values: [true, true, true] },
-  { label: "Modifications avant dépôt", values: ["1 série", "Illimitées", "Illimitées"] },
+  { label: "Modifications avant dépôt", values: ["1 série", "Illimitées*", "Illimitées*"] },
   { label: "Dépôt en mairie (dématérialisé ou papier)", values: [false, true, true] },
   { label: "Réponses aux demandes de pièces", values: [false, true, true] },
   { label: "Suivi jusqu'à l'accord", values: [false, true, true] },
   { label: "Insertion 3D réaliste (PCMI 6)", values: ["2D", "1 vue", "3 vues"] },
-  { label: "Attestation RE2020", values: ["Option", true, true] },
+  { label: "Attestation RE2020", values: [`Option — ${formatEuro(re2020Price)} TTC`, true, true] },
   { label: "Étude eaux pluviales", values: ["Option", "Option", true] },
   { label: "Conception des plans à partir de vos besoins", values: [false, false, true] },
   { label: "Relecture du CCMI / devis constructeur", values: [false, false, true] },
@@ -47,7 +49,7 @@ export default function TarifsPage() {
             Trois formules, un prix fixe annoncé <em>avant</em> de commencer.
           </h1>
           <p className="lead mt-8 max-w-[52ch]">
-            Le prix ne dépend ni de la surface de votre maison ni de son coût de construction. Il dépend uniquement de ce que nous faisons pour vous. Ces formules s&apos;appliquent aux maisons jusqu&apos;à <strong className="text-ink">149 m² de surface de plancher</strong>, sans architecte. Au-delà, le permis est établi sur devis. Prix toutes taxes comprises, TVA 20 % incluse.
+            Le prix ne dépend ni de la surface de votre maison ni de son coût de construction. Il dépend uniquement de ce que nous faisons pour vous. Ces formules s&apos;appliquent aux maisons jusqu&apos;à <strong className="text-ink">149 m² de surface de plancher</strong>. Au-delà, le permis est établi sur devis (le recours à un architecte devient légalement obligatoire au-delà de 150 m²). Prix toutes taxes comprises, TVA 20 % incluse.
           </p>
         </div>
       </section>
@@ -64,7 +66,7 @@ export default function TarifsPage() {
           <div className="max-w-[60ch]">
             <p className="display text-2xl">Maison de 150 m² et plus : sur devis.</p>
             <p className="mt-1 text-ink-2">
-              Le recours à un architecte devient obligatoire. Nous montons le dossier avec notre architecte partenaire et vous adressons un devis personnalisé sous 48 h.
+              Nos formules à prix fixe ne s&apos;appliquent plus au-delà de 149 m². Nous montons le dossier avec notre architecte partenaire — dont le recours devient légalement obligatoire au-delà de 150 m² de surface de plancher — et vous adressons un devis personnalisé sous 48 h.
             </p>
           </div>
           <Link href="/devis" className="btn btn-line">Demander un devis sur mesure</Link>
@@ -101,6 +103,9 @@ export default function TarifsPage() {
             </tbody>
           </table>
         </div>
+        <p className="mt-4 text-sm text-ink-2">
+          * Modifications illimitées et reprise en cas de refus (voir ci-dessous), pour un même terrain et un même programme — voir nos <Link href="/cgv" className="underline decoration-brass underline-offset-2">CGV</Link>.
+        </p>
       </section>
 
       <section className="bg-stone">
@@ -134,11 +139,11 @@ export default function TarifsPage() {
               </div>
               <div>
                 <dt className="font-bold">Refus de permis</dt>
-                <dd className="text-ink-2 leading-relaxed">Avec Complet et Premium, nous reprenons le dossier et le redéposons sans supplément tant que le refus porte sur un point que nous maîtrisons (conformité au PLU, pièces, cotes). Un refus lié à un changement de règle ou à un avis extérieur fait l&apos;objet d&apos;une analyse offerte.</dd>
+                <dd className="text-ink-2 leading-relaxed">Avec Complet et Premium, nous reprenons le dossier et le redéposons sans supplément tant que le refus porte sur un point que nous maîtrisons (conformité au PLU, pièces, cotes), pour un même terrain et un même programme (voir nos <Link href="/cgv" className="underline decoration-brass underline-offset-2">CGV</Link>). Un refus lié à un changement de règle ou à un avis extérieur fait l&apos;objet d&apos;une analyse offerte.</dd>
               </div>
               <div>
-                <dt className="font-bold">À partir de 150 m² de surface de plancher</dt>
-                <dd className="text-ink-2 leading-relaxed">Les trois formules ne s&apos;appliquent plus : le recours à un architecte est obligatoire et le permis est établi sur devis uniquement, avec notre architecte partenaire.</dd>
+                <dt className="font-bold">Au-delà de 149 m² de surface de plancher</dt>
+                <dd className="text-ink-2 leading-relaxed">Les trois formules ne s&apos;appliquent plus : le permis est établi sur devis, avec notre architecte partenaire. Le recours à un architecte devient en plus légalement obligatoire dès que la surface de plancher dépasse 150 m².</dd>
               </div>
             </dl>
             <Link href="/devis" className="btn btn-ink mt-10">Demander un devis</Link>

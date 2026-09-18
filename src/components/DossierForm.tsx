@@ -89,7 +89,7 @@ export default function DossierForm() {
         <h2 className="display text-4xl">Votre fiche projet est bien arrivée.</h2>
         <p className="text-ink-2 leading-relaxed">
           {overThreshold
-            ? "Votre projet dépasse 149 m² de surface de plancher : nous préparons un devis sur mesure avec notre architecte partenaire et revenons vers vous sous 48 h ouvrées."
+            ? "Votre projet dépasse 149 m² de surface de plancher : nos formules à prix fixe ne s'appliquent plus. Nous préparons un devis sur mesure avec notre architecte partenaire (obligatoire au-delà de 150 m²) et revenons vers vous sous 48 h ouvrées."
             : "Nous lisons le règlement d'urbanisme de votre commune et vous adressons sous 48 h ouvrées un devis à prix fixe, avec la formule conseillée et les prochaines étapes."}
         </p>
         <Link href="/conseils" className="btn btn-line w-fit">Lire nos conseils en attendant</Link>
@@ -163,7 +163,7 @@ export default function DossierForm() {
 
       {current.id === "surfaces" && overThreshold && (
         <p className="border-l-2 border-brass pl-4 text-sm text-ink-2">
-          Surface de plancher totale estimée : <strong className="text-ink">{total} m²</strong>. Au-delà de 149 m², le recours à un architecte est obligatoire : votre permis sera établi sur devis, avec notre architecte partenaire. Vous pouvez continuer la fiche.
+          Surface de plancher totale estimée : <strong className="text-ink">{total} m²</strong>. Au-delà de 149 m², nos formules à prix fixe ne s&apos;appliquent plus : votre permis sera établi sur devis, avec notre architecte partenaire (obligatoire au-delà de 150 m²). Vous pouvez continuer la fiche.
         </p>
       )}
 
