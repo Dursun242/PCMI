@@ -45,6 +45,22 @@ Sans `RESEND_API_KEY`, le formulaire répond « envoyé » mais n'expédie rien 
 - `sitemap.xml` et `robots.txt` générés (`src/app/sitemap.ts`, `src/app/robots.ts`).
 - Page pilier « permis de construire maison individuelle » ciblant les requêtes nationales.
 
+## Espace admin
+
+Une page `/admin` protégée par mot de passe permet d'éditer articles, chiffres clés et réalisations sans toucher au code (formulaires, pas de Git ni de terminal requis).
+
+1. Variable d'environnement obligatoire : `ADMIN_PASSWORD` (le mot de passe de connexion à `/admin`).
+2. Pour que les modifications soient enregistrées **en production sur Vercel** (le système de fichiers y est en lecture seule), ajoutez aussi :
+   - `ADMIN_GITHUB_TOKEN` : un [personal access token GitHub](https://github.com/settings/tokens) (fine-grained, droit **Contents: Read and write** sur ce dépôt uniquement).
+   - `ADMIN_GITHUB_REPO` : `dursun242/pcmi` (propriétaire/dépôt).
+   - `ADMIN_GITHUB_BRANCH` : facultatif, `main` par défaut.
+
+   Chaque enregistrement dans `/admin` crée alors un commit sur ce dépôt ; Vercel redéploie automatiquement (30 s à 1 min).
+
+Sans `ADMIN_GITHUB_TOKEN`/`ADMIN_GITHUB_REPO`, `/admin` reste utilisable **en local** (`npm run dev`) : les modifications sont écrites directement sur le disque, pratique pour tester avant de configurer GitHub.
+
+Ce que `/admin` permet aujourd'hui : créer/modifier/supprimer les articles de `/conseils`, éditer les chiffres clés de l'accueil, gérer la liste des réalisations. Pour le reste (prix, FAQ, textes des pages), on continue de modifier le code comme indiqué ci-dessus.
+
 ## Photos
 
 La galerie de la page d'accueil (`src/components/Gallery.tsx`) affiche les photos listées dans `src/config/photos.ts` et présentes dans `public/photos/`.
