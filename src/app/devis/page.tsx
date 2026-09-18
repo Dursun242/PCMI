@@ -8,7 +8,6 @@ export const metadata: Metadata = withSeo("/devis", {
   title: "Demander un devis de permis de construire",
   description:
     "Décrivez votre projet de maison en 3 minutes et recevez sous 48 h un devis chiffré à prix fixe pour votre permis de construire, partout en France.",
-  alternates: { canonical: "/devis" },
   robots: { index: true, follow: true },
 });
 

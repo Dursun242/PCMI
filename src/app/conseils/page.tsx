@@ -9,7 +9,6 @@ export const metadata: Metadata = withSeo("/conseils", {
   title: "Conseils permis de construire : prix, délais, refus, pièces du dossier",
   description:
     "Articles pratiques écrits par un maître d'œuvre : combien coûte un permis de construire, comment éviter un refus, réussir l'insertion graphique, comprendre le PLU.",
-  alternates: { canonical: "/conseils" },
 });
 
 const fmt = (iso: string) => new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });

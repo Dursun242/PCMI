@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { plans, stats, site } from "@/config/site";
+import { plans, stats, site, faq } from "@/config/site";
 import HouseDrawing from "@/components/HouseDrawing";
 import Stamp from "@/components/Stamp";
 import PlanCard from "@/components/PlanCard";
 import Faq from "@/components/Faq";
 import Gallery from "@/components/Gallery";
 import JsonLd from "@/components/JsonLd";
-import { organizationSchema, faqSchema } from "@/lib/schema";
+import { faqPageSchema } from "@/lib/schema";
 
 const pieces = [
   { code: "PCMI 1", name: "Plan de situation", what: "Situe le terrain dans la commune, avec l'orientation et l'échelle." },
@@ -65,7 +65,7 @@ const compare = [
 export default function HomePage() {
   return (
     <>
-      <JsonLd data={[organizationSchema, faqSchema]} />
+      <JsonLd data={faqPageSchema(faq)} />
 
       {/* ---------- Hero ---------- */}
       <section className="bg-forest text-paper">

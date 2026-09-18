@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { site } from "@/config/site";
+import { withSeo } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withSeo("/confidentialite", {
   title: "Politique de confidentialité",
   description: "Comment Permis by ID Maîtrise collecte, utilise et conserve vos données personnelles, et comment exercer vos droits RGPD.",
   robots: { index: false, follow: true },
-  alternates: { canonical: "/confidentialite" },
-};
+});
 
 export default function ConfidentialitePage() {
   return (

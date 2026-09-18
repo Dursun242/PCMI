@@ -3,14 +3,13 @@ import Link from "next/link";
 import { plans, options, site } from "@/config/site";
 import PlanCard, { formatEuro } from "@/components/PlanCard";
 import JsonLd from "@/components/JsonLd";
-import { breadcrumb, organizationSchema } from "@/lib/schema";
+import { breadcrumb } from "@/lib/schema";
 import { withSeo } from "@/lib/seo";
 
 export const metadata: Metadata = withSeo("/tarifs", {
   title: "Tarifs permis de construire maison : trois formules à prix fixe",
   description:
     "Prix d'un permis de construire de maison individuelle jusqu'à 149 m² de surface de plancher, réalisé par un maître d'œuvre : Essentiel, Complet ou Premium, à prix fixe, partout en France. Au-delà, sur devis.",
-  alternates: { canonical: "/tarifs" },
 });
 
 const rows: { label: string; values: (boolean | string)[] }[] = [
@@ -39,7 +38,7 @@ function Cell({ v }: { v: boolean | string }) {
 export default function TarifsPage() {
   return (
     <>
-      <JsonLd data={[organizationSchema, breadcrumb([{ name: "Accueil", path: "/" }, { name: "Tarifs", path: "/tarifs" }])]} />
+      <JsonLd data={breadcrumb([{ name: "Accueil", path: "/" }, { name: "Tarifs", path: "/tarifs" }])} />
 
       <section className="bg-stone border-b border-stone-2">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24">

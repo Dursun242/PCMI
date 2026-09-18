@@ -21,7 +21,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return withSeo(`/conseils/${slug}`, {
     title: a.title,
     description: a.description,
-    alternates: { canonical: `/conseils/${slug}` },
     openGraph: { type: "article", publishedTime: a.date, modifiedTime: a.updated ?? a.date },
   });
 }

@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { legal } from "@/lib/legal";
+import { withSeo } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withSeo("/mentions-legales", {
   title: "Mentions légales",
   description: "Éditeur, hébergeur, propriété intellectuelle et coordonnées légales du site Permis by ID Maîtrise.",
   robots: { index: false, follow: true },
-  alternates: { canonical: "/mentions-legales" },
-};
+});
 
 export default function MentionsPage() {
   return (

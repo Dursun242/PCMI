@@ -8,13 +8,13 @@ import Link from "next/link";
 import { plans, options, site } from "@/config/site";
 import { legal } from "@/lib/legal";
 import { formatEuro } from "@/components/PlanCard";
+import { withSeo } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withSeo("/cgv", {
   title: "Conditions générales de vente",
   description: "Conditions générales de vente des prestations de dossier de permis de construire Permis by ID Maîtrise : formules, prix, acompte, délais, rétractation.",
   robots: { index: true, follow: true },
-  alternates: { canonical: "/cgv" },
-};
+});
 
 export default function CgvPage() {
   return (
