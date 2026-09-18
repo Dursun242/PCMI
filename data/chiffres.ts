@@ -10,7 +10,7 @@ export interface ChiffresCles {
 }
 
 export const chiffresCles: ChiffresCles = {
-  // TODO_PERMIS_DEPOSES : nombre de permis déposés
-  // TODO_TAUX_ACCORD_PREMIER_DEPOT : taux d'accord au premier dépôt (%)
-  // TODO_NOTE_GOOGLE : note moyenne Google actuelle (/5)
+  permisDeposes: 125,
+  tauxAccordPremierDepot: 100,
+  noteGoogle: 5,
 };
