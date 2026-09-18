@@ -1,13 +1,13 @@
 import { notFound } from "next/navigation";
 import AdminShell from "@/components/admin/AdminShell";
 import ArticleForm from "@/components/admin/ArticleForm";
-import { getArticle } from "@/lib/articles";
+import { getAdminArticle } from "@/lib/adminContent";
 
 export const dynamic = "force-dynamic";
 
 export default async function EditArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const article = getArticle(slug);
+  const article = await getAdminArticle(slug);
   if (!article) notFound();
 
   return (

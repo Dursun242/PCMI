@@ -1,8 +1,56 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Article } from "@/lib/articles";
+
+/* Limite côté serveur (4 Mo) et limite de corps de requête Vercel (4,5 Mo) :
+   on ne tente l'envoi tel quel qu'en dessous de cette taille. */
+const MAX_UPLOAD_BYTES = 3.5 * 1024 * 1024;
+const MAX_EDGE = 1800; // px : largement suffisant pour une vignette 1200×630
+
+/**
+ * Redimensionne et compresse une photo dans le navigateur (JPEG q=0,85, côté
+ * max 1800 px) pour que les photos de téléphone (souvent 3 à 8 Mo, parfois en
+ * HEIC) passent sous la limite d'envoi. Les SVG et les petits fichiers sont
+ * renvoyés tels quels.
+ */
+async function prepareImage(file: File): Promise<File> {
+  if (file.type === "image/svg+xml") return file;
+
+  let bitmap: ImageBitmap;
+  try {
+    bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+  } catch {
+    throw new Error(
+      "Le navigateur ne sait pas lire cette image (format HEIC ?). Exportez-la en JPEG ou PNG puis réessayez.",
+    );
+  }
+
+  const scale = Math.min(1, MAX_EDGE / Math.max(bitmap.width, bitmap.height));
+  const needsResize = scale < 1;
+  const needsCompress = file.size > MAX_UPLOAD_BYTES;
+  if (!needsResize && !needsCompress) {
+    bitmap.close();
+    return file;
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(bitmap.width * scale);
+  canvas.height = Math.round(bitmap.height * scale);
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Impossible de préparer l'image.");
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.85));
+  if (!blob) throw new Error("Impossible de préparer l'image.");
+  if (blob.size > MAX_UPLOAD_BYTES) {
+    throw new Error("Image trop lourde même après compression. Réduisez-la avant de l'envoyer.");
+  }
+  const name = file.name.replace(/\.[^.]+$/, "") + ".jpg";
+  return new File([blob], name, { type: "image/jpeg" });
+}
 
 export default function ArticleForm({ article }: { article?: Article }) {
   const router = useRouter();
@@ -19,6 +67,10 @@ export default function ArticleForm({ article }: { article?: Article }) {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [saved, setSaved] = useState(false);
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("saved") === "1") setSaved(true);
+  }, []);
 
   async function onUploadImage(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -27,17 +79,23 @@ export default function ArticleForm({ article }: { article?: Article }) {
     setUploading(true);
     setError(null);
     try {
+      const prepared = await prepareImage(file);
       const form = new FormData();
-      form.append("file", file);
+      form.append("file", prepared);
       const res = await fetch("/api/admin/upload", { method: "POST", body: form });
-      const data = await res.json();
-      if (!res.ok || !data.ok) {
-        setError(data.error ?? "Envoi de l'image impossible.");
+      let data: { ok?: boolean; path?: string; error?: string } = {};
+      try {
+        data = await res.json();
+      } catch {
+        // Réponse non JSON : typiquement une erreur de la plateforme (413, 502…)
+      }
+      if (!res.ok || !data.ok || !data.path) {
+        setError(data.error ?? `Envoi de l'image impossible (erreur ${res.status}).`);
         return;
       }
       setImage(data.path);
-    } catch {
-      setError("Envoi de l'image impossible.");
+    } catch (err) {
+      setError(err instanceof Error && err.message ? err.message : "Envoi de l'image impossible.");
     } finally {
       setUploading(false);
     }
@@ -47,6 +105,7 @@ export default function ArticleForm({ article }: { article?: Article }) {
     e.preventDefault();
     setSaving(true);
     setError(null);
+    setSaved(false);
     try {
       const res = await fetch(isEdit ? `/api/admin/articles/${article!.slug}` : "/api/admin/articles", {
         method: isEdit ? "PUT" : "POST",
@@ -58,8 +117,13 @@ export default function ArticleForm({ article }: { article?: Article }) {
         setError(data.error ?? "Enregistrement impossible.");
         return;
       }
-      router.push("/admin/articles");
-      router.refresh();
+      if (isEdit) {
+        setSaved(true);
+        router.refresh();
+      } else {
+        router.push(`/admin/articles/${data.slug}?saved=1`);
+        router.refresh();
+      }
     } catch {
       setError("Enregistrement impossible.");
     } finally {
@@ -121,10 +185,10 @@ export default function ArticleForm({ article }: { article?: Article }) {
               <img src={image} alt="" className="h-14 w-14 border border-ink/10 object-cover" />
             )}
             <label className="hint cursor-pointer underline">
-              {uploading ? "Envoi…" : "Choisir un fichier (jpg, png, webp, svg)"}
+              {uploading ? "Envoi…" : "Choisir un fichier (jpg, png, webp, svg — les photos sont réduites automatiquement)"}
               <input
                 type="file"
-                accept="image/jpeg,image/png,image/webp,image/svg+xml"
+                accept="image/jpeg,image/png,image/webp,image/svg+xml,image/heic,image/heif"
                 onChange={onUploadImage}
                 disabled={uploading}
                 className="hidden"
@@ -150,6 +214,12 @@ export default function ArticleForm({ article }: { article?: Article }) {
       </div>
 
       {error && <p className="text-sm text-alert">{error}</p>}
+      {saved && !error && (
+        <p className="text-sm text-forest border border-forest/30 bg-forest/5 px-4 py-3" role="status">
+          Enregistré. Le site est republié automatiquement : comptez 30 s à 1 min avant que la modification
+          soit visible en ligne.
+        </p>
+      )}
 
       <div className="flex items-center gap-4">
         <button type="submit" disabled={saving} className="btn btn-ink">
