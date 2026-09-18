@@ -29,6 +29,11 @@ export const legal = {
   hebergeur: site.legal.host,
 };
 
+/** Vrai si la valeur n'a pas encore été renseignée. */
+export function isTodo(value: string): boolean {
+  return value.startsWith("TODO_");
+}
+
 /**
  * Champs à compléter avant mise en ligne des pages légales.
  * (Repris dans le rapport de fin de mission.)

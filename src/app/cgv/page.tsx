@@ -6,7 +6,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { plans, options, site } from "@/config/site";
-import { legal } from "@/lib/legal";
+import { legal, isTodo } from "@/lib/legal";
 import { formatEuro } from "@/components/PlanCard";
 import { withSeo } from "@/lib/seo";
 
@@ -24,7 +24,9 @@ export default function CgvPage() {
 
       <h2>1. Objet et champ d&apos;application</h2>
       <p>
-        Les présentes conditions générales de vente (CGV) régissent les prestations de conception et de montage de dossiers de permis de construire ou de déclaration préalable pour des maisons individuelles, vendues à distance par {legal.raisonSociale} ({legal.forme} au capital de {legal.capital}, SIREN {legal.siren}), sous la marque « {site.name} », à des personnes physiques agissant en tant que consommateurs (« le client »). Toute commande implique l&apos;acceptation sans réserve des présentes CGV, qui prévalent sur tout autre document.
+        Les présentes conditions générales de vente (CGV) régissent les prestations de conception et de montage de dossiers de permis de construire ou de déclaration préalable pour des maisons individuelles, vendues à distance par {legal.raisonSociale} ({legal.forme}
+        {!isTodo(legal.capital) && <> au capital de {legal.capital}</>}
+        {!isTodo(legal.siren) && <>, SIREN {legal.siren}</>}), sous la marque « {site.name} », à des personnes physiques agissant en tant que consommateurs (« le client »). Toute commande implique l&apos;acceptation sans réserve des présentes CGV, qui prévalent sur tout autre document.
       </p>
 
       <h2>2. Formules et prix</h2>
@@ -115,12 +117,24 @@ export default function CgvPage() {
 
       <h2>10. Responsabilité</h2>
       <p>
-        {legal.raisonSociale} est tenue à une obligation de moyens dans la conception du dossier et son contrôle de conformité au règlement d&apos;urbanisme en vigueur à la date du dépôt. {legal.raisonSociale} n&apos;est pas responsable des décisions de l&apos;autorité administrative compétente pour délivrer le permis, ni des conséquences d&apos;informations inexactes ou incomplètes transmises par le client. {legal.raisonSociale} est assurée en responsabilité civile professionnelle auprès de {legal.assurance.assureur} (police n° {legal.assurance.policeNumero}).
+        {legal.raisonSociale} est tenue à une obligation de moyens dans la conception du dossier et son contrôle de conformité au règlement d&apos;urbanisme en vigueur à la date du dépôt. {legal.raisonSociale} n&apos;est pas responsable des décisions de l&apos;autorité administrative compétente pour délivrer le permis, ni des conséquences d&apos;informations inexactes ou incomplètes transmises par le client.
+        {!isTodo(legal.assurance.assureur) && (
+          <>
+            {" "}{legal.raisonSociale} est assurée en responsabilité civile professionnelle auprès de {legal.assurance.assureur}
+            {!isTodo(legal.assurance.policeNumero) && <> (police n° {legal.assurance.policeNumero})</>}.
+          </>
+        )}
       </p>
 
       <h2>11. Médiation de la consommation</h2>
       <p>
-        En cas de litige, le client peut, avant toute action judiciaire, recourir gratuitement au médiateur de la consommation : {legal.mediateur.nom}, {legal.mediateur.adresse} — {legal.mediateur.site}. Le client peut également recourir à la plateforme européenne de règlement en ligne des litiges.
+        En cas de litige, le client peut, avant toute action judiciaire, recourir gratuitement à la médiation de la consommation.{" "}
+        {isTodo(legal.mediateur.nom) ? (
+          "Les coordonnées du médiateur compétent seront communiquées sur cette page."
+        ) : (
+          <>Médiateur : {legal.mediateur.nom}, {legal.mediateur.adresse} — {legal.mediateur.site}.</>
+        )}{" "}
+        Le client peut également recourir à la plateforme européenne de règlement en ligne des litiges.
       </p>
 
       <h2>12. Droit applicable et juridiction</h2>
