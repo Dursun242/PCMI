@@ -2,6 +2,11 @@
  * Télécharge les photos listées dans src/config/photos.ts vers public/photos/.
  * Usage : npm run photos
  * Ne retélécharge pas un fichier déjà présent.
+ *
+ * Ce script tourne en `prebuild` sur Vercel : toute erreur réseau (Unsplash
+ * indisponible, bloqué, DNS, timeout…) est capturée pour ne jamais faire
+ * échouer le build. Des placeholders sont déjà commités dans public/photos/,
+ * ce script ne fait donc que les remplacer si on le lance à la main.
  */
 import { mkdir, writeFile, access } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -29,13 +34,19 @@ while ((m = idPattern.exec(ts))) {
   } catch {}
   const url = base + id + query;
   process.stdout.write(`↓ ${file} … `);
-  const res = await fetch(url);
-  if (!res.ok) {
-    console.log(`échec (${res.status})`);
-    continue;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.log(`échec (${res.status})`);
+      continue;
+    }
+    await writeFile(target, Buffer.from(await res.arrayBuffer()));
+    console.log("ok");
+    n++;
+  } catch (err) {
+    // Réseau indisponible, DNS, timeout… on garde le placeholder existant
+    // (ou l'absence de fichier, gérée par Gallery) plutôt que de casser le build.
+    console.log(`échec (${err.code ?? err.message})`);
   }
-  await writeFile(target, Buffer.from(await res.arrayBuffer()));
-  console.log("ok");
-  n++;
 }
 console.log(`${n} photo(s) téléchargée(s) dans public/photos/`);
