@@ -22,7 +22,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return withSeo(`/conseils/${slug}`, {
     title: a.title,
     description: a.description,
-    openGraph: { type: "article", publishedTime: a.date, modifiedTime: a.updated ?? a.date },
+    openGraph: {
+      type: "article",
+      publishedTime: a.date,
+      modifiedTime: a.updated ?? a.date,
+      images: a.image ? [{ url: a.image }] : undefined,
+    },
   });
 }
 
@@ -71,6 +76,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           </p>
         </div>
       </section>
+
+      {a.image && (
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 pt-10 sm:pt-14">
+          {/* eslint-disable-next-line @next/next/no-img-element -- local, hand-authored SVG; next/image blocks SVG optimization by default */}
+          <img src={a.image} alt={a.imageAlt ?? ""} width={1200} height={630} className="w-full h-auto border border-stone-2" />
+        </div>
+      )}
 
       <div className="mx-auto max-w-7xl px-5 sm:px-8 py-14 grid gap-14 lg:grid-cols-[1fr_300px]">
         <article className="prose-guide">

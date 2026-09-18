@@ -10,6 +10,8 @@ export interface ArticleMeta {
   updated?: string;
   keywords: string[];
   readingMinutes: number;
+  image?: string;
+  imageAlt?: string;
 }
 
 export interface Article extends ArticleMeta {
@@ -30,6 +32,8 @@ function read(file: string): Article {
     updated: data.updated ? String(data.updated) : undefined,
     keywords: Array.isArray(data.keywords) ? data.keywords.map(String) : [],
     readingMinutes: Math.max(2, Math.round(words / 220)),
+    image: data.image ? String(data.image) : undefined,
+    imageAlt: data.imageAlt ? String(data.imageAlt) : undefined,
     content,
   };
 }

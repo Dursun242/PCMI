@@ -39,6 +39,12 @@ export default function ConseilsPage() {
                   <span className="block">{a.readingMinutes} min de lecture</span>
                 </div>
                 <div>
+                  {a.image && (
+                    <Link href={`/conseils/${a.slug}`} className="block mb-4 max-w-[360px]">
+                      {/* eslint-disable-next-line @next/next/no-img-element -- local, hand-authored SVG; next/image blocks SVG optimization by default */}
+                      <img src={a.image} alt={a.imageAlt ?? ""} width={1200} height={630} className="w-full h-auto border border-stone-2" />
+                    </Link>
+                  )}
                   <h2 className="display text-3xl leading-tight">
                     <Link href={`/conseils/${a.slug}`} className="hover:text-brass transition-colors">{a.title}</Link>
                   </h2>
