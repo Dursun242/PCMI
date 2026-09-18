@@ -8,9 +8,9 @@ import { site } from "@/config/site";
 export const legal = {
   raisonSociale: site.legal.company,
   forme: "SARL",
-  capital: "TODO_CAPITAL_SOCIAL", // ex. "10 000 €"
+  capital: "1 000 €", // source : societe.com / Pappers / Annuaire des Entreprises
   siren: site.legal.siren || "TODO_SIREN",
-  siret: "TODO_SIRET", // SIREN + 5 chiffres de l'établissement
+  siret: "921 536 181 00024", // siège, source : Annuaire des Entreprises / RubyPayeur
   rcs: site.legal.rcs,
   tva: site.legal.vat || "TODO_TVA_INTRACOM",
   email: site.email,
@@ -39,9 +39,6 @@ export function isTodo(value: string): boolean {
  * (Repris dans le rapport de fin de mission.)
  */
 export const legalTodos = [
-  "capital",
-  "siren",
-  "siret",
   "tva",
   "assurance.assureur",
   "assurance.policeNumero",
