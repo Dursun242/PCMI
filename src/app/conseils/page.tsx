@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getArticles } from "@/lib/articles";
 import { withSeo } from "@/lib/seo";
+import { formatFrDate } from "@/lib/format";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumb } from "@/lib/schema";
 
@@ -10,8 +11,6 @@ export const metadata: Metadata = withSeo("/conseils", {
   description:
     "Articles pratiques écrits par un maître d'œuvre : combien coûte un permis de construire, comment éviter un refus, réussir l'insertion graphique, comprendre le PLU.",
 });
-
-const fmt = (iso: string) => new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 
 export default function ConseilsPage() {
   const articles = getArticles();
@@ -36,7 +35,7 @@ export default function ConseilsPage() {
             {articles.map((a) => (
               <li key={a.slug} className="border-b border-stone-2 py-8 grid gap-3 md:grid-cols-[180px_1fr] md:gap-10">
                 <div className="text-sm text-ink-2">
-                  <time dateTime={a.date}>{fmt(a.updated ?? a.date)}</time>
+                  <time dateTime={a.date}>{formatFrDate(a.updated ?? a.date)}</time>
                   <span className="block">{a.readingMinutes} min de lecture</span>
                 </div>
                 <div>

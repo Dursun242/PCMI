@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getArticle, getArticles } from "@/lib/articles";
 import { withSeo } from "@/lib/seo";
+import { formatFrDate } from "@/lib/format";
 import { site } from "@/config/site";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumb } from "@/lib/schema";
@@ -24,8 +25,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: { type: "article", publishedTime: a.date, modifiedTime: a.updated ?? a.date },
   });
 }
-
-const fmt = (iso: string) => new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -68,7 +67,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <h1 className="display mt-4 text-4xl sm:text-5xl lg:text-6xl max-w-[22ch]">{a.title}</h1>
           <p className="lead mt-8 max-w-[60ch]">{a.description}</p>
           <p className="mt-6 text-sm text-ink-2">
-            Par {site.legal.director}, maître d&apos;œuvre · <time dateTime={a.updated ?? a.date}>{fmt(a.updated ?? a.date)}</time> · {a.readingMinutes} min
+            Par {site.legal.director}, maître d&apos;œuvre · <time dateTime={a.updated ?? a.date}>{formatFrDate(a.updated ?? a.date)}</time> · {a.readingMinutes} min
           </p>
         </div>
       </section>
