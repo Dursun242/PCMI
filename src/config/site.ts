@@ -37,10 +37,10 @@ export const site: {
   legal: {
     company: "SARL ID MAÎTRISE",
     director: "Dursun OZKAN",
-    // À compléter : TVA intracom, assurance RC pro
+    // À compléter : assurance RC pro
     siren: "921536181", // source : societe.com / Pappers / Annuaire des Entreprises
     rcs: "Le Havre",
-    vat: "",
+    vat: "FR12921536181", // calculée depuis le SIREN (formule INSEE), non confirmée sur un registre officiel
     insurer: "",
     host: "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis",
   },

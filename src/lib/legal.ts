@@ -39,7 +39,6 @@ export function isTodo(value: string): boolean {
  * (Repris dans le rapport de fin de mission.)
  */
 export const legalTodos = [
-  "tva",
   "assurance.assureur",
   "assurance.policeNumero",
   "mediateur.nom",
