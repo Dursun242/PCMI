@@ -19,6 +19,7 @@ const query = "?fm=jpg&q=82&w=2000&auto=format&fit=crop";
 
 let m;
 let n = 0;
+let errors = 0;
 while ((m = idPattern.exec(ts))) {
   const [, file, id] = m;
   const target = resolve(dir, file);
@@ -29,13 +30,20 @@ while ((m = idPattern.exec(ts))) {
   } catch {}
   const url = base + id + query;
   process.stdout.write(`↓ ${file} … `);
-  const res = await fetch(url);
-  if (!res.ok) {
-    console.log(`échec (${res.status})`);
-    continue;
+  try {
+    const res = await fetch(url, { timeout: 10000 });
+    if (!res.ok) {
+      console.log(`échec (${res.status})`);
+      errors++;
+      continue;
+    }
+    await writeFile(target, Buffer.from(await res.arrayBuffer()));
+    console.log("ok");
+    n++;
+  } catch (e) {
+    console.log(`erreur: ${e.message}`);
+    errors++;
   }
-  await writeFile(target, Buffer.from(await res.arrayBuffer()));
-  console.log("ok");
-  n++;
 }
 console.log(`${n} photo(s) téléchargée(s) dans public/photos/`);
+if (errors > 0) console.log(`⚠️ ${errors} erreur(s) rencontrée(s) - vous pouvez ajouter les photos manuellement dans public/photos/`);
