@@ -54,7 +54,7 @@ export async function POST(req: Request) {
     <h2 style="font-family:Lato,Arial,sans-serif">Fiche projet PCMI — ${esc(who)} — ${esc(clean.terrain_commune)}</h2>
     <p style="font-family:Lato,Arial,sans-serif;font-size:15px">
       Formule : <strong>${esc(formule)}</strong> · Surface de plancher totale : <strong>${spTotal} m²</strong>
-      ${over ? ' · <strong style="color:#a3402c">≥ 150 m² : hors formules, sur devis avec architecte</strong>' : ""}
+      ${over ? ' · <strong style="color:#a3402c">&gt; 149 m² : hors formules, devis sur mesure (architecte obligatoire au-delà de 150 m²)</strong>' : ""}
     </p>
     ${sections}
     ${listed.length ? section("Documents joints", attachmentsList(listed)) : ""}
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     <p>Bonjour ${esc(clean.prenom)},</p>
     <p>Votre fiche projet pour un permis de construire à <strong>${esc(clean.terrain_commune)}</strong> est bien arrivée${listed.length ? `, avec ${listed.length} document${listed.length > 1 ? "s" : ""}` : ""}.</p>
     ${over
-      ? `<p>Votre projet représente environ <strong>${spTotal} m² de surface de plancher</strong>. Au-delà de 149 m², le recours à un architecte est obligatoire : nous préparons un devis sur mesure avec notre architecte partenaire et revenons vers vous sous <strong>48 h ouvrées</strong>.</p>`
+      ? `<p>Votre projet représente environ <strong>${spTotal} m² de surface de plancher</strong>. Au-delà de 149 m², nos formules à prix fixe ne s'appliquent plus : nous préparons un devis sur mesure avec notre architecte partenaire (obligatoire au-delà de 150 m²) et revenons vers vous sous <strong>48 h ouvrées</strong>.</p>`
       : `<p>Nous lisons le règlement d'urbanisme de votre commune et vous adressons sous <strong>48 h ouvrées</strong> un devis à prix fixe, avec la formule conseillée et la liste des éventuels documents manquants.</p>`}
     <p>Si vous avez oublié une pièce, répondez simplement à cet e-mail en la joignant.</p>`);
 

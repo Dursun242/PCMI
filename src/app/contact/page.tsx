@@ -7,7 +7,6 @@ import { withSeo } from "@/lib/seo";
 export const metadata: Metadata = withSeo("/contact", {
   title: "Contact — une question, un plan à faire relire, un permis refusé",
   description: "Écrivez-nous avec vos plans, croquis ou photos en pièce jointe. Réponse d'un maître d'œuvre sous 48 h ouvrées, partout en France.",
-  alternates: { canonical: "/contact" },
 });
 
 export default function ContactPage() {

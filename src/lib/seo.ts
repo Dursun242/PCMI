@@ -1,6 +1,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import type { Metadata } from "next";
+import { site } from "@/config/site";
 
 /**
  * Surcharges de métadonnées écrites par le moteur SEO (scripts/seo/optimize.mjs)
@@ -28,12 +29,19 @@ function overrides(): Record<string, Override> {
   return cache;
 }
 
+/**
+ * Point unique pour le titre/description (avec surcharges SEO), l'URL
+ * canonique et l'og:url d'une page : évite de répéter le chemin et
+ * d'oublier openGraph.url (qui, sinon, hérite de celui de la racine).
+ */
 export function withSeo(path: string, base: Metadata & { title: string; description: string }): Metadata {
   const o = overrides()[path];
-  if (!o) return base;
+  const url = `${site.url}${path}`;
   return {
     ...base,
-    title: o.title ?? base.title,
-    description: o.description ?? base.description,
+    title: o?.title ?? base.title,
+    description: o?.description ?? base.description,
+    alternates: { ...base.alternates, canonical: path },
+    openGraph: { ...base.openGraph, url },
   };
 }

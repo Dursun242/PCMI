@@ -1,12 +1,15 @@
 import Link from "next/link";
-import { plans, stats, site } from "@/config/site";
+import { plans, site, faq } from "@/config/site";
 import HouseDrawing from "@/components/HouseDrawing";
 import Stamp from "@/components/Stamp";
 import PlanCard from "@/components/PlanCard";
 import Faq from "@/components/Faq";
 import Gallery from "@/components/Gallery";
+import RealisationsGallery from "@/components/RealisationsGallery";
 import JsonLd from "@/components/JsonLd";
-import { organizationSchema, faqSchema } from "@/lib/schema";
+import { faqPageSchema } from "@/lib/schema";
+import { realisations } from "@data/realisations";
+import { chiffresCles } from "@data/chiffres";
 
 const pieces = [
   { code: "PCMI 1", name: "Plan de situation", what: "Situe le terrain dans la commune, avec l'orientation et l'échelle." },
@@ -62,10 +65,16 @@ const compare = [
   },
 ];
 
+const stats: { value: string; label: string }[] = [
+  chiffresCles.permisDeposes != null && { value: `${chiffresCles.permisDeposes}+`, label: "permis de construire déposés" },
+  chiffresCles.tauxAccordPremierDepot != null && { value: `${chiffresCles.tauxAccordPremierDepot} %`, label: "de taux d'accord au premier dépôt" },
+  chiffresCles.noteGoogle != null && { value: `${chiffresCles.noteGoogle}/5`, label: "note moyenne des clients (Google)" },
+].filter((s): s is { value: string; label: string } => Boolean(s));
+
 export default function HomePage() {
   return (
     <>
-      <JsonLd data={[organizationSchema, faqSchema]} />
+      <JsonLd data={faqPageSchema(faq)} />
 
       {/* ---------- Hero ---------- */}
       <section className="bg-forest text-paper">
@@ -98,16 +107,18 @@ export default function HomePage() {
       </section>
 
       {/* ---------- Chiffres ---------- */}
-      <section className="border-b border-stone-2">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8 py-12 grid gap-10 sm:grid-cols-3">
-          {stats.map((s) => (
-            <div key={s.label}>
-              <div className="numeral text-5xl sm:text-6xl">{s.value}</div>
-              <p className="mt-2 text-ink-2 max-w-[26ch]">{s.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      {stats.length > 0 && (
+        <section className="border-b border-stone-2">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8 py-12 grid gap-10 sm:grid-cols-3">
+            {stats.map((s) => (
+              <div key={s.label}>
+                <div className="numeral text-5xl sm:text-6xl">{s.value}</div>
+                <p className="mt-2 text-ink-2 max-w-[26ch]">{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ---------- Les 8 pièces ---------- */}
       <section className="mx-auto max-w-7xl px-5 sm:px-8 py-20 sm:py-28">
@@ -171,7 +182,7 @@ export default function HomePage() {
       </section>
 
       {/* ---------- Galerie ---------- */}
-      <Gallery />
+      {realisations.length >= 3 ? <RealisationsGallery items={realisations} /> : <Gallery />}
 
       {/* ---------- Pourquoi un maître d'œuvre ---------- */}
       <section className="bg-forest text-paper">

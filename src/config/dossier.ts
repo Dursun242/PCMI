@@ -95,10 +95,10 @@ export const steps: Step[] = [
     id: "surfaces",
     cerfa: "Cadre 5",
     title: "Surfaces et dimensions",
-    intro: "Des ordres de grandeur suffisent. La surface de plancher détermine le seuil de l'architecte (150 m²).",
+    intro: "Des ordres de grandeur suffisent. La surface de plancher détermine le seuil légal de l'architecte (au-delà de 150 m²).",
     fields: [
       { id: "sp_existante", label: "Surface de plancher existante", type: "number", unit: "m²", half: true, hint: "0 pour une construction neuve." },
-      { id: "sp_creee", label: "Surface de plancher créée", type: "number", unit: "m²", required: true, half: true, hint: "Au-delà de 149 m² au total, permis sur devis avec architecte." },
+      { id: "sp_creee", label: "Surface de plancher créée", type: "number", unit: "m²", required: true, half: true, hint: "Au-delà de 149 m² au total, permis sur devis (architecte légalement obligatoire au-delà de 150 m²)." },
       { id: "sp_demolie", label: "Surface de plancher démolie", type: "number", unit: "m²", half: true },
       { id: "emprise", label: "Emprise au sol du projet", type: "number", unit: "m²", half: true, hint: "Projection au sol de la maison, garage et terrasse couverte compris." },
       { id: "hauteur", label: "Hauteur maximale envisagée", type: "number", unit: "m", half: true, hint: "Au faîtage ou à l'acrotère." },

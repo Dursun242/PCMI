@@ -68,9 +68,13 @@ export async function POST(req: Request) {
   if (!body.consent) {
     return NextResponse.json({ ok: false, error: "Merci d'accepter le traitement de votre demande." }, { status: 400 });
   }
+  if (!body.acceptCgv) {
+    return NextResponse.json({ ok: false, error: "Merci d'accepter les conditions générales de vente." }, { status: 400 });
+  }
+  const executionAnticipee = Boolean(body.executionAnticipee);
 
   const surfaceNum = Number(surface);
-  const architectFlag = surfaceNum > 149 ? " ⚠️ ≥ 150 m² : hors formules, sur devis avec architecte" : "";
+  const architectFlag = surfaceNum > 149 ? " ⚠️ > 149 m² : hors formules, devis sur mesure (architecte obligatoire au-delà de 150 m²)" : "";
 
   const rows: [string, string][] = [
     ["Nom", name],
@@ -81,6 +85,8 @@ export async function POST(req: Request) {
     ["Surface de plancher", surface ? `${surface} m²${architectFlag}` : "Non précisée"],
     ["Stade", stage],
     ["Formule envisagée", plan],
+    ["CGV acceptées", "Oui"],
+    ["Exécution anticipée demandée", executionAnticipee ? "Oui" : "Non"],
   ];
 
   const internalHtml = `

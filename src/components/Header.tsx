@@ -18,7 +18,7 @@ export default function Header() {
     <header className="sticky top-0 z-40 bg-paper/92 backdrop-blur border-b border-stone-2">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 h-[4.5rem] flex items-center justify-between gap-4">
         <Link href="/" aria-label="Accueil">
-          <Logo />
+          <Logo priority />
         </Link>
 
         <nav className="hidden md:flex items-center gap-9 text-[0.95rem]">

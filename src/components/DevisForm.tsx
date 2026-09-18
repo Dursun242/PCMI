@@ -108,7 +108,7 @@ export default function DevisForm() {
         <div className="field">
           <label htmlFor="surface">Surface de plancher approximative (m²)</label>
           <input id="surface" name="surface" type="number" inputMode="numeric" min={5} max={600} placeholder="ex. 120" />
-          <span className="hint">Formules à prix fixe jusqu&apos;à 149 m². Au-delà, un architecte est obligatoire : devis sur mesure.</span>
+          <span className="hint">Formules à prix fixe jusqu&apos;à 149 m². Au-delà, devis sur mesure (architecte légalement obligatoire au-delà de 150 m²).</span>
         </div>
       </div>
 
@@ -147,6 +147,21 @@ export default function DevisForm() {
         <span>
           J&apos;accepte que mes informations soient utilisées pour répondre à ma demande de devis.{" "}
           <Link href="/confidentialite" className="underline decoration-brass underline-offset-2">Politique de confidentialité</Link>.
+        </span>
+      </label>
+
+      <label className="flex items-start gap-3 text-sm text-ink-2">
+        <input type="checkbox" name="acceptCgv" required className="mt-1 accent-ink h-4 w-4" />
+        <span>
+          J&apos;accepte les{" "}
+          <Link href="/cgv" className="underline decoration-brass underline-offset-2">conditions générales de vente</Link>.
+        </span>
+      </label>
+
+      <label className="flex items-start gap-3 text-sm text-ink-2">
+        <input type="checkbox" name="executionAnticipee" className="mt-1 accent-ink h-4 w-4" />
+        <span>
+          Je demande le démarrage de la prestation avant la fin du délai de rétractation de 14 jours, et je reconnais perdre mon droit de rétractation une fois la prestation intégralement exécutée (voir <Link href="/cgv" className="underline decoration-brass underline-offset-2">CGV</Link>, article 8).
         </span>
       </label>
 

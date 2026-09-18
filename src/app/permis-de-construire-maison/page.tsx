@@ -1,26 +1,61 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
-import { breadcrumb } from "@/lib/schema";
-import { site } from "@/config/site";
+import AuthorByline from "@/components/AuthorByline";
+import Cta from "@/components/Cta";
+import { breadcrumb, faqPageSchema } from "@/lib/schema";
+import { site, plans } from "@/config/site";
+import { formatEuro } from "@/components/PlanCard";
 import { withSeo } from "@/lib/seo";
+
+const UPDATED_AT = "2026-09-18";
+
+const guideFaq = [
+  {
+    q: "Le permis de construire est-il payant ?",
+    a: "L'instruction du dossier par la mairie est gratuite. En revanche, la taxe d'aménagement est due après l'achèvement des travaux, et le montage du dossier a un coût si vous le confiez à un professionnel (voir la section « Combien coûte un permis de construire »).",
+  },
+  {
+    q: "Puis-je déposer mon permis moi-même, sans professionnel ?",
+    a: "Oui, tant que vous n'avez pas l'obligation de recourir à un architecte (surface de plancher de 150 m² ou moins). Beaucoup de particuliers montent leur dossier seuls ; le risque est surtout de mal évaluer une règle du PLU et de voir le permis refusé ou retardé par une demande de pièces.",
+  },
+  {
+    q: "Puis-je commencer les travaux avant d'avoir le permis ?",
+    a: "Non. Commencer des travaux sans permis (ou avant l'obtention d'un permis tacite) expose à un arrêt de chantier, à une remise en état et à des sanctions pénales. Il faut attendre la décision expresse ou l'expiration du délai d'instruction sans opposition de la mairie.",
+  },
+  {
+    q: "Une extension ou une annexe nécessite-t-elle un permis de construire ?",
+    a: "Cela dépend de la surface : en dessous des seuils de la déclaration préalable (voir la section « Permis de construire ou déclaration préalable »), une simple DP suffit. Au-delà, ou si la surface totale après travaux dépasse 150 m², c'est le permis de construire qui s'applique.",
+  },
+  {
+    q: "Combien de temps le panneau de permis doit-il rester affiché ?",
+    a: "Pendant toute la durée du chantier, et au minimum pendant les deux mois qui font courir le délai de recours des tiers. Le retirer trop tôt peut relancer ce délai si un tiers découvre le permis tardivement.",
+  },
+  {
+    q: "Puis-je modifier mon projet après avoir obtenu le permis ?",
+    a: "Oui, via un permis modificatif, tant que la nature du projet initial n'est pas bouleversée. Un changement plus important (implantation, volumétrie) peut nécessiter un nouveau permis de construire.",
+  },
+];
 
 export const metadata: Metadata = withSeo("/permis-de-construire-maison", {
   title: "Permis de construire maison individuelle : le guide complet",
   description:
     "Pièces PCMI 1 à 8, seuil des 150 m² et architecte, délais d'instruction, dépôt en ligne, affichage, RE2020, validité : tout ce qu'il faut savoir avant de déposer le permis de construire de votre maison.",
-  alternates: { canonical: "/permis-de-construire-maison" },
 });
 
 const toc = [
   ["pc-ou-dp", "Permis de construire ou déclaration préalable ?"],
   ["architecte", "Le seuil des 150 m² et l'architecte"],
+  ["cout", "Combien coûte un permis de construire"],
   ["pieces", "Les pièces du dossier PCMI"],
+  ["pieces-complementaires", "Les pièces complémentaires"],
   ["depot", "Où et comment déposer"],
   ["delais", "Les délais d'instruction"],
   ["affichage", "L'affichage et le recours des tiers"],
   ["re2020", "La RE2020 et les études techniques"],
+  ["taxe-amenagement", "La taxe d'aménagement"],
   ["apres", "Après l'accord : validité, travaux, achèvement"],
+  ["faq", "Questions fréquentes"],
 ] as const;
 
 export default function GuidePage() {
@@ -28,7 +63,8 @@ export default function GuidePage() {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: "Permis de construire maison individuelle : le guide complet",
-    author: { "@type": "Organization", name: site.name, url: site.url },
+    dateModified: UPDATED_AT,
+    author: { "@type": "Person", name: site.legal.director, jobTitle: "Maître d'œuvre" },
     publisher: { "@type": "Organization", name: site.legal.company },
     mainEntityOfPage: `${site.url}/permis-de-construire-maison`,
     inLanguage: "fr-FR",
@@ -39,6 +75,7 @@ export default function GuidePage() {
       <JsonLd
         data={[
           articleSchema,
+          faqPageSchema(guideFaq),
           breadcrumb([
             { name: "Accueil", path: "/" },
             { name: "Le guide du permis", path: "/permis-de-construire-maison" },
@@ -56,6 +93,7 @@ export default function GuidePage() {
           <p className="lead mt-8 max-w-[56ch]">
             Ce qu&apos;il faut fournir, qui a le droit de dessiner, combien de temps ça prend et ce qui se passe après l&apos;accord. Écrit à partir des dossiers que nous déposons chaque semaine.
           </p>
+          <AuthorByline updatedAt={UPDATED_AT} />
         </div>
       </section>
 
@@ -84,15 +122,28 @@ export default function GuidePage() {
             Une maison neuve relève toujours du permis de construire. La déclaration préalable (DP) est réservée aux petits travaux : une construction nouvelle entre 5 et 20 m² d&apos;emprise au sol ou de surface de plancher, une extension jusqu&apos;à 20 m² (portée à 40 m² en zone urbaine d&apos;un PLU, tant que la surface totale après travaux ne franchit pas le seuil des 150 m²), une clôture, une piscine de moins de 100 m², un changement d&apos;aspect de façade.
           </p>
           <p>
-            Le formulaire du permis de construire de maison individuelle est le <strong>CERFA n° 13406</strong>. Il concerne la maison, ses annexes (garage, abri) et, le cas échéant, sa démolition préalable. Pour tout autre projet, c&apos;est le permis de construire « classique » (CERFA 13409), instruit en 3 mois au lieu de 2.
+            Le formulaire du permis de construire de maison individuelle est le{" "}
+            <strong>
+              <a href="https://www.service-public.fr/particuliers/vosdroits/R11637" target="_blank" rel="noopener noreferrer">CERFA n° 13406</a>
+            </strong>
+            . Il concerne la maison, ses annexes (garage, abri) et, le cas échéant, sa démolition préalable. Pour tout autre projet, c&apos;est le permis de construire « classique » (CERFA 13409), instruit en 3 mois au lieu de 2.
           </p>
 
           <h2 id="architecte" className="scroll-mt-28">Le seuil des 150 m² et l&apos;architecte</h2>
           <p>
-            Un particulier qui construit pour lui-même peut se passer d&apos;architecte tant que la <strong>surface de plancher</strong> de la maison ne dépasse pas <strong>150 m²</strong>. Au-delà, le projet doit être signé par un architecte. C&apos;est la surface de plancher qui compte, pas la surface habitable : elle inclut l&apos;épaisseur des cloisons et les combles de plus de 1,80 m sous plafond ; les garages et aires de stationnement, eux, n&apos;y entrent pas.
+            Un particulier qui construit pour lui-même peut se passer d&apos;architecte tant que la <strong>surface de plancher</strong> de la maison ne dépasse pas <strong>150 m²</strong> (<a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031732824" target="_blank" rel="noopener noreferrer">article R.431-2 du Code de l&apos;urbanisme</a>). Au-delà, le projet doit être signé par un architecte. C&apos;est la surface de plancher qui compte, pas la surface habitable : elle inclut l&apos;épaisseur des cloisons et les combles de plus de 1,80 m sous plafond ; les garages et aires de stationnement, eux, n&apos;y entrent pas.
           </p>
           <p>
-            Jusqu&apos;à 149 m², un maître d&apos;œuvre comme {site.parent} conçoit les plans, monte le dossier et le dépose : c&apos;est le périmètre de nos formules à prix fixe. À partir de 150 m², le permis est établi sur devis uniquement, avec notre architecte partenaire.
+            Jusqu&apos;à 149 m², un maître d&apos;œuvre comme {site.parent} conçoit les plans, monte le dossier et le dépose : c&apos;est notre limite commerciale pour les formules à prix fixe, avec une marge de sécurité d&apos;1 m² sur le seuil légal. Au-delà de 149 m², le permis est établi sur devis, avec notre architecte partenaire dès que la surface de plancher dépasse 150 m² (l&apos;architecte n&apos;est pas obligatoire pour un projet de 150 m² pile, mais ce cas ne relève déjà plus de nos formules).
+          </p>
+
+          <h2 id="cout" className="scroll-mt-28">Combien coûte un permis de construire</h2>
+          <p>
+            Le prix dépend de qui monte le dossier : un architecte (obligatoire au-delà de 150 m²) facture le plus souvent entre 3 000 et 8 000 € TTC pour une mission limitée au permis, parfois en pourcentage du coût des travaux. Un maître d&apos;œuvre comme {site.parent} propose des formules à prix fixe, de {formatEuro(plans[0].priceTTC)} à {formatEuro(plans[plans.length - 1].priceTTC)} TTC selon le niveau d&apos;accompagnement (voir le <Link href="/tarifs">détail des trois formules</Link>). L&apos;instruction du dossier par la mairie, elle, est gratuite.
+          </p>
+          <p>
+            Pour le détail des différentes façons de faire son permis (constructeur, architecte, maître d&apos;œuvre, plateforme en ligne) et ce qui doit être inclus dans un devis, voir notre article{" "}
+            <Link href="/conseils/prix-permis-de-construire-maison-individuelle">Combien coûte un permis de construire pour une maison individuelle ?</Link>
           </p>
 
           <h2 id="pieces" className="scroll-mt-28">Les pièces du dossier PCMI</h2>
@@ -119,7 +170,34 @@ export default function GuidePage() {
             </tbody>
           </table>
           <p>
-            Selon la situation s&apos;ajoutent notamment : l&apos;attestation de prise en compte de la <a href="#re2020">RE2020</a>, l&apos;étude de gestion des eaux pluviales exigée par certains PLU, l&apos;attestation d&apos;un contrôleur technique en zone sismique, le formulaire de calcul de la surface taxable, ou encore une notice paysagère en site protégé.
+            Selon la situation s&apos;ajoutent notamment : l&apos;attestation de prise en compte de la <a href="#re2020">RE2020</a>, l&apos;étude de gestion des eaux pluviales exigée par certains PLU, l&apos;attestation d&apos;un contrôleur technique en zone sismique, le formulaire de calcul de la surface taxable, ou encore une notice paysagère en site protégé — voir la section <a href="#pieces-complementaires">pièces complémentaires</a> ci-dessous.
+          </p>
+          <p>
+            La pièce PCMI 6 (insertion graphique) est celle que l&apos;instructeur regarde en premier : voir notre article{" "}
+            <Link href="/conseils/pcmi-6-insertion-graphique-reussie">PCMI 6 : réussir l&apos;insertion graphique de votre maison</Link>.
+          </p>
+
+          <Cta
+            title="Un dossier complet, sans oubli."
+            text="Nous contrôlons chaque pièce PCMI contre le règlement de votre commune avant dépôt."
+            href="/devis"
+            label="Demander un devis"
+            secondaryHref="/permis-de-construire-maison#pieces-complementaires"
+            secondaryLabel="Voir les pièces complémentaires"
+          />
+
+          <h2 id="pieces-complementaires" className="scroll-mt-28">Les pièces complémentaires</h2>
+          <p>
+            Au-delà des huit pièces PCMI 1 à 8, votre dossier peut nécessiter des pièces complémentaires selon le terrain et le projet :
+          </p>
+          <ul>
+            <li><strong>PCMI 9 et PCMI 10</strong> — en lotissement : certificat du lotisseur indiquant la surface constructible attribuée au lot (PCMI 9) et, si les équipements ne sont pas achevés, certificat attestant l&apos;achèvement des voiries et réseaux (PCMI 10).</li>
+            <li><strong>PCMI 12-2</strong> — attestation de conformité du projet d&apos;installation d&apos;assainissement non collectif, délivrée par le SPANC, lorsque le terrain n&apos;est pas raccordé au tout-à-l&apos;égout.</li>
+            <li><strong>PCMI 13</strong> — attestation de prise en compte des règles parasismiques, en zone de sismicité 2 à 5 (non requise en zone 1, de sismicité très faible).</li>
+            <li><strong>PCMI 14</strong> — attestation de prise en compte de la RE2020 (voir la section <a href="#re2020">RE2020</a> ci-dessous).</li>
+          </ul>
+          <p className="text-sm text-ink-2">
+            Le sous-numéro exact de la pièce RE2020 (14-1 ou 14-2 selon la version du CERFA en vigueur au dépôt) dépend du millésime du formulaire : nous vérifions la version applicable au moment du dépôt de votre dossier.
           </p>
 
           <h2 id="depot" className="scroll-mt-28">Où et comment déposer</h2>
@@ -138,15 +216,31 @@ export default function GuidePage() {
             <li>Sans réponse à l&apos;issue du délai, le permis est en principe accordé tacitement. Un certificat de permis tacite peut être demandé à la mairie.</li>
           </ul>
           <p>
-            Un dossier complet dès le premier jour, avec des cotes cohérentes entre le plan de masse, les coupes et les façades, est le meilleur moyen de tenir ces délais. C&apos;est la raison d&apos;être de notre contrôle de conformité au PLU avant dépôt.
+            Un dossier complet dès le premier jour, avec des cotes cohérentes entre le plan de masse, les coupes et les façades, est le meilleur moyen de tenir ces{" "}
+            <a href="https://www.service-public.fr/particuliers/vosdroits/F17656" target="_blank" rel="noopener noreferrer">délais d&apos;instruction</a>. C&apos;est la raison d&apos;être de notre contrôle de conformité au PLU avant dépôt.
           </p>
+          <p>
+            Si malgré cela le permis est refusé, ce n&apos;est pas la fin du projet : voir notre article{" "}
+            <Link href="/conseils/refus-de-permis-de-construire-que-faire">Refus de permis de construire : les causes fréquentes et comment rebondir</Link>.
+          </p>
+
+          <Cta
+            title="Un devis avant de vous lancer."
+            text="Nous lisons le règlement de votre commune et vous répondons sous 48 h ouvrées, avec un prix fixe."
+            href="/devis"
+            label="Demander un devis"
+            secondaryHref="/tarifs"
+            secondaryLabel="Voir les formules"
+          />
 
           <h2 id="affichage" className="scroll-mt-28">L&apos;affichage et le recours des tiers</h2>
           <p>
             Dès l&apos;obtention du permis, un panneau réglementaire doit être affiché sur le terrain, visible depuis la voie publique, pendant toute la durée des travaux. Il indique notamment le nom du bénéficiaire, la date et le numéro du permis, la nature du projet, la surface de plancher et la hauteur.
           </p>
           <p>
-            Le <strong>recours des tiers</strong> (un voisin, par exemple) est ouvert pendant <strong>2 mois</strong> à compter du premier jour d&apos;affichage continu. L&apos;administration peut de son côté retirer un permis illégal dans les 3 mois qui suivent sa délivrance. Passés ces délais, le permis est « purgé ». Beaucoup de banques et de constructeurs attendent ce moment pour débloquer les fonds ou ouvrir le chantier.
+            Le{" "}
+            <a href="https://www.service-public.fr/particuliers/vosdroits/F17786" target="_blank" rel="noopener noreferrer"><strong>recours des tiers</strong></a>{" "}
+            (un voisin, par exemple) est ouvert pendant <strong>2 mois</strong> à compter du premier jour d&apos;affichage continu. L&apos;administration peut de son côté retirer un permis illégal dans les 3 mois qui suivent sa délivrance. Passés ces délais, le permis est « purgé ». Beaucoup de banques et de constructeurs attendent ce moment pour débloquer les fonds ou ouvrir le chantier.
           </p>
 
           <h2 id="re2020" className="scroll-mt-28">La RE2020 et les études techniques</h2>
@@ -157,23 +251,62 @@ export default function GuidePage() {
             Selon la commune, le PLU peut aussi imposer une étude de gestion des eaux pluviales à la parcelle (infiltration ou rétention), un raccordement particulier, ou un pourcentage de pleine terre. Nous vérifions ces exigences dans le règlement de votre zone avant de dessiner.
           </p>
 
+          <h2 id="taxe-amenagement" className="scroll-mt-28">La taxe d&apos;aménagement</h2>
+          <p>
+            La construction d&apos;une maison déclenche la{" "}
+            <a href="https://www.economie.gouv.fr/particuliers/taxe-amenagement" target="_blank" rel="noopener noreferrer">taxe d&apos;aménagement</a>, calculée sur la surface taxable du projet. Les éléments nécessaires à son calcul doivent être déclarés dans les <strong>90 jours suivant l&apos;achèvement des travaux</strong>, depuis le service « Gérer mes biens immobiliers » de votre espace sur impots.gouv.fr (ou via le formulaire papier n° 6704). Passé ce délai, l&apos;administration peut appliquer une majoration et taxer d&apos;office sur la base des éléments dont elle dispose.
+          </p>
+
           <h2 id="apres" className="scroll-mt-28">Après l&apos;accord : validité, travaux, achèvement</h2>
           <ul>
-            <li>Le permis est valable <strong>3 ans</strong>. Il peut être prorogé deux fois pour un an, sur demande faite au moins deux mois avant l&apos;échéance.</li>
+            <li>
+              Le permis est{" "}
+              <a href="https://www.service-public.fr/particuliers/vosdroits/F1988" target="_blank" rel="noopener noreferrer">valable 3 ans</a>. Il peut être prorogé deux fois pour un an, sur demande faite au moins deux mois avant l&apos;échéance.
+            </li>
             <li>Une déclaration d&apos;ouverture de chantier (DOC) est déposée au démarrage des travaux.</li>
             <li>Si le projet évolue en cours de route, un permis modificatif suffit tant que la nature du projet n&apos;est pas bouleversée.</li>
-            <li>À la fin, la déclaration attestant l&apos;achèvement et la conformité des travaux (DAACT) clôt le dossier. La mairie dispose de 3 mois pour contester la conformité (5 mois dans certains secteurs).</li>
-            <li>La taxe d&apos;aménagement, calculée sur la surface taxable, est due après l&apos;achèvement des travaux ; le calcul est communiqué par l&apos;administration fiscale.</li>
+            <li>
+              À la fin, la{" "}
+              <a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F1997" target="_blank" rel="noopener noreferrer">déclaration attestant l&apos;achèvement et la conformité des travaux (DAACT)</a>{" "}
+              clôt le dossier, dans les 90 jours suivant la fin du chantier. La mairie dispose de 3 mois pour contester la conformité (5 mois dans certains secteurs).
+            </li>
+            <li>
+              La taxe d&apos;aménagement, calculée sur la surface taxable, est due après l&apos;achèvement des travaux (voir la section <a href="#taxe-amenagement">taxe d&apos;aménagement</a> ci-dessus).
+            </li>
           </ul>
 
-          <div className="mt-14 border-t border-ink pt-8">
-            <p className="display text-3xl">Vous préférez qu&apos;on s&apos;en occupe ?</p>
-            <p className="mt-2 text-ink-2">Dossier complet, dépôt et suivi jusqu&apos;à l&apos;accord, à prix fixe, partout en France.</p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/devis" className="btn btn-ink">Demander un devis</Link>
-              <Link href="/tarifs" className="btn btn-line">Voir les formules</Link>
-            </div>
+          <h2 id="faq" className="scroll-mt-28">Questions fréquentes</h2>
+          <div className="divide-y divide-stone-2 border-y border-stone-2">
+            {guideFaq.map((item) => (
+              <details key={item.q} className="group">
+                <summary className="flex cursor-pointer items-start justify-between gap-6 py-5 display text-xl leading-tight list-none [&::-webkit-details-marker]:hidden">
+                  <span>{item.q}</span>
+                  <svg width="20" height="20" viewBox="0 0 24 24" className="mt-1 shrink-0 text-brass transition-transform group-open:rotate-45" aria-hidden="true">
+                    <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+                  </svg>
+                </summary>
+                <p className="pb-6 pr-10 text-[1.02rem] leading-relaxed text-ink-2 max-w-[64ch]">{item.a}</p>
+              </details>
+            ))}
           </div>
+
+          <div className="mt-14 border-t border-stone-2 pt-8">
+            <p className="text-[0.72rem] font-bold uppercase tracking-[0.2em] text-ink-2">À lire aussi</p>
+            <ul className="!list-none !pl-0 mt-5 grid gap-4 sm:grid-cols-3">
+              <li><Link href="/conseils/prix-permis-de-construire-maison-individuelle" className="display text-xl leading-tight hover:text-brass">Combien coûte un permis de construire ?</Link></li>
+              <li><Link href="/conseils/refus-de-permis-de-construire-que-faire" className="display text-xl leading-tight hover:text-brass">Refus de permis : que faire ?</Link></li>
+              <li><Link href="/conseils/pcmi-6-insertion-graphique-reussie" className="display text-xl leading-tight hover:text-brass">Réussir l&apos;insertion graphique (PCMI 6)</Link></li>
+            </ul>
+          </div>
+
+          <Cta
+            title="Vous préférez qu'on s'en occupe ?"
+            text="Dossier complet, dépôt et suivi jusqu'à l'accord, à prix fixe, partout en France."
+            href="/devis"
+            label="Demander un devis"
+            secondaryHref="/tarifs"
+            secondaryLabel="Voir les formules"
+          />
 
           <p className="mt-10 text-sm text-ink-2">
             Ce guide décrit les règles générales du Code de l&apos;urbanisme en vigueur à la date de publication. Le règlement de votre commune (PLU, PLUi, carte communale) peut ajouter des exigences : nous les vérifions pour chaque projet.

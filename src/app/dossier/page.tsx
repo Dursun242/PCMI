@@ -6,7 +6,6 @@ import { withSeo } from "@/lib/seo";
 export const metadata: Metadata = withSeo("/dossier", {
   title: "Fiche projet complète — votre permis chiffré sans rendez-vous",
   description: "Renseignez votre terrain, votre projet et vos surfaces comme sur le CERFA 13406, joignez vos plans : nous chiffrons votre permis de construire sous 48 h.",
-  alternates: { canonical: "/dossier" },
 });
 
 export default function DossierPage() {

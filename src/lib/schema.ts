@@ -1,4 +1,4 @@
-import { site, plans, faq } from "@/config/site";
+import { site, plans } from "@/config/site";
 
 export const organizationSchema = {
   "@context": "https://schema.org",
@@ -42,15 +42,18 @@ export const organizationSchema = {
   })),
 };
 
-export const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faq.map((f) => ({
-    "@type": "Question",
-    name: f.q,
-    acceptedAnswer: { "@type": "Answer", text: f.a },
-  })),
-};
+/** FAQPage générique : réutilisée pour la FAQ de l'accueil et celle du guide. */
+export function faqPageSchema(items: { q: string; a: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+}
 
 export function breadcrumb(items: { name: string; path: string }[]) {
   return {

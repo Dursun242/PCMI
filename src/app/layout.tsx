@@ -3,7 +3,9 @@ import "./globals.css";
 import { site } from "@/config/site";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
 import { withSeo } from "@/lib/seo";
+import { organizationSchema } from "@/lib/schema";
 
 const home = withSeo("/", {
   title: `Permis de construire maison individuelle — ${site.name}`,
@@ -19,20 +21,21 @@ export const metadata: Metadata = {
   },
   description: home.description,
   openGraph: {
+    ...home.openGraph,
     type: "website",
     locale: "fr_FR",
     siteName: site.name,
-    url: site.url,
   },
   twitter: { card: "summary_large_image" },
   robots: { index: true, follow: true },
-  alternates: { canonical: "/" },
+  alternates: home.alternates,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr">
       <body className="min-h-screen flex flex-col">
+        <JsonLd data={organizationSchema} />
         <a
           href="#contenu"
           className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-brass focus:text-paper focus:px-3 focus:py-2"
