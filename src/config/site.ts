@@ -134,13 +134,6 @@ export const options = [
   { name: "Étude eaux pluviales", priceTTC: 710, note: "Dimensionnement d'infiltration / rétention." },
 ];
 
-export const stats = [
-  // Remplacer par votre vrai nombre de permis déposés (ex. "150+") dès que vous l'avez sous la main
-  { value: "100 %", label: "des dossiers relus contre le PLU avant dépôt" },
-  { value: "2 mois", label: "délai légal d'instruction d'une maison individuelle" },
-  { value: "48 h", label: "pour recevoir votre devis chiffré" },
-];
-
 export const faq = [
   {
     q: "Ai-je besoin d'un architecte pour ma maison ?",
