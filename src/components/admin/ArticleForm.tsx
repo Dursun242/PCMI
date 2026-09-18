@@ -18,6 +18,30 @@ export default function ArticleForm({ article }: { article?: Article }) {
   const [content, setContent] = useState(article?.content ?? "");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  async function onUploadImage(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setUploading(true);
+    setError(null);
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const res = await fetch("/api/admin/upload", { method: "POST", body: form });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        setError(data.error ?? "Envoi de l'image impossible.");
+        return;
+      }
+      setImage(data.path);
+    } catch {
+      setError("Envoi de l'image impossible.");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -91,6 +115,22 @@ export default function ArticleForm({ article }: { article?: Article }) {
         <div className="field">
           <label htmlFor="image">Image (chemin dans /public, optionnel)</label>
           <input id="image" value={image} onChange={(e) => setImage(e.target.value)} placeholder="/photos/xxx.jpg" />
+          <div className="mt-2 flex items-center gap-3">
+            {image && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={image} alt="" className="h-14 w-14 border border-ink/10 object-cover" />
+            )}
+            <label className="hint cursor-pointer underline">
+              {uploading ? "Envoi…" : "Choisir un fichier (jpg, png, webp, svg)"}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/svg+xml"
+                onChange={onUploadImage}
+                disabled={uploading}
+                className="hidden"
+              />
+            </label>
+          </div>
         </div>
         <div className="field">
           <label htmlFor="imageAlt">Texte alternatif de l&apos;image</label>
