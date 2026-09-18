@@ -59,7 +59,7 @@ Une page `/admin` protégée par mot de passe permet d'éditer articles, chiffre
 
 Sans `ADMIN_GITHUB_TOKEN`/`ADMIN_GITHUB_REPO`, `/admin` reste utilisable **en local** (`npm run dev`) : les modifications sont écrites directement sur le disque, pratique pour tester avant de configurer GitHub.
 
-Ce que `/admin` permet aujourd'hui : créer/modifier/supprimer les articles de `/conseils`, éditer les chiffres clés de l'accueil, gérer la liste des réalisations. Pour le reste (prix, FAQ, textes des pages), on continue de modifier le code comme indiqué ci-dessus.
+Ce que `/admin` permet aujourd'hui : créer/modifier/supprimer les articles de `/conseils` (avec envoi direct de l'image depuis l'ordinateur, jpg/png/webp/svg, 4 Mo max — stockée dans `public/uploads/`), éditer les chiffres clés de l'accueil, gérer la liste des réalisations. Pour le reste (prix, FAQ, textes des pages), on continue de modifier le code comme indiqué ci-dessus.
 
 ## Photos
 

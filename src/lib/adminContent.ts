@@ -50,14 +50,14 @@ async function githubGetFile(path: string): Promise<{ content: string; sha: stri
   return { content: fromBase64(data.content.replace(/\n/g, "")), sha: data.sha };
 }
 
-async function githubPutFile(path: string, content: string, message: string): Promise<void> {
+async function githubPutFileBase64(path: string, base64Content: string, message: string): Promise<void> {
   const existing = await githubGetFile(path);
   const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${path}`, {
     method: "PUT",
     headers: { ...githubHeaders(), "Content-Type": "application/json" },
     body: JSON.stringify({
       message,
-      content: toBase64(content),
+      content: base64Content,
       branch: GITHUB_BRANCH,
       sha: existing?.sha,
     }),
@@ -66,6 +66,10 @@ async function githubPutFile(path: string, content: string, message: string): Pr
     const body = await res.text();
     throw new Error(`GitHub: écriture de ${path} impossible (${res.status}) ${body}`);
   }
+}
+
+async function githubPutFile(path: string, content: string, message: string): Promise<void> {
+  return githubPutFileBase64(path, toBase64(content), message);
 }
 
 async function githubDeleteFile(path: string, message: string): Promise<void> {
@@ -100,6 +104,17 @@ export async function writeContentFile(path: string, content: string, message: s
   const abs = join(process.cwd(), path);
   mkdirSync(dirname(abs), { recursive: true });
   writeFileSync(abs, content, "utf8");
+}
+
+/** `content` doit déjà être encodé en base64 (fichier binaire : image, etc.) */
+export async function writeBinaryContentFile(path: string, base64Content: string, message: string): Promise<void> {
+  if (isGithubConfigured()) {
+    await githubPutFileBase64(path, base64Content, message);
+    return;
+  }
+  const abs = join(process.cwd(), path);
+  mkdirSync(dirname(abs), { recursive: true });
+  writeFileSync(abs, Buffer.from(base64Content, "base64"));
 }
 
 export async function deleteContentFile(path: string, message: string): Promise<void> {
