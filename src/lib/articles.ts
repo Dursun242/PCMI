@@ -20,12 +20,12 @@ export interface Article extends ArticleMeta {
 
 const DIR = join(process.cwd(), "content/articles");
 
-function read(file: string): Article {
-  const raw = readFileSync(join(DIR, file), "utf8");
+/** Construit un article à partir du contenu brut d'un fichier MDX (frontmatter inclus). */
+export function parseArticle(slug: string, raw: string): Article {
   const { data, content } = matter(raw);
   const words = content.split(/\s+/).length;
   return {
-    slug: file.replace(/\.mdx?$/, ""),
+    slug,
     title: String(data.title ?? ""),
     description: String(data.description ?? ""),
     date: String(data.date ?? ""),
@@ -36,6 +36,10 @@ function read(file: string): Article {
     imageAlt: data.imageAlt ? String(data.imageAlt) : undefined,
     content,
   };
+}
+
+function read(file: string): Article {
+  return parseArticle(file.replace(/\.mdx?$/, ""), readFileSync(join(DIR, file), "utf8"));
 }
 
 export function getArticles(): Article[] {

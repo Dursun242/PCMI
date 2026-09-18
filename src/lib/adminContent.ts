@@ -14,6 +14,7 @@
  */
 import { readFileSync, writeFileSync, unlinkSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { getArticle, parseArticle, type Article } from "./articles";
 
 const GITHUB_TOKEN = process.env.ADMIN_GITHUB_TOKEN;
 const GITHUB_REPO = process.env.ADMIN_GITHUB_REPO; // "owner/repo"
@@ -115,6 +116,25 @@ export async function writeBinaryContentFile(path: string, base64Content: string
   const abs = join(process.cwd(), path);
   mkdirSync(dirname(abs), { recursive: true });
   writeFileSync(abs, Buffer.from(base64Content, "base64"));
+}
+
+/**
+ * Version « fraîche » d'un article pour l'espace admin : lue sur GitHub quand
+ * c'est configuré, afin de refléter immédiatement le dernier enregistrement
+ * (le système de fichiers du déploiement Vercel, lui, ne change qu'après le
+ * redéploiement, 30 s à 1 min plus tard). Retombe sur le disque sinon.
+ */
+export async function getAdminArticle(slug: string): Promise<Article | null> {
+  const safe = slug.replace(/[^a-z0-9-]/g, "");
+  if (!safe) return null;
+  if (isGithubConfigured()) {
+    for (const ext of [".mdx", ".md"]) {
+      const raw = await readContentFile(`content/articles/${safe}${ext}`);
+      if (raw !== null) return parseArticle(safe, raw);
+    }
+    return null;
+  }
+  return getArticle(safe);
 }
 
 export async function deleteContentFile(path: string, message: string): Promise<void> {
