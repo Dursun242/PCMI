@@ -4,7 +4,7 @@ import { getArticles, type ArticleMeta } from "@/lib/articles";
 import { withSeo } from "@/lib/seo";
 import { formatFrDate } from "@/lib/format";
 import JsonLd from "@/components/JsonLd";
-import { breadcrumb } from "@/lib/schema";
+import { breadcrumb, collectionPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = withSeo("/conseils", {
   title: "Conseils permis de construire : prix, délais, refus, pièces du dossier",
@@ -60,7 +60,12 @@ export default function ConseilsPage() {
 
   return (
     <>
-      <JsonLd data={breadcrumb([{ name: "Accueil", path: "/" }, { name: "Conseils", path: "/conseils" }])} />
+      <JsonLd
+        data={[
+          collectionPageSchema(articles),
+          breadcrumb([{ name: "Accueil", path: "/" }, { name: "Conseils", path: "/conseils" }]),
+        ]}
+      />
 
       {/* En-tête */}
       <section className="bg-stone border-b border-stone-2">

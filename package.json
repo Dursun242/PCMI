@@ -12,12 +12,16 @@
     "seo": "node scripts/seo/run.mjs",
     "seo:analyze": "node scripts/seo/analyze.mjs",
     "seo:article": "node scripts/seo/generate.mjs",
-    "seo:meta": "node scripts/seo/optimize.mjs"
+    "seo:meta": "node scripts/seo/optimize.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check:seo": "node scripts/check-seo.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.126.0",
     "@fontsource/cormorant-garamond": "^5.3.0",
     "@fontsource/lato": "^5.3.0",
+    "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.8.0",
     "google-auth-library": "^11.1.0",
     "gray-matter": "^4.0.3",
@@ -36,6 +40,8 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.25",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.7"
   }
 }

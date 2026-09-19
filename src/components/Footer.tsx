@@ -51,6 +51,46 @@ export default function Footer() {
               <br />
               Intervention partout en France.
             </p>
+            {site.social.instagram && (
+              <a
+                href={site.social.instagram}
+                rel="me noopener"
+                className="mt-4 inline-flex items-center gap-2 hover:text-brass-2"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                  <rect x="2.5" y="2.5" width="19" height="19" rx="5" />
+                  <circle cx="12" cy="12" r="4.2" />
+                  <circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none" />
+                </svg>
+                Nos chantiers sur Instagram
+              </a>
+            )}
+            {site.authorSocial.linkedin && (
+              <a
+                href={site.authorSocial.linkedin}
+                rel="me noopener"
+                className="mt-2 inline-flex items-center gap-2 hover:text-brass-2"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                  <rect x="2.5" y="2.5" width="19" height="19" rx="3" />
+                  <path d="M7.2 10.4v7M7.2 7.1v.1M11.4 17.4v-7M11.4 13.2c0-1.5 1-2.6 2.5-2.6s2.5 1.1 2.5 2.6v4.2" strokeLinecap="round" />
+                </svg>
+                {site.author} sur LinkedIn
+              </a>
+            )}
+            {site.social.google && (
+              <a
+                href={site.social.google}
+                rel="noopener"
+                className="mt-2 inline-flex items-center gap-2 hover:text-brass-2"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                  <path d="M12 21.5s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" strokeLinejoin="round" />
+                  <circle cx="12" cy="10.2" r="2.6" />
+                </svg>
+                Notre fiche Google
+              </a>
+            )}
           </div>
 
           <div>
@@ -59,8 +99,10 @@ export default function Footer() {
               <li><Link href="/tarifs" className="hover:text-brass-2">Formules et tarifs</Link></li>
               <li><Link href="/permis-de-construire-maison" className="hover:text-brass-2">Le guide du permis</Link></li>
               <li><Link href="/conseils" className="hover:text-brass-2">Conseils</Link></li>
+              <li><Link href="/a-propos" className="hover:text-brass-2">À propos</Link></li>
               <li><Link href="/devis" className="hover:text-brass-2">Demander un devis</Link></li>
               <li><Link href="/dossier" className="hover:text-brass-2">Fiche projet complète</Link></li>
+              <li><Link href="/plan-de-masse" className="hover:text-brass-2">Envoyer un plan de masse</Link></li>
               <li><Link href="/contact" className="hover:text-brass-2">Contact</Link></li>
               <li><a href={site.parentUrl} className="hover:text-brass-2" rel="noopener">Site {site.parent}</a></li>
             </ul>

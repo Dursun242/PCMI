@@ -7,7 +7,8 @@ import { withSeo } from "@/lib/seo";
 import { formatFrDate } from "@/lib/format";
 import { site } from "@/config/site";
 import JsonLd from "@/components/JsonLd";
-import { breadcrumb } from "@/lib/schema";
+import ArticleCtaLink from "@/components/ArticleCtaLink";
+import { blogPostingSchema, breadcrumb } from "@/lib/schema";
 
 export const dynamicParams = false;
 
@@ -37,19 +38,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   if (!a) notFound();
 
   const others = getArticles().filter((x) => x.slug !== a.slug).slice(0, 3);
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: a.title,
-    description: a.description,
-    datePublished: a.date,
-    dateModified: a.updated ?? a.date,
-    inLanguage: "fr-FR",
-    author: { "@type": "Person", name: site.legal.director, jobTitle: "Maître d'œuvre" },
-    publisher: { "@type": "Organization", name: site.name, url: site.url },
-    mainEntityOfPage: `${site.url}/conseils/${a.slug}`,
-    keywords: a.keywords.join(", "),
-  };
+  const schema = blogPostingSchema({ ...a, wordCount: a.content.split(/\s+/).filter(Boolean).length });
 
   return (
     <>
@@ -72,7 +61,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <h1 className="display mt-4 text-4xl sm:text-5xl lg:text-6xl max-w-[22ch]">{a.title}</h1>
           <p className="lead mt-8 max-w-[60ch]">{a.description}</p>
           <p className="mt-6 text-sm text-ink-2">
-            Par {site.legal.director}, maître d&apos;œuvre · <time dateTime={a.updated ?? a.date}>{formatFrDate(a.updated ?? a.date)}</time> · {a.readingMinutes} min
+            Par {site.author}, maître d&apos;œuvre · <time dateTime={a.updated ?? a.date}>{formatFrDate(a.updated ?? a.date)}</time> · {a.readingMinutes} min
           </p>
         </div>
       </section>
@@ -93,8 +82,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <div className="border-t border-ink pt-5">
             <p className="display text-2xl">Votre permis, à prix fixe.</p>
             <p className="mt-1 text-sm text-ink-2">Trois formules jusqu&apos;à 149 m². Devis sous 48 h.</p>
-            <Link href="/tarifs" className="btn btn-line mt-5 w-full !min-h-11">Voir les formules</Link>
-            <Link href="/devis" className="btn btn-ink mt-2 w-full !min-h-11">Demander un devis</Link>
+            <ArticleCtaLink slug={a.slug} href="/tarifs" className="btn btn-line mt-5 w-full !min-h-12">Voir les formules</ArticleCtaLink>
+            <ArticleCtaLink slug={a.slug} href="/devis" className="btn btn-ink mt-2 w-full !min-h-12">Demander un devis</ArticleCtaLink>
           </div>
           {others.length > 0 && (
             <div className="mt-10">
