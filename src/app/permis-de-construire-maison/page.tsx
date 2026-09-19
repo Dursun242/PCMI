@@ -4,12 +4,13 @@ import JsonLd from "@/components/JsonLd";
 import AuthorByline from "@/components/AuthorByline";
 import Cta from "@/components/Cta";
 import { articleSchema, breadcrumb, faqPageSchema } from "@/lib/schema";
+import { getArticles } from "@/lib/articles";
 import { site, plans } from "@/config/site";
 import { formatEuro } from "@/lib/format";
 import { withSeo } from "@/lib/seo";
 
 const PUBLISHED_AT = "2026-09-17";
-const UPDATED_AT = "2026-09-18";
+const UPDATED_AT = "2026-09-19";
 
 const guideFaq = [
   {
@@ -60,6 +61,8 @@ const toc = [
 ] as const;
 
 export default function GuidePage() {
+  const articles = getArticles();
+
   const guideSchema = articleSchema({
     path: "/permis-de-construire-maison",
     headline: "Permis de construire maison individuelle : le guide complet",
@@ -130,7 +133,8 @@ export default function GuidePage() {
 
           <h2 id="architecte" className="scroll-mt-28">Le seuil des 150 m² et l&apos;architecte</h2>
           <p>
-            Un particulier qui construit pour lui-même peut se passer d&apos;architecte tant que la <strong>surface de plancher</strong> de la maison ne dépasse pas <strong>150 m²</strong> (<a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031732824" target="_blank" rel="noopener noreferrer">article R.431-2 du Code de l&apos;urbanisme</a>). Au-delà, le projet doit être signé par un architecte. C&apos;est la surface de plancher qui compte, pas la surface habitable : elle inclut l&apos;épaisseur des cloisons et les combles de plus de 1,80 m sous plafond ; les garages et aires de stationnement, eux, n&apos;y entrent pas.
+            Un particulier qui construit pour lui-même peut se passer d&apos;architecte tant que la <strong>surface de plancher</strong> de la maison ne dépasse pas <strong>150 m²</strong> (<a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000031732824" target="_blank" rel="noopener noreferrer">article R.431-2 du Code de l&apos;urbanisme</a>). Au-delà, le projet doit être signé par un architecte. C&apos;est la surface de plancher qui compte, pas la surface habitable : elle inclut l&apos;épaisseur des cloisons et les combles de plus de 1,80 m sous plafond ; les garages et aires de stationnement, eux, n&apos;y entrent pas. Trois surfaces différentes coexistent dans un dossier et se confondent facilement : nous les détaillons dans{" "}
+            <Link href="/conseils/surface-de-plancher-emprise-au-sol-surface-taxable">surface de plancher, emprise au sol et surface taxable</Link>.
           </p>
           <p>
             Jusqu&apos;à 149 m², un maître d&apos;œuvre comme {site.parent} conçoit les plans, monte le dossier et le dépose : c&apos;est notre limite commerciale pour les formules à prix fixe, avec une marge de sécurité d&apos;1 m² sur le seuil légal. Au-delà de 149 m², le permis est établi sur devis, avec notre architecte partenaire dès que la surface de plancher dépasse 150 m² (l&apos;architecte n&apos;est pas obligatoire pour un projet de 150 m² pile, mais ce cas ne relève déjà plus de nos formules).
@@ -219,6 +223,11 @@ export default function GuidePage() {
             <a href="https://www.service-public.fr/particuliers/vosdroits/F17656" target="_blank" rel="noopener noreferrer">délais d&apos;instruction</a>. C&apos;est la raison d&apos;être de notre contrôle de conformité au PLU avant dépôt.
           </p>
           <p>
+            Le détail du décompte — point de départ, suspension par une demande de pièces, majorations, permis tacite et
+            preuve à demander à la mairie — est repris dans notre article sur les{" "}
+            <Link href="/conseils/delai-instruction-permis-de-construire-permis-tacite">délais d&apos;instruction et le permis tacite</Link>.
+          </p>
+          <p>
             Si malgré cela le permis est refusé, ce n&apos;est pas la fin du projet : voir notre article{" "}
             <Link href="/conseils/refus-de-permis-de-construire-que-faire">Refus de permis de construire : les causes fréquentes et comment rebondir</Link>.
           </p>
@@ -291,11 +300,19 @@ export default function GuidePage() {
 
           <div className="mt-14 border-t border-stone-2 pt-8">
             <p className="text-[0.72rem] font-bold uppercase tracking-[0.2em] text-ink-2">À lire aussi</p>
+            {/* Alimenté par les articles réellement publiés : la liste ne peut pas dater. */}
             <ul className="!list-none !pl-0 mt-5 grid gap-4 sm:grid-cols-3">
-              <li><Link href="/conseils/prix-permis-de-construire-maison-individuelle" className="display text-xl leading-tight hover:text-brass">Combien coûte un permis de construire ?</Link></li>
-              <li><Link href="/conseils/refus-de-permis-de-construire-que-faire" className="display text-xl leading-tight hover:text-brass">Refus de permis : que faire ?</Link></li>
-              <li><Link href="/conseils/pcmi-6-insertion-graphique-reussie" className="display text-xl leading-tight hover:text-brass">Réussir l&apos;insertion graphique (PCMI 6)</Link></li>
+              {articles.map((a) => (
+                <li key={a.slug}>
+                  <Link href={`/conseils/${a.slug}`} className="display text-xl leading-tight hover:text-brass">
+                    {a.title}
+                  </Link>
+                </li>
+              ))}
             </ul>
+            <Link href="/conseils" className="mt-6 inline-block text-sm underline decoration-brass underline-offset-4">
+              Tous les conseils
+            </Link>
           </div>
 
           <Cta

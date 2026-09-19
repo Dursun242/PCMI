@@ -43,7 +43,7 @@ export const staticPages: StaticPage[] = [
   },
   {
     path: "/permis-de-construire-maison",
-    lastModified: "2026-09-18",
+    lastModified: "2026-09-19",
     changeFrequency: "monthly",
     priority: 0.9,
     summary:
