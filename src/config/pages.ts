@@ -86,7 +86,7 @@ export const staticPages: StaticPage[] = [
     changeFrequency: "monthly",
     priority: 0.9,
     summary:
-      "Études thermiques RE2020 : attestation au dépôt du permis (350 €), étude complète Bbio, Cep, DH et ACV, attestation d'achèvement, variantes. Explication des cinq indicateurs de la RE2020.",
+      "Études thermiques RE2020 : attestation au dépôt du permis (490 €), étude complète Bbio, Cep, DH et ACV, attestation d'achèvement, variantes. Explication des cinq indicateurs de la RE2020.",
   },
   {
     path: "/devis",

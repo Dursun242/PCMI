@@ -126,7 +126,7 @@ export const plans: Plan[] = [
       "Contrôle de conformité au PLU / PLUi de votre commune",
       "Une série de modifications avant dépôt",
     ],
-    notIncluded: ["Dépôt et suivi en mairie", "Rendus 3D réalistes", "Attestation RE2020 (fournie par votre constructeur ou thermicien, ou en option à 350 € TTC)"],
+    notIncluded: ["Dépôt et suivi en mairie", "Rendus 3D réalistes", "Attestation RE2020 (fournie par votre constructeur ou thermicien, ou en option à 490 € TTC)"],
   },
   {
     id: "complet",
@@ -170,7 +170,7 @@ export const options = [
   { name: "Permis modificatif", priceTTC: 830, note: "Si le projet évolue après l'accord." },
   { name: "Déclaration préalable (DP) à la place du PC", priceTTC: 1070, note: "Extension, garage, abri, clôture, piscine." },
   { name: "Rendu 3D supplémentaire", priceTTC: 230, note: "Par vue." },
-  { name: "Attestation RE2020 seule", priceTTC: 350, note: "Si vous avez déjà votre dossier." },
+  { name: "Attestation RE2020 seule", priceTTC: 490, note: "Si vous avez déjà votre dossier." },
   { name: "Étude eaux pluviales", priceTTC: 710, note: "Dimensionnement d'infiltration / rétention." },
 ];
 
@@ -360,7 +360,7 @@ export const thermique: ThermiqueOffre[] = [
   {
     id: "attestation-depot",
     name: "Attestation RE2020 au dépôt du permis",
-    fromPriceTTC: 350,
+    fromPriceTTC: 490,
     when: "Au dépôt du permis",
     description: "La pièce obligatoire jointe au CERFA : calcul du Bbio et vérification des exigences de moyens, à partir de vos plans.",
     deliverables: ["Calcul du Bbio", "Attestation officielle générée sur le site du ministère (RT-RE-bâtiment)", "Récapitulatif des hypothèses"],
@@ -368,7 +368,7 @@ export const thermique: ThermiqueOffre[] = [
   {
     id: "etude-complete",
     name: "Étude thermique RE2020 complète",
-    fromPriceTTC: 690,
+    fromPriceTTC: 990,
     when: "Avant la consultation des artisans",
     description: "Tous les indicateurs de la réglementation : Bbio, Cep, Cep,nr, DH (confort d'été), Ic énergie et Ic construction, avec le choix des isolants, des menuiseries et du système de chauffage.",
     deliverables: ["Bbio, Cep, Cep,nr, DH", "Ic énergie et Ic construction (ACV)", "Fiche de synthèse et récapitulatif standardisé (RSEE)", "Prescriptions par lot pour les devis"],
@@ -377,7 +377,7 @@ export const thermique: ThermiqueOffre[] = [
   {
     id: "acv",
     name: "Analyse de cycle de vie (ACV) seule",
-    fromPriceTTC: 390,
+    fromPriceTTC: 590,
     when: "Pendant la conception",
     description: "Calcul de l'impact carbone de la construction (Ic construction) à partir des fiches FDES et PEP des matériaux, avec les variantes qui font baisser le score.",
     deliverables: ["Ic construction par lot", "Comparatif de deux modes constructifs", "Recommandations matériaux"],
@@ -385,7 +385,7 @@ export const thermique: ThermiqueOffre[] = [
   {
     id: "attestation-achevement",
     name: "Attestation RE2020 à l'achèvement",
-    fromPriceTTC: 290,
+    fromPriceTTC: 390,
     when: "À la fin des travaux",
     description: "La seconde attestation obligatoire, jointe à la déclaration d'achèvement (DAACT), établie à partir des matériaux réellement posés et du test d'étanchéité à l'air.",
     deliverables: ["Mise à jour de l'étude avec les factures et fiches techniques", "Attestation d'achèvement", "Vérification du test d'étanchéité à l'air (réalisé par un opérateur agréé)"],
@@ -393,7 +393,7 @@ export const thermique: ThermiqueOffre[] = [
   {
     id: "variantes",
     name: "Variante ou optimisation",
-    fromPriceTTC: 190,
+    fromPriceTTC: 290,
     when: "À la demande",
     description: "Une simulation supplémentaire : changer d'isolant, de chauffage, de menuiseries, ou trouver le moyen le moins cher d'atteindre le seuil.",
     deliverables: ["Recalcul des indicateurs", "Comparatif avant / après", "Estimation du surcoût ou de l'économie"],
@@ -401,7 +401,7 @@ export const thermique: ThermiqueOffre[] = [
   {
     id: "pack-re2020",
     name: "Pack RE2020 complet",
-    fromPriceTTC: 990,
+    fromPriceTTC: 1490,
     when: "Du permis à la livraison",
     description: "L'attestation au dépôt, l'étude complète avec ACV et l'attestation d'achèvement : tout le volet réglementaire thermique de la maison, suivi par le même thermicien.",
     deliverables: ["Attestation au dépôt du permis", "Étude complète : Bbio, Cep, DH, ACV", "Attestation à l'achèvement", "Une variante incluse"],
@@ -445,7 +445,7 @@ export const faq = [
   },
   {
     q: "L'attestation RE2020 est-elle incluse ?",
-    a: "Elle est incluse dans les formules Complet et Premium. Dans la formule Essentiel, elle est fournie par votre constructeur ou thermicien si vous en avez déjà un, ou proposée en option à 350 € TTC. Cette attestation est obligatoire au dépôt du permis pour toute construction neuve.",
+    a: "Elle est incluse dans les formules Complet et Premium. Dans la formule Essentiel, elle est fournie par votre constructeur ou thermicien si vous en avez déjà un, ou proposée en option à 490 € TTC. Cette attestation est obligatoire au dépôt du permis pour toute construction neuve.",
   },
   {
     q: "Ma maison fait plus de 149 m². Que se passe-t-il ?",
