@@ -62,6 +62,7 @@ export default function Footer() {
               <li><Link href="/a-propos" className="hover:text-brass-2">À propos</Link></li>
               <li><Link href="/devis" className="hover:text-brass-2">Demander un devis</Link></li>
               <li><Link href="/dossier" className="hover:text-brass-2">Fiche projet complète</Link></li>
+              <li><Link href="/plan-de-masse" className="hover:text-brass-2">Envoyer un plan de masse</Link></li>
               <li><Link href="/contact" className="hover:text-brass-2">Contact</Link></li>
               <li><a href={site.parentUrl} className="hover:text-brass-2" rel="noopener">Site {site.parent}</a></li>
             </ul>

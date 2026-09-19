@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { site, plans } from "@/config/site";
+import { attachmentsList, collectFiles, section } from "@/lib/mailer";
 
 export const runtime = "nodejs";
 
@@ -42,9 +43,23 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Trop de demandes. Réessayez dans quelques minutes." }, { status: 429 });
   }
 
+  /*
+   * Deux formats acceptés : JSON (formulaire sans pièce jointe, comportement
+   * historique) et multipart/form-data quand le visiteur joint des fichiers.
+   * Le contenu de l'e-mail est identique dans les deux cas.
+   */
+  const multipart = (req.headers.get("content-type") ?? "").includes("multipart/form-data");
   let body: Record<string, string>;
+  let files: Awaited<ReturnType<typeof collectFiles>> | null = null;
   try {
-    body = await req.json();
+    if (multipart) {
+      const form = await req.formData();
+      body = JSON.parse(String(form.get("data") ?? "{}"));
+      files = await collectFiles(form);
+      if (files.error) return NextResponse.json({ ok: false, error: files.error }, { status: 400 });
+    } else {
+      body = await req.json();
+    }
   } catch {
     return NextResponse.json({ ok: false, error: "Formulaire illisible." }, { status: 400 });
   }
@@ -89,6 +104,10 @@ export async function POST(req: Request) {
     ["Exécution anticipée demandée", executionAnticipee ? "Oui" : "Non"],
   ];
 
+  const joints = files
+    ? [...files.inline.map((f) => ({ name: f.filename, size: f.content?.length })), ...files.refs]
+    : [];
+
   const internalHtml = `
     <h2 style="font-family:Lato,Arial,sans-serif">Nouvelle demande de devis — ${esc(site.name)}</h2>
     <table style="border-collapse:collapse;font-family:Lato,Arial,sans-serif;font-size:15px">
@@ -100,6 +119,7 @@ export async function POST(req: Request) {
         .join("")}
     </table>
     ${message ? `<p style="font-family:Lato,Arial,sans-serif;white-space:pre-wrap;margin-top:16px">${esc(message)}</p>` : ""}
+    ${joints.length ? section(`Document${joints.length > 1 ? "s" : ""} joint${joints.length > 1 ? "s" : ""}`, attachmentsList(joints)) : ""}
     <p style="color:#8593a8;font-size:12px;margin-top:24px">IP ${esc(ip)} · ${new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" })}</p>
   `;
 
@@ -108,7 +128,9 @@ export async function POST(req: Request) {
       <p>Bonjour ${esc(name.split(" ")[0])},</p>
       <p>Nous avons bien reçu votre demande de devis pour un permis de construire à <strong>${esc(city)}</strong>.</p>
       <p>Nous consultons le règlement d'urbanisme de votre commune et vous répondons sous <strong>48 h ouvrées</strong> avec un prix fixe, la formule conseillée et la liste des documents utiles.</p>
-      <p>Si vous avez déjà des plans, une esquisse ou des photos du terrain, vous pouvez simplement répondre à cet e-mail en les joignant.</p>
+      <p>${joints.length
+        ? `Nous avons bien reçu ${joints.length === 1 ? "votre document" : `vos ${joints.length} documents`}. Si vous en avez d'autres, répondez simplement à cet e-mail en les joignant.`
+        : "Si vous avez déjà des plans, une esquisse ou des photos du terrain, vous pouvez simplement répondre à cet e-mail en les joignant."}</p>
       <p>À très vite,<br><strong>${esc(site.legal.director)}</strong><br>${esc(site.parent)} — maître d'œuvre<br>${esc(site.address.street)}, ${esc(site.address.zip)} ${esc(site.address.city)}</p>
     </div>
   `;
@@ -130,6 +152,7 @@ export async function POST(req: Request) {
       replyTo: email,
       subject: `Devis permis — ${name} — ${city} — ${plan}`,
       html: internalHtml,
+      attachments: files?.inline.map((f) => ({ filename: f.filename, content: f.content! })),
     });
     await resend.emails.send({
       from,

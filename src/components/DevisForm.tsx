@@ -7,6 +7,7 @@ import { plans, type PlanId } from "@/config/site";
 import DevisRecap from "@/components/DevisRecap";
 import { SURFACE_MAX } from "@/lib/formulaFinder";
 import { surfaceBucket, trackEvent } from "@/lib/analytics";
+import FileField, { appendFiles, filesReady, type PickedFile } from "@/components/FileField";
 
 type Status = "idle" | "sending" | "error";
 type PlanChoice = PlanId | "conseil";
@@ -39,6 +40,7 @@ export default function DevisForm({ presetFormule, presetSurface }: { presetForm
 
   const [plan, setPlan] = useState<PlanChoice>(initialPlan);
   const [surface, setSurface] = useState(initialSurface);
+  const [files, setFiles] = useState<PickedFile[]>([]);
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const started = useRef(false);
@@ -53,15 +55,27 @@ export default function DevisForm({ presetFormule, presetSurface }: { presetForm
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
+    if (!filesReady(files)) {
+      setStatus("error");
+      setErrorMsg("Patientez quelques secondes, l'envoi des pièces jointes est en cours.");
+      return;
+    }
     const data = Object.fromEntries(new FormData(form).entries());
+    const joint = files.some((f) => f.status === "stored" || f.status === "inline");
     setStatus("sending");
     setErrorMsg("");
     try {
-      const res = await fetch("/api/devis", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      /* Sans pièce jointe on reste en JSON : c'est le chemin le plus court. */
+      let init: RequestInit;
+      if (joint) {
+        const fd = new FormData();
+        fd.append("data", JSON.stringify(data));
+        appendFiles(fd, files);
+        init = { method: "POST", body: fd };
+      } else {
+        init = { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) };
+      }
+      const res = await fetch("/api/devis", init);
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error ?? "Envoi impossible.");
       trackEvent("devis_submit", { formule: plan, surface_bucket: surfaceBucket(surface) });
@@ -175,6 +189,14 @@ export default function DevisForm({ presetFormule, presetSurface }: { presetForm
             ))}
           </select>
         </div>
+
+        <FileField
+          files={files}
+          onChange={setFiles}
+          label="Vos documents (facultatif)"
+          hint="Plan du terrain, plan de masse, esquisse, photos. PDF, DWG, DXF, JPG. 25 Mo par fichier — ils nous évitent un aller-retour."
+          max={6}
+        />
 
         <div className="field">
           <label htmlFor="message">Votre projet en quelques lignes</label>

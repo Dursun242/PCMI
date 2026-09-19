@@ -34,6 +34,8 @@ type Events = {
   devis_submit: { formule: string; surface_bucket: SurfaceBucket };
   /** Fiche projet complète (CERFA 13406) transmise avec succès. */
   dossier_submit: Record<string, never>;
+  /** Plan de masse existant transmis pour chiffrage. */
+  plan_de_masse_submit: { fichiers: string };
   /** Clic sur l'appel à l'action d'un article de conseils. */
   article_cta_click: { slug: string; destination: string };
 };

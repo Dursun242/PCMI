@@ -29,6 +29,7 @@ const EXPECTATIONS = [
   { path: "/a-propos", types: ["AboutPage", "BreadcrumbList"] },
   { path: "/contact", types: ["ContactPage", "BreadcrumbList"] },
   { path: "/devis", types: ["ContactPage", "BreadcrumbList"] },
+  { path: "/plan-de-masse", types: ["ContactPage", "BreadcrumbList"] },
   { path: "/dossier", types: ["ContactPage", "BreadcrumbList"] },
   { path: "/mentions-legales", types: [] },
   { path: "/cgv", types: [] },

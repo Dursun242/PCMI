@@ -176,6 +176,11 @@ export default function GuidePage() {
             Selon la situation s&apos;ajoutent notamment : l&apos;attestation de prise en compte de la <a href="#re2020">RE2020</a>, l&apos;étude de gestion des eaux pluviales exigée par certains PLU, l&apos;attestation d&apos;un contrôleur technique en zone sismique, le formulaire de calcul de la surface taxable, ou encore une notice paysagère en site protégé — voir la section <a href="#pieces-complementaires">pièces complémentaires</a> ci-dessous.
           </p>
           <p>
+            Vous avez déjà un plan de masse, dessiné par un constructeur ou un géomètre ? Vous pouvez{" "}
+            <Link href="/plan-de-masse">nous l&apos;envoyer en PDF ou en DWG</Link> : nous le confrontons au règlement de
+            votre commune et vous disons sous 48 h ce qu&apos;il lui manque.
+          </p>
+          <p>
             La pièce PCMI 6 (insertion graphique) est celle que l&apos;instructeur regarde en premier : voir notre article{" "}
             <Link href="/conseils/pcmi-6-insertion-graphique-reussie">PCMI 6 : réussir l&apos;insertion graphique de votre maison</Link>.
           </p>
