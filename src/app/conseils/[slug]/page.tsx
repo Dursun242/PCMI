@@ -7,6 +7,7 @@ import { withSeo } from "@/lib/seo";
 import { formatFrDate } from "@/lib/format";
 import { site } from "@/config/site";
 import JsonLd from "@/components/JsonLd";
+import ArticleCtaLink from "@/components/ArticleCtaLink";
 import { breadcrumb } from "@/lib/schema";
 
 export const dynamicParams = false;
@@ -93,8 +94,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <div className="border-t border-ink pt-5">
             <p className="display text-2xl">Votre permis, à prix fixe.</p>
             <p className="mt-1 text-sm text-ink-2">Trois formules jusqu&apos;à 149 m². Devis sous 48 h.</p>
-            <Link href="/tarifs" className="btn btn-line mt-5 w-full !min-h-11">Voir les formules</Link>
-            <Link href="/devis" className="btn btn-ink mt-2 w-full !min-h-11">Demander un devis</Link>
+            <ArticleCtaLink slug={a.slug} href="/tarifs" className="btn btn-line mt-5 w-full !min-h-12">Voir les formules</ArticleCtaLink>
+            <ArticleCtaLink slug={a.slug} href="/devis" className="btn btn-ink mt-2 w-full !min-h-12">Demander un devis</ArticleCtaLink>
           </div>
           {others.length > 0 && (
             <div className="mt-10">

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { steps, type Field } from "@/config/dossier";
 import FileField, { appendFiles, filesReady, type PickedFile } from "./FileField";
+import { trackEvent } from "@/lib/analytics";
 
 type Values = Record<string, string>;
 type Status = "idle" | "sending" | "sent" | "error";
@@ -72,6 +73,7 @@ export default function DossierForm() {
       const res = await fetch("/api/dossier", { method: "POST", body: fd });
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error ?? "Envoi impossible.");
+      trackEvent("dossier_submit", {});
       setStatus("sent");
       try {
         localStorage.removeItem(STORAGE);

@@ -5,7 +5,7 @@ import AuthorByline from "@/components/AuthorByline";
 import Cta from "@/components/Cta";
 import { breadcrumb, faqPageSchema } from "@/lib/schema";
 import { site, plans } from "@/config/site";
-import { formatEuro } from "@/components/PlanCard";
+import { formatEuro } from "@/lib/format";
 import { withSeo } from "@/lib/seo";
 
 const UPDATED_AT = "2026-09-18";

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import Link from "next/link";
 import DevisForm from "@/components/DevisForm";
+import Garanties from "@/components/Garanties";
 import { withSeo } from "@/lib/seo";
 
 export const metadata: Metadata = withSeo("/devis", {
@@ -11,7 +11,18 @@ export const metadata: Metadata = withSeo("/devis", {
   robots: { index: true, follow: true },
 });
 
-export default function DevisPage() {
+/**
+ * Rendu à la demande : la page doit lire ?formule= et ?surface= pour afficher
+ * le bon récapitulatif dès la première image, sans passer par l'hydratation.
+ */
+export const dynamic = "force-dynamic";
+
+export default async function DevisPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ formule?: string; surface?: string }>;
+}) {
+  const { formule, surface } = await searchParams;
   return (
     <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24 grid gap-16 lg:grid-cols-[1fr_1.35fr]">
       <div>
@@ -46,12 +57,12 @@ export default function DevisPage() {
             Contactez-nous
           </Link>
         </p>
+
+        <Garanties className="mt-14 lg:mt-16" />
       </div>
 
       <div className="bg-stone px-6 py-8 sm:px-10 sm:py-12">
-        <Suspense fallback={null}>
-          <DevisForm />
-        </Suspense>
+        <DevisForm presetFormule={formule} presetSurface={surface} />
       </div>
     </div>
   );

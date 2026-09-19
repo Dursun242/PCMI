@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { site } from "@/config/site";
+import { Analytics } from "@vercel/analytics/next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import StickyCta from "@/components/StickyCta";
 import JsonLd from "@/components/JsonLd";
 import { withSeo } from "@/lib/seo";
 import { organizationSchema } from "@/lib/schema";
@@ -47,6 +49,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <Footer />
+        <StickyCta />
+        {/* Mesure d'audience sans cookie ni identifiant individuel (Vercel Web Analytics). */}
+        <Analytics />
       </body>
     </html>
   );

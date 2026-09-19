@@ -4,6 +4,8 @@ import HouseDrawing from "@/components/HouseDrawing";
 import Stamp from "@/components/Stamp";
 import PlanCard from "@/components/PlanCard";
 import Faq from "@/components/Faq";
+import FormulaFinder from "@/components/FormulaFinder";
+import TrackedLink from "@/components/TrackedLink";
 import Gallery from "@/components/Gallery";
 import RealisationsGallery from "@/components/RealisationsGallery";
 import JsonLd from "@/components/JsonLd";
@@ -92,7 +94,7 @@ export default function HomePage() {
               <span className="text-paper">{new Intl.NumberFormat("fr-FR").format(plans[0].priceTTC)}&nbsp;€&nbsp;TTC</span>.
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
-              <Link href="/devis" className="btn btn-paper">Demander un devis</Link>
+              <TrackedLink href="/devis" source="hero_accueil" className="btn btn-paper">Demander un devis</TrackedLink>
               <Link href="/tarifs" className="btn btn-line-light">Découvrir les formules</Link>
             </div>
           </div>
@@ -181,6 +183,13 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ---------- Sélecteur de formule ---------- */}
+      <section className="bg-stone border-y border-stone-2">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 py-20 sm:py-28">
+          <FormulaFinder />
+        </div>
+      </section>
+
       {/* ---------- Galerie ---------- */}
       {realisations.length >= 3 ? <RealisationsGallery items={realisations} /> : <Gallery />}
 
@@ -240,7 +249,7 @@ export default function HomePage() {
             <h2 className="display text-4xl sm:text-5xl">Votre devis chiffré sous 48 h.</h2>
             <p className="mt-4 text-ink-2 leading-relaxed">Trois minutes pour décrire votre projet. Aucun engagement, aucun frais caché.</p>
           </div>
-          <Link href="/devis" className="btn btn-ink">Demander un devis</Link>
+          <TrackedLink href="/devis" source="accueil_final" className="btn btn-ink">Demander un devis</TrackedLink>
         </div>
       </section>
     </>

@@ -1,9 +1,6 @@
-import Link from "next/link";
 import { ht, type Plan } from "@/config/site";
-
-export function formatEuro(n: number) {
-  return new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n);
-}
+import { formatEuro } from "@/lib/format";
+import TrackedLink from "@/components/TrackedLink";
 
 /**
  * Colonne de formule : pas de carte, un filet haut. La formule mise en avant
@@ -62,9 +59,14 @@ export default function PlanCard({ plan, compact = false }: { plan: Plan; compac
       )}
 
       <div className="mt-auto pt-9">
-        <Link href={`/devis?formule=${plan.id}`} className={`btn w-full ${hi ? "btn-ink" : "btn-line"}`}>
+        <TrackedLink
+          href={`/devis?formule=${plan.id}`}
+          source={compact ? "plan_card_accueil" : "plan_card_tarifs"}
+          formule={plan.id}
+          className={`btn w-full ${hi ? "btn-ink" : "btn-line"}`}
+        >
           Choisir {plan.name}
-        </Link>
+        </TrackedLink>
       </div>
     </article>
   );

@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { plans, options, site } from "@/config/site";
-import PlanCard, { formatEuro } from "@/components/PlanCard";
+import PlanCard from "@/components/PlanCard";
+import { formatEuro } from "@/lib/format";
 import JsonLd from "@/components/JsonLd";
+import Garanties from "@/components/Garanties";
+import Temoignages from "@/components/Temoignages";
+import FormulaFinder from "@/components/FormulaFinder";
 import { breadcrumb } from "@/lib/schema";
 import { withSeo } from "@/lib/seo";
 
@@ -71,16 +75,29 @@ export default function TarifsPage() {
           </div>
           <Link href="/devis" className="btn btn-line">Demander un devis sur mesure</Link>
         </div>
+
+        <Garanties className="mt-16" />
       </section>
+
+      <section className="bg-stone border-y border-stone-2 mt-16">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 py-20 sm:py-24">
+          <FormulaFinder />
+        </div>
+      </section>
+
+      <Temoignages className="mx-auto max-w-7xl px-5 sm:px-8 pt-20 sm:pt-24" />
 
       <section className="mx-auto max-w-7xl px-5 sm:px-8 py-20 sm:py-28">
         <span className="rule" aria-hidden="true" />
         <h2 className="h-section mt-6">Le détail, ligne par ligne</h2>
-        <div className="mt-10 overflow-x-auto">
+        <p className="mt-6 text-sm text-ink-2 sm:hidden" aria-hidden="true">
+          Tableau large : faites-le défiler horizontalement. La colonne des prestations reste visible.
+        </p>
+        <div className="mt-6 sm:mt-10 overflow-x-auto">
           <table className="w-full min-w-[680px] border-collapse text-[0.95rem]">
             <thead>
               <tr>
-                <th className="py-4 pr-4 text-left text-[0.7rem] uppercase tracking-[0.18em] text-ink-2 border-b border-ink w-[44%]">Prestation</th>
+                <th className="sticky left-0 z-10 bg-paper py-4 pr-4 text-left text-[0.7rem] uppercase tracking-[0.18em] text-ink-2 border-b border-ink w-[44%]">Prestation</th>
                 {plans.map((p) => (
                   <th key={p.id} className={`py-4 px-3 text-center border-b border-ink ${p.highlight ? "bg-stone" : ""}`}>
                     <div className="display text-2xl">{p.name}</div>
@@ -92,7 +109,7 @@ export default function TarifsPage() {
             <tbody>
               {rows.map((r) => (
                 <tr key={r.label}>
-                  <td className="py-3.5 pr-4 border-b border-stone-2">{r.label}</td>
+                  <td className="sticky left-0 z-10 bg-paper py-3.5 pr-4 border-b border-stone-2">{r.label}</td>
                   {r.values.map((v, i) => (
                     <td key={i} className={`py-3.5 px-3 text-center border-b border-stone-2 ${plans[i].highlight ? "bg-stone" : ""}`}>
                       <Cell v={v} />
