@@ -56,7 +56,7 @@ ${articles
 ## Contact
 
 - E-mail : ${site.email}${site.phone ? `\n- Téléphone : ${site.phone}` : ""}
-- Zone d'intervention : France entière, à distance. Déplacement possible en ${site.address.region}.${site.social.instagram ? `\n- Instagram : ${site.social.instagram}` : ""}${site.authorSocial.linkedin ? `\n- LinkedIn du maître d'œuvre : ${site.authorSocial.linkedin}` : ""}
+- Zone d'intervention : France entière, à distance. Déplacement possible en ${site.address.region}.${site.social.instagram ? `\n- Instagram : ${site.social.instagram}` : ""}${site.authorSocial.linkedin ? `\n- LinkedIn du maître d'œuvre : ${site.authorSocial.linkedin}` : ""}${site.social.google ? `\n- Fiche Google : ${site.social.google}` : ""}
 - Société mère : ${site.parent} — ${site.parentUrl}
 `;
 
