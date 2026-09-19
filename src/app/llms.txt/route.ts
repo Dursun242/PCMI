@@ -25,7 +25,7 @@ export function GET() {
 
 > ${site.tagline}
 
-${site.name} est la marque de la ${site.legal.company}, maîtrise d'œuvre établie au ${site.address.street}, ${site.address.zip} ${site.address.city}, fondée par ${site.legal.director}, maître d'œuvre.
+${site.name} est la marque de la ${site.legal.company}, maîtrise d'œuvre établie au ${site.address.street}, ${site.address.zip} ${site.address.city}, fondée par ${site.author}, maître d'œuvre.
 Nous concevons et déposons des dossiers de permis de construire de maison individuelle (pièces PCMI 1 à 8), partout en France, à distance.
 Le prix est fixe et annoncé avant de commencer ; il ne dépend ni de la surface de la maison ni du coût des travaux.
 Les formules à prix fixe s'appliquent jusqu'à ${SURFACE_MAX} m² de surface de plancher ; au-delà, le permis est établi sur devis.

@@ -22,10 +22,13 @@ export const site: {
   shortName: "Permis",
   parent: "ID Maîtrise",
   /**
-   * Signature des contenus éditoriaux (guide, articles) et auteur déclaré dans
-   * les données structurées. Volontairement distinct de `legal.director`, qui
-   * porte le nom complet là où la loi ou un contrat l'exige : mentions légales,
-   * directeur de la publication, signature des e-mails adressés à un client.
+   * Nom affiché partout sur le site public : signature des articles et du
+   * guide, auteur et fondateur dans les données structurées, page À propos,
+   * llms.txt.
+   *
+   * `legal.director` garde le nom complet, et uniquement là où la loi ou un
+   * échange contractuel l'impose : mentions légales et directeur de la
+   * publication, signature des e-mails adressés à un client.
    */
   author: "Dursun O.",
   tagline: "Le permis de construire de votre maison, dessiné par un maître d'œuvre, au prix juste.",

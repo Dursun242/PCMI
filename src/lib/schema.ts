@@ -22,7 +22,7 @@ export const organizationSchema = {
   },
   areaServed: { "@type": "Country", name: "France" },
   foundingLocation: { "@type": "Place", name: `${site.address.city}, ${site.address.region}` },
-  founder: { "@type": "Person", name: site.legal.director, jobTitle: "Maître d'œuvre" },
+  founder: { "@type": "Person", name: site.author, jobTitle: "Maître d'œuvre" },
   description:
     "Conception et dépôt de dossiers de permis de construire pour maisons individuelles, par un maître d'œuvre, partout en France.",
   makesOffer: plans.map((p) => ({
