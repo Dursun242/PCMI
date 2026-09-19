@@ -23,7 +23,7 @@ export default function Footer() {
 
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 border-t border-brass/25 py-12 text-sm sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <div className={label}>Maître d&apos;œuvre</div>
+            <div className={label}>Bureau d&apos;études</div>
             <p className="text-paper/70 leading-relaxed">
               {site.legal.company}
               <br />
@@ -109,7 +109,7 @@ export default function Footer() {
         </div>
 
         <p className="border-t border-brass/25 pt-6 text-xs text-paper/45">
-          © {year} {site.legal.company}. {site.name} est l&apos;offre permis de construire de {site.parent}, bureau de maîtrise d&apos;œuvre au Havre.
+          © {year} {site.legal.company}. {site.name} est l&apos;offre permis de construire de {site.parent}, bureau d&apos;études au Havre qui allie ingénierie et architecture.
         </p>
       </div>
     </footer>

@@ -25,7 +25,7 @@ export function GET() {
 
 > ${site.tagline}
 
-${site.name} est la marque de la ${site.legal.company}, maîtrise d'œuvre établie au ${site.address.street}, ${site.address.zip} ${site.address.city}, fondée par ${site.author}, maître d'œuvre.
+${site.name} est la marque de la ${site.legal.company}, bureau d'études en ingénierie de la construction qui allie calcul de structure et conception architecturale, établi au ${site.address.street}, ${site.address.zip} ${site.address.city}, fondé par ${site.author}, maître d'œuvre.
 Nous concevons et déposons des dossiers de permis de construire de maison individuelle (pièces PCMI 1 à 8), partout en France, à distance.
 Le prix est fixe et annoncé avant de commencer ; il ne dépend ni de la surface de la maison ni du coût des travaux.
 Les formules à prix fixe s'appliquent jusqu'à ${SURFACE_MAX} m² de surface de plancher ; au-delà, le permis est établi sur devis.
@@ -44,7 +44,7 @@ Au-delà de ${SURFACE_MAX} m² de surface de plancher : sur devis.
 ${options.map((o) => `- ${o.name} — ${euros(o.priceTTC)}. ${o.note}`).join("\n")}
 
 ## Plans d'exécution (après le permis)
-Plans EXE dessinés par le maître d'œuvre, dimensionnement des ouvrages porteurs par un bureau d'études structure partenaire. Prix « à partir de », TTC, devis fixe lot par lot sous 48 h ouvrées.
+Plans EXE dessinés par le pôle conception, dimensionnement des ouvrages porteurs par le bureau d'études structure d'ID Maîtrise. Prix « à partir de », TTC, devis fixe lot par lot sous 48 h ouvrées.
 ${exePacks.map((p) => `- **${p.name}** — à partir de ${euros(p.fromPriceTTC)}, livré sous ${p.delayWorkingDays}. ${p.promise}`).join("\n")}
 ${exePlans.map((p) => `- ${p.name} (${p.forTrade}) — à partir de ${euros(p.fromPriceTTC)}. ${p.description}`).join("\n")}
 

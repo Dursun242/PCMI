@@ -12,13 +12,13 @@ import { formatEuro } from "@/lib/format";
 export const metadata: Metadata = withSeo("/plans-execution", {
   title: "Plans d'exécution maison : structure, charpente, réseaux",
   description:
-    "Après le permis, les plans EXE pour construire : fondations, béton armé, plancher, charpente, couverture, électricité, plomberie, VRD. Dessinés par un maître d'œuvre, calculés par un bureau d'études, à prix fixe, partout en France.",
+    "Après le permis, les plans EXE pour construire : fondations, béton armé, plancher, charpente, couverture, électricité, plomberie, VRD. Dessinés et calculés par un bureau d'études qui allie ingénierie et architecture, à prix fixe, partout en France.",
 });
 
 const etapes: [string, string][] = [
   ["Vous nous envoyez le dossier de permis", "Plans PCMI, rapport de sol si vous l'avez, mode constructif retenu. Deux minutes. Si le permis a été fait chez nous, rien à renvoyer."],
-  ["Nous chiffrons lot par lot sous 48 h", "Un prix fixe par plan, le délai de chacun, et ce que le bureau d'études structure prend en charge."],
-  ["Nous dessinons, le BET calcule", "Le maître d'œuvre dessine, le bureau d'études dimensionne et signe la note de calcul. Une visio de validation avant l'édition."],
+  ["Nous chiffrons lot par lot sous 48 h", "Un prix fixe par plan, le délai de chacun, et ce que l'ingénieur structure prend en charge."],
+  ["Nous dessinons et nous calculons", "Le pôle conception dessine, le bureau d'études dimensionne et signe la note de calcul : les deux sous le même toit, sans aller-retour entre entreprises. Une visio de validation avant l'édition."],
   ["Vous consultez vos artisans sur des plans nets", "PDF et DWG, prêts pour les devis, puis pour le chantier. Une série de modifications incluse."],
 ];
 
@@ -29,7 +29,7 @@ const faqExe = [
   },
   {
     q: "Qui calcule la structure ?",
-    a: "Nous dessinons les plans de fondations, de béton armé, de plancher et de charpente ; le dimensionnement est confié à notre bureau d'études structure partenaire, qui signe la note de calcul et engage sa garantie décennale sur ce calcul. Le rapport d'étude de sol (mission G2) est nécessaire pour les fondations : nous vous indiquons comment l'obtenir s'il n'existe pas encore.",
+    a: "Nous dessinons les plans de fondations, de béton armé, de plancher et de charpente ; le dimensionnement est réalisé par notre bureau d'études structure, qui signe la note de calcul. Dessin et calcul viennent de la même entreprise : ce qui est dessiné est ce qui a été calculé. Le rapport d'étude de sol (mission G2) est nécessaire pour les fondations : nous vous indiquons comment l'obtenir s'il n'existe pas encore.",
   },
   {
     q: "Puis-je commander un seul plan ?",
@@ -73,9 +73,9 @@ export default function PlansExecutionPage() {
           <p className="lead mt-8 max-w-[54ch]">
             Un permis accordé dit ce que vous avez le droit de bâtir. Il ne dit pas comment. Les plans d&apos;exécution
             (phase EXE) sont ceux que lisent le maçon, le charpentier, le couvreur et l&apos;électricien : fondations,
-            béton armé, plancher, charpente, réseaux, détails. Chez {site.name}, le maître d&apos;œuvre les dessine, un
-            bureau d&apos;études structure partenaire calcule ce qui porte, et le prix est fixé lot par lot avant de
-            commencer.
+            béton armé, plancher, charpente, réseaux, détails. Chez {site.name}, ils sont dessinés et calculés sous le même toit :
+            le pôle conception les trace, le bureau d&apos;études dimensionne ce qui porte, et le prix est fixé lot par
+            lot avant de commencer.
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
             <a href="#chiffrer" className="btn btn-ink">Chiffrer mes plans</a>
@@ -91,7 +91,7 @@ export default function PlansExecutionPage() {
           <p className="mt-6 text-ink-2 leading-relaxed">
             Chaque lot se commande seul ou dans un pack. Les prix sont indiqués <strong className="text-ink">à partir de</strong>,
             TTC ; le devis exact dépend de la taille de la maison, du mode constructif et du niveau de détail attendu par
-            vos artisans. Les lots marqués d&apos;un astérisque comprennent le calcul du bureau d&apos;études structure.
+            vos artisans. Les lots marqués d&apos;un astérisque comprennent le calcul de notre bureau d&apos;études structure.
           </p>
         </div>
         <dl className="mt-12 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
@@ -123,7 +123,7 @@ export default function PlansExecutionPage() {
           ))}
         </dl>
         <p className="mt-8 text-sm text-ink-2">
-          * Dimensionnement et note de calcul par notre bureau d&apos;études structure partenaire, inclus dans le prix.
+          * Dimensionnement et note de calcul par notre bureau d&apos;études structure, inclus dans le prix.
           Prix TTC, TVA 20 % incluse.
         </p>
       </section>

@@ -26,7 +26,7 @@ export const organizationSchema = {
   foundingLocation: { "@type": "Place", name: `${site.address.city}, ${site.address.region}` },
   founder: { "@type": "Person", name: site.author, jobTitle: "Maître d'œuvre" },
   description:
-    "Conception et dépôt de dossiers de permis de construire pour maisons individuelles, par un maître d'œuvre, partout en France.",
+    "Conception et dépôt de dossiers de permis de construire pour maisons individuelles, par un bureau d'études qui allie ingénierie de la construction et conception architecturale, partout en France.",
   makesOffer: plans.map((p) => ({
     "@type": "Offer",
     name: `Permis de construire maison — formule ${p.name}`,
@@ -159,7 +159,7 @@ export function exeServiceSchema() {
     areaServed: { "@type": "Country", name: "France" },
     url: `${site.url}/plans-execution`,
     description:
-      "Plans d'exécution dessinés par un maître d'œuvre après l'accord du permis : fondations, béton armé, plancher, charpente, couverture, menuiseries, électricité, plomberie, VRD et détails techniques. Dimensionnement par un bureau d'études structure partenaire.",
+      "Plans d'exécution dessinés et calculés par un bureau d'études qui allie ingénierie et architecture, après l'accord du permis : fondations, béton armé, plancher, charpente, couverture, menuiseries, électricité, plomberie, VRD et détails techniques. Dimensionnement des ouvrages porteurs par le bureau d'études structure.",
     offers: [
       ...exePacks.map((p) => offer({ id: p.id, name: p.name, fromPriceTTC: p.fromPriceTTC, description: p.promise })),
       ...exePlans.map((p) => offer(p)),

@@ -32,7 +32,7 @@ export const site: {
    * publication, signature des e-mails adressés à un client.
    */
   author: "Dursun O.",
-  tagline: "Le permis de construire de votre maison, dessiné par un maître d'œuvre, au prix juste.",
+  tagline: "Le permis de construire de votre maison, par un bureau d'études qui allie ingénierie et architecture, au prix juste.",
   // Domaine de production
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://permis-maison-individuelle.fr",
   parentUrl: "https://www.id-maitrise.com",
@@ -152,7 +152,7 @@ export const plans: Plan[] = [
     name: "Premium",
     priceTTC: 2990,
     promise: "Conception, rendus et accompagnement sur mesure.",
-    forWho: "Vous partez d'une idée ou d'un croquis et vous voulez une maison pensée par un maître d'œuvre, du premier trait au permis accordé.",
+    forWho: "Vous partez d'une idée ou d'un croquis et vous voulez une maison pensée par un bureau d'études qui allie ingénierie et architecture, du premier trait au permis accordé.",
     delayWorkingDays: "20 jours ouvrés",
     features: [
       "Tout Complet",
@@ -183,9 +183,9 @@ export const options = [
  * pack ; les prix ci-dessous sont des valeurs de départ « à partir de »,
  * à ajuster, et le devis reste établi après lecture du dossier de permis.
  *
- * Le dimensionnement des ouvrages porteurs (béton armé, charpente) relève d'un
- * bureau d'études structure : nous dessinons les plans, notre BET partenaire
- * calcule et signe la note de calcul.
+ * Le dimensionnement des ouvrages porteurs (béton armé, charpente) relève de
+ * l'ingénierie : c'est le pôle bureau d'études d'ID Maîtrise qui calcule et
+ * signe la note de calcul, pendant que le pôle conception dessine.
  */
 export type ExePlanId =
   | "fondations"
@@ -208,7 +208,7 @@ export interface ExePlan {
   forTrade: string;
   description: string;
   deliverables: string[];
-  /** Lot dont le calcul est confié à notre bureau d'études structure partenaire. */
+  /** Lot dont le dimensionnement est calculé par notre bureau d'études structure. */
   withBet?: boolean;
 }
 
@@ -227,8 +227,8 @@ export const exePlans: ExePlan[] = [
     name: "Plans de béton armé",
     fromPriceTTC: 690,
     forTrade: "Maçon",
-    description: "Coffrage et ferraillage des semelles, poteaux, poutres, chaînages et linteaux, avec la note de calcul du bureau d'études.",
-    deliverables: ["Plans de coffrage", "Plans de ferraillage", "Nomenclature des aciers", "Note de calcul signée par le BET"],
+    description: "Coffrage et ferraillage des semelles, poteaux, poutres, chaînages et linteaux, avec la note de calcul de notre bureau d'études.",
+    deliverables: ["Plans de coffrage", "Plans de ferraillage", "Nomenclature des aciers", "Note de calcul signée par l'ingénieur"],
     withBet: true,
   },
   {
