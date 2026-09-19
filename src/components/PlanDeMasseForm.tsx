@@ -50,7 +50,8 @@ export default function PlanDeMasseForm() {
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error ?? "Envoi impossible.");
       trackEvent("plan_de_masse_submit", { fichiers: String(utilisables.length) });
-      router.push("/devis/merci?source=plan-de-masse");
+      // Chemin dédié : les envois de plan se comptent séparément des devis.
+      router.push("/devis/merci/plan-de-masse");
     } catch (err) {
       setStatus("error");
       setErrorMsg(err instanceof Error ? err.message : "Envoi impossible.");
