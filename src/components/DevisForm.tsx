@@ -79,8 +79,13 @@ export default function DevisForm({ presetFormule, presetSurface }: { presetForm
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error ?? "Envoi impossible.");
       trackEvent("devis_submit", { formule: plan, surface_bucket: surfaceBucket(surface) });
-      // La confirmation vit sur sa propre URL : parcours mesurable et partageable.
-      router.push(`/devis/merci?formule=${encodeURIComponent(plan)}`);
+      /*
+       * La confirmation vit sur sa propre URL, et la formule est dans le
+       * CHEMIN : c'est ce qui rend la répartition des demandes lisible dans
+       * Vercel Web Analytics, qui ne compte que des pages sur les plans
+       * gratuits.
+       */
+      router.push(`/devis/merci/${plan}`);
     } catch (err) {
       setStatus("error");
       setErrorMsg(err instanceof Error ? err.message : "Envoi impossible.");
