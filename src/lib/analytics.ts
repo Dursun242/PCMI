@@ -36,6 +36,10 @@ type Events = {
   dossier_submit: Record<string, never>;
   /** Plan de masse existant transmis pour chiffrage. */
   plan_de_masse_submit: { fichiers: string };
+  /** Demande de chiffrage de plans d'exécution transmise avec succès. */
+  plans_exe_submit: { pack: string; lots: string };
+  /** Demande d'étude thermique RE2020 transmise avec succès. */
+  etude_thermique_submit: { prestations: string };
   /** Clic sur l'appel à l'action d'un article de conseils. */
   article_cta_click: { slug: string; destination: string };
 };

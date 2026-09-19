@@ -23,7 +23,7 @@ export default function Footer() {
 
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 border-t border-brass/25 py-12 text-sm sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <div className={label}>Maître d&apos;œuvre</div>
+            <div className={label}>Bureau d&apos;études</div>
             <p className="text-paper/70 leading-relaxed">
               {site.legal.company}
               <br />
@@ -51,25 +51,44 @@ export default function Footer() {
               <br />
               Intervention partout en France.
             </p>
-            {site.authorSocial.linkedin && (
-              <a
-                href={site.authorSocial.linkedin}
-                rel="me noopener"
-                className="mt-4 inline-flex items-center gap-2 hover:text-brass-2"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
-                  <rect x="2.5" y="2.5" width="19" height="19" rx="3" />
-                  <path d="M7.2 10.4v7M7.2 7.1v.1M11.4 17.4v-7M11.4 13.2c0-1.5 1-2.6 2.5-2.6s2.5 1.1 2.5 2.6v4.2" strokeLinecap="round" />
-                </svg>
-                {site.author} sur LinkedIn
-              </a>
-            )}
+            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+              {site.social.instagram && (
+                <a href={site.social.instagram} rel="me noopener" className="inline-flex items-center gap-2 hover:text-brass-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                    <rect x="2.5" y="2.5" width="19" height="19" rx="5" />
+                    <circle cx="12" cy="12" r="4.2" />
+                    <circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none" />
+                  </svg>
+                  Instagram
+                </a>
+              )}
+              {site.authorSocial.linkedin && (
+                <a href={site.authorSocial.linkedin} rel="me noopener" className="inline-flex items-center gap-2 hover:text-brass-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                    <rect x="2.5" y="2.5" width="19" height="19" rx="3" />
+                    <path d="M7.2 10.4v7M7.2 7.1v.1M11.4 17.4v-7M11.4 13.2c0-1.5 1-2.6 2.5-2.6s2.5 1.1 2.5 2.6v4.2" strokeLinecap="round" />
+                  </svg>
+                  LinkedIn
+                </a>
+              )}
+              {site.social.google && (
+                <a href={site.social.google} rel="noopener" className="inline-flex items-center gap-2 hover:text-brass-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                    <path d="M12 21.5s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" strokeLinejoin="round" />
+                    <circle cx="12" cy="10.2" r="2.6" />
+                  </svg>
+                  Google
+                </a>
+              )}
+            </div>
           </div>
 
           <div>
             <div className={label}>Plan du site</div>
             <ul className="grid gap-2.5">
               <li><Link href="/tarifs" className="hover:text-brass-2">Formules et tarifs</Link></li>
+              <li><Link href="/plans-execution" className="hover:text-brass-2">Plans d&apos;exécution</Link></li>
+              <li><Link href="/etude-thermique-re2020" className="hover:text-brass-2">Étude thermique RE2020</Link></li>
               <li><Link href="/permis-de-construire-maison" className="hover:text-brass-2">Le guide du permis</Link></li>
               <li><Link href="/conseils" className="hover:text-brass-2">Conseils</Link></li>
               <li><Link href="/a-propos" className="hover:text-brass-2">À propos</Link></li>
@@ -108,7 +127,7 @@ export default function Footer() {
         </div>
 
         <p className="border-t border-brass/25 pt-6 text-xs text-paper/45">
-          © {year} {site.legal.company}. {site.name} est l&apos;offre permis de construire de {site.parent}, bureau de maîtrise d&apos;œuvre au Havre.
+          © {year} {site.legal.company}. {site.name} est l&apos;offre permis de construire de {site.parent}, bureau d&apos;études au Havre qui allie ingénierie et architecture.
         </p>
       </div>
     </footer>

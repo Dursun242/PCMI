@@ -6,7 +6,9 @@ import Logo from "./Logo";
 import TrackedLink from "./TrackedLink";
 
 const nav = [
-  { href: "/tarifs", label: "Formules" },
+  { href: "/tarifs", label: "Permis de construire" },
+  { href: "/plans-execution", label: "Plans EXE" },
+  { href: "/etude-thermique-re2020", label: "Étude thermique" },
   { href: "/permis-de-construire-maison", label: "Le guide" },
   { href: "/conseils", label: "Conseils" },
   { href: "/contact", label: "Contact" },

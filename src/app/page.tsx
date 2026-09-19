@@ -62,7 +62,7 @@ const compare = [
   },
   {
     who: site.name,
-    plus: "Un maître d'œuvre qui dépose des permis toute l'année, à prix fixe, avec suivi jusqu'à l'accord",
+    plus: "Un bureau d'études qui allie ingénierie et architecture, dépose des permis toute l'année, à prix fixe, avec suivi jusqu'à l'accord",
     minus: "Formules à prix fixe jusqu'à 149 m² de surface de plancher ; au-delà, sur devis avec architecte partenaire.",
     me: true,
   },
@@ -91,7 +91,7 @@ export default function HomePage() {
               Le permis de construire de votre maison, <em>au prix juste.</em>
             </h1>
             <p className="mt-8 text-lg sm:text-xl leading-relaxed text-paper/75 max-w-[44ch]">
-              Dossier complet, rendus 3D, dépôt en mairie et suivi jusqu&apos;à l&apos;accord — à distance, sans rendez-vous physique. Conçu par un maître d&apos;œuvre, à partir de{" "}
+              Dossier complet, rendus 3D, dépôt en mairie et suivi jusqu&apos;à l&apos;accord — à distance, sans rendez-vous physique. Conçu par un bureau d&apos;études qui allie ingénierie et architecture, à partir de{" "}
               <span className="text-paper">{new Intl.NumberFormat("fr-FR").format(plans[0].priceTTC)}&nbsp;€&nbsp;TTC</span>.
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
@@ -201,21 +201,21 @@ export default function HomePage() {
       {/* ---------- Galerie ---------- */}
       {realisations.length >= 3 ? <RealisationsGallery items={realisations} /> : <Gallery />}
 
-      {/* ---------- Pourquoi un maître d'œuvre ---------- */}
+      {/* ---------- Pourquoi ID Maîtrise ---------- */}
       <section className="bg-forest text-paper">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-20 sm:py-28">
           <div className="grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:items-end">
             <div className="max-w-[52ch]">
               <span className="rule" aria-hidden="true" />
-              <h2 className="h-section mt-6">Pourquoi confier votre permis à un maître d&apos;œuvre</h2>
+              <h2 className="h-section mt-6">Pourquoi confier votre permis à un bureau d&apos;études qui dessine aussi</h2>
               <p className="mt-6 text-lg leading-relaxed text-paper/75">
-                {site.parent} conçoit et suit des chantiers de maisons toute l&apos;année. Nous savons ce qu&apos;un instructeur regarde, ce qu&apos;un PLU interdit, et ce qui fait qu&apos;un dossier passe du premier coup.
+                {site.parent} réunit l&apos;ingénierie d&apos;un bureau d&apos;études et la conception architecturale : dessinateur-projeteur, ingénieur béton armé et structure, thermicien, et architecte partenaire quand la loi l&apos;impose. La maison est dessinée par ceux qui la calculent. Nous concevons et suivons des chantiers toute l&apos;année, nous savons ce qu&apos;un instructeur regarde, ce qu&apos;un PLU interdit, et ce qui fait qu&apos;un dossier passe du premier coup et se construit ensuite sans surprise.
               </p>
             </div>
             <div className="relative h-64 sm:h-80 overflow-hidden">
               <Image
                 src="/office/bureau-id-maitrise.jpg"
-                alt={`Bureau d'${site.parent}, maître d'œuvre au Havre`}
+                alt={`Bureau d'${site.parent}, ingénierie et architecture au Havre`}
                 fill
                 sizes="(min-width: 1024px) 40vw, 100vw"
                 className="object-cover"
@@ -269,6 +269,31 @@ export default function HomePage() {
           </p>
         </div>
         <Faq />
+      </section>
+
+      {/* ---------- Après le permis : plans d'exécution ---------- */}
+      <section className="mx-auto max-w-7xl px-5 sm:px-8 pb-20 sm:pb-28">
+        <div className="border-t border-ink pt-12 grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:items-start">
+          <div>
+            <span className="rule" aria-hidden="true" />
+            <h2 className="h-section mt-6">Et après le permis&nbsp;: les plans pour construire</h2>
+          </div>
+          <div>
+            <p className="lead">
+              Les pièces du permis montrent ce que vous avez le droit de bâtir, pas comment. Fondations, béton armé,
+              plancher, charpente, réseaux&nbsp;: nous dessinons aussi les plans d&apos;exécution que lisent vos artisans,
+              à l&apos;unité ou en pack, à prix fixe, calculés par notre bureau d&apos;études pour ce qui porte.
+            </p>
+            <p className="mt-5 text-ink-2 leading-relaxed">
+              Et pour le volet réglementaire, notre thermicien établit l&apos;attestation RE2020, l&apos;étude complète
+              (Bbio, Cep, confort d&apos;été) et l&apos;analyse de cycle de vie des matériaux.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/plans-execution" className="btn btn-line">Les plans d&apos;exécution</Link>
+              <Link href="/etude-thermique-re2020" className="btn btn-line">L&apos;étude thermique RE2020</Link>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ---------- CTA final ---------- */}

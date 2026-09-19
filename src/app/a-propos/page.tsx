@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { site, plans } from "@/config/site";
+import { site, plans, metiers } from "@/config/site";
 import { formatEuro } from "@/lib/format";
 import JsonLd from "@/components/JsonLd";
 import { aboutPageSchema, breadcrumb } from "@/lib/schema";
@@ -8,9 +8,9 @@ import { withSeo } from "@/lib/seo";
 import { SURFACE_MAX } from "@/lib/formulaFinder";
 
 export const metadata: Metadata = withSeo("/a-propos", {
-  title: "Qui monte votre dossier de permis de construire",
+  title: "Architecte, dessinateur, ingénieur béton : qui monte votre permis",
   description:
-    "Permis by ID Maîtrise est la marque de la SARL ID Maîtrise, maîtrise d'œuvre au Havre fondée par Dursun O. Méthode de travail, assurances et engagement de prix fixe.",
+    "Permis by ID Maîtrise est la marque de la SARL ID Maîtrise, bureau d'études au Havre qui allie ingénierie de la construction et conception architecturale, fondé par Dursun O. Méthode de travail, assurances et engagement de prix fixe.",
 });
 
 export default function AProposPage() {
@@ -28,24 +28,28 @@ export default function AProposPage() {
           <span className="rule" aria-hidden="true" />
           <p className="mt-6 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-brass">À propos</p>
           <h1 className="display mt-4 text-5xl sm:text-6xl lg:text-7xl max-w-[18ch]">
-            Derrière le site, un <em>maître d&apos;œuvre</em> et son agence.
+            Derrière le site, un bureau d&apos;études qui allie <em>ingénierie</em> et <em>architecture</em>.
           </h1>
           {/* Réponse d'abord : c'est ce paragraphe que citent les assistants. */}
           <p className="lead mt-8 max-w-[62ch]">
-            {site.name} est la marque de {site.legal.company}, agence de maîtrise d&apos;œuvre installée au{" "}
-            {site.address.city} et dirigée par {site.author}. Nous ne sommes ni une place de marché, ni un
-            intermédiaire : la personne qui dessine votre dossier de permis de construire est la même que celle qui
-            répond à votre e-mail et qui suit l&apos;instruction en mairie.
+            {site.name} est la marque de {site.legal.company}, bureau d&apos;études en ingénierie de la construction
+            installé au {site.address.city} et dirigé par {site.author}. Sous le même toit, l&apos;ingénieur qui calcule
+            la structure et le concepteur qui dessine la maison : c&apos;est cette combinaison qui fait des permis
+            solides et des plans que les artisans peuvent construire. Nous ne sommes ni une place de marché, ni un
+            intermédiaire : la personne qui dessine votre dossier est la même que celle qui répond à votre e-mail et
+            qui suit l&apos;instruction en mairie.
           </p>
         </div>
       </section>
 
       <div className="mx-auto max-w-3xl px-5 sm:px-8 py-16 prose-guide">
-        <h2>Une agence de maîtrise d&apos;œuvre, pas un service en ligne</h2>
+        <h2>Un bureau d&apos;études et une agence de conception, pas un service en ligne</h2>
         <p>
-          {site.parent} conçoit et suit des chantiers de maisons individuelles, d&apos;extensions et de rénovations
-          toute l&apos;année, depuis {site.address.street}, {site.address.zip} {site.address.city}. Le permis de
-          construire n&apos;est qu&apos;une étape de ce métier : nous le déposons chaque semaine, nous savons ce
+          {site.parent} réunit deux métiers que l&apos;on trouve d&apos;ordinaire dans deux entreprises différentes :
+          l&apos;ingénierie du bureau d&apos;études (structure, béton armé, charpente, réseaux, thermique) et la conception
+          architecturale (implantation, volumes, façades, plans). Nous concevons, calculons et suivons des chantiers de
+          maisons individuelles, d&apos;extensions et de rénovations toute l&apos;année, depuis {site.address.street},{" "}
+          {site.address.zip} {site.address.city}. Le permis de construire n&apos;est qu&apos;une étape de ce métier : nous le déposons chaque semaine, nous savons ce
           qu&apos;un instructeur regarde en premier et ce qui déclenche une demande de pièces complémentaires.
         </p>
         <p>
@@ -58,8 +62,9 @@ export default function AProposPage() {
 
         <h2>Qui dessine votre dossier</h2>
         <p>
-          <strong>{site.author}</strong>, maître d&apos;œuvre, fondateur de {site.legal.company}. Il rédige les
-          contenus de ce site, établit les devis et monte les dossiers. Lorsque la surface de plancher dépasse 150 m² et
+          <strong>{site.author}</strong>, maître d&apos;œuvre et fondateur de {site.legal.company}. Il rédige les
+          contenus de ce site, établit les devis et monte les dossiers, avec l&apos;appui du bureau d&apos;études pour
+          tout ce qui se calcule. Lorsque la surface de plancher dépasse 150 m² et
           que le recours à un architecte devient légalement obligatoire, le dossier est monté avec un architecte
           partenaire inscrit à l&apos;Ordre.
         </p>
@@ -68,6 +73,20 @@ export default function AProposPage() {
           à ajouter ici. Un visage augmente nettement la crédibilité d'une page
           « à propos », et Google associe l'entité à une personne réelle.
         */}
+
+        <h2>Architecte, dessinateur, ingénieur béton : qui fait quoi</h2>
+        <p>
+          Un permis de construire de maison individuelle passe par plusieurs métiers. Chez {site.parent}, ils sont
+          réunis dans le même bureau d&apos;études, ce qui évite les allers-retours entre un architecte, un dessinateur
+          indépendant et un ingénieur béton qui ne se parlent pas.
+        </p>
+        <ul>
+          {metiers.map((m) => (
+            <li key={m.titre}>
+              <strong>{m.titre}.</strong> {m.role}
+            </li>
+          ))}
+        </ul>
 
         <h2>Ce qui nous engage</h2>
         <p>

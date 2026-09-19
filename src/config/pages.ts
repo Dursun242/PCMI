@@ -55,7 +55,7 @@ export const staticPages: StaticPage[] = [
     changeFrequency: "monthly",
     priority: 0.6,
     summary:
-      "Qui monte les dossiers : ID Maîtrise, maîtrise d'œuvre au Havre, fondée par Dursun O. Méthode de travail, assurances et engagement de prix fixe.",
+      "Qui monte les dossiers : ID Maîtrise, bureau d'études au Havre qui allie ingénierie de la construction et conception architecturale, fondé par Dursun O. Méthode de travail, assurances et engagement de prix fixe.",
   },
   {
     path: "/conseils",
@@ -71,6 +71,22 @@ export const staticPages: StaticPage[] = [
     priority: 0.8,
     summary:
       "Envoi d'un plan de masse existant (PDF, DWG, DXF) pour chiffrage : ce que la pièce PCMI 2 doit montrer et ce qui manque le plus souvent.",
+  },
+  {
+    path: "/plans-execution",
+    lastModified: "2026-09-19",
+    changeFrequency: "monthly",
+    priority: 0.9,
+    summary:
+      "Plans d'exécution après le permis : fondations, béton armé, plancher, charpente, couverture, menuiseries, électricité, plomberie, VRD, détails. À l'unité ou en pack, à partir de 290 € TTC, calcul de structure par le bureau d'études d'ID Maîtrise.",
+  },
+  {
+    path: "/etude-thermique-re2020",
+    lastModified: "2026-09-19",
+    changeFrequency: "monthly",
+    priority: 0.9,
+    summary:
+      "Études thermiques RE2020 : attestation au dépôt du permis (490 €), étude complète Bbio, Cep, DH et ACV, attestation d'achèvement, variantes. Explication des cinq indicateurs de la RE2020.",
   },
   {
     path: "/devis",

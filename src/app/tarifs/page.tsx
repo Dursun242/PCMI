@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { plans, options, site } from "@/config/site";
+import { plans, options, site, exePlans } from "@/config/site";
 import PlanCard from "@/components/PlanCard";
 import { formatEuro } from "@/lib/format";
 import JsonLd from "@/components/JsonLd";
@@ -13,7 +13,7 @@ import { withSeo } from "@/lib/seo";
 export const metadata: Metadata = withSeo("/tarifs", {
   title: "Tarifs permis de construire maison : trois formules à prix fixe",
   description:
-    "Prix d'un permis de construire de maison individuelle jusqu'à 149 m² de surface de plancher, réalisé par un maître d'œuvre : Essentiel, Complet ou Premium, à prix fixe, partout en France. Au-delà, sur devis.",
+    "Prix d'un permis de construire de maison individuelle jusqu'à 149 m² de surface de plancher, réalisé par un bureau d'études (dessinateur, ingénieur, architecte partenaire) : Essentiel, Complet ou Premium, à prix fixe, partout en France. Au-delà, sur devis.",
 });
 
 const re2020Price = options.find((o) => o.name === "Attestation RE2020 seule")?.priceTTC ?? 0;
@@ -79,6 +79,24 @@ export default function TarifsPage() {
             </p>
           </div>
           <Link href="/devis" className="btn btn-line">Demander un devis sur mesure</Link>
+        </div>
+        <div className="mt-8 border-t border-stone-2 pt-6 flex flex-wrap items-center justify-between gap-6">
+          <div className="max-w-[60ch]">
+            <p className="display text-2xl">Après le permis : les plans d&apos;exécution.</p>
+            <p className="mt-1 text-ink-2">
+              Fondations, béton armé, plancher, charpente, réseaux : les plans que lisent vos artisans, à l&apos;unité ou en pack, à partir de {formatEuro(Math.min(...exePlans.map((p) => p.fromPriceTTC)))} TTC.
+            </p>
+          </div>
+          <Link href="/plans-execution" className="btn btn-line">Voir les plans d&apos;exécution</Link>
+        </div>
+        <div className="mt-8 border-t border-stone-2 pt-6 flex flex-wrap items-center justify-between gap-6">
+          <div className="max-w-[60ch]">
+            <p className="display text-2xl">Étude thermique RE2020 : attestation, Bbio, ACV.</p>
+            <p className="mt-1 text-ink-2">
+              L&apos;attestation au dépôt est incluse dans Complet et Premium. L&apos;étude complète et l&apos;analyse de cycle de vie sont établies par notre thermicien.
+            </p>
+          </div>
+          <Link href="/etude-thermique-re2020" className="btn btn-line">Voir les études RE2020</Link>
         </div>
 
         <Garanties className="mt-16" />

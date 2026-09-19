@@ -1,4 +1,4 @@
-import { site, plans } from "@/config/site";
+import { site, plans, exePlans, exePacks, metiers, thermique } from "@/config/site";
 
 export const organizationSchema = {
   "@context": "https://schema.org",
@@ -25,8 +25,19 @@ export const organizationSchema = {
   sameAs: Object.values(site.social).filter(Boolean),
   foundingLocation: { "@type": "Place", name: `${site.address.city}, ${site.address.region}` },
   founder: { "@type": "Person", name: site.author, jobTitle: "Maître d'œuvre" },
+  knowsAbout: [
+    "Permis de construire maison individuelle",
+    "Architecture de maison individuelle",
+    "Dessinateur en bâtiment",
+    "Ingénierie béton armé",
+    "Calcul de structure et charpente",
+    "Plans d'exécution",
+    "RE2020",
+    "Étude thermique RE2020, Bbio, Cep, ACV",
+    ...metiers.map((m) => m.titre),
+  ],
   description:
-    "Conception et dépôt de dossiers de permis de construire pour maisons individuelles, par un maître d'œuvre, partout en France.",
+    "Conception et dépôt de dossiers de permis de construire pour maisons individuelles, par un bureau d'études qui allie ingénierie de la construction et conception architecturale, partout en France.",
   makesOffer: plans.map((p) => ({
     "@type": "Offer",
     name: `Permis de construire maison — formule ${p.name}`,
@@ -126,6 +137,70 @@ export function serviceSchema() {
       priceSpecification: {
         "@type": "UnitPriceSpecification",
         price: p.priceTTC,
+        priceCurrency: "EUR",
+        valueAddedTaxIncluded: true,
+      },
+    })),
+  };
+}
+
+/** Service vendu sur /plans-execution : lots et packs en Offer, prix « à partir de ». */
+export function exeServiceSchema() {
+  const offer = (o: { id: string; name: string; fromPriceTTC: number; description: string }) => ({
+    "@type": "Offer",
+    name: o.name,
+    description: o.description,
+    priceCurrency: "EUR",
+    availability: "https://schema.org/InStock",
+    eligibleRegion: { "@type": "Country", name: "France" },
+    url: `${site.url}/plans-execution#${o.id}`,
+    priceSpecification: {
+      "@type": "PriceSpecification",
+      minPrice: o.fromPriceTTC,
+      priceCurrency: "EUR",
+      valueAddedTaxIncluded: true,
+    },
+  });
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Plans d'exécution de maison individuelle",
+    serviceType: "Plans d'exécution (structure, charpente, réseaux)",
+    provider: ORG_REF,
+    areaServed: { "@type": "Country", name: "France" },
+    url: `${site.url}/plans-execution`,
+    description:
+      "Plans d'exécution dessinés et calculés par un bureau d'études qui allie ingénierie et architecture, après l'accord du permis : fondations, béton armé, plancher, charpente, couverture, menuiseries, électricité, plomberie, VRD et détails techniques. Dimensionnement des ouvrages porteurs par le bureau d'études structure.",
+    offers: [
+      ...exePacks.map((p) => offer({ id: p.id, name: p.name, fromPriceTTC: p.fromPriceTTC, description: p.promise })),
+      ...exePlans.map((p) => offer(p)),
+    ],
+  };
+}
+
+/** Service vendu sur /etude-thermique-re2020 : prestations en Offer, prix « à partir de ». */
+export function thermiqueServiceSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Étude thermique RE2020 de maison individuelle",
+    serviceType: "Étude thermique et environnementale RE2020 (attestation, Bbio, Cep, ACV)",
+    provider: ORG_REF,
+    areaServed: { "@type": "Country", name: "France" },
+    url: `${site.url}/etude-thermique-re2020`,
+    description:
+      "Attestation RE2020 au dépôt du permis et à l'achèvement, étude thermique complète (Bbio, Cep, Cep,nr, DH, Ic énergie, Ic construction) et analyse de cycle de vie, par le thermicien du bureau d'études.",
+    offers: thermique.map((t) => ({
+      "@type": "Offer",
+      name: t.name,
+      description: t.description,
+      priceCurrency: "EUR",
+      availability: "https://schema.org/InStock",
+      eligibleRegion: { "@type": "Country", name: "France" },
+      url: `${site.url}/etude-thermique-re2020#${t.id}`,
+      priceSpecification: {
+        "@type": "PriceSpecification",
+        minPrice: t.fromPriceTTC,
         priceCurrency: "EUR",
         valueAddedTaxIncluded: true,
       },
