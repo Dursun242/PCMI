@@ -21,6 +21,8 @@ export const organizationSchema = {
     addressCountry: site.address.country,
   },
   areaServed: { "@type": "Country", name: "France" },
+  // Rattache les comptes officiels à l'entité. Les entrées vides sont écartées.
+  sameAs: Object.values(site.social).filter(Boolean),
   foundingLocation: { "@type": "Place", name: `${site.address.city}, ${site.address.region}` },
   founder: { "@type": "Person", name: site.author, jobTitle: "Maître d'œuvre" },
   description:

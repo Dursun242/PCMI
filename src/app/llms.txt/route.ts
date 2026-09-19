@@ -56,7 +56,7 @@ ${articles
 ## Contact
 
 - E-mail : ${site.email}${site.phone ? `\n- Téléphone : ${site.phone}` : ""}
-- Zone d'intervention : France entière, à distance. Déplacement possible en ${site.address.region}.
+- Zone d'intervention : France entière, à distance. Déplacement possible en ${site.address.region}.${site.social.instagram ? `\n- Instagram : ${site.social.instagram}` : ""}
 - Société mère : ${site.parent} — ${site.parentUrl}
 `;
 

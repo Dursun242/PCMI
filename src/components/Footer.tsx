@@ -51,6 +51,20 @@ export default function Footer() {
               <br />
               Intervention partout en France.
             </p>
+            {site.social.instagram && (
+              <a
+                href={site.social.instagram}
+                rel="me noopener"
+                className="mt-4 inline-flex items-center gap-2 hover:text-brass-2"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                  <rect x="2.5" y="2.5" width="19" height="19" rx="5" />
+                  <circle cx="12" cy="12" r="4.2" />
+                  <circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none" />
+                </svg>
+                Nos chantiers sur Instagram
+              </a>
+            )}
           </div>
 
           <div>

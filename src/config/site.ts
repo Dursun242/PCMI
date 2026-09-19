@@ -16,7 +16,7 @@ export const site: {
   phone: string;
   address: { street: string; zip: string; city: string; region: string; country: string };
   legal: { company: string; director: string; siren: string; rcs: string; vat: string; insurer: string; host: string };
-  social: { linkedin: string };
+  social: { instagram: string; linkedin: string };
 } = {
   name: "Permis by ID Maîtrise",
   shortName: "Permis",
@@ -55,7 +55,14 @@ export const site: {
     insurer: "",
     host: "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis",
   },
+  /**
+   * Comptes officiels de l'entreprise. Ils alimentent le pied de page et le
+   * `sameAs` du schéma Organization, qui permet à Google de rattacher ces
+   * comptes à l'entité — condition d'apparition dans le panneau de
+   * connaissance. Laisser une chaîne vide masque simplement le lien.
+   */
   social: {
+    instagram: "https://www.instagram.com/idmaitrise/",
     linkedin: "",
   },
 };
