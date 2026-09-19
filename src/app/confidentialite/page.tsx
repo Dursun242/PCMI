@@ -35,7 +35,18 @@ export default function ConfidentialitePage() {
 
       <h2>Cookies et mesure d&apos;audience</h2>
       <p>
-        Ce site n&apos;utilise aucun cookie publicitaire. Si une mesure d&apos;audience est activée, elle est configurée sans identification individuelle.
+        Ce site ne dépose aucun cookie publicitaire et ne pratique aucun suivi entre sites. La fréquentation est mesurée
+        avec Vercel Web Analytics, un outil sans cookie : il n&apos;enregistre aucun identifiant permettant de vous
+        reconnaître d&apos;une visite à l&apos;autre. Seuls sont comptés des
+        événements anonymes de parcours (page consultée, clic sur un bouton de devis, formule retenue, tranche de
+        surface). Aucune donnée que vous saisissez dans un formulaire — nom, e-mail, téléphone, commune — n&apos;est
+        transmise à cet outil, qui ne conserve pas votre adresse IP. Cette mesure ne reposant sur aucune lecture ni
+        écriture d&apos;information sur votre appareil, elle ne donne pas lieu à une demande de consentement.
+      </p>
+      <p>
+        Le formulaire de fiche projet enregistre en revanche votre brouillon dans le stockage local de votre navigateur,
+        pour que vous puissiez le reprendre plus tard. Cette donnée ne quitte pas votre appareil tant que vous
+        n&apos;envoyez pas le formulaire, et vider les données de navigation la supprime.
       </p>
 
       <h2>Vos droits</h2>
