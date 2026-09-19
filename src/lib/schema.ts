@@ -21,7 +21,7 @@ export const organizationSchema = {
     addressCountry: site.address.country,
   },
   areaServed: { "@type": "Country", name: "France" },
-  // Rattache les comptes officiels à l'entité. Les entrées vides sont écartées.
+  // Comptes de l'entreprise uniquement. Les entrées vides sont écartées.
   sameAs: Object.values(site.social).filter(Boolean),
   foundingLocation: { "@type": "Place", name: `${site.address.city}, ${site.address.region}` },
   founder: { "@type": "Person", name: site.author, jobTitle: "Maître d'œuvre" },
@@ -98,6 +98,8 @@ export const authorSchema = {
   jobTitle: "Maître d'œuvre",
   worksFor: ORG_REF,
   url: `${site.url}/a-propos`,
+  // Profils personnels : ils rattachent l'auteur à une identité vérifiable.
+  sameAs: Object.values(site.authorSocial).filter(Boolean),
 };
 
 /** Service vendu sur /tarifs : les trois formules en Offer. */
