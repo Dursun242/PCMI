@@ -10,7 +10,7 @@ import { SURFACE_MAX } from "@/lib/formulaFinder";
 export const metadata: Metadata = withSeo("/a-propos", {
   title: "Qui monte votre dossier de permis de construire",
   description:
-    "Permis by ID Maîtrise est la marque de la SARL ID Maîtrise, maîtrise d'œuvre au Havre fondée par Dursun OZKAN. Méthode de travail, assurances et engagement de prix fixe.",
+    "Permis by ID Maîtrise est la marque de la SARL ID Maîtrise, maîtrise d'œuvre au Havre fondée par Dursun O. Méthode de travail, assurances et engagement de prix fixe.",
 });
 
 export default function AProposPage() {
@@ -33,7 +33,7 @@ export default function AProposPage() {
           {/* Réponse d'abord : c'est ce paragraphe que citent les assistants. */}
           <p className="lead mt-8 max-w-[62ch]">
             {site.name} est la marque de {site.legal.company}, agence de maîtrise d&apos;œuvre installée au{" "}
-            {site.address.city} et dirigée par {site.legal.director}. Nous ne sommes ni une place de marché, ni un
+            {site.address.city} et dirigée par {site.author}. Nous ne sommes ni une place de marché, ni un
             intermédiaire : la personne qui dessine votre dossier de permis de construire est la même que celle qui
             répond à votre e-mail et qui suit l&apos;instruction en mairie.
           </p>
@@ -58,7 +58,7 @@ export default function AProposPage() {
 
         <h2>Qui dessine votre dossier</h2>
         <p>
-          <strong>{site.legal.director}</strong>, maître d&apos;œuvre, fondateur de {site.legal.company}. Il rédige les
+          <strong>{site.author}</strong>, maître d&apos;œuvre, fondateur de {site.legal.company}. Il rédige les
           contenus de ce site, établit les devis et monte les dossiers. Lorsque la surface de plancher dépasse 150 m² et
           que le recours à un architecte devient légalement obligatoire, le dossier est monté avec un architecte
           partenaire inscrit à l&apos;Ordre.

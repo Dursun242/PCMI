@@ -8,6 +8,7 @@ export const site: {
   name: string;
   shortName: string;
   parent: string;
+  author: string;
   tagline: string;
   url: string;
   parentUrl: string;
@@ -20,6 +21,16 @@ export const site: {
   name: "Permis by ID Maîtrise",
   shortName: "Permis",
   parent: "ID Maîtrise",
+  /**
+   * Nom affiché partout sur le site public : signature des articles et du
+   * guide, auteur et fondateur dans les données structurées, page À propos,
+   * llms.txt.
+   *
+   * `legal.director` garde le nom complet, et uniquement là où la loi ou un
+   * échange contractuel l'impose : mentions légales et directeur de la
+   * publication, signature des e-mails adressés à un client.
+   */
+  author: "Dursun O.",
   tagline: "Le permis de construire de votre maison, dessiné par un maître d'œuvre, au prix juste.",
   // Domaine de production
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://permis-maison-individuelle.fr",

@@ -5,7 +5,7 @@ import { formatFrDate } from "@/lib/format";
 export default function AuthorByline({ updatedAt }: { updatedAt: string }) {
   return (
     <p className="mt-6 text-sm text-ink-2">
-      Par {site.legal.director}, maître d&apos;œuvre — Mis à jour le <time dateTime={updatedAt}>{formatFrDate(updatedAt)}</time>
+      Par {site.author}, maître d&apos;œuvre — Mis à jour le <time dateTime={updatedAt}>{formatFrDate(updatedAt)}</time>
     </p>
   );
 }
