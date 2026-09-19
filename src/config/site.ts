@@ -16,7 +16,7 @@ export const site: {
   phone: string;
   address: { street: string; zip: string; city: string; region: string; country: string };
   legal: { company: string; director: string; siren: string; rcs: string; vat: string; insurer: string; host: string };
-  social: { instagram: string };
+  social: { instagram: string; google: string };
   authorSocial: { linkedin: string };
 } = {
   name: "Permis by ID Maîtrise",
@@ -64,6 +64,13 @@ export const site: {
    */
   social: {
     instagram: "https://www.instagram.com/idmaitrise/",
+    /*
+     * Fiche d'établissement Google. Lien court fourni par l'application : il
+     * fonctionne et Google le résout, mais l'URL canonique de la fiche
+     * (google.com/maps/place/… ou g.page/…) serait préférable dans un `sameAs`.
+     * TODO(Dursun) : remplacer si vous récupérez cette adresse longue.
+     */
+    google: "https://maps.app.goo.gl/urk3phpj1f15pvPw6",
   },
   /**
    * Profils PERSONNELS du maître d'œuvre. Ils alimentent le `sameAs` de la

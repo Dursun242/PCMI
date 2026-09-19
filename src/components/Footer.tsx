@@ -78,6 +78,19 @@ export default function Footer() {
                 {site.author} sur LinkedIn
               </a>
             )}
+            {site.social.google && (
+              <a
+                href={site.social.google}
+                rel="noopener"
+                className="mt-2 inline-flex items-center gap-2 hover:text-brass-2"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                  <path d="M12 21.5s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" strokeLinejoin="round" />
+                  <circle cx="12" cy="10.2" r="2.6" />
+                </svg>
+                Notre fiche Google
+              </a>
+            )}
           </div>
 
           <div>
