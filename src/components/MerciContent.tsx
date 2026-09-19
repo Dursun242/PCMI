@@ -22,7 +22,7 @@ const documents: [string, string][] = [
 ];
 
 /** Segments acceptés après /devis/merci. */
-export const MERCI_TYPES = [...plans.map((p) => p.id), "conseil", "plan-de-masse", "plans-execution"] as const;
+export const MERCI_TYPES = [...plans.map((p) => p.id), "conseil", "plan-de-masse", "plans-execution", "etude-thermique"] as const;
 export type MerciType = (typeof MERCI_TYPES)[number];
 
 export function isMerciType(v: string): v is MerciType {
@@ -33,6 +33,7 @@ export default function MerciContent({ type }: { type?: MerciType }) {
   const plan = plans.find((p) => p.id === (type as PlanId));
   const viaPlanDeMasse = type === "plan-de-masse";
   const viaExe = type === "plans-execution";
+  const viaThermique = type === "etude-thermique";
 
   return (
     <div className="mx-auto max-w-3xl px-5 sm:px-8 py-16 sm:py-24">
@@ -42,6 +43,7 @@ export default function MerciContent({ type }: { type?: MerciType }) {
         Un e-mail de confirmation part à l&apos;instant vers votre boîte de réception — pensez à vérifier vos courriers
         indésirables.{viaPlanDeMasse ? " Votre plan nous est bien parvenu." : ""}
         {viaExe ? " Votre demande porte sur des plans d'exécution : le devis détaille un prix fixe par lot." : ""}
+        {viaThermique ? " Votre demande porte sur une étude thermique RE2020 : notre thermicien vous répond avec un prix fixe par prestation." : ""}
         {plan ? ` Votre demande porte sur la formule ${plan.name} (${formatEuro(plan.priceTTC)} TTC, livrée sous ${plan.delayWorkingDays}).` : ""}
       </p>
 

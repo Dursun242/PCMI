@@ -329,6 +329,86 @@ export const exePacks: ExePack[] = [
 ];
 
 /**
+ * Études thermiques et environnementales RE2020.
+ *
+ * L'attestation RE2020 est obligatoire au dépôt du permis (et à l'achèvement)
+ * pour toute maison neuve. L'étude complète calcule les indicateurs de la
+ * réglementation : Bbio (besoin bioclimatique), Cep et Cep,nr (consommations),
+ * DH (confort d'été), Ic énergie et Ic construction (analyse de cycle de vie).
+ * Prix « à partir de », TTC, valeurs de départ à ajuster.
+ */
+export type ThermiqueId =
+  | "attestation-depot"
+  | "etude-complete"
+  | "acv"
+  | "attestation-achevement"
+  | "variantes"
+  | "pack-re2020";
+
+export interface ThermiqueOffre {
+  id: ThermiqueId;
+  name: string;
+  fromPriceTTC: number;
+  /** Quand cette pièce intervient dans le projet. */
+  when: string;
+  description: string;
+  deliverables: string[];
+  highlight?: boolean;
+}
+
+export const thermique: ThermiqueOffre[] = [
+  {
+    id: "attestation-depot",
+    name: "Attestation RE2020 au dépôt du permis",
+    fromPriceTTC: 350,
+    when: "Au dépôt du permis",
+    description: "La pièce obligatoire jointe au CERFA : calcul du Bbio et vérification des exigences de moyens, à partir de vos plans.",
+    deliverables: ["Calcul du Bbio", "Attestation officielle générée sur le site du ministère (RT-RE-bâtiment)", "Récapitulatif des hypothèses"],
+  },
+  {
+    id: "etude-complete",
+    name: "Étude thermique RE2020 complète",
+    fromPriceTTC: 690,
+    when: "Avant la consultation des artisans",
+    description: "Tous les indicateurs de la réglementation : Bbio, Cep, Cep,nr, DH (confort d'été), Ic énergie et Ic construction, avec le choix des isolants, des menuiseries et du système de chauffage.",
+    deliverables: ["Bbio, Cep, Cep,nr, DH", "Ic énergie et Ic construction (ACV)", "Fiche de synthèse et récapitulatif standardisé (RSEE)", "Prescriptions par lot pour les devis"],
+    highlight: true,
+  },
+  {
+    id: "acv",
+    name: "Analyse de cycle de vie (ACV) seule",
+    fromPriceTTC: 390,
+    when: "Pendant la conception",
+    description: "Calcul de l'impact carbone de la construction (Ic construction) à partir des fiches FDES et PEP des matériaux, avec les variantes qui font baisser le score.",
+    deliverables: ["Ic construction par lot", "Comparatif de deux modes constructifs", "Recommandations matériaux"],
+  },
+  {
+    id: "attestation-achevement",
+    name: "Attestation RE2020 à l'achèvement",
+    fromPriceTTC: 290,
+    when: "À la fin des travaux",
+    description: "La seconde attestation obligatoire, jointe à la déclaration d'achèvement (DAACT), établie à partir des matériaux réellement posés et du test d'étanchéité à l'air.",
+    deliverables: ["Mise à jour de l'étude avec les factures et fiches techniques", "Attestation d'achèvement", "Vérification du test d'étanchéité à l'air (réalisé par un opérateur agréé)"],
+  },
+  {
+    id: "variantes",
+    name: "Variante ou optimisation",
+    fromPriceTTC: 190,
+    when: "À la demande",
+    description: "Une simulation supplémentaire : changer d'isolant, de chauffage, de menuiseries, ou trouver le moyen le moins cher d'atteindre le seuil.",
+    deliverables: ["Recalcul des indicateurs", "Comparatif avant / après", "Estimation du surcoût ou de l'économie"],
+  },
+  {
+    id: "pack-re2020",
+    name: "Pack RE2020 complet",
+    fromPriceTTC: 990,
+    when: "Du permis à la livraison",
+    description: "L'attestation au dépôt, l'étude complète avec ACV et l'attestation d'achèvement : tout le volet réglementaire thermique de la maison, suivi par le même thermicien.",
+    deliverables: ["Attestation au dépôt du permis", "Étude complète : Bbio, Cep, DH, ACV", "Attestation à l'achèvement", "Une variante incluse"],
+  },
+];
+
+/**
  * Les métiers réunis dans le bureau d'études. Alimentent la page À propos,
  * le `knowsAbout` des données structurées et le llms.txt : les termes
  * « architecte », « dessinateur », « ingénieur béton » sont ceux que tapent

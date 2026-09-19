@@ -1,4 +1,4 @@
-import { site, plans, exePlans, exePacks, metiers } from "@/config/site";
+import { site, plans, exePlans, exePacks, metiers, thermique } from "@/config/site";
 
 export const organizationSchema = {
   "@context": "https://schema.org",
@@ -33,6 +33,7 @@ export const organizationSchema = {
     "Calcul de structure et charpente",
     "Plans d'exécution",
     "RE2020",
+    "Étude thermique RE2020, Bbio, Cep, ACV",
     ...metiers.map((m) => m.titre),
   ],
   description:
@@ -174,6 +175,36 @@ export function exeServiceSchema() {
       ...exePacks.map((p) => offer({ id: p.id, name: p.name, fromPriceTTC: p.fromPriceTTC, description: p.promise })),
       ...exePlans.map((p) => offer(p)),
     ],
+  };
+}
+
+/** Service vendu sur /etude-thermique-re2020 : prestations en Offer, prix « à partir de ». */
+export function thermiqueServiceSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Étude thermique RE2020 de maison individuelle",
+    serviceType: "Étude thermique et environnementale RE2020 (attestation, Bbio, Cep, ACV)",
+    provider: ORG_REF,
+    areaServed: { "@type": "Country", name: "France" },
+    url: `${site.url}/etude-thermique-re2020`,
+    description:
+      "Attestation RE2020 au dépôt du permis et à l'achèvement, étude thermique complète (Bbio, Cep, Cep,nr, DH, Ic énergie, Ic construction) et analyse de cycle de vie, par le thermicien du bureau d'études.",
+    offers: thermique.map((t) => ({
+      "@type": "Offer",
+      name: t.name,
+      description: t.description,
+      priceCurrency: "EUR",
+      availability: "https://schema.org/InStock",
+      eligibleRegion: { "@type": "Country", name: "France" },
+      url: `${site.url}/etude-thermique-re2020#${t.id}`,
+      priceSpecification: {
+        "@type": "PriceSpecification",
+        minPrice: t.fromPriceTTC,
+        priceCurrency: "EUR",
+        valueAddedTaxIncluded: true,
+      },
+    })),
   };
 }
 

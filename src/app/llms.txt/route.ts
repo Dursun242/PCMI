@@ -1,4 +1,4 @@
-import { site, plans, options, exePlans, exePacks, metiers } from "@/config/site";
+import { site, plans, options, exePlans, exePacks, metiers, thermique } from "@/config/site";
 import { staticPages } from "@/config/pages";
 import { getArticles } from "@/lib/articles";
 import { SURFACE_ARCHITECTE, SURFACE_MAX } from "@/lib/formulaFinder";
@@ -48,6 +48,10 @@ ${options.map((o) => `- ${o.name} — ${euros(o.priceTTC)}. ${o.note}`).join("\n
 Plans EXE dessinés par le pôle conception, dimensionnement des ouvrages porteurs par le bureau d'études structure d'ID Maîtrise. Prix « à partir de », TTC, devis fixe lot par lot sous 48 h ouvrées.
 ${exePacks.map((p) => `- **${p.name}** — à partir de ${euros(p.fromPriceTTC)}, livré sous ${p.delayWorkingDays}. ${p.promise}`).join("\n")}
 ${exePlans.map((p) => `- ${p.name} (${p.forTrade}) — à partir de ${euros(p.fromPriceTTC)}. ${p.description}`).join("\n")}
+
+## Études thermiques RE2020
+Par le thermicien du bureau d'études. Prix « à partir de », TTC, devis fixe sous 48 h ouvrées.
+${thermique.map((t) => `- ${t.name} (${t.when.toLowerCase()}) — à partir de ${euros(t.fromPriceTTC)}. ${t.description}`).join("\n")}
 
 ## Pages
 

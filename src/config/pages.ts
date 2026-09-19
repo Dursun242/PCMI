@@ -81,6 +81,14 @@ export const staticPages: StaticPage[] = [
       "Plans d'exécution après le permis : fondations, béton armé, plancher, charpente, couverture, menuiseries, électricité, plomberie, VRD, détails. À l'unité ou en pack, à partir de 290 € TTC, calcul de structure par le bureau d'études d'ID Maîtrise.",
   },
   {
+    path: "/etude-thermique-re2020",
+    lastModified: "2026-09-19",
+    changeFrequency: "monthly",
+    priority: 0.9,
+    summary:
+      "Études thermiques RE2020 : attestation au dépôt du permis (350 €), étude complète Bbio, Cep, DH et ACV, attestation d'achèvement, variantes. Explication des cinq indicateurs de la RE2020.",
+  },
+  {
     path: "/devis",
     lastModified: "2026-09-19",
     changeFrequency: "monthly",

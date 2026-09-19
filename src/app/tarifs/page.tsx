@@ -89,6 +89,15 @@ export default function TarifsPage() {
           </div>
           <Link href="/plans-execution" className="btn btn-line">Voir les plans d&apos;exécution</Link>
         </div>
+        <div className="mt-8 border-t border-stone-2 pt-6 flex flex-wrap items-center justify-between gap-6">
+          <div className="max-w-[60ch]">
+            <p className="display text-2xl">Étude thermique RE2020 : attestation, Bbio, ACV.</p>
+            <p className="mt-1 text-ink-2">
+              L&apos;attestation au dépôt est incluse dans Complet et Premium. L&apos;étude complète et l&apos;analyse de cycle de vie sont établies par notre thermicien.
+            </p>
+          </div>
+          <Link href="/etude-thermique-re2020" className="btn btn-line">Voir les études RE2020</Link>
+        </div>
 
         <Garanties className="mt-16" />
       </section>

@@ -284,7 +284,14 @@ export default function HomePage() {
               plancher, charpente, réseaux&nbsp;: nous dessinons aussi les plans d&apos;exécution que lisent vos artisans,
               à l&apos;unité ou en pack, à prix fixe, calculés par notre bureau d&apos;études pour ce qui porte.
             </p>
-            <Link href="/plans-execution" className="btn btn-line mt-8">Découvrir les plans d&apos;exécution</Link>
+            <p className="mt-5 text-ink-2 leading-relaxed">
+              Et pour le volet réglementaire, notre thermicien établit l&apos;attestation RE2020, l&apos;étude complète
+              (Bbio, Cep, confort d&apos;été) et l&apos;analyse de cycle de vie des matériaux.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/plans-execution" className="btn btn-line">Les plans d&apos;exécution</Link>
+              <Link href="/etude-thermique-re2020" className="btn btn-line">L&apos;étude thermique RE2020</Link>
+            </div>
           </div>
         </div>
       </section>
