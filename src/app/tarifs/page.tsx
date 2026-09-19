@@ -13,7 +13,7 @@ import { withSeo } from "@/lib/seo";
 export const metadata: Metadata = withSeo("/tarifs", {
   title: "Tarifs permis de construire maison : trois formules à prix fixe",
   description:
-    "Prix d'un permis de construire de maison individuelle jusqu'à 149 m² de surface de plancher, réalisé par un maître d'œuvre : Essentiel, Complet ou Premium, à prix fixe, partout en France. Au-delà, sur devis.",
+    "Prix d'un permis de construire de maison individuelle jusqu'à 149 m² de surface de plancher, réalisé par un bureau d'études (dessinateur, ingénieur, architecte partenaire) : Essentiel, Complet ou Premium, à prix fixe, partout en France. Au-delà, sur devis.",
 });
 
 const re2020Price = options.find((o) => o.name === "Attestation RE2020 seule")?.priceTTC ?? 0;

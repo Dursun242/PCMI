@@ -328,10 +328,28 @@ export const exePacks: ExePack[] = [
   },
 ];
 
+/**
+ * Les métiers réunis dans le bureau d'études. Alimentent la page À propos,
+ * le `knowsAbout` des données structurées et le llms.txt : les termes
+ * « architecte », « dessinateur », « ingénieur béton » sont ceux que tapent
+ * les particuliers qui cherchent qui peut faire leur permis.
+ */
+export const metiers: { titre: string; role: string }[] = [
+  { titre: "Dessinateur-projeteur en architecture", role: "Conception architecturale : implantation, volumes, façades, plans du permis de construire et plans d'exécution." },
+  { titre: "Ingénieur béton armé", role: "Calcul des fondations, semelles, poteaux, poutres, planchers et chaînages ; plans de coffrage et de ferraillage, note de calcul." },
+  { titre: "Ingénieur structure et charpente", role: "Dimensionnement des charpentes bois traditionnelles et fermettes, contreventement, descentes de charges." },
+  { titre: "Thermicien RE2020", role: "Étude thermique et attestation de prise en compte de la RE2020 jointe au permis." },
+  { titre: "Architecte partenaire inscrit à l'Ordre", role: "Signature du permis lorsque la loi l'impose, au-delà de 150 m² de surface de plancher." },
+];
+
 export const faq = [
   {
     q: "Ai-je besoin d'un architecte pour ma maison ?",
     a: "Non, tant que la surface de plancher de votre maison ne dépasse pas 150 m² (c'est le seuil légal). Nos trois formules à prix fixe s'appliquent jusqu'à 149 m² : un maître d'œuvre conçoit et dépose votre permis. Au-delà de 149 m², le permis est établi sur devis, avec notre architecte partenaire dès que le recours à un architecte devient légalement obligatoire (surface de plancher supérieure à 150 m²).",
+  },
+  {
+    q: "Êtes-vous architecte, dessinateur ou ingénieur ?",
+    a: "Les trois métiers travaillent ensemble chez ID Maîtrise : un dessinateur-projeteur assure la conception architecturale (implantation, volumes, façades, plans), un ingénieur béton armé et structure calcule ce qui porte (fondations, planchers, charpente), et un thermicien établit l'attestation RE2020. Nous ne sommes pas inscrits à l'Ordre des architectes : lorsque le recours à un architecte est légalement obligatoire (surface de plancher supérieure à 150 m²), le permis est signé par notre architecte partenaire inscrit à l'Ordre.",
   },
   {
     q: "Travaillez-vous partout en France ?",

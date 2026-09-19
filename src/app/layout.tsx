@@ -10,9 +10,9 @@ import { withSeo } from "@/lib/seo";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
 
 const home = withSeo("/", {
-  title: `Permis de construire maison individuelle — ${site.name}`,
+  title: `Permis de construire maison individuelle : architecture et ingénierie — ${site.name}`,
   description:
-    "Dossier de permis de construire complet (PCMI 1 à 8), rendus 3D, dépôt et suivi jusqu'à l'accord. Conçu par un bureau d'études qui allie ingénierie et architecture, partout en France, à prix fixe.",
+    "Dossier de permis de construire complet (PCMI 1 à 8), rendus 3D, dépôt et suivi jusqu'à l'accord. Conçu par un bureau d'études qui allie architecture et ingénierie : dessinateur-projeteur, ingénieur béton et structure, architecte partenaire au-delà de 150 m². Partout en France, à prix fixe.",
 });
 
 export const metadata: Metadata = {

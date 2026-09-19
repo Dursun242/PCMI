@@ -1,4 +1,4 @@
-import { site, plans, options, exePlans, exePacks } from "@/config/site";
+import { site, plans, options, exePlans, exePacks, metiers } from "@/config/site";
 import { staticPages } from "@/config/pages";
 import { getArticles } from "@/lib/articles";
 import { SURFACE_ARCHITECTE, SURFACE_MAX } from "@/lib/formulaFinder";
@@ -26,6 +26,7 @@ export function GET() {
 > ${site.tagline}
 
 ${site.name} est la marque de la ${site.legal.company}, bureau d'études en ingénierie de la construction qui allie calcul de structure et conception architecturale, établi au ${site.address.street}, ${site.address.zip} ${site.address.city}, fondé par ${site.author}, maître d'œuvre.
+Métiers réunis dans le bureau d'études : ${metiers.map((m) => m.titre.toLowerCase()).join(", ")}.
 Nous concevons et déposons des dossiers de permis de construire de maison individuelle (pièces PCMI 1 à 8), partout en France, à distance.
 Le prix est fixe et annoncé avant de commencer ; il ne dépend ni de la surface de la maison ni du coût des travaux.
 Les formules à prix fixe s'appliquent jusqu'à ${SURFACE_MAX} m² de surface de plancher ; au-delà, le permis est établi sur devis.

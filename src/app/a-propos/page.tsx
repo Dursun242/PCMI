@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { site, plans } from "@/config/site";
+import { site, plans, metiers } from "@/config/site";
 import { formatEuro } from "@/lib/format";
 import JsonLd from "@/components/JsonLd";
 import { aboutPageSchema, breadcrumb } from "@/lib/schema";
@@ -8,7 +8,7 @@ import { withSeo } from "@/lib/seo";
 import { SURFACE_MAX } from "@/lib/formulaFinder";
 
 export const metadata: Metadata = withSeo("/a-propos", {
-  title: "Qui monte votre dossier de permis de construire",
+  title: "Architecte, dessinateur, ingénieur béton : qui monte votre permis",
   description:
     "Permis by ID Maîtrise est la marque de la SARL ID Maîtrise, bureau d'études au Havre qui allie ingénierie de la construction et conception architecturale, fondé par Dursun O. Méthode de travail, assurances et engagement de prix fixe.",
 });
@@ -73,6 +73,20 @@ export default function AProposPage() {
           à ajouter ici. Un visage augmente nettement la crédibilité d'une page
           « à propos », et Google associe l'entité à une personne réelle.
         */}
+
+        <h2>Architecte, dessinateur, ingénieur béton : qui fait quoi</h2>
+        <p>
+          Un permis de construire de maison individuelle passe par plusieurs métiers. Chez {site.parent}, ils sont
+          réunis dans le même bureau d&apos;études, ce qui évite les allers-retours entre un architecte, un dessinateur
+          indépendant et un ingénieur béton qui ne se parlent pas.
+        </p>
+        <ul>
+          {metiers.map((m) => (
+            <li key={m.titre}>
+              <strong>{m.titre}.</strong> {m.role}
+            </li>
+          ))}
+        </ul>
 
         <h2>Ce qui nous engage</h2>
         <p>

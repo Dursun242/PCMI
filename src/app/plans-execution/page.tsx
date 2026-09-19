@@ -10,9 +10,9 @@ import { site, exePlans, exePacks, ht } from "@/config/site";
 import { formatEuro } from "@/lib/format";
 
 export const metadata: Metadata = withSeo("/plans-execution", {
-  title: "Plans d'exécution maison : structure, charpente, réseaux",
+  title: "Plans d'exécution maison : ingénieur béton, structure, charpente",
   description:
-    "Après le permis, les plans EXE pour construire : fondations, béton armé, plancher, charpente, couverture, électricité, plomberie, VRD. Dessinés et calculés par un bureau d'études qui allie ingénierie et architecture, à prix fixe, partout en France.",
+    "Après le permis, les plans EXE pour construire : fondations, béton armé, plancher, charpente, couverture, électricité, plomberie, VRD. Dessinés par notre dessinateur-projeteur, calculés par notre ingénieur béton armé et structure, à prix fixe, partout en France.",
 });
 
 const etapes: [string, string][] = [
@@ -74,7 +74,7 @@ export default function PlansExecutionPage() {
             Un permis accordé dit ce que vous avez le droit de bâtir. Il ne dit pas comment. Les plans d&apos;exécution
             (phase EXE) sont ceux que lisent le maçon, le charpentier, le couvreur et l&apos;électricien : fondations,
             béton armé, plancher, charpente, réseaux, détails. Chez {site.name}, ils sont dessinés et calculés sous le même toit :
-            le pôle conception les trace, le bureau d&apos;études dimensionne ce qui porte, et le prix est fixé lot par
+            le dessinateur-projeteur les trace, l&apos;ingénieur béton armé et structure dimensionne ce qui porte, et le prix est fixé lot par
             lot avant de commencer.
           </p>
           <div className="mt-10 flex flex-wrap gap-4">

@@ -1,4 +1,4 @@
-import { site, plans, exePlans, exePacks } from "@/config/site";
+import { site, plans, exePlans, exePacks, metiers } from "@/config/site";
 
 export const organizationSchema = {
   "@context": "https://schema.org",
@@ -25,6 +25,16 @@ export const organizationSchema = {
   sameAs: Object.values(site.social).filter(Boolean),
   foundingLocation: { "@type": "Place", name: `${site.address.city}, ${site.address.region}` },
   founder: { "@type": "Person", name: site.author, jobTitle: "Maître d'œuvre" },
+  knowsAbout: [
+    "Permis de construire maison individuelle",
+    "Architecture de maison individuelle",
+    "Dessinateur en bâtiment",
+    "Ingénierie béton armé",
+    "Calcul de structure et charpente",
+    "Plans d'exécution",
+    "RE2020",
+    ...metiers.map((m) => m.titre),
+  ],
   description:
     "Conception et dépôt de dossiers de permis de construire pour maisons individuelles, par un bureau d'études qui allie ingénierie de la construction et conception architecturale, partout en France.",
   makesOffer: plans.map((p) => ({

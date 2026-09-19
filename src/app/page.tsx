@@ -209,7 +209,7 @@ export default function HomePage() {
               <span className="rule" aria-hidden="true" />
               <h2 className="h-section mt-6">Pourquoi confier votre permis à un bureau d&apos;études qui dessine aussi</h2>
               <p className="mt-6 text-lg leading-relaxed text-paper/75">
-                {site.parent} réunit l&apos;ingénierie d&apos;un bureau d&apos;études et la conception architecturale : la maison est dessinée par ceux qui la calculent. Nous concevons et suivons des chantiers toute l&apos;année, nous savons ce qu&apos;un instructeur regarde, ce qu&apos;un PLU interdit, et ce qui fait qu&apos;un dossier passe du premier coup et se construit ensuite sans surprise.
+                {site.parent} réunit l&apos;ingénierie d&apos;un bureau d&apos;études et la conception architecturale : dessinateur-projeteur, ingénieur béton armé et structure, thermicien, et architecte partenaire quand la loi l&apos;impose. La maison est dessinée par ceux qui la calculent. Nous concevons et suivons des chantiers toute l&apos;année, nous savons ce qu&apos;un instructeur regarde, ce qu&apos;un PLU interdit, et ce qui fait qu&apos;un dossier passe du premier coup et se construit ensuite sans surprise.
               </p>
             </div>
             <div className="relative h-64 sm:h-80 overflow-hidden">
