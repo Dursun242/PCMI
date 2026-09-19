@@ -5,8 +5,9 @@
  *
  * Ce script tourne en `prebuild` sur Vercel : toute erreur réseau (Unsplash
  * indisponible, bloqué, DNS, timeout…) est capturée pour ne jamais faire
- * échouer le build. Des placeholders sont déjà commités dans public/photos/,
- * ce script ne fait donc que les remplacer si on le lance à la main.
+ * échouer le build. Sans photo téléchargée, la galerie (src/components/Gallery.tsx)
+ * ne s'affiche simplement pas — rien n'est commité par ce script, donc pas de
+ * risque de placeholder oublié en production.
  */
 import { mkdir, writeFile, access } from "node:fs/promises";
 import { resolve } from "node:path";
