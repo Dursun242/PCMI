@@ -7,7 +7,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { plans, options, site } from "@/config/site";
 import { legal, isTodo } from "@/lib/legal";
-import { formatEuro } from "@/components/PlanCard";
+import { formatEuro } from "@/lib/format";
 import { withSeo } from "@/lib/seo";
 
 export const metadata: Metadata = withSeo("/cgv", {

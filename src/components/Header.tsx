@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import Logo from "./Logo";
+import TrackedLink from "./TrackedLink";
 
 const nav = [
   { href: "/tarifs", label: "Formules" },
@@ -27,9 +28,9 @@ export default function Header() {
               {n.label}
             </Link>
           ))}
-          <Link href="/devis" className="btn btn-ink !min-h-11">
+          <TrackedLink href="/devis" source="header" className="btn btn-ink !min-h-11">
             Demander un devis
-          </Link>
+          </TrackedLink>
         </nav>
 
         <button
@@ -53,9 +54,14 @@ export default function Header() {
               {n.label}
             </Link>
           ))}
-          <Link href="/devis" onClick={() => setOpen(false)} className="btn btn-ink mt-3">
+          <TrackedLink
+            href="/devis"
+            source="menu_mobile"
+            onClickCapture={() => setOpen(false)}
+            className="btn btn-ink mt-3"
+          >
             Demander un devis
-          </Link>
+          </TrackedLink>
         </nav>
       )}
     </header>

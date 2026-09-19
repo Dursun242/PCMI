@@ -1,0 +1,13 @@
+{
+  "_lisezMoi": "TODO(Dursun) : témoignages réels uniquement. Tant que ce tableau est vide, le composant Temoignages ne rend rien et aucun schéma Review n'est émis. Un avis inventé est une pratique commerciale trompeuse (art. L.121-2 du code de la consommation) et une violation des règles Google sur les avis. Remplissez un objet par client ayant donné son accord écrit : prénom + initiale, commune, date ISO, note sur 5, texte tel qu'il a été écrit. Supprimez l'objet vide ci-dessous avant publication.",
+  "temoignages": [
+    {
+      "auteur": "",
+      "commune": "",
+      "date": "",
+      "note": 0,
+      "texte": "",
+      "formule": ""
+    }
+  ]
+}

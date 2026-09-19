@@ -7,6 +7,9 @@ export const organizationSchema = {
   name: site.name,
   legalName: site.legal.company,
   url: site.url,
+  email: site.email,
+  logo: `${site.url}/brand/logo-black.png`,
+  image: `${site.url}/brand/logo-black.png`,
   ...(site.phone ? { telephone: site.phone } : {}),
   parentOrganization: { "@type": "Organization", name: site.parent, url: site.parentUrl },
   address: {
@@ -18,7 +21,8 @@ export const organizationSchema = {
     addressCountry: site.address.country,
   },
   areaServed: { "@type": "Country", name: "France" },
-  founder: { "@type": "Person", name: site.legal.director },
+  foundingLocation: { "@type": "Place", name: `${site.address.city}, ${site.address.region}` },
+  founder: { "@type": "Person", name: site.legal.director, jobTitle: "Maître d'œuvre" },
   description:
     "Conception et dépôt de dossiers de permis de construire pour maisons individuelles, par un maître d'œuvre, partout en France.",
   makesOffer: plans.map((p) => ({
@@ -65,5 +69,166 @@ export function breadcrumb(items: { name: string; path: string }[]) {
       name: it.name,
       item: `${site.url}${it.path}`,
     })),
+  };
+}
+
+
+/** Référence courte vers l'Organization, pour ne pas la redéclarer partout. */
+export const ORG_REF = { "@id": `${site.url}/#organization` };
+
+/** Le site lui-même. Présent sur toutes les pages, via le layout. */
+export const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${site.url}/#website`,
+  url: site.url,
+  name: site.name,
+  inLanguage: "fr-FR",
+  publisher: ORG_REF,
+};
+
+/** L'auteur des contenus. Le même objet pour le guide et les articles. */
+export const authorSchema = {
+  "@type": "Person",
+  name: site.legal.director,
+  jobTitle: "Maître d'œuvre",
+  worksFor: ORG_REF,
+  url: `${site.url}/a-propos`,
+};
+
+/** Service vendu sur /tarifs : les trois formules en Offer. */
+export function serviceSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Dossier de permis de construire de maison individuelle",
+    serviceType: "Dossier de permis de construire de maison individuelle",
+    provider: ORG_REF,
+    areaServed: { "@type": "Country", name: "France" },
+    url: `${site.url}/tarifs`,
+    description:
+      "Conception du dossier de permis de construire d'une maison individuelle jusqu'à 149 m² de surface de plancher (pièces PCMI 1 à 8), dépôt en mairie et suivi jusqu'à l'accord selon la formule.",
+    offers: plans.map((p) => ({
+      "@type": "Offer",
+      name: `Formule ${p.name}`,
+      description: p.promise,
+      price: p.priceTTC,
+      priceCurrency: "EUR",
+      availability: "https://schema.org/InStock",
+      eligibleRegion: { "@type": "Country", name: "France" },
+      url: `${site.url}/tarifs#${p.id}`,
+      priceSpecification: {
+        "@type": "UnitPriceSpecification",
+        price: p.priceTTC,
+        priceCurrency: "EUR",
+        valueAddedTaxIncluded: true,
+      },
+    })),
+  };
+}
+
+/** Article de blog : /conseils/[slug]. */
+export function blogPostingSchema(a: {
+  slug: string;
+  title: string;
+  description: string;
+  date: string;
+  updated?: string;
+  keywords: string[];
+  image?: string;
+  wordCount: number;
+}) {
+  const url = `${site.url}/conseils/${a.slug}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: a.title,
+    description: a.description,
+    datePublished: a.date,
+    dateModified: a.updated ?? a.date,
+    inLanguage: "fr-FR",
+    author: authorSchema,
+    publisher: ORG_REF,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    url,
+    wordCount: a.wordCount,
+    ...(a.image ? { image: `${site.url}${a.image}` } : {}),
+    ...(a.keywords.length ? { keywords: a.keywords.join(", ") } : {}),
+  };
+}
+
+/** Article long hors blog : le guide. */
+export function articleSchema(a: {
+  path: string;
+  headline: string;
+  description: string;
+  datePublished: string;
+  dateModified: string;
+  wordCount?: number;
+}) {
+  const url = `${site.url}${a.path}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: a.headline,
+    description: a.description,
+    datePublished: a.datePublished,
+    dateModified: a.dateModified,
+    inLanguage: "fr-FR",
+    author: authorSchema,
+    publisher: ORG_REF,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    url,
+    ...(a.wordCount ? { wordCount: a.wordCount } : {}),
+  };
+}
+
+/** Index des articles. */
+export function collectionPageSchema(items: { slug: string; title: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${site.url}/conseils`,
+    name: "Conseils permis de construire",
+    inLanguage: "fr-FR",
+    isPartOf: { "@id": `${site.url}/#website` },
+    publisher: ORG_REF,
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: items.map((a, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: a.title,
+        url: `${site.url}/conseils/${a.slug}`,
+      })),
+    },
+  };
+}
+
+/** Pages de mise en relation : /contact, /devis, /dossier. */
+export function contactPageSchema(path: string, name: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "@id": `${site.url}${path}`,
+    name,
+    inLanguage: "fr-FR",
+    isPartOf: { "@id": `${site.url}/#website` },
+    about: ORG_REF,
+    mainEntity: ORG_REF,
+  };
+}
+
+/** /a-propos. */
+export function aboutPageSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "@id": `${site.url}/a-propos`,
+    name: `À propos de ${site.name}`,
+    inLanguage: "fr-FR",
+    isPartOf: { "@id": `${site.url}/#website` },
+    about: ORG_REF,
+    mainEntity: ORG_REF,
   };
 }
