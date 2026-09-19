@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { plans, site, faq } from "@/config/site";
 import HouseDrawing from "@/components/HouseDrawing";
@@ -187,12 +188,26 @@ export default function HomePage() {
       {/* ---------- Pourquoi un maître d'œuvre ---------- */}
       <section className="bg-forest text-paper">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-20 sm:py-28">
-          <div className="max-w-[52ch]">
-            <span className="rule" aria-hidden="true" />
-            <h2 className="h-section mt-6">Pourquoi confier votre permis à un maître d&apos;œuvre</h2>
-            <p className="mt-6 text-lg leading-relaxed text-paper/75">
-              {site.parent} conçoit et suit des chantiers de maisons toute l&apos;année. Nous savons ce qu&apos;un instructeur regarde, ce qu&apos;un PLU interdit, et ce qui fait qu&apos;un dossier passe du premier coup.
-            </p>
+          <div className="grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:items-end">
+            <div className="max-w-[52ch]">
+              <span className="rule" aria-hidden="true" />
+              <h2 className="h-section mt-6">Pourquoi confier votre permis à un maître d&apos;œuvre</h2>
+              <p className="mt-6 text-lg leading-relaxed text-paper/75">
+                {site.parent} conçoit et suit des chantiers de maisons toute l&apos;année. Nous savons ce qu&apos;un instructeur regarde, ce qu&apos;un PLU interdit, et ce qui fait qu&apos;un dossier passe du premier coup.
+              </p>
+            </div>
+            <div className="relative h-64 sm:h-80 overflow-hidden">
+              <Image
+                src="/office/bureau-id-maitrise.jpg"
+                alt={`Bureau d'${site.parent}, maître d'œuvre au Havre`}
+                fill
+                sizes="(min-width: 1024px) 40vw, 100vw"
+                className="object-cover"
+              />
+              <span className="absolute left-0 bottom-0 m-4 bg-paper/92 px-3 py-1.5 text-xs tracking-[0.06em] text-ink">
+                Notre bureau, {site.address.city}
+              </span>
+            </div>
           </div>
           <div className="mt-12 overflow-x-auto">
             <table className="w-full min-w-[680px] border-collapse text-[0.95rem]">
