@@ -21,6 +21,7 @@ Sans `RESEND_API_KEY`, le formulaire répond « envoyé » mais n'expédie rien 
 | Coordonnées, SIREN, assurance, hébergeur | `src/config/site.ts` (bloc `legal`)       |
 | Textes de la page d'accueil              | `src/app/page.tsx`                        |
 | Page tarifs (tableau comparatif)         | `src/app/tarifs/page.tsx`                 |
+| Plans d'exécution (catalogue, packs)     | `src/config/site.ts` (`exePlans`, `exePacks`) et `src/app/plans-execution/page.tsx` |
 | Guide SEO du permis                      | `src/app/permis-de-construire-maison/page.tsx` |
 | Formulaire de devis                      | `src/components/DevisForm.tsx`            |
 | E-mails envoyés (interne + client)       | `src/app/api/devis/route.ts`              |

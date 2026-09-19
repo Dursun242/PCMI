@@ -271,6 +271,24 @@ export default function HomePage() {
         <Faq />
       </section>
 
+      {/* ---------- Après le permis : plans d'exécution ---------- */}
+      <section className="mx-auto max-w-7xl px-5 sm:px-8 pb-20 sm:pb-28">
+        <div className="border-t border-ink pt-12 grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:items-start">
+          <div>
+            <span className="rule" aria-hidden="true" />
+            <h2 className="h-section mt-6">Et après le permis&nbsp;: les plans pour construire</h2>
+          </div>
+          <div>
+            <p className="lead">
+              Les pièces du permis montrent ce que vous avez le droit de bâtir, pas comment. Fondations, béton armé,
+              plancher, charpente, réseaux&nbsp;: nous dessinons aussi les plans d&apos;exécution que lisent vos artisans,
+              à l&apos;unité ou en pack, à prix fixe, avec un bureau d&apos;études structure partenaire pour ce qui porte.
+            </p>
+            <Link href="/plans-execution" className="btn btn-line mt-8">Découvrir les plans d&apos;exécution</Link>
+          </div>
+        </div>
+      </section>
+
       {/* ---------- CTA final ---------- */}
       <section className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="border-t border-ink pt-12 flex flex-wrap items-end justify-between gap-8">

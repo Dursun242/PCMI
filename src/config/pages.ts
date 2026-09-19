@@ -73,6 +73,14 @@ export const staticPages: StaticPage[] = [
       "Envoi d'un plan de masse existant (PDF, DWG, DXF) pour chiffrage : ce que la pièce PCMI 2 doit montrer et ce qui manque le plus souvent.",
   },
   {
+    path: "/plans-execution",
+    lastModified: "2026-09-19",
+    changeFrequency: "monthly",
+    priority: 0.9,
+    summary:
+      "Plans d'exécution après le permis : fondations, béton armé, plancher, charpente, couverture, menuiseries, électricité, plomberie, VRD, détails. À l'unité ou en pack, à partir de 290 € TTC, calcul structure par un bureau d'études partenaire.",
+  },
+  {
     path: "/devis",
     lastModified: "2026-09-19",
     changeFrequency: "monthly",

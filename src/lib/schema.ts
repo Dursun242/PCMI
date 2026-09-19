@@ -1,4 +1,4 @@
-import { site, plans } from "@/config/site";
+import { site, plans, exePlans, exePacks } from "@/config/site";
 
 export const organizationSchema = {
   "@context": "https://schema.org",
@@ -130,6 +130,40 @@ export function serviceSchema() {
         valueAddedTaxIncluded: true,
       },
     })),
+  };
+}
+
+/** Service vendu sur /plans-execution : lots et packs en Offer, prix « à partir de ». */
+export function exeServiceSchema() {
+  const offer = (o: { id: string; name: string; fromPriceTTC: number; description: string }) => ({
+    "@type": "Offer",
+    name: o.name,
+    description: o.description,
+    priceCurrency: "EUR",
+    availability: "https://schema.org/InStock",
+    eligibleRegion: { "@type": "Country", name: "France" },
+    url: `${site.url}/plans-execution#${o.id}`,
+    priceSpecification: {
+      "@type": "PriceSpecification",
+      minPrice: o.fromPriceTTC,
+      priceCurrency: "EUR",
+      valueAddedTaxIncluded: true,
+    },
+  });
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Plans d'exécution de maison individuelle",
+    serviceType: "Plans d'exécution (structure, charpente, réseaux)",
+    provider: ORG_REF,
+    areaServed: { "@type": "Country", name: "France" },
+    url: `${site.url}/plans-execution`,
+    description:
+      "Plans d'exécution dessinés par un maître d'œuvre après l'accord du permis : fondations, béton armé, plancher, charpente, couverture, menuiseries, électricité, plomberie, VRD et détails techniques. Dimensionnement par un bureau d'études structure partenaire.",
+    offers: [
+      ...exePacks.map((p) => offer({ id: p.id, name: p.name, fromPriceTTC: p.fromPriceTTC, description: p.promise })),
+      ...exePlans.map((p) => offer(p)),
+    ],
   };
 }
 

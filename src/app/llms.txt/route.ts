@@ -1,4 +1,4 @@
-import { site, plans, options } from "@/config/site";
+import { site, plans, options, exePlans, exePacks } from "@/config/site";
 import { staticPages } from "@/config/pages";
 import { getArticles } from "@/lib/articles";
 import { SURFACE_ARCHITECTE, SURFACE_MAX } from "@/lib/formulaFinder";
@@ -42,6 +42,11 @@ Au-delà de ${SURFACE_MAX} m² de surface de plancher : sur devis.
 ## Options
 
 ${options.map((o) => `- ${o.name} — ${euros(o.priceTTC)}. ${o.note}`).join("\n")}
+
+## Plans d'exécution (après le permis)
+Plans EXE dessinés par le maître d'œuvre, dimensionnement des ouvrages porteurs par un bureau d'études structure partenaire. Prix « à partir de », TTC, devis fixe lot par lot sous 48 h ouvrées.
+${exePacks.map((p) => `- **${p.name}** — à partir de ${euros(p.fromPriceTTC)}, livré sous ${p.delayWorkingDays}. ${p.promise}`).join("\n")}
+${exePlans.map((p) => `- ${p.name} (${p.forTrade}) — à partir de ${euros(p.fromPriceTTC)}. ${p.description}`).join("\n")}
 
 ## Pages
 

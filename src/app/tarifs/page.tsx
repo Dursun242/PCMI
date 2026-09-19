@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { plans, options, site } from "@/config/site";
+import { plans, options, site, exePlans } from "@/config/site";
 import PlanCard from "@/components/PlanCard";
 import { formatEuro } from "@/lib/format";
 import JsonLd from "@/components/JsonLd";
@@ -79,6 +79,15 @@ export default function TarifsPage() {
             </p>
           </div>
           <Link href="/devis" className="btn btn-line">Demander un devis sur mesure</Link>
+        </div>
+        <div className="mt-8 border-t border-stone-2 pt-6 flex flex-wrap items-center justify-between gap-6">
+          <div className="max-w-[60ch]">
+            <p className="display text-2xl">Après le permis : les plans d&apos;exécution.</p>
+            <p className="mt-1 text-ink-2">
+              Fondations, béton armé, plancher, charpente, réseaux : les plans que lisent vos artisans, à l&apos;unité ou en pack, à partir de {formatEuro(Math.min(...exePlans.map((p) => p.fromPriceTTC)))} TTC.
+            </p>
+          </div>
+          <Link href="/plans-execution" className="btn btn-line">Voir les plans d&apos;exécution</Link>
         </div>
 
         <Garanties className="mt-16" />

@@ -174,6 +174,160 @@ export const options = [
   { name: "Étude eaux pluviales", priceTTC: 710, note: "Dimensionnement d'infiltration / rétention." },
 ];
 
+/**
+ * Plans d'exécution (phase EXE) : la suite naturelle du permis.
+ *
+ * Les pièces PCMI sont dessinées au 1/100 pour l'instruction en mairie ; elles
+ * ne suffisent pas à construire. Les plans EXE sont ceux que lisent le maçon,
+ * le charpentier, l'électricien. Chaque lot est vendu à l'unité ou dans un
+ * pack ; les prix ci-dessous sont des valeurs de départ « à partir de »,
+ * à ajuster, et le devis reste établi après lecture du dossier de permis.
+ *
+ * Le dimensionnement des ouvrages porteurs (béton armé, charpente) relève d'un
+ * bureau d'études structure : nous dessinons les plans, notre BET partenaire
+ * calcule et signe la note de calcul.
+ */
+export type ExePlanId =
+  | "fondations"
+  | "beton-arme"
+  | "plancher"
+  | "charpente"
+  | "couverture"
+  | "menuiseries"
+  | "electricite"
+  | "plomberie"
+  | "vrd"
+  | "details";
+
+export interface ExePlan {
+  id: ExePlanId;
+  name: string;
+  /** Prix « à partir de », en euros TTC. */
+  fromPriceTTC: number;
+  /** Corps de métier qui lit ce plan sur le chantier. */
+  forTrade: string;
+  description: string;
+  deliverables: string[];
+  /** Lot dont le calcul est confié à notre bureau d'études structure partenaire. */
+  withBet?: boolean;
+}
+
+export const exePlans: ExePlan[] = [
+  {
+    id: "fondations",
+    name: "Plan de fondations",
+    fromPriceTTC: 390,
+    forTrade: "Maçon",
+    description: "Implantation et niveaux des semelles filantes, plots, longrines et massifs, selon le rapport de sol.",
+    deliverables: ["Plan coté au 1/50", "Niveaux d'assise et arases", "Réservations pour les réseaux", "Tableau des semelles"],
+    withBet: true,
+  },
+  {
+    id: "beton-arme",
+    name: "Plans de béton armé",
+    fromPriceTTC: 690,
+    forTrade: "Maçon",
+    description: "Coffrage et ferraillage des semelles, poteaux, poutres, chaînages et linteaux, avec la note de calcul du bureau d'études.",
+    deliverables: ["Plans de coffrage", "Plans de ferraillage", "Nomenclature des aciers", "Note de calcul signée par le BET"],
+    withBet: true,
+  },
+  {
+    id: "plancher",
+    name: "Plan de plancher",
+    fromPriceTTC: 290,
+    forTrade: "Maçon",
+    description: "Sens de portée, poutrelles-hourdis ou dalle pleine, trémies, chevêtres et réservations de chaque niveau.",
+    deliverables: ["Plan de pose par niveau", "Trémies et chevêtres", "Réservations pour gaines et évacuations"],
+    withBet: true,
+  },
+  {
+    id: "charpente",
+    name: "Plan de charpente",
+    fromPriceTTC: 490,
+    forTrade: "Charpentier",
+    description: "Charpente traditionnelle ou fermettes industrielles : implantation des fermes, pannes, chevrons, contreventement et assemblages.",
+    deliverables: ["Plan d'implantation des fermes", "Coupes sur ferme au 1/20", "Sections et essences", "Détails d'assemblage et d'appui"],
+    withBet: true,
+  },
+  {
+    id: "couverture",
+    name: "Plan de couverture et zinguerie",
+    fromPriceTTC: 290,
+    forTrade: "Couvreur",
+    description: "Calepinage de la couverture, pentes, noues, faîtages, rives, sorties de toit et évacuation des eaux pluviales.",
+    deliverables: ["Plan de toiture coté", "Détails de rives, égouts et faîtage", "Position des gouttières et descentes"],
+  },
+  {
+    id: "menuiseries",
+    name: "Plans de menuiseries extérieures",
+    fromPriceTTC: 290,
+    forTrade: "Menuisier",
+    description: "Nomenclature et repérage de chaque baie : dimensions tableau, sens d'ouverture, allège, occultation et performances.",
+    deliverables: ["Tableau des menuiseries", "Repérage sur plan et façades", "Détails de pose en tableau et seuil"],
+  },
+  {
+    id: "electricite",
+    name: "Plan d'électricité",
+    fromPriceTTC: 390,
+    forTrade: "Électricien",
+    description: "Implantation des points lumineux, prises, interrupteurs, tableau et réseaux de communication, conforme à la NF C 15-100.",
+    deliverables: ["Plan par niveau avec légende", "Schéma unifilaire de principe", "Nomenclature des circuits"],
+  },
+  {
+    id: "plomberie",
+    name: "Plan de plomberie et chauffage",
+    fromPriceTTC: 390,
+    forTrade: "Plombier-chauffagiste",
+    description: "Alimentations, évacuations, ventilation et chauffage : tracés, diamètres de principe, chutes et positions d'appareils.",
+    deliverables: ["Plan des évacuations et alimentations", "Plan de VMC", "Implantation des émetteurs ou du plancher chauffant"],
+  },
+  {
+    id: "vrd",
+    name: "Plan de réseaux extérieurs (VRD)",
+    fromPriceTTC: 390,
+    forTrade: "Terrassier",
+    description: "Tracés et niveaux des réseaux enterrés, regards, assainissement, gestion des eaux pluviales, accès et terrassements.",
+    deliverables: ["Plan de réseaux coté", "Profils et fils d'eau", "Détail des regards et du dispositif d'infiltration"],
+  },
+  {
+    id: "details",
+    name: "Coupes et détails techniques",
+    fromPriceTTC: 390,
+    forTrade: "Tous corps d'état",
+    description: "Coupes au 1/50 et détails au 1/20 ou 1/10 des points singuliers : seuils, acrotères, jonctions mur-toiture, isolation et étanchéité à l'air.",
+    deliverables: ["Coupes techniques cotées", "Détails des points singuliers", "Carnet de détails PDF et DWG"],
+  },
+];
+
+export interface ExePack {
+  id: "gros-oeuvre" | "complet";
+  name: string;
+  fromPriceTTC: number;
+  promise: string;
+  includes: ExePlanId[];
+  delayWorkingDays: string;
+}
+
+/** Deux regroupements : le gros œuvre seul, ou la maison entière. */
+export const exePacks: ExePack[] = [
+  {
+    id: "gros-oeuvre",
+    name: "Pack structure",
+    fromPriceTTC: 1690,
+    promise: "Fondations, béton armé, plancher et charpente : tout ce qui porte la maison.",
+    includes: ["fondations", "beton-arme", "plancher", "charpente"],
+    delayWorkingDays: "15 jours ouvrés",
+  },
+  {
+    id: "complet",
+    name: "Pack EXE complet",
+    fromPriceTTC: 2990,
+    promise: "Les dix lots, coordonnés entre eux, pour consulter les artisans et construire sans aller-retour.",
+    includes: exePlans.map((p) => p.id),
+    delayWorkingDays: "25 jours ouvrés",
+  },
+];
+
 export const faq = [
   {
     q: "Ai-je besoin d'un architecte pour ma maison ?",
