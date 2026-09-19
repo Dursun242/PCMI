@@ -16,7 +16,8 @@ export const site: {
   phone: string;
   address: { street: string; zip: string; city: string; region: string; country: string };
   legal: { company: string; director: string; siren: string; rcs: string; vat: string; insurer: string; host: string };
-  social: { linkedin: string };
+  social: { instagram: string };
+  authorSocial: { linkedin: string };
 } = {
   name: "Permis by ID Maîtrise",
   shortName: "Permis",
@@ -55,8 +56,29 @@ export const site: {
     insurer: "",
     host: "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis",
   },
+  /**
+   * Comptes officiels de l'ENTREPRISE. Ils alimentent le pied de page et le
+   * `sameAs` du schéma Organization, qui permet à Google de rattacher ces
+   * comptes à l'entité — condition d'apparition dans le panneau de
+   * connaissance. Laisser une chaîne vide masque simplement le lien.
+   */
   social: {
-    linkedin: "",
+    instagram: "https://www.instagram.com/idmaitrise/",
+  },
+  /**
+   * Profils PERSONNELS du maître d'œuvre. Ils alimentent le `sameAs` de la
+   * Person déclarée comme auteur des contenus, pas celui de l'Organization :
+   * un profil individuel dans le `sameAs` d'une entreprise est une erreur de
+   * modélisation que les moteurs ignorent, quand ils ne l'attribuent pas de
+   * travers. Rattaché à l'auteur, il renforce au contraire la crédibilité des
+   * articles.
+   *
+   * URL volontairement nettoyée de ses paramètres de partage (`utm_source`,
+   * `utm_medium`…) : ils ne servent qu'au suivi d'un partage ponctuel et
+   * n'ont rien à faire dans une référence canonique.
+   */
+  authorSocial: {
+    linkedin: "https://www.linkedin.com/in/dursun-ozkan",
   },
 };
 
