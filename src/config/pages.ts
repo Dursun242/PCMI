@@ -65,6 +65,14 @@ export const staticPages: StaticPage[] = [
     summary: "Articles pratiques écrits par un maître d'œuvre : prix, refus, panneau d'affichage, insertion graphique.",
   },
   {
+    path: "/plan-de-masse",
+    lastModified: "2026-09-19",
+    changeFrequency: "monthly",
+    priority: 0.8,
+    summary:
+      "Envoi d'un plan de masse existant (PDF, DWG, DXF) pour chiffrage : ce que la pièce PCMI 2 doit montrer et ce qui manque le plus souvent.",
+  },
+  {
     path: "/devis",
     lastModified: "2026-09-19",
     changeFrequency: "monthly",

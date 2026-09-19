@@ -26,10 +26,12 @@ const documents = [
 export default async function MerciPage({
   searchParams,
 }: {
-  searchParams: Promise<{ formule?: string }>;
+  searchParams: Promise<{ formule?: string; source?: string }>;
 }) {
-  const { formule } = await searchParams;
+  const { formule, source } = await searchParams;
   const plan = plans.find((p) => p.id === (formule as PlanId));
+  // Le formulaire /plan-de-masse aboutit ici : son envoi contenait déjà un plan.
+  const viaPlanDeMasse = source === "plan-de-masse";
 
   return (
     <div className="mx-auto max-w-3xl px-5 sm:px-8 py-16 sm:py-24">
@@ -37,7 +39,8 @@ export default async function MerciPage({
       <h1 className="display mt-8 text-5xl sm:text-6xl">Votre demande est bien arrivée.</h1>
       <p className="lead mt-7">
         Un e-mail de confirmation part à l&apos;instant vers votre boîte de réception — pensez à vérifier vos courriers
-        indésirables. {plan ? `Votre demande porte sur la formule ${plan.name} (${formatEuro(plan.priceTTC)} TTC, livrée sous ${plan.delayWorkingDays}).` : ""}
+        indésirables. {viaPlanDeMasse ? "Votre plan nous est bien parvenu." : ""}
+        {plan ? ` Votre demande porte sur la formule ${plan.name} (${formatEuro(plan.priceTTC)} TTC, livrée sous ${plan.delayWorkingDays}).` : ""}
       </p>
 
       <section className="mt-14" aria-labelledby="suite">
@@ -66,6 +69,7 @@ export default async function MerciPage({
         <p className="mt-5 text-ink-2 leading-relaxed">
           Rien n&apos;est obligatoire à ce stade. Mais si vous avez déjà ces éléments sous la main, répondez simplement à
           l&apos;e-mail de confirmation en les joignant : nous gagnerons un aller-retour.
+          {viaPlanDeMasse ? " Votre plan de masse, lui, est déjà entre nos mains." : ""}
         </p>
         <dl className="mt-8 grid gap-5 border-t border-stone-2 pt-6">
           {documents.map(([t, d]) => (
