@@ -3,11 +3,12 @@ import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import AuthorByline from "@/components/AuthorByline";
 import Cta from "@/components/Cta";
-import { breadcrumb, faqPageSchema } from "@/lib/schema";
+import { articleSchema, breadcrumb, faqPageSchema } from "@/lib/schema";
 import { site, plans } from "@/config/site";
 import { formatEuro } from "@/lib/format";
 import { withSeo } from "@/lib/seo";
 
+const PUBLISHED_AT = "2026-09-17";
 const UPDATED_AT = "2026-09-18";
 
 const guideFaq = [
@@ -59,22 +60,20 @@ const toc = [
 ] as const;
 
 export default function GuidePage() {
-  const articleSchema = {
-    "@context": "https://schema.org",
-    "@type": "Article",
+  const guideSchema = articleSchema({
+    path: "/permis-de-construire-maison",
     headline: "Permis de construire maison individuelle : le guide complet",
+    description:
+      "Ce qu'il faut fournir, qui a le droit de dessiner les plans, combien de temps prend l'instruction et ce qui se passe après l'accord.",
+    datePublished: PUBLISHED_AT,
     dateModified: UPDATED_AT,
-    author: { "@type": "Person", name: site.legal.director, jobTitle: "Maître d'œuvre" },
-    publisher: { "@type": "Organization", name: site.legal.company },
-    mainEntityOfPage: `${site.url}/permis-de-construire-maison`,
-    inLanguage: "fr-FR",
-  };
+  });
 
   return (
     <>
       <JsonLd
         data={[
-          articleSchema,
+          guideSchema,
           faqPageSchema(guideFaq),
           breadcrumb([
             { name: "Accueil", path: "/" },

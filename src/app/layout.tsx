@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import StickyCta from "@/components/StickyCta";
 import JsonLd from "@/components/JsonLd";
 import { withSeo } from "@/lib/seo";
-import { organizationSchema } from "@/lib/schema";
+import { organizationSchema, websiteSchema } from "@/lib/schema";
 
 const home = withSeo("/", {
   title: `Permis de construire maison individuelle — ${site.name}`,
@@ -37,7 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr">
       <body className="min-h-screen flex flex-col">
-        <JsonLd data={organizationSchema} />
+        <JsonLd data={[organizationSchema, websiteSchema]} />
         <a
           href="#contenu"
           className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-brass focus:text-paper focus:px-3 focus:py-2"

@@ -8,7 +8,7 @@ import { formatFrDate } from "@/lib/format";
 import { site } from "@/config/site";
 import JsonLd from "@/components/JsonLd";
 import ArticleCtaLink from "@/components/ArticleCtaLink";
-import { breadcrumb } from "@/lib/schema";
+import { blogPostingSchema, breadcrumb } from "@/lib/schema";
 
 export const dynamicParams = false;
 
@@ -38,19 +38,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   if (!a) notFound();
 
   const others = getArticles().filter((x) => x.slug !== a.slug).slice(0, 3);
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: a.title,
-    description: a.description,
-    datePublished: a.date,
-    dateModified: a.updated ?? a.date,
-    inLanguage: "fr-FR",
-    author: { "@type": "Person", name: site.legal.director, jobTitle: "Maître d'œuvre" },
-    publisher: { "@type": "Organization", name: site.name, url: site.url },
-    mainEntityOfPage: `${site.url}/conseils/${a.slug}`,
-    keywords: a.keywords.join(", "),
-  };
+  const schema = blogPostingSchema({ ...a, wordCount: a.content.split(/\s+/).filter(Boolean).length });
 
   return (
     <>

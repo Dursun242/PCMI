@@ -14,7 +14,8 @@
     "seo:article": "node scripts/seo/generate.mjs",
     "seo:meta": "node scripts/seo/optimize.mjs",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "check:seo": "node scripts/check-seo.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.126.0",

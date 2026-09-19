@@ -59,6 +59,7 @@ export default function Footer() {
               <li><Link href="/tarifs" className="hover:text-brass-2">Formules et tarifs</Link></li>
               <li><Link href="/permis-de-construire-maison" className="hover:text-brass-2">Le guide du permis</Link></li>
               <li><Link href="/conseils" className="hover:text-brass-2">Conseils</Link></li>
+              <li><Link href="/a-propos" className="hover:text-brass-2">À propos</Link></li>
               <li><Link href="/devis" className="hover:text-brass-2">Demander un devis</Link></li>
               <li><Link href="/dossier" className="hover:text-brass-2">Fiche projet complète</Link></li>
               <li><Link href="/contact" className="hover:text-brass-2">Contact</Link></li>

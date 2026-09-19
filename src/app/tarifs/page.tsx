@@ -7,7 +7,7 @@ import JsonLd from "@/components/JsonLd";
 import Garanties from "@/components/Garanties";
 import Temoignages from "@/components/Temoignages";
 import FormulaFinder from "@/components/FormulaFinder";
-import { breadcrumb } from "@/lib/schema";
+import { breadcrumb, serviceSchema } from "@/lib/schema";
 import { withSeo } from "@/lib/seo";
 
 export const metadata: Metadata = withSeo("/tarifs", {
@@ -44,7 +44,12 @@ function Cell({ v }: { v: boolean | string }) {
 export default function TarifsPage() {
   return (
     <>
-      <JsonLd data={breadcrumb([{ name: "Accueil", path: "/" }, { name: "Tarifs", path: "/tarifs" }])} />
+      <JsonLd
+        data={[
+          serviceSchema(),
+          breadcrumb([{ name: "Accueil", path: "/" }, { name: "Tarifs", path: "/tarifs" }]),
+        ]}
+      />
 
       <section className="bg-stone border-b border-stone-2">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24">
@@ -122,6 +127,16 @@ export default function TarifsPage() {
         </div>
         <p className="mt-4 text-sm text-ink-2">
           * Modifications illimitées et reprise en cas de refus (voir ci-dessous), pour un même terrain et un même programme — voir nos <Link href="/cgv" className="underline decoration-brass underline-offset-2">CGV</Link>.
+        </p>
+        <p className="mt-6 text-ink-2 max-w-[70ch] leading-relaxed">
+          Pour situer ces montants par rapport à un architecte, à un constructeur ou à une plateforme en ligne, lisez{" "}
+          <Link
+            href="/conseils/prix-permis-de-construire-maison-individuelle"
+            className="text-ink underline decoration-brass underline-offset-4"
+          >
+            combien coûte un permis de construire pour une maison individuelle
+          </Link>
+          .
         </p>
       </section>
 

@@ -134,6 +134,13 @@ export default function HomePage() {
             <p className="mt-6 text-ink-2 max-w-[38ch]">
               Plus le CERFA n° 13406 rempli, le contrôle du PLU et, selon la formule, l&apos;attestation RE2020 et l&apos;étude des eaux pluviales.
             </p>
+            <p className="mt-6 text-ink-2 max-w-[38ch]">
+              Pour comprendre à quoi sert chaque pièce et ce que la mairie en fait, lisez notre{" "}
+              <Link href="/permis-de-construire-maison" className="text-ink underline decoration-brass underline-offset-4">
+                guide du permis de construire de maison individuelle
+              </Link>
+              .
+            </p>
           </div>
           <ol className="grid sm:grid-cols-2 border-t border-ink">
             {pieces.map((p) => (
@@ -232,6 +239,13 @@ export default function HomePage() {
           <span className="rule" aria-hidden="true" />
           <h2 className="h-section mt-6">Questions fréquentes</h2>
           <p className="mt-6 text-ink-2 leading-relaxed max-w-[32ch]">
+            Nos{" "}
+            <Link href="/conseils" className="text-ink underline decoration-brass underline-offset-4">
+              articles de conseils
+            </Link>{" "}
+            traitent les cas particuliers : prix, refus, affichage du panneau, insertion graphique.
+          </p>
+          <p className="mt-4 text-ink-2 leading-relaxed max-w-[32ch]">
             Une autre question ?{" "}
             <Link href="/contact" className="text-ink underline decoration-brass underline-offset-4">
               Écrivez-nous
