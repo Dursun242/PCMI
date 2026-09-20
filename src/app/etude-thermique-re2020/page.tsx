@@ -150,7 +150,7 @@ export default function EtudeThermiquePage() {
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24 grid gap-16 lg:grid-cols-[1fr_1.35fr]">
           <div>
             <span className="rule" aria-hidden="true" />
-            <h2 className="h-section mt-6">Votre devis RE2020 sous 48 h</h2>
+            <h2 className="h-section mt-6">Votre devis RE2020 sous 4 h ouvrées</h2>
             <p className="mt-6 text-ink-2 leading-relaxed">
               Cochez ce qu&apos;il vous faut, dites-nous où en est le projet et joignez vos plans si vous les avez.
               Notre thermicien vous répond avec un prix fixe par prestation.

@@ -78,7 +78,7 @@ export async function POST(req: Request) {
   const clientHtml = clientWrap(`
     <p>Bonjour ${esc(name.split(" ")[0])},</p>
     <p>Nous avons bien reçu votre plan de masse pour un terrain à <strong>${esc(city)}</strong>${listed.length > 1 ? ` (${listed.length} fichiers)` : ""}.</p>
-    <p>Nous le confrontons au règlement d'urbanisme de votre commune et vous répondons sous <strong>48 h ouvrées</strong> : ce que le plan permet déjà, ce qui manque au regard des exigences de la pièce PCMI 2, et le prix pour aller jusqu'au dépôt.</p>
+    <p>Nous le confrontons au règlement d'urbanisme de votre commune et vous répondons sous <strong>4 h ouvrées</strong> : ce que le plan permet déjà, ce qui manque au regard des exigences de la pièce PCMI 2, et le prix pour aller jusqu'au dépôt.</p>
     <p>Si vous avez d'autres documents — plan du géomètre, extrait cadastral, photos du terrain —, répondez simplement à cet e-mail en les joignant.</p>`);
 
   try {

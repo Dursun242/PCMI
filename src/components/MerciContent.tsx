@@ -53,7 +53,7 @@ export default function MerciContent({ type }: { type?: MerciType }) {
         <ol className="mt-8 grid gap-7 border-t border-ink pt-8">
           {[
             ["Nous lisons le PLU de votre commune", "Zone, emprise au sol, hauteurs, implantation, aspect des façades, gestion des eaux pluviales, périmètre ABF. C'est ce qui prend le plus de temps, et c'est ce qui rend le prix fiable."],
-            ["Vous recevez un devis chiffré sous 48 h ouvrées", "Formule conseillée, prix fixe, délai de livraison et liste exacte des documents à nous transmettre."],
+            ["Vous recevez un devis chiffré sous 4 h ouvrées", "Formule conseillée, prix fixe, délai de livraison et liste exacte des documents à nous transmettre."],
             ["Nous en parlons de vive voix si vous le souhaitez", "Un appel ou une visio pour valider le programme avant de dessiner. Sans engagement."],
           ].map(([t, d], i) => (
             <li key={t} className="flex gap-5">

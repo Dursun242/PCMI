@@ -201,7 +201,7 @@ export default function PlansExeForm({ preselect }: { preselect?: string[] }) {
         {status === "sending" ? "Envoi en cours…" : "Recevoir mon devis EXE"}
       </button>
       <p className="text-xs text-ink-2">
-        Devis sous 48 h ouvrées, après lecture de votre dossier de permis. Aucun engagement, aucune revente de vos
+        Devis sous 4 h ouvrées, après lecture de votre dossier de permis. Aucun engagement, aucune revente de vos
         données.
       </p>
     </form>

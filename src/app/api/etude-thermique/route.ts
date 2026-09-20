@@ -73,7 +73,7 @@ export async function POST(req: Request) {
     <p>Bonjour ${esc(name.split(" ")[0])},</p>
     <p>Nous avons bien reçu votre demande d'étude thermique RE2020 pour un projet à <strong>${esc(city)}</strong>.</p>
     <p>Prestations demandées : ${esc(prestations.map((p) => p.name.toLowerCase()).join(", "))}.</p>
-    <p>Notre thermicien lit vos plans et vous adresse sous <strong>48 h ouvrées</strong> un devis à prix fixe, avec le délai de chaque pièce.</p>
+    <p>Notre thermicien lit vos plans et vous adresse sous <strong>4 h ouvrées</strong> un devis à prix fixe, avec le délai de chaque pièce.</p>
     <p>Si vous avez d'autres documents — plans, notice, devis de chauffage —, répondez simplement à cet e-mail en les joignant.</p>`);
 
   try {

@@ -17,7 +17,7 @@ export const metadata: Metadata = withSeo("/plans-execution", {
 
 const etapes: [string, string][] = [
   ["Vous nous envoyez le dossier de permis", "Plans PCMI, rapport de sol si vous l'avez, mode constructif retenu. Deux minutes. Si le permis a été fait chez nous, rien à renvoyer."],
-  ["Nous chiffrons lot par lot sous 48 h", "Un prix fixe par plan, le délai de chacun, et ce que l'ingénieur structure prend en charge."],
+  ["Nous chiffrons lot par lot sous 4 h ouvrées", "Un prix fixe par plan, le délai de chacun, et ce que l'ingénieur structure prend en charge."],
   ["Nous dessinons et nous calculons", "Le pôle conception dessine, le bureau d'études dimensionne et signe la note de calcul : les deux sous le même toit, sans aller-retour entre entreprises. Une visio de validation avant l'édition."],
   ["Vous consultez vos artisans sur des plans nets", "PDF et DWG, prêts pour les devis, puis pour le chantier. Une série de modifications incluse."],
 ];
@@ -198,7 +198,7 @@ export default function PlansExecutionPage() {
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24 grid gap-16 lg:grid-cols-[1fr_1.35fr]">
           <div>
             <span className="rule" aria-hidden="true" />
-            <h2 className="h-section mt-6">Votre devis EXE sous 48 h</h2>
+            <h2 className="h-section mt-6">Votre devis EXE sous 4 h ouvrées</h2>
             <p className="mt-6 text-ink-2 leading-relaxed">
               Cochez les plans qu&apos;il vous faut, dites-nous où en est votre permis et joignez vos plans si vous les
               avez. Nous revenons vers vous avec un prix fixe par lot.

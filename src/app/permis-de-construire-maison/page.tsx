@@ -113,7 +113,7 @@ export default function GuidePage() {
           </ol>
           <div className="mt-10 border-t border-ink pt-5">
             <p className="display text-2xl">Vous voulez déléguer ?</p>
-            <p className="mt-1 text-sm text-ink-2">Devis chiffré sous 48 h, prix fixe.</p>
+            <p className="mt-1 text-sm text-ink-2">Devis chiffré sous 4 h ouvrées, prix fixe.</p>
             <Link href="/devis" className="btn btn-ink mt-5 w-full !min-h-11">Demander un devis</Link>
           </div>
         </aside>
@@ -178,7 +178,7 @@ export default function GuidePage() {
           <p>
             Vous avez déjà un plan de masse, dessiné par un constructeur ou un géomètre ? Vous pouvez{" "}
             <Link href="/plan-de-masse">nous l&apos;envoyer en PDF ou en DWG</Link> : nous le confrontons au règlement de
-            votre commune et vous disons sous 48 h ce qu&apos;il lui manque.
+            votre commune et vous disons sous 4 h ouvrées ce qu&apos;il lui manque.
           </p>
           <p>
             La pièce PCMI 6 (insertion graphique) est celle que l&apos;instructeur regarde en premier : voir notre article{" "}
@@ -239,7 +239,7 @@ export default function GuidePage() {
 
           <Cta
             title="Un devis avant de vous lancer."
-            text="Nous lisons le règlement de votre commune et vous répondons sous 48 h ouvrées, avec un prix fixe."
+            text="Nous lisons le règlement de votre commune et vous répondons sous 4 h ouvrées, avec un prix fixe."
             href="/devis"
             label="Demander un devis"
             secondaryHref="/tarifs"

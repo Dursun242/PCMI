@@ -89,7 +89,7 @@ export async function POST(req: Request) {
     <p>Bonjour ${esc(name.split(" ")[0])},</p>
     <p>Nous avons bien reçu votre demande de plans d'exécution pour votre chantier à <strong>${esc(city)}</strong>${pack ? ` (${esc(pack.name)})` : ""}.</p>
     <p>Plans demandés : ${esc(lots.map((l) => l.name.toLowerCase()).join(", "))}.</p>
-    <p>Nous lisons votre dossier de permis et vous adressons sous <strong>48 h ouvrées</strong> un devis à prix fixe, lot par lot, avec le délai de livraison de chaque plan.</p>
+    <p>Nous lisons votre dossier de permis et vous adressons sous <strong>4 h ouvrées</strong> un devis à prix fixe, lot par lot, avec le délai de livraison de chaque plan.</p>
     <p>Si vous avez d'autres documents — rapport de sol, plans du constructeur, devis d'artisans —, répondez simplement à cet e-mail en les joignant.</p>`);
 
   try {

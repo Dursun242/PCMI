@@ -109,7 +109,7 @@ export default function AProposPage() {
           </li>
           <li>
             <strong>Aucun dossier déposé au hasard.</strong> Nous lisons le règlement d&apos;urbanisme de votre commune
-            avant de chiffrer, pas après. C&apos;est la raison du délai de 48 h sur les devis.
+            avant de chiffrer, pas après. Même en 4 h ouvrées, le devis part toujours après cette lecture, jamais avant.
           </li>
           <li>
             <strong>Pas de promesse d&apos;obtention.</strong> Personne ne peut garantir qu&apos;une mairie accordera un
@@ -126,7 +126,7 @@ export default function AProposPage() {
         </p>
         <ol>
           <li>Vous décrivez votre projet et nous envoyez ce que vous avez : plan du terrain, esquisse, photos.</li>
-          <li>Nous consultons le PLU ou le PLUi de votre commune et vous adressons un devis chiffré sous 48 h ouvrées.</li>
+          <li>Nous consultons le PLU ou le PLUi de votre commune et vous adressons un devis chiffré sous 4 h ouvrées.</li>
           <li>Nous dessinons les pièces PCMI 1 à 8, vous les relisez, nous ajustons.</li>
           <li>Selon la formule, vous déposez vous-même ou nous déposons et suivons l&apos;instruction jusqu&apos;à la décision.</li>
         </ol>

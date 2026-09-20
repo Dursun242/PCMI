@@ -9,7 +9,7 @@ import { withSeo } from "@/lib/seo";
 export const metadata: Metadata = withSeo("/devis", {
   title: "Demander un devis de permis de construire",
   description:
-    "Décrivez votre projet de maison en 3 minutes et recevez sous 48 h un devis chiffré à prix fixe pour votre permis de construire, partout en France.",
+    "Décrivez votre projet de maison en 3 minutes et recevez sous 4 h ouvrées un devis chiffré à prix fixe pour votre permis de construire, partout en France.",
   robots: { index: true, follow: true },
 });
 
@@ -36,7 +36,7 @@ export default async function DevisPage({
       <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24 grid gap-16 lg:grid-cols-[1fr_1.35fr]">
         <div>
           <span className="rule" aria-hidden="true" />
-          <h1 className="display mt-7 text-5xl sm:text-6xl">Votre devis sous 48 h.</h1>
+          <h1 className="display mt-7 text-5xl sm:text-6xl">Votre devis sous 4 h ouvrées.</h1>
           <p className="lead mt-7 max-w-[42ch]">
             Trois minutes suffisent. Nous consultons le règlement d&apos;urbanisme de votre commune avant de vous répondre, pour que le prix annoncé soit le bon.
           </p>

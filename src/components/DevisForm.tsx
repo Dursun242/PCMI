@@ -242,7 +242,7 @@ export default function DevisForm({ presetFormule, presetSurface }: { presetForm
         )}
 
         <button type="submit" className="btn btn-ink" disabled={status === "sending"}>
-          {status === "sending" ? "Envoi en cours…" : "Recevoir mon devis sous 48 h"}
+          {status === "sending" ? "Envoi en cours…" : "Recevoir mon devis sous 4 h ouvrées"}
         </button>
         <p className="text-xs text-ink-2">Aucun engagement. Aucune revente de vos données.</p>
       </form>

@@ -47,7 +47,7 @@ export default function Footer() {
               </>
             )}
             <p className="mt-4 text-paper/70 leading-relaxed">
-              Réponse sous 48 h ouvrées.
+              Réponse sous 4 h ouvrées.
               <br />
               Intervention partout en France.
             </p>

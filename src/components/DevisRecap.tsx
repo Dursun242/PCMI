@@ -44,7 +44,7 @@ export default function DevisRecap({ planId, surface }: { planId: PlanId | "cons
               <p className="display mt-1 text-2xl sm:text-3xl leading-tight">Nous vous conseillons</p>
               <p className="mt-1 text-sm text-ink-2">
                 À partir de <span className="numeral text-ink">{formatEuro(plans[0].priceTTC)} TTC</span> · jusqu&apos;à{" "}
-                {SURFACE_MAX} m² · devis sous 48 h
+                {SURFACE_MAX} m² · devis sous 4 h ouvrées
               </p>
             </>
           )}
@@ -88,7 +88,7 @@ export default function DevisRecap({ planId, surface }: { planId: PlanId | "cons
               partenaire et vous n&apos;avez pas à le chercher vous-même.
             </>
           ) : (
-            " Décrivez votre projet ci-dessous : vous recevez un devis chiffré sous 48 h ouvrées."
+            " Décrivez votre projet ci-dessous : vous recevez un devis chiffré sous 4 h ouvrées."
           )}
         </p>
       )}

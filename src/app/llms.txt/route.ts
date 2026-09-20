@@ -45,12 +45,12 @@ Au-delà de ${SURFACE_MAX} m² de surface de plancher : sur devis.
 ${options.map((o) => `- ${o.name} — ${euros(o.priceTTC)}. ${o.note}`).join("\n")}
 
 ## Plans d'exécution (après le permis)
-Plans EXE dessinés par le pôle conception, dimensionnement des ouvrages porteurs par le bureau d'études structure d'ID Maîtrise. Prix « à partir de », TTC, devis fixe lot par lot sous 48 h ouvrées.
+Plans EXE dessinés par le pôle conception, dimensionnement des ouvrages porteurs par le bureau d'études structure d'ID Maîtrise. Prix « à partir de », TTC, devis fixe lot par lot sous 4 h ouvrées.
 ${exePacks.map((p) => `- **${p.name}** — à partir de ${euros(p.fromPriceTTC)}, livré sous ${p.delayWorkingDays}. ${p.promise}`).join("\n")}
 ${exePlans.map((p) => `- ${p.name} (${p.forTrade}) — à partir de ${euros(p.fromPriceTTC)}. ${p.description}`).join("\n")}
 
 ## Études thermiques RE2020
-Par le thermicien du bureau d'études. Prix « à partir de », TTC, devis fixe sous 48 h ouvrées.
+Par le thermicien du bureau d'études. Prix « à partir de », TTC, devis fixe sous 4 h ouvrées.
 ${thermique.map((t) => `- ${t.name} (${t.when.toLowerCase()}) — à partir de ${euros(t.fromPriceTTC)}. ${t.description}`).join("\n")}
 
 ## Pages

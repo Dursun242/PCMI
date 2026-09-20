@@ -8,7 +8,7 @@ import { breadcrumb, contactPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = withSeo("/contact", {
   title: "Contact — une question, un plan à faire relire, un permis refusé",
-  description: "Écrivez-nous avec vos plans, croquis ou photos en pièce jointe. Réponse d'un maître d'œuvre sous 48 h ouvrées, partout en France.",
+  description: "Écrivez-nous avec vos plans, croquis ou photos en pièce jointe. Réponse d'un maître d'œuvre sous 4 h ouvrées, partout en France.",
 });
 
 export default function ContactPage() {
@@ -25,7 +25,7 @@ export default function ContactPage() {
           <span className="rule" aria-hidden="true" />
           <h1 className="display mt-7 text-5xl sm:text-6xl">Une question ? Un plan à relire ?</h1>
           <p className="lead mt-7 max-w-[42ch]">
-            Joignez vos plans, votre croquis, les photos du terrain ou l&apos;arrêté de refus. Un maître d&apos;œuvre vous répond sous 48 h ouvrées.
+            Joignez vos plans, votre croquis, les photos du terrain ou l&apos;arrêté de refus. Un maître d&apos;œuvre vous répond sous 4 h ouvrées.
           </p>
           <div className="mt-12 border-t border-ink pt-8 grid gap-6">
             <div>

@@ -7,7 +7,7 @@ import { breadcrumb, contactPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = withSeo("/dossier", {
   title: "Fiche projet complète — votre permis chiffré sans rendez-vous",
-  description: "Renseignez votre terrain, votre projet et vos surfaces comme sur le CERFA 13406, joignez vos plans : nous chiffrons votre permis de construire sous 48 h.",
+  description: "Renseignez votre terrain, votre projet et vos surfaces comme sur le CERFA 13406, joignez vos plans : nous chiffrons votre permis de construire sous 4 h ouvrées.",
 });
 
 export default function DossierPage() {
