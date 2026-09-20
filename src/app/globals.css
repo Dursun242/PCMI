@@ -139,12 +139,38 @@ body {
     opacity: 0.95;
   }
 }
+/* Pastille WhatsApp : halo qui s'étend et s'efface, deux fois par cycle */
+.wa-bubble__pulse {
+  animation: wa-pulse 2.4s ease-out infinite;
+}
+@keyframes wa-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+.wa-bubble:hover .wa-bubble__pulse {
+  animation-play-state: paused;
+  opacity: 0;
+}
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
   .stamp--land {
     animation: none;
+  }
+  .wa-bubble__pulse {
+    animation: none;
+    opacity: 0;
   }
 }
 
