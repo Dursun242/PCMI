@@ -101,7 +101,30 @@ export default function HomePage() {
           </div>
 
           <div className="relative">
-            <HouseDrawing className="w-full h-auto" />
+            {/*
+              Vidéo de la façade qui se dessine (20 s, muette, en boucle), sur le
+              même vert que le hero. Le dessin SVG reste en repli pour les
+              navigateurs sans vidéo et pour les lecteurs d'écran.
+            */}
+            <video
+              className="w-full h-auto aspect-video object-cover [mask-image:radial-gradient(ellipse_at_center,#000_58%,transparent_100%)]"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster="/hero/facade-poster.jpg"
+              aria-label="Façade d'une maison contemporaine qui se dessine trait par trait, comme sur la planche PCMI 5"
+            >
+              <source src="/hero/facade.mp4" type="video/mp4" />
+              <HouseDrawing className="w-full h-auto" />
+            </video>
+            {/* Voile dégradé sur le coin bas droit : fond du tampon, cache le filigrane de la vidéo. */}
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{ background: "radial-gradient(circle at 100% 100%, #22352c 0, #22352c 15%, rgba(34,53,44,0) 30%)" }}
+              aria-hidden="true"
+            />
             <div className="absolute -bottom-10 right-0 sm:right-4">
               <Stamp label="Accordé" sub="Permis de construire" size="lg" animate />
             </div>
