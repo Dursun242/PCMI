@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { plans, site, type PlanId } from "@/config/site";
 import { formatEuro } from "@/lib/format";
+import WhatsAppLink from "./WhatsAppLink";
 
 /**
  * Corps de la page de confirmation, partagé par /devis/merci et par
@@ -102,6 +103,13 @@ export default function MerciContent({ type }: { type?: MerciType }) {
         <a href={`mailto:${site.email}`} className="text-ink underline decoration-brass underline-offset-4">{site.email}</a>
         {site.phone ? <> ou appelez le {site.phone}.</> : "."}
       </p>
+      <WhatsAppLink
+        source="merci"
+        className="mt-3 text-sm text-ink underline decoration-brass underline-offset-4"
+        text="Bonjour, je viens d'envoyer une demande sur le site et j'ai une question."
+      >
+        Ou discutez avec nous sur WhatsApp
+      </WhatsAppLink>
     </div>
   );
 }

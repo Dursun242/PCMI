@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { site } from "@/config/site";
 import Logo from "./Logo";
+import WhatsAppLink from "./WhatsAppLink";
 
 /**
  * Pied de page en forme de cartouche de planche PCMI, sur fond vert profond.
@@ -44,6 +45,9 @@ export default function Footer() {
                   {site.phone}
                 </a>
                 <span className="block text-xs text-paper/55">Laissez-nous un message, on vous rappelle.</span>
+                <WhatsAppLink source="footer" className="mt-2 hover:text-brass-2">
+                  Écrire ou appeler sur WhatsApp
+                </WhatsAppLink>
               </>
             )}
             <p className="mt-4 text-paper/70 leading-relaxed">
