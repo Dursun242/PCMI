@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ContactForm from "@/components/ContactForm";
+import WhatsAppLink from "@/components/WhatsAppLink";
 import { site } from "@/config/site";
 import { withSeo } from "@/lib/seo";
 import JsonLd from "@/components/JsonLd";
@@ -32,6 +33,16 @@ export default function ContactPage() {
               <p className="display text-2xl">Vous avez déjà tous les éléments ?</p>
               <p className="mt-1 text-ink-2 text-[0.95rem]">La fiche projet complète reprend les rubriques du CERFA 13406 : nous chiffrons votre permis sans échange préalable.</p>
               <Link href="/dossier" className="btn btn-line mt-4">Remplir la fiche projet</Link>
+            </div>
+            <div>
+              <p className="display text-2xl">Vous préférez discuter en direct ?</p>
+              <p className="mt-1 text-ink-2 text-[0.95rem]">
+                Par message ou par appel WhatsApp, sur le portable du maître d&apos;œuvre. Vous pouvez y envoyer une
+                photo de plan ou une question rapide.
+              </p>
+              <WhatsAppLink source="contact" className="btn btn-line mt-4 !min-h-11">
+                Ouvrir WhatsApp
+              </WhatsAppLink>
             </div>
             <div>
               <p className="display text-2xl">Vous préférez le téléphone ?</p>

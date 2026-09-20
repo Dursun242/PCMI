@@ -40,6 +40,8 @@ type Events = {
   plans_exe_submit: { pack: string; lots: string };
   /** Demande d'étude thermique RE2020 transmise avec succès. */
   etude_thermique_submit: { prestations: string };
+  /** Ouverture de la conversation WhatsApp. */
+  whatsapp_click: { source: string };
   /** Clic sur l'appel à l'action d'un article de conseils. */
   article_cta_click: { slug: string; destination: string };
 };

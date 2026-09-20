@@ -89,6 +89,18 @@ export const site: {
   },
 };
 
+/**
+ * Lien WhatsApp vers le portable du maître d'œuvre, dérivé de `site.phone`
+ * (format international sans « + » ni espaces, exigé par wa.me). Le message
+ * pré-rempli évite au client de chercher ses mots. Chaîne vide si le
+ * téléphone est masqué.
+ */
+export function whatsappUrl(text = "Bonjour, je vous contacte depuis le site Permis by ID Maîtrise.") {
+  if (!site.phone) return "";
+  const digits = site.phone.replace(/\D/g, "").replace(/^0/, "33");
+  return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
+}
+
 export type PlanId = "essentiel" | "complet" | "premium";
 
 export interface Plan {
