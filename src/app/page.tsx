@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { plans, site, faq } from "@/config/site";
 import HouseDrawing from "@/components/HouseDrawing";
-import Stamp from "@/components/Stamp";
 import PlanCard from "@/components/PlanCard";
 import Faq from "@/components/Faq";
 import FormulaFinder from "@/components/FormulaFinder";
