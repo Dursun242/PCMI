@@ -43,9 +43,13 @@ export default function StickyCta() {
       <div className="md:hidden fixed inset-x-0 bottom-0 z-30 border-t border-stone-2 bg-paper/97 backdrop-blur px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center gap-3">
         <div className="min-w-0 flex-1">
           <p className="display text-lg leading-tight">Devis gratuit sous 4 h</p>
-          <p className="text-xs text-ink-2 truncate">Prix fixe jusqu&apos;à 149 m². Sans engagement.</p>
+          <p className="text-xs text-ink-2 truncate">
+            Sans engagement ·{" "}
+            <WhatsAppLink source="sticky_mobile" noIcon className="text-ink underline decoration-brass underline-offset-2">
+              Écrire sur WhatsApp
+            </WhatsAppLink>
+          </p>
         </div>
-        <WhatsAppLink source="sticky_mobile" iconOnly className="btn btn-line !min-h-12 shrink-0 !px-3.5" />
         <Link
           href="/devis"
           className="btn btn-ink !min-h-12 shrink-0 !px-5"
