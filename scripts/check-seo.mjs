@@ -22,7 +22,7 @@ const BASE = EXTERNAL ?? `http://127.0.0.1:${PORT}`;
 
 /** Ce que chaque page doit porter. */
 const EXPECTATIONS = [
-  { path: "/", types: ["ProfessionalService", "WebSite", "FAQPage"] },
+  { path: "/", types: ["ProfessionalService", "WebSite", "FAQPage", "Article"] },
   { path: "/tarifs", types: ["ProfessionalService", "WebSite", "Service", "BreadcrumbList"] },
   { path: "/permis-de-construire-maison", types: ["Article", "FAQPage", "BreadcrumbList"] },
   { path: "/conseils", types: ["CollectionPage", "BreadcrumbList"] },
@@ -60,6 +60,14 @@ const ASSERTIONS = [
     path: "/",
     label: "la FAQPage reprend au moins 6 questions",
     check: (nodes) => (nodes.find((n) => n["@type"] === "FAQPage")?.mainEntity ?? []).length >= 6,
+  },
+  {
+    path: "/",
+    label: "l'Article porte un auteur et une date de mise à jour",
+    check: (nodes) => {
+      const a = nodes.find((n) => n["@type"] === "Article");
+      return Boolean(a?.author?.name && a?.dateModified);
+    },
   },
   {
     path: "/permis-de-construire-maison",

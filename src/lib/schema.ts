@@ -11,7 +11,17 @@ export const organizationSchema = {
   logo: `${site.url}/brand/logo-black.png`,
   image: `${site.url}/brand/logo-black.png`,
   ...(site.phone ? { telephone: site.phone } : {}),
-  parentOrganization: { "@type": "Organization", name: site.parent, url: site.parentUrl },
+  parentOrganization: {
+    "@type": "Organization",
+    name: site.parent,
+    url: site.parentUrl,
+    // Mêmes comptes que le `sameAs` ci-dessous : ils sont ceux d'ID Maîtrise
+    // (le compte Instagram et la fiche Google portent son nom), pas ceux du
+    // seul service de permis. Sans ce rattachement, un extracteur d'entités
+    // qui ne reconnaît que le type exact « Organization » (et non ses
+    // sous-types comme ProfessionalService) ne trouve ici aucun `sameAs`.
+    sameAs: Object.values(site.social).filter(Boolean),
+  },
   address: {
     "@type": "PostalAddress",
     streetAddress: site.address.street,

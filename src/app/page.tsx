@@ -9,9 +9,14 @@ import TrackedLink from "@/components/TrackedLink";
 import Gallery from "@/components/Gallery";
 import RealisationsGallery from "@/components/RealisationsGallery";
 import JsonLd from "@/components/JsonLd";
-import { faqPageSchema } from "@/lib/schema";
+import AuthorByline from "@/components/AuthorByline";
+import { articleSchema, faqPageSchema } from "@/lib/schema";
+import { staticPages } from "@/config/pages";
 import { realisations } from "@data/realisations";
 import { chiffresCles } from "@data/chiffres";
+
+const PUBLISHED_AT = "2026-09-17";
+const UPDATED_AT = staticPages.find((p) => p.path === "/")?.lastModified ?? PUBLISHED_AT;
 
 const pieces = [
   { code: "PCMI 1", name: "Plan de situation", what: "Situe le terrain dans la commune, avec l'orientation et l'échelle." },
@@ -74,9 +79,18 @@ const stats: { value: string; label: string }[] = [
 ].filter((s): s is { value: string; label: string } => Boolean(s));
 
 export default function HomePage() {
+  const homeSchema = articleSchema({
+    path: "/",
+    headline: `Permis de construire maison individuelle : architecture et ingénierie — ${site.name}`,
+    description:
+      "Dossier de permis de construire complet (PCMI 1 à 8), rendus 3D, dépôt et suivi jusqu'à l'accord, conçu par un bureau d'études qui allie architecture et ingénierie, à prix fixe et partout en France.",
+    datePublished: PUBLISHED_AT,
+    dateModified: UPDATED_AT,
+  });
+
   return (
     <>
-      <JsonLd data={faqPageSchema(faq)} />
+      <JsonLd data={[homeSchema, faqPageSchema(faq)]} />
 
       {/* ---------- Hero ---------- */}
       <section className="bg-forest text-paper">
@@ -161,6 +175,7 @@ export default function HomePage() {
               </Link>
               .
             </p>
+            <AuthorByline updatedAt={UPDATED_AT} />
           </div>
           <ol className="grid sm:grid-cols-2 border-t border-ink">
             {pieces.map((p) => (

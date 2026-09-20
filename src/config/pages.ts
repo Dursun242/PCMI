@@ -27,7 +27,7 @@ export interface StaticPage {
 export const staticPages: StaticPage[] = [
   {
     path: "/",
-    lastModified: "2026-09-19",
+    lastModified: "2026-09-20",
     changeFrequency: "weekly",
     priority: 1,
     summary:
