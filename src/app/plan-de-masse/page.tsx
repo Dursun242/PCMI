@@ -10,7 +10,7 @@ import { site } from "@/config/site";
 export const metadata: Metadata = withSeo("/plan-de-masse", {
   title: "Plan de masse de permis de construire : envoyez le vôtre",
   description:
-    "Vous avez déjà un plan de masse en PDF ou en DWG ? Envoyez-le en deux minutes : un maître d'œuvre le confronte au PLU de votre commune et vous répond sous 48 h ouvrées.",
+    "Vous avez déjà un plan de masse en PDF ou en DWG ? Envoyez-le en deux minutes : un maître d'œuvre le confronte au PLU de votre commune et vous répond sous 4 h ouvrées.",
 });
 
 /** Exigences de l'article R.431-9 du code de l'urbanisme, en langage clair. */
@@ -90,7 +90,7 @@ export default function PlanDeMassePage() {
           {/* Réponse d'abord : ce paragraphe répond à la question de la page. */}
           <p className="lead mt-7 max-w-[44ch]">
             Envoyez-le en PDF, DWG, DXF ou en photo. Chez {site.name}, maître d&apos;œuvre, nous le confrontons au
-            règlement d&apos;urbanisme de votre commune et vous disons sous 48 h ouvrées ce qu&apos;il permet déjà, ce
+            règlement d&apos;urbanisme de votre commune et vous disons sous 4 h ouvrées ce qu&apos;il permet déjà, ce
             qui lui manque au regard de la pièce PCMI 2, et le prix pour aller jusqu&apos;au dépôt.
           </p>
 
@@ -98,7 +98,7 @@ export default function PlanDeMassePage() {
             {[
               ["Vous déposez le fichier", "Deux minutes. Pas de compte à créer, pas de formulaire de dix pages."],
               ["Nous le lisons avec le PLU à côté", "Implantation, reculs, emprise au sol, hauteurs, réseaux, eaux pluviales."],
-              ["Vous recevez notre retour sous 48 h", "Ce qui est conforme, ce qui ne l'est pas, ce qui manque, et le prix pour compléter le dossier."],
+              ["Vous recevez notre retour sous 4 h ouvrées", "Ce qui est conforme, ce qui ne l'est pas, ce qui manque, et le prix pour compléter le dossier."],
             ].map(([t, d], i) => (
               <li key={t} className="flex gap-5">
                 <span className="numeral text-3xl text-brass w-8 shrink-0">{String(i + 1).padStart(2, "0")}</span>

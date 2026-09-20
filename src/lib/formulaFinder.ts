@@ -68,8 +68,8 @@ export function recommend(a: Answers): Recommendation | null {
     const rationale = [
       `Avec ${surface} m² de surface de plancher, votre projet dépasse la limite de ${SURFACE_MAX} m² des trois formules à prix fixe.`,
       surface >= SURFACE_ARCHITECTE
-        ? `Au-delà de ${SURFACE_ARCHITECTE} m², le recours à un architecte est légalement obligatoire : nous montons le dossier avec notre architecte partenaire et vous adressons un devis sous 48 h.`
-        : "Nous chiffrons le dossier sur mesure et vous répondons sous 48 h.",
+        ? `Au-delà de ${SURFACE_ARCHITECTE} m², le recours à un architecte est légalement obligatoire : nous montons le dossier avec notre architecte partenaire et vous adressons un devis sous 4 h ouvrées.`
+        : "Nous chiffrons le dossier sur mesure et vous répondons sous 4 h ouvrées.",
     ];
     return { planId: null, planName: "Devis sur mesure", rationale, href: devisHref(null, surface) };
   }

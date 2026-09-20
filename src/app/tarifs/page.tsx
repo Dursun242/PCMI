@@ -75,7 +75,7 @@ export default function TarifsPage() {
           <div className="max-w-[60ch]">
             <p className="display text-2xl">Maison de 150 m² et plus : sur devis.</p>
             <p className="mt-1 text-ink-2">
-              Nos formules à prix fixe ne s&apos;appliquent plus au-delà de 149 m². Nous montons le dossier avec notre architecte partenaire — dont le recours devient légalement obligatoire au-delà de 150 m² de surface de plancher — et vous adressons un devis personnalisé sous 48 h.
+              Nos formules à prix fixe ne s&apos;appliquent plus au-delà de 149 m². Nous montons le dossier avec notre architecte partenaire — dont le recours devient légalement obligatoire au-delà de 150 m² de surface de plancher — et vous adressons un devis personnalisé sous 4 h ouvrées.
             </p>
           </div>
           <Link href="/devis" className="btn btn-line">Demander un devis sur mesure</Link>

@@ -132,7 +132,7 @@ export default function PlanDeMasseForm() {
         {status === "sending" ? "Envoi en cours…" : "Envoyer mon plan de masse"}
       </button>
       <p className="text-xs text-ink-2">
-        Réponse sous 48 h ouvrées. Aucun engagement, aucune revente de vos données, et vos fichiers ne servent qu&apos;à
+        Réponse sous 4 h ouvrées. Aucun engagement, aucune revente de vos données, et vos fichiers ne servent qu&apos;à
         votre projet.
       </p>
     </form>

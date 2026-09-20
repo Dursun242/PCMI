@@ -64,8 +64,8 @@ export async function POST(req: Request) {
     <p>Bonjour ${esc(clean.prenom)},</p>
     <p>Votre fiche projet pour un permis de construire à <strong>${esc(clean.terrain_commune)}</strong> est bien arrivée${listed.length ? `, avec ${listed.length} document${listed.length > 1 ? "s" : ""}` : ""}.</p>
     ${over
-      ? `<p>Votre projet représente environ <strong>${spTotal} m² de surface de plancher</strong>. Au-delà de 149 m², nos formules à prix fixe ne s'appliquent plus : nous préparons un devis sur mesure avec notre architecte partenaire (obligatoire au-delà de 150 m²) et revenons vers vous sous <strong>48 h ouvrées</strong>.</p>`
-      : `<p>Nous lisons le règlement d'urbanisme de votre commune et vous adressons sous <strong>48 h ouvrées</strong> un devis à prix fixe, avec la formule conseillée et la liste des éventuels documents manquants.</p>`}
+      ? `<p>Votre projet représente environ <strong>${spTotal} m² de surface de plancher</strong>. Au-delà de 149 m², nos formules à prix fixe ne s'appliquent plus : nous préparons un devis sur mesure avec notre architecte partenaire (obligatoire au-delà de 150 m²) et revenons vers vous sous <strong>4 h ouvrées</strong>.</p>`
+      : `<p>Nous lisons le règlement d'urbanisme de votre commune et vous adressons sous <strong>4 h ouvrées</strong> un devis à prix fixe, avec la formule conseillée et la liste des éventuels documents manquants.</p>`}
     <p>Si vous avez oublié une pièce, répondez simplement à cet e-mail en la joignant.</p>`);
 
   const json = { version: 1, receivedAt: new Date().toISOString(), site: site.url, formule: clean.formule ?? "conseil", spTotal, architecteObligatoire: over, reponses: clean, documents: listed };

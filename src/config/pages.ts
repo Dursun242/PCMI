@@ -93,7 +93,7 @@ export const staticPages: StaticPage[] = [
     lastModified: "2026-09-19",
     changeFrequency: "monthly",
     priority: 0.8,
-    summary: "Formulaire de demande de devis : réponse chiffrée sous 48 h ouvrées après lecture du PLU de la commune.",
+    summary: "Formulaire de demande de devis : réponse chiffrée sous 4 h ouvrées après lecture du PLU de la commune.",
   },
   {
     path: "/dossier",

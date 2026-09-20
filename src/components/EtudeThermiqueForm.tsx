@@ -161,7 +161,7 @@ export default function EtudeThermiqueForm() {
         {status === "sending" ? "Envoi en cours…" : "Recevoir mon devis RE2020"}
       </button>
       <p className="text-xs text-ink-2">
-        Devis sous 48 h ouvrées. Aucun engagement, aucune revente de vos données.
+        Devis sous 4 h ouvrées. Aucun engagement, aucune revente de vos données.
       </p>
     </form>
   );

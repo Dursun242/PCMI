@@ -38,7 +38,7 @@ export default function ContactForm() {
       <div className="grid gap-4 py-6" role="status">
         <span className="stamp text-2xl w-fit">Reçu</span>
         <h2 className="display text-4xl">Message bien reçu.</h2>
-        <p className="text-ink-2 leading-relaxed">Nous vous répondons sous 48 h ouvrées. Un accusé de réception vient de vous être envoyé.</p>
+        <p className="text-ink-2 leading-relaxed">Nous vous répondons sous 4 h ouvrées. Un accusé de réception vient de vous être envoyé.</p>
         <Link href="/conseils" className="btn btn-line w-fit">Lire nos conseils en attendant</Link>
       </div>
     );

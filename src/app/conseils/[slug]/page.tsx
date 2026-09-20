@@ -81,7 +81,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         <aside className="lg:sticky lg:top-28 lg:self-start">
           <div className="border-t border-ink pt-5">
             <p className="display text-2xl">Votre permis, à prix fixe.</p>
-            <p className="mt-1 text-sm text-ink-2">Trois formules jusqu&apos;à 149 m². Devis sous 48 h.</p>
+            <p className="mt-1 text-sm text-ink-2">Trois formules jusqu&apos;à 149 m². Devis sous 4 h ouvrées.</p>
             <ArticleCtaLink slug={a.slug} href="/tarifs" className="btn btn-line mt-5 w-full !min-h-12">Voir les formules</ArticleCtaLink>
             <ArticleCtaLink slug={a.slug} href="/devis" className="btn btn-ink mt-2 w-full !min-h-12">Demander un devis</ArticleCtaLink>
           </div>

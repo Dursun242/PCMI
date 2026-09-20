@@ -24,7 +24,7 @@ export default function NotFound() {
           ["/tarifs", "Formules et tarifs", "Les trois formules à prix fixe, le comparatif ligne par ligne et les options."],
           ["/permis-de-construire-maison", "Le guide du permis de construire", "Pièces du dossier, délais d'instruction, affichage, recours, validité."],
           ["/conseils", "Conseils", "Articles pratiques écrits par un maître d'œuvre."],
-          ["/devis", "Demander un devis", "Réponse chiffrée sous 48 h ouvrées, sans engagement."],
+          ["/devis", "Demander un devis", "Réponse chiffrée sous 4 h ouvrées, sans engagement."],
         ].map(([href, titre, texte]) => (
           <div key={href}>
             <Link href={href} className="display text-2xl hover:text-brass">{titre}</Link>

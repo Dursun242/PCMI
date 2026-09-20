@@ -43,7 +43,7 @@ export async function POST(req: Request) {
 
   const clientHtml = clientWrap(`
     <p>Bonjour ${esc(name.split(" ")[0])},</p>
-    <p>Votre message est bien arrivé${listed.length ? ` avec ${listed.length} pièce${listed.length > 1 ? "s" : ""} jointe${listed.length > 1 ? "s" : ""}` : ""}. Nous vous répondons sous <strong>48 h ouvrées</strong>.</p>
+    <p>Votre message est bien arrivé${listed.length ? ` avec ${listed.length} pièce${listed.length > 1 ? "s" : ""} jointe${listed.length > 1 ? "s" : ""}` : ""}. Nous vous répondons sous <strong>4 h ouvrées</strong>.</p>
     <p>Si vous souhaitez gagner du temps, vous pouvez aussi remplir la <a href="${site.url}/dossier">fiche projet complète</a> : elle reprend les informations du CERFA et nous permet de chiffrer votre permis immédiatement.</p>`);
 
   try {

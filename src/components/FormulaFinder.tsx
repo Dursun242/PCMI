@@ -162,7 +162,7 @@ export default function FormulaFinder({ className = "" }: { className?: string }
                   <span className="text-ink-2"> · livré sous {plan.delayWorkingDays}</span>
                 </p>
               ) : (
-                <p className="mt-2 text-ink-2">Prix établi après lecture du PLU de votre commune, sous 48 h.</p>
+                <p className="mt-2 text-ink-2">Prix établi après lecture du PLU de votre commune, sous 4 h ouvrées.</p>
               )}
               <div className="mt-5 grid gap-3 text-[0.98rem] leading-relaxed">
                 {result.rationale.map((phrase) => (

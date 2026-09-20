@@ -27,7 +27,7 @@ const pieces = [
 
 const steps = [
   {
-    title: "Votre devis en 48 h",
+    title: "Votre devis sous 4 h ouvrées",
     text: "Vous décrivez votre projet en trois minutes. Nous lisons le règlement d'urbanisme de votre commune et vous confirmons la formule, le prix et le délai.",
   },
   {
@@ -300,7 +300,7 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="border-t border-ink pt-12 flex flex-wrap items-end justify-between gap-8">
           <div className="max-w-[36ch]">
-            <h2 className="display text-4xl sm:text-5xl">Votre devis chiffré sous 48 h.</h2>
+            <h2 className="display text-4xl sm:text-5xl">Votre devis chiffré sous 4 h ouvrées.</h2>
             <p className="mt-4 text-ink-2 leading-relaxed">Trois minutes pour décrire votre projet. Aucun engagement, aucun frais caché.</p>
           </div>
           <TrackedLink href="/devis" source="accueil_final" className="btn btn-ink">Demander un devis</TrackedLink>

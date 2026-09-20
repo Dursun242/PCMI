@@ -449,7 +449,7 @@ export const faq = [
   },
   {
     q: "Ma maison fait plus de 149 m². Que se passe-t-il ?",
-    a: "Les formules Essentiel, Complet et Premium ne s'appliquent pas. Décrivez votre projet dans le formulaire de devis : nous revenons vers vous sous 48 h avec une proposition sur mesure, montée avec notre architecte partenaire.",
+    a: "Les formules Essentiel, Complet et Premium ne s'appliquent pas. Décrivez votre projet dans le formulaire de devis : nous revenons vers vous sous 4 h ouvrées avec une proposition sur mesure, montée avec notre architecte partenaire.",
   },
   {
     q: "Comment se passe le paiement ?",
