@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { plans, site, faq } from "@/config/site";
 import HouseDrawing from "@/components/HouseDrawing";
-import Stamp from "@/components/Stamp";
 import PlanCard from "@/components/PlanCard";
 import Faq from "@/components/Faq";
 import FormulaFinder from "@/components/FormulaFinder";
@@ -119,15 +118,12 @@ export default function HomePage() {
               <source src="/hero/facade.mp4" type="video/mp4" />
               <HouseDrawing className="w-full h-auto" />
             </video>
-            {/* Voile dégradé sur le coin bas droit : fond du tampon, cache le filigrane de la vidéo. */}
+            {/* Voile dégradé sur le coin bas droit : cache le filigrane de la vidéo. */}
             <div
               className="pointer-events-none absolute inset-0"
               style={{ background: "radial-gradient(circle at 100% 100%, #22352c 0, #22352c 15%, rgba(34,53,44,0) 30%)" }}
               aria-hidden="true"
             />
-            <div className="absolute -bottom-10 right-0 sm:right-4">
-              <Stamp label="Accordé" sub="Permis de construire" size="lg" animate />
-            </div>
           </div>
         </div>
       </section>
