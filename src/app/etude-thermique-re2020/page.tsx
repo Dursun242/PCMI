@@ -12,7 +12,7 @@ import { formatEuro } from "@/lib/format";
 export const metadata: Metadata = withSeo("/etude-thermique-re2020", {
   title: "Étude thermique RE2020 : attestation, Bbio, ACV",
   description:
-    "Attestation RE2020 au dépôt du permis et à l'achèvement, étude thermique complète (Bbio, Cep, DH), analyse de cycle de vie (Ic construction). Par le thermicien d'un bureau d'études qui dessine aussi votre maison, à prix fixe, partout en France.",
+    "Attestation RE2020 au dépôt du permis et à l'achèvement, étude thermique complète (Bbio, Cep, DH) et analyse de cycle de vie. À prix fixe, partout en France.",
 });
 
 const indicateurs: [string, string][] = [

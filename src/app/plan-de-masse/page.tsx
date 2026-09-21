@@ -10,7 +10,7 @@ import { site } from "@/config/site";
 export const metadata: Metadata = withSeo("/plan-de-masse", {
   title: "Plan de masse de permis de construire : envoyez le vôtre",
   description:
-    "Vous avez déjà un plan de masse en PDF ou en DWG ? Envoyez-le en deux minutes : un maître d'œuvre le confronte au PLU de votre commune et vous répond sous 4 h ouvrées.",
+    "Vous avez déjà un plan de masse en PDF ou en DWG ? Envoyez-le : un maître d'œuvre le confronte au PLU de votre commune et vous répond sous 4 h ouvrées.",
 });
 
 /** Exigences de l'article R.431-9 du code de l'urbanisme, en langage clair. */
