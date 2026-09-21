@@ -18,10 +18,14 @@ const home = withSeo("/", {
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: {
-    default: String(home.title),
-    template: `%s — ${site.name}`,
-  },
+  /**
+   * Titre simple, sans `template` : le suffixe de marque coûtait 24 caractères
+   * (« — Permis by ID Maîtrise ») sur chaque page intérieure, qui passaient
+   * ainsi les ~65 caractères affichés par Google et se faisaient tronquer.
+   * Google réaffiche de lui-même le nom du site sous le titre, qu'il tire du
+   * schéma Organization/WebSite servi par le layout.
+   */
+  title: String(home.title),
   description: home.description,
   openGraph: {
     ...home.openGraph,

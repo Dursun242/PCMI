@@ -8,7 +8,7 @@ import { withSeo } from "@/lib/seo";
 import { SURFACE_MAX } from "@/lib/formulaFinder";
 
 export const metadata: Metadata = withSeo("/a-propos", {
-  title: "Architecte, dessinateur, ingénieur béton : qui monte votre permis",
+  title: "Architecte, dessinateur, ingénieur : qui monte votre permis",
   description:
     "Permis by ID Maîtrise est la marque de la SARL ID Maîtrise, bureau d'études au Havre qui allie ingénierie et conception architecturale. Méthode et assurances.",
 });

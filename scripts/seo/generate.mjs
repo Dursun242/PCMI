@@ -9,6 +9,7 @@ import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import matter from "gray-matter";
 import { readJson, writeJson, slugify, listArticles, FACTS, ROOT } from "./lib.mjs";
+import { TITLE_MAX, DESCRIPTION_MAX, trimTo } from "./limits.mjs";
 
 const args = process.argv.slice(2);
 const arg = (name) => {
@@ -47,17 +48,48 @@ ${internalLinks}
 - Ne cite aucun concurrent, aucune marque de constructeur, aucune source externe avec URL.
 - Réponds UNIQUEMENT avec le fichier MDX complet : frontmatter YAML (title, description, date, keywords) puis le corps. Le title fait 50 à 65 caractères et contient la requête cible ou une variante naturelle ; la description fait 140 à 160 caractères.`;
 
+async function ask(user) {
+  const res = await client.messages.create({ model: MODEL, max_tokens: 4000, system: SYSTEM, messages: [{ role: "user", content: user }] });
+  let text = res.content.map((c) => (c.type === "text" ? c.text : "")).join("").trim();
+  text = text.replace(/^```(?:mdx|markdown|md)?\s*/i, "").replace(/```\s*$/, "");
+  const parsed = matter(text);
+  if (!parsed.data.title || !parsed.data.description) throw new Error("Frontmatter incomplet dans la réponse du modèle.");
+  return parsed;
+}
+
+/** Vrai si le frontmatter tient dans ce que Google affiche. */
+const fits = (d) => d.title.length <= TITLE_MAX && d.description.length <= DESCRIPTION_MAX;
+
 async function write(query, extra = "") {
   const today = new Date().toISOString().slice(0, 10);
   const user = `Requête cible : « ${query} ».
 Date de publication : ${today}.
 ${extra}
 Rédige l'article.`;
-  const res = await client.messages.create({ model: MODEL, max_tokens: 4000, system: SYSTEM, messages: [{ role: "user", content: user }] });
-  let text = res.content.map((c) => (c.type === "text" ? c.text : "")).join("").trim();
-  text = text.replace(/^```(?:mdx|markdown|md)?\s*/i, "").replace(/```\s*$/, "");
-  const parsed = matter(text);
-  if (!parsed.data.title || !parsed.data.description) throw new Error("Frontmatter incomplet dans la réponse du modèle.");
+  let parsed = await ask(user);
+
+  /*
+   * Le prompt demande déjà les bonnes longueurs, mais le modèle les dépasse
+   * régulièrement — et un title ou une description coupés par Google coûtent
+   * du clic. On redemande une fois, en nommant le dépassement, puis on tronque
+   * proprement : jamais d'exception, sinon c'est tout le cycle hebdomadaire
+   * (analyse → article → balises) qui s'arrête pour quelques caractères.
+   */
+  if (!fits(parsed.data)) {
+    const d = parsed.data;
+    console.warn(`Balises trop longues (title ${d.title.length}/${TITLE_MAX}, description ${d.description.length}/${DESCRIPTION_MAX}) : nouvelle tentative.`);
+    try {
+      parsed = await ask(`${user}\n\nAttention : ta version précédente avait un title de ${d.title.length} caractères et une description de ${d.description.length}. Le title doit faire au plus ${TITLE_MAX} caractères et la description au plus ${DESCRIPTION_MAX}, sans phrase coupée.`);
+    } catch (e) {
+      console.warn(`Nouvelle tentative échouée (${e.message}) : on garde la première version.`);
+    }
+  }
+  if (!fits(parsed.data)) {
+    console.warn("Balises toujours trop longues : troncature à la limite de mot.");
+    parsed.data.title = trimTo(parsed.data.title, TITLE_MAX);
+    parsed.data.description = trimTo(parsed.data.description, DESCRIPTION_MAX);
+  }
+
   parsed.data.date = parsed.data.date ? String(parsed.data.date).slice(0, 10) : today;
   if (!Array.isArray(parsed.data.keywords)) parsed.data.keywords = [query];
   if (!parsed.data.keywords.includes(query)) parsed.data.keywords.unshift(query);
