@@ -42,6 +42,10 @@ type Events = {
   etude_thermique_submit: { prestations: string };
   /** Ouverture de la conversation WhatsApp. */
   whatsapp_click: { source: string };
+  /** Clic sur le lien d'appel téléphonique. */
+  phone_click: { source: string };
+  /** Clic sur le lien Instagram. */
+  instagram_click: { source: string };
   /** Clic sur l'appel à l'action d'un article de conseils. */
   article_cta_click: { slug: string; destination: string };
 };
