@@ -12,7 +12,7 @@ import { formatEuro } from "@/lib/format";
 export const metadata: Metadata = withSeo("/plans-execution", {
   title: "Plans d'exécution maison : ingénieur béton, structure, charpente",
   description:
-    "Après le permis, les plans EXE pour construire : fondations, béton armé, plancher, charpente, couverture, électricité, plomberie, VRD. Dessinés par notre dessinateur-projeteur, calculés par notre ingénieur béton armé et structure, à prix fixe, partout en France.",
+    "Après le permis, les plans EXE : fondations, béton armé, plancher, charpente, électricité, plomberie, VRD. Calculés par notre ingénieur structure, à prix fixe.",
 });
 
 const etapes: [string, string][] = [

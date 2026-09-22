@@ -7,9 +7,9 @@ import JsonLd from "@/components/JsonLd";
 import { breadcrumb, collectionPageSchema } from "@/lib/schema";
 
 export const metadata: Metadata = withSeo("/conseils", {
-  title: "Conseils permis de construire : prix, délais, refus, pièces du dossier",
+  title: "Conseils permis de construire : prix, délais, refus, dossier",
   description:
-    "Articles pratiques écrits par un maître d'œuvre : combien coûte un permis de construire, comment éviter un refus, réussir l'insertion graphique, comprendre le PLU.",
+    "Articles pratiques d'un maître d'œuvre : combien coûte un permis de construire, éviter un refus, réussir l'insertion graphique, comprendre le PLU.",
 });
 
 /* Visuel de substitution pour les articles sans photo : numéro en chiffres

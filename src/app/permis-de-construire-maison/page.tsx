@@ -42,7 +42,7 @@ const guideFaq = [
 export const metadata: Metadata = withSeo("/permis-de-construire-maison", {
   title: "Permis de construire maison individuelle : le guide complet",
   description:
-    "Pièces PCMI 1 à 8, seuil des 150 m² et architecte, délais d'instruction, dépôt en ligne, affichage, RE2020, validité : tout ce qu'il faut savoir avant de déposer le permis de construire de votre maison.",
+    "Pièces PCMI 1 à 8, seuil des 150 m² et architecte, délais d'instruction, dépôt en ligne, affichage, RE2020, validité : le guide avant de déposer votre permis.",
 });
 
 const toc = [

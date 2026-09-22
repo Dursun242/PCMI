@@ -11,17 +11,21 @@ import { withSeo } from "@/lib/seo";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
 
 const home = withSeo("/", {
-  title: `Permis de construire maison individuelle : architecture et ingénierie — ${site.name}`,
+  title: "Permis de construire maison individuelle — prix fixe, partout en France",
   description:
-    "Dossier de permis de construire complet (PCMI 1 à 8), rendus 3D, dépôt et suivi jusqu'à l'accord. Conçu par un bureau d'études qui allie architecture et ingénierie : dessinateur-projeteur, ingénieur béton et structure, architecte partenaire au-delà de 150 m². Partout en France, à prix fixe.",
+    "Dossier PCMI 1 à 8 complet, rendus 3D, dépôt en mairie et suivi jusqu'à l'accord. Bureau d'études architecture et ingénierie, prix fixe, partout en France.",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: {
-    default: String(home.title),
-    template: `%s — ${site.name}`,
-  },
+  /**
+   * Titre simple, sans `template` : le suffixe de marque coûtait 24 caractères
+   * (« — Permis by ID Maîtrise ») sur chaque page intérieure, qui passaient
+   * ainsi les ~65 caractères affichés par Google et se faisaient tronquer.
+   * Google réaffiche de lui-même le nom du site sous le titre, qu'il tire du
+   * schéma Organization/WebSite servi par le layout.
+   */
+  title: String(home.title),
   description: home.description,
   openGraph: {
     ...home.openGraph,

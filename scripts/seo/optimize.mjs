@@ -8,6 +8,7 @@
  */
 import Anthropic from "@anthropic-ai/sdk";
 import { readJson, writeJson, FACTS } from "./lib.mjs";
+import { TITLE_MAX, DESCRIPTION_MAX } from "./limits.mjs";
 
 if (!process.env.ANTHROPIC_API_KEY) {
   console.log("ANTHROPIC_API_KEY manquante : pas d'optimisation des balises.");
@@ -43,6 +44,15 @@ for (const fix of report.metaFixes ?? []) {
   try {
     const json = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1));
     if (json.title && json.description) {
+      /*
+       * Une surcharge trop longue serait coupée par Google et ferait perdre le
+       * CTR qu'elle est censée gagner. On la refuse plutôt que de la tronquer :
+       * les balises écrites dans le code, elles, respectent les limites.
+       */
+      if (json.title.length > TITLE_MAX || json.description.length > DESCRIPTION_MAX) {
+        console.warn(`${fix.path} : balises trop longues (${json.title.length}/${TITLE_MAX} et ${json.description.length}/${DESCRIPTION_MAX}), ignorées.`);
+        continue;
+      }
       overrides[fix.path] = { ...json, since: new Date().toISOString().slice(0, 10), previous: current ? { title: current.title, description: current.description } : undefined };
       changed++;
       console.log(`${fix.path} → « ${json.title} »`);
