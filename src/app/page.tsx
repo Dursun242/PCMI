@@ -27,18 +27,22 @@ const pieces = [
 const steps = [
   {
     title: "Votre devis sous 4 h ouvrées",
+    short: "Devis sous 4 h",
     text: "Vous décrivez votre projet en trois minutes. Nous lisons le règlement d'urbanisme de votre commune et vous confirmons la formule, le prix et le délai.",
   },
   {
     title: "Conception et vérification",
+    short: "Conception et vérification",
     text: "Nous dessinons ou reprenons vos plans, contrôlons chaque règle (implantation, hauteur, emprise, aspect) et vous présentons le projet en visio.",
   },
   {
     title: "Dossier prêt à déposer",
+    short: "Dossier PCMI complet",
     text: "Les huit pièces PCMI à l'échelle, la notice, le CERFA rempli et, selon la formule, les rendus 3D et l'attestation RE2020.",
   },
   {
     title: "Dépôt et suivi jusqu'à l'accord",
+    short: "Dépôt et suivi",
     text: "Nous déposons le dossier, répondons à la mairie et modifions ce qu'il faut. Vous recevez votre arrêté de permis de construire.",
   },
 ];
@@ -125,6 +129,29 @@ export default function HomePage() {
               aria-hidden="true"
             />
           </div>
+        </div>
+      </section>
+
+      {/* ---------- La méthode en un coup d'œil ----------
+        Les quatre étapes en une bande, juste sous le hero : le visiteur
+        comprend la mécanique sans scroller ni cliquer, et sans écran
+        d'accueil qui retarderait le contenu (et pèserait sur le référencement
+        mobile). Le détail de chaque étape reste dans « Du premier échange au
+        permis accordé », plus bas. Même source que cette section : `steps`. */}
+      <section aria-label="Notre méthode en quatre étapes" className="bg-stone border-b border-stone-2">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 py-10 sm:py-12">
+          <div className="flex items-center gap-3">
+            <span className="rule" aria-hidden="true" />
+            <span className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-ink-2">Comment ça se passe</span>
+          </div>
+          <ol className="mt-7 grid grid-cols-2 gap-x-6 gap-y-6 lg:grid-cols-4">
+            {steps.map((s, i) => (
+              <li key={s.short} className="flex items-baseline gap-3 border-t border-stone-2 pt-4">
+                <span className="numeral text-2xl text-brass" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                <span className="display text-lg sm:text-xl leading-tight">{s.short}</span>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
