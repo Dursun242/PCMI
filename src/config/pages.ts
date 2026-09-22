@@ -122,6 +122,9 @@ export const staticPages: StaticPage[] = [
     changeFrequency: "yearly",
     priority: 0.2,
     summary: "Mentions légales.",
+    // Page en noindex (voir sa metadata) : la lister dans le sitemap enverrait
+    // à Google deux consignes contradictoires.
+    inSitemap: false,
   },
   {
     path: "/confidentialite",
