@@ -8,14 +8,15 @@
     "start": "next start",
     "lint": "eslint",
     "photos": "node scripts/fetch-photos.mjs",
-    "prebuild": "node scripts/fetch-photos.mjs",
+    "prebuild": "node scripts/check-references.mjs && node scripts/fetch-photos.mjs",
     "seo": "node scripts/seo/run.mjs",
     "seo:analyze": "node scripts/seo/analyze.mjs",
     "seo:article": "node scripts/seo/generate.mjs",
     "seo:meta": "node scripts/seo/optimize.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check:seo": "node scripts/check-seo.mjs"
+    "check:seo": "node scripts/check-seo.mjs",
+    "check:references": "node scripts/check-references.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.126.0",

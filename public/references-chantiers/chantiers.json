@@ -1,0 +1,212 @@
+[
+  {
+    "titre": "Maison contemporaine à toit plat",
+    "adresse": "86 rue Jules Guesde",
+    "commune": "Le Havre",
+    "gps": "49.509802, 0.1184467",
+    "photo": "chantier-01.jpg"
+  },
+  {
+    "titre": "Maison individuelle de plain-pied",
+    "adresse": "264 D80",
+    "commune": "Sandouville",
+    "gps": "49.5223239, 0.3614802",
+    "photo": "chantier-02.jpg"
+  },
+  {
+    "titre": "Maison individuelle contemporaine",
+    "adresse": "27 rue Duquesne",
+    "commune": "Sainte-Adresse",
+    "gps": "49.5160206, 0.0697779",
+    "photo": "chantier-03.jpg"
+  },
+  {
+    "titre": "Construction d'un immeuble de 6 logements",
+    "adresse": "66 rue de l'Église",
+    "commune": "Le Havre",
+    "gps": "49.4851806, 0.1328734",
+    "photo": "chantier-04.jpg"
+  },
+  {
+    "titre": "Réhabilitation de 1 200 m² – ancien dispensaire municipal",
+    "adresse": "Place Danton",
+    "commune": "Le Havre",
+    "gps": "49.4945508, 0.1226979",
+    "photo": "chantier-05.jpg"
+  },
+  {
+    "titre": "Maison individuelle",
+    "adresse": "14 allée de Seine",
+    "commune": "Saint-Romain-de-Colbosc",
+    "gps": "49.5268236, 0.3562245",
+    "photo": "chantier-06.jpg"
+  },
+  {
+    "titre": "Maison individuelle",
+    "adresse": "55 chemin des Quatre Fermes",
+    "commune": "Octeville-sur-Mer",
+    "gps": "49.546354, 0.125074",
+    "photo": "chantier-07.jpg"
+  },
+  {
+    "titre": "Construction d'un immeuble de bureaux sur 4 niveaux",
+    "adresse": "9 rue de Fontenoy",
+    "commune": "Le Havre",
+    "gps": "49.4989176, 0.1275928",
+    "photo": "chantier-08.jpg"
+  },
+  {
+    "titre": "Maison individuelle de plain-pied",
+    "adresse": "21 rue des Brumes",
+    "commune": "Cauville-sur-Mer",
+    "gps": "49.5928354, 0.127252",
+    "photo": "chantier-09.jpg"
+  },
+  {
+    "titre": "Ensemble de maisons individuelles",
+    "adresse": "23 route de Dondeneville",
+    "commune": "Octeville-sur-Mer",
+    "gps": "49.5438087, 0.1227081",
+    "photo": "chantier-10.jpg"
+  },
+  {
+    "titre": "Maison individuelle",
+    "adresse": "12 rue de l'Alliance",
+    "commune": "Le Havre",
+    "gps": "49.5103796, 0.1149155",
+    "photo": "chantier-11.jpg"
+  },
+  {
+    "titre": "Ensemble de logements individuels",
+    "adresse": "61 rue Louis Braille",
+    "commune": "Le Havre (Sanvic)",
+    "gps": "49.511487, 0.101982",
+    "photo": "chantier-12.jpg"
+  },
+  {
+    "titre": "Maison individuelle",
+    "adresse": "523 D34",
+    "commune": "Mélamare",
+    "gps": "49.5413286, 0.4158694",
+    "photo": "chantier-13.jpg"
+  },
+  {
+    "titre": "Construction de plain-pied",
+    "adresse": "38 rue René de la Boutresse",
+    "commune": "Saint-Romain-de-Colbosc",
+    "gps": "49.527845, 0.357933",
+    "photo": "chantier-14.jpg"
+  },
+  {
+    "titre": "Maison individuelle avec piscine",
+    "adresse": "5 rue du Calvaire",
+    "commune": "Riville",
+    "gps": "49.727047, 0.5647489",
+    "photo": "chantier-15.jpg"
+  },
+  {
+    "titre": "Maison individuelle",
+    "adresse": "3 rue du Vent d'Ouest",
+    "commune": "Cauville-sur-Mer",
+    "gps": "49.5911462, 0.1265937",
+    "photo": "chantier-16.jpg"
+  },
+  {
+    "titre": "Maison de ville",
+    "adresse": "58 avenue de l'Hippodrome",
+    "commune": "Sainte-Adresse",
+    "gps": "49.5068386, 0.0769051",
+    "photo": "chantier-17.jpg"
+  },
+  {
+    "titre": "Maison individuelle",
+    "adresse": "14 rue Darwin",
+    "commune": "Le Havre",
+    "gps": "49.5113633, 0.1247457",
+    "photo": "chantier-18.jpg"
+  },
+  {
+    "titre": "Construction d'un immeuble de 8 logements",
+    "adresse": "58 rue Gustave Flaubert",
+    "commune": "Le Havre",
+    "gps": "49.4981126, 0.1134597",
+    "photo": "chantier-19.jpg"
+  },
+  {
+    "titre": "Maison individuelle",
+    "adresse": "8 impasse du Clos aux Pommiers",
+    "commune": "Fontaine-la-Mallet",
+    "gps": "49.5377036, 0.148095",
+    "photo": "chantier-20.jpg"
+  },
+  {
+    "titre": "Maison individuelle",
+    "adresse": "37 rue Marconi",
+    "commune": "Le Havre",
+    "gps": "49.5213248, 0.121757",
+    "photo": "chantier-21.jpg"
+  },
+  {
+    "titre": "Construction d'une mosquée",
+    "adresse": "55 rue Maurice Genevoix",
+    "commune": "Le Havre",
+    "gps": "49.5151431, 0.1012433",
+    "photo": "chantier-22.jpg"
+  },
+  {
+    "titre": "Maison contemporaine avec piscine",
+    "adresse": "8 rue du Courtil",
+    "commune": "Saint-Romain-de-Colbosc",
+    "gps": "49.5258449, 0.3550708",
+    "photo": "chantier-23.jpg"
+  },
+  {
+    "titre": "Maison individuelle",
+    "adresse": "302 rue Louis Lumière",
+    "commune": "Le Havre",
+    "gps": "49.5267224, 0.1257537",
+    "photo": "chantier-24.jpg"
+  },
+  {
+    "titre": "Maison individuelle 130 m²",
+    "adresse": "41 rue Granados",
+    "commune": "Le Havre (Bléville)",
+    "gps": "49.5232875, 0.1252752",
+    "photo": "chantier-25.jpg"
+  },
+  {
+    "titre": "Maison individuelle",
+    "adresse": "23 rue Simone Veil",
+    "commune": "Rogerville",
+    "gps": "49.5049713, 0.2639229",
+    "photo": "chantier-26.jpg"
+  },
+  {
+    "titre": "Maison de plain-pied avec double garage",
+    "adresse": "2 chemin de Campemeille",
+    "commune": "Rogerville",
+    "gps": "49.5105225, 0.2837162",
+    "photo": "chantier-27.jpg"
+  },
+  {
+    "titre": "Maisons de ville contemporaines",
+    "adresse": "58 rue Roger Salengro",
+    "commune": "Le Havre",
+    "gps": "49.5073862, 0.1117454",
+    "photo": "chantier-28.jpg"
+  },
+  {
+    "titre": "Maison individuelle",
+    "adresse": "24 rue Henri Domergue",
+    "commune": "Le Havre",
+    "gps": "49.5143121, 0.1258694",
+    "photo": "chantier-29.jpg"
+  },
+  {
+    "titre": "Maison contemporaine à toit plat",
+    "adresse": "Rue des Brumes (fond de l'allée du n° 23)",
+    "commune": "Cauville-sur-Mer",
+    "gps": "49.5926027, 0.1279656",
+    "photo": "chantier-30.jpg"
+  }
+]
