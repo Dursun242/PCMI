@@ -1,0 +1,80 @@
+name: SEO hebdomadaire
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # chaque lundi 6h UTC
+  workflow_dispatch:
+    inputs:
+      query:
+        description: "Sujet imposé (optionnel)"
+        required: false
+        type: string
+      refresh:
+        description: "Slug d'article à réécrire (optionnel)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: seo-weekly
+  cancel-in-progress: false
+
+jobs:
+  seo:
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+      INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+      GSC_PROPERTY: ${{ vars.GSC_PROPERTY }}
+      NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+      SEO_MODEL: ${{ vars.SEO_MODEL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Analyse Search Console
+        run: npm run seo:analyze
+
+      - name: Rédaction de l'article
+        run: |
+          if [ -n "${{ inputs.refresh }}" ]; then
+            node scripts/seo/generate.mjs --refresh "${{ inputs.refresh }}"
+          elif [ -n "${{ inputs.query }}" ]; then
+            node scripts/seo/generate.mjs --query "${{ inputs.query }}"
+          else
+            npm run seo:article
+          fi
+
+      - name: Optimisation des balises
+        run: npm run seo:meta
+
+      - name: Build de vérification
+        run: npm run build
+
+      - name: Commit et push
+        id: commit
+        run: |
+          git config user.name "seo-bot"
+          git config user.email "seo-bot@users.noreply.github.com"
+          git add seo/ content/articles/
+          if git diff --cached --quiet; then
+            echo "Rien à committer."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "seo: cycle hebdomadaire $(date -u +%F)"
+            git push
+            echo "pushed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Indexation (IndexNow)
+        if: steps.commit.outputs.pushed == 'true'
+        run: node scripts/seo/indexnow.mjs
