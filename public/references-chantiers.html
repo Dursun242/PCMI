@@ -217,7 +217,7 @@ function zoomAt(f, px, py) {
 }
 wrap.addEventListener("wheel", e => { e.preventDefault(); zoomAt(Math.exp(e.deltaY * 0.0015), e.clientX, e.clientY); }, { passive: false });
 const ptrs = new Map(); let lastDist = 0, moved = false;
-wrap.addEventListener("pointerdown", e => { if (e.target.closest(".zoom,.pop")) return; ptrs.set(e.pointerId, e); wrap.setPointerCapture(e.pointerId); wrap.classList.add("drag"); moved = false; });
+wrap.addEventListener("pointerdown", e => { if (e.target.closest(".zoom,.pop,.pin")) return; ptrs.set(e.pointerId, e); wrap.setPointerCapture(e.pointerId); wrap.classList.add("drag"); moved = false; });
 wrap.addEventListener("pointermove", e => {
   if (!ptrs.has(e.pointerId)) return;
   const prev = ptrs.get(e.pointerId); ptrs.set(e.pointerId, e);
