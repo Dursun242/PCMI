@@ -22,7 +22,22 @@ html,body{height:100%}
 body{background:var(--panel);color:var(--ink);font-family:var(--display);font-stretch:95%;padding-inline:16px;box-sizing:border-box}
 *,*::before,*::after{box-sizing:inherit}
 .app{display:flex;flex-direction:column;height:100%;padding-block:14px;gap:12px;max-width:1400px;margin:0 auto}
-header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px}
+.titles{display:flex;align-items:center;gap:16px}
+.tt{display:flex;flex-direction:column;gap:2px;padding-left:16px;border-left:1.5px solid var(--line)}
+.logo{height:56px;width:auto;display:block}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .logo{filter:invert(1)}}
+:root[data-theme="dark"] .logo{filter:invert(1)}
+@media (max-width:760px){.logo{height:40px}.tt .brand{display:none}.tt h1{font-size:21px}.titles{gap:12px}.tt{padding-left:12px}}
+.contact{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.contact .lead{font-size:13px;color:var(--muted);margin-right:2px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;font:600 14px var(--display);text-decoration:none;white-space:nowrap;transition:transform .12s,box-shadow .12s}
+.btn svg{width:16px;height:16px;flex:none}
+.btn.primary{background:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(224,73,42,.35)}
+.btn.ghost{border:1.5px solid var(--line);color:var(--ink);background:var(--panel)}
+.btn:hover{transform:translateY(-1px)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mbar{display:none}
 h1{margin:0;font-size:clamp(22px,3vw,30px);font-weight:750;font-stretch:78%;letter-spacing:-.01em;text-wrap:balance}
 .brand{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
 .main{flex:1;min-height:0;display:grid;grid-template-columns:1fr 340px;gap:12px}
@@ -64,21 +79,35 @@ svg.map{width:100%;height:100%;display:block}
 .card .ref{display:inline-block;font-family:var(--mono);font-size:11px;color:var(--accent-ink);background:var(--accent);padding:1px 6px;border-radius:3px;letter-spacing:.06em}
 .card h2{margin:2px 0 4px;font-size:16px;font-weight:700;line-height:1.2;text-wrap:balance}
 .card p{margin:0;font-size:13px;color:var(--muted);line-height:1.35}
-footer{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+footer{font-family:var(--mono);font-size:10.5px;color:var(--muted);display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px}
 @media (max-width:760px){
   .app{height:auto}
   .main{grid-template-columns:1fr}
   .mapwrap{height:58vh}
   .list{overflow:visible}
   .pop{width:210px}
+  .contact{display:none}
+  .app{padding-bottom:calc(76px + env(safe-area-inset-bottom, 0px))}
+  .mbar{display:flex;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 16px calc(10px + env(safe-area-inset-bottom, 0px));background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(0,0,0,.08)}
+  .mbar .btn{flex:1;justify-content:center}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
 <div class="app">
   <header>
-    <h1>Références chantiers</h1>
-    <span class="brand">ID Maîtrise · Maîtrise d'œuvre · Le Havre</span>
+    <div class="titles">
+      <img class="logo" src="/references-chantiers/logo.png" alt="ID Maîtrise – Ingénierie de la construction" width="720" height="177">
+      <div class="tt">
+        <h1>Références chantiers</h1>
+        <span class="brand">Maîtrise d'œuvre · Le Havre</span>
+      </div>
+    </div>
+    <div class="contact">
+      <span class="lead">Un projet ? Contactez ID Maîtrise</span>
+      <a class="btn primary" href="tel:+33679116085" data-track="tel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>06 79 11 60 85</a>
+      <a class="btn ghost" href="mailto:contact@id-maitrise.com?subject=Demande%20de%20contact%20-%20r%C3%A9f%C3%A9rences%20chantiers" data-track="mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>contact@id-maitrise.com</a>
+    </div>
   </header>
   <div class="main">
     <div class="mapwrap" id="mapwrap">
@@ -90,8 +119,12 @@ footer{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
     </div>
     <aside class="list" id="list" aria-label="Liste des chantiers"></aside>
   </div>
-  <footer>Fond de carte : limites communales IGN / Etalab (licence ouverte).</footer>
+  <footer><span>ID Maîtrise · 9 rue Henry Genestal, 76600 Le Havre · 06 79 11 60 85 · contact@id-maitrise.com</span><span>Fond de carte : limites communales IGN / Etalab (licence ouverte).</span></footer>
 </div>
+<nav class="mbar" aria-label="Contacter ID Maîtrise">
+  <a class="btn primary" href="tel:+33679116085" data-track="tel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Appeler</a>
+  <a class="btn ghost" href="mailto:contact@id-maitrise.com?subject=Demande%20de%20contact%20-%20r%C3%A9f%C3%A9rences%20chantiers" data-track="mail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>E-mail</a>
+</nav>
 
 <script>
 /* ——— CHANTIERS : ajoutez une entrée par référence ——— */
@@ -263,4 +296,13 @@ function closePop(keep) { if (pop) pop.remove(); pop = null; if (!keep) { cur = 
 new ResizeObserver(() => apply()).observe(wrap);
 fit(false);
 if (CHANTIERS.length === 1 && innerWidth > 760) select(0, false);
+
+/* ——— Statistiques de visite (invisibles) : Vercel Web Analytics ———
+   Actif uniquement une fois la page hébergée sur Vercel avec « Analytics » activé.
+   Compte les visites et les clics sur Appeler / E-mail. Aucun cookie. */
+window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+document.querySelectorAll("[data-track]").forEach(a => a.addEventListener("click", () => {
+  try { window.va("event", { name: a.dataset.track === "tel" ? "clic_telephone" : "clic_email" }); } catch (e) {}
+}));
 </script>
+<script defer src="/_vercel/insights/script.js"></script>
