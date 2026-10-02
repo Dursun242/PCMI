@@ -1,0 +1,85 @@
+name: SEO tous les 5 jours
+
+on:
+  schedule:
+    # Les 1er, 6, 11, 16, 21 et 26 du mois à 6h UTC : un cycle tous les 5 jours
+    # (4 à 6 jours entre le 26 et le 1er, cron ne sait pas mieux faire).
+    - cron: "0 6 1,6,11,16,21,26 * *"
+  workflow_dispatch:
+    inputs:
+      query:
+        description: "Sujet imposé (optionnel)"
+        required: false
+        type: string
+      refresh:
+        description: "Slug d'article à réécrire (optionnel)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: seo
+  cancel-in-progress: false
+
+jobs:
+  seo:
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+      INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+      GSC_PROPERTY: ${{ vars.GSC_PROPERTY }}
+      NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+      SEO_MODEL: ${{ vars.SEO_MODEL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Analyse Search Console
+        run: npm run seo:analyze
+
+      - name: Rédaction de l'article
+        env:
+          REFRESH: ${{ inputs.refresh }}
+          QUERY: ${{ inputs.query }}
+        run: |
+          if [ -n "$REFRESH" ]; then
+            node scripts/seo/generate.mjs --refresh "$REFRESH"
+          elif [ -n "$QUERY" ]; then
+            node scripts/seo/generate.mjs --query "$QUERY"
+          else
+            npm run seo:article
+          fi
+
+      - name: Optimisation des balises
+        run: npm run seo:meta
+
+      - name: Build de vérification
+        run: npm run build
+
+      - name: Commit et push
+        id: commit
+        run: |
+          git config user.name "seo-bot"
+          git config user.email "seo-bot@users.noreply.github.com"
+          git add seo/ content/articles/
+          if git diff --cached --quiet; then
+            echo "Rien à committer."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "seo: cycle du $(date -u +%F)"
+            git push
+            echo "pushed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Indexation (IndexNow)
+        if: steps.commit.outputs.pushed == 'true'
+        run: node scripts/seo/indexnow.mjs

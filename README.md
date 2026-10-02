@@ -76,7 +76,7 @@ Les prix sont saisis et affichés TTC (`priceTTC` dans `src/config/site.ts`) ; l
 
 ## Moteur SEO autonome
 
-Chaque lundi, le workflow GitHub Actions `.github/workflows/seo-weekly.yml` :
+Tous les 5 jours (les 1er, 6, 11, 16, 21 et 26 du mois), le workflow GitHub Actions `.github/workflows/seo.yml` :
 
 1. **Analyse** (`scripts/seo/analyze.mjs`) : lit Search Console (28 jours), repère les requêtes à fort volume mal positionnées et sans page dédiée, les pages bien classées mais peu cliquées, et les articles qui perdent des places. Sans Search Console (site neuf), il travaille à partir de `seo/seed-keywords.json`. Rapport dans `seo/report.md`.
 2. **Rédaction** (`scripts/seo/generate.mjs`) : écrit un article MDX dans `content/articles/` sur le meilleur sujet, avec l'API Anthropic, contraint par une fiche de faits réglementaires (seuils, délais, prix) pour ne rien inventer. Les articles paraissent sur `/conseils`.

@@ -72,7 +72,7 @@ Rédige l'article.`;
    * Le prompt demande déjà les bonnes longueurs, mais le modèle les dépasse
    * régulièrement — et un title ou une description coupés par Google coûtent
    * du clic. On redemande une fois, en nommant le dépassement, puis on tronque
-   * proprement : jamais d'exception, sinon c'est tout le cycle hebdomadaire
+   * proprement : jamais d'exception, sinon c'est tout le cycle
    * (analyse → article → balises) qui s'arrête pour quelques caractères.
    */
   if (!fits(parsed.data)) {
