@@ -1,5 +1,5 @@
 /**
- * Cycle complet hebdomadaire : analyse → article → balises.
+ * Cycle complet (tous les 5 jours en CI) : analyse → article → balises.
  * Usage : npm run seo           (cycle complet)
  *         npm run seo:analyze   (rapport seulement)
  */
