@@ -1,5 +1,5 @@
 /**
- * Cycle complet (tous les 5 jours en CI) : analyse → article → balises.
+ * Cycle complet (tous les 5 jours en CI) : analyse → article → illustration → balises.
  * Usage : npm run seo           (cycle complet)
  *         npm run seo:analyze   (rapport seulement)
  */
@@ -10,4 +10,5 @@ const run = (cmd) => {
 };
 run("node scripts/seo/analyze.mjs");
 run("node scripts/seo/generate.mjs");
+run("node scripts/seo/illustrate.mjs");
 run("node scripts/seo/optimize.mjs");

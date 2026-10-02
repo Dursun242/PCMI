@@ -6,16 +6,13 @@
  * Une surcharge n'est remplacée qu'après 6 semaines d'observation, pour laisser
  * Google réagir (variante « A puis B », pas de test simultané).
  */
-import Anthropic from "@anthropic-ai/sdk";
-import { readJson, writeJson, FACTS } from "./lib.mjs";
+import { readJson, writeJson, FACTS, chat, hasLlmKey } from "./lib.mjs";
 import { TITLE_MAX, DESCRIPTION_MAX } from "./limits.mjs";
 
-if (!process.env.ANTHROPIC_API_KEY) {
-  console.log("ANTHROPIC_API_KEY manquante : pas d'optimisation des balises.");
+if (!hasLlmKey()) {
+  console.log("MISTRAL_API_KEY manquante : pas d'optimisation des balises.");
   process.exit(0);
 }
-const MODEL = process.env.SEO_MODEL ?? "claude-sonnet-4-5";
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const report = readJson("seo/report.json", { metaFixes: [] });
 const overrides = readJson("seo/meta-overrides.json", {});
@@ -29,18 +26,12 @@ for (const fix of report.metaFixes ?? []) {
     console.log(`${fix.path} : surcharge récente (${current.since}), on laisse Google réagir.`);
     continue;
   }
-  const res = await client.messages.create({
-    model: MODEL,
-    max_tokens: 600,
+  const text = await chat({
+    maxTokens: 600,
+    json: true,
     system: `Tu écris des balises <title> et meta description pour un site français de permis de construire de maison individuelle (maître d'œuvre, formules à prix fixe jusqu'à 149 m², partout en France). Faits à respecter :\n${FACTS}\nRéponds uniquement en JSON : {"title": "...", "description": "...", "reason": "..."}. Title 50-60 caractères, description 140-155 caractères, en français, sans majuscules abusives, sans point d'exclamation, sans promesse invérifiable.`,
-    messages: [
-      {
-        role: "user",
-        content: `Page : ${fix.path}\nPosition moyenne : ${fix.position}\nCTR : ${(fix.ctr * 100).toFixed(1)} % (attendu ~${(fix.expectedCtr * 100).toFixed(0)} %)\nRequêtes qui affichent cette page : ${fix.topQueries.join(" ; ")}\n${current ? `Balises actuelles (à améliorer, pas à copier) : ${JSON.stringify({ title: current.title, description: current.description })}` : ""}\nPropose un titre et une description qui répondent exactement à l'intention de ces requêtes.`,
-      },
-    ],
+    user: `Page : ${fix.path}\nPosition moyenne : ${fix.position}\nCTR : ${(fix.ctr * 100).toFixed(1)} % (attendu ~${(fix.expectedCtr * 100).toFixed(0)} %)\nRequêtes qui affichent cette page : ${fix.topQueries.join(" ; ")}\n${current ? `Balises actuelles (à améliorer, pas à copier) : ${JSON.stringify({ title: current.title, description: current.description })}` : ""}\nPropose un titre et une description qui répondent exactement à l'intention de ces requêtes.`,
   });
-  const text = res.content.map((c) => (c.type === "text" ? c.text : "")).join("");
   try {
     const json = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1));
     if (json.title && json.description) {

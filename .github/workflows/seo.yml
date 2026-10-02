@@ -27,12 +27,15 @@ jobs:
   seo:
     runs-on: ubuntu-latest
     env:
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
       GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
       INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
       GSC_PROPERTY: ${{ vars.GSC_PROPERTY }}
       NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
       SEO_MODEL: ${{ vars.SEO_MODEL }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      MAIL_FROM: ${{ vars.MAIL_FROM }}
+      MAIL_TO: ${{ vars.MAIL_TO }}
     steps:
       - uses: actions/checkout@v4
 
@@ -59,6 +62,9 @@ jobs:
             npm run seo:article
           fi
 
+      - name: Illustration de l'article
+        run: npm run seo:image
+
       - name: Optimisation des balises
         run: npm run seo:meta
 
@@ -70,7 +76,7 @@ jobs:
         run: |
           git config user.name "seo-bot"
           git config user.email "seo-bot@users.noreply.github.com"
-          git add seo/ content/articles/
+          git add seo/ content/articles/ public/conseils/
           if git diff --cached --quiet; then
             echo "Rien à committer."
             echo "pushed=false" >> "$GITHUB_OUTPUT"
@@ -83,3 +89,7 @@ jobs:
       - name: Indexation (IndexNow)
         if: steps.commit.outputs.pushed == 'true'
         run: node scripts/seo/indexnow.mjs
+
+      - name: E-mail de notification
+        if: steps.commit.outputs.pushed == 'true'
+        run: npm run seo:notify

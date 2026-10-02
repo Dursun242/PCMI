@@ -26,3 +26,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# moteur SEO : résumé du cycle en cours
+/.seo-run.json

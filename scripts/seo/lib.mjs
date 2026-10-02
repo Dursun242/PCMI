@@ -10,6 +10,45 @@ export const ROOT = resolve(import.meta.dirname, "../..");
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://permis.id-maitrise.com").replace(/\/$/, "");
 export const GSC_PROPERTY = process.env.GSC_PROPERTY ?? `sc-domain:${new URL(SITE_URL).hostname.replace(/^permis\./, "")}`;
 
+/* ---------- Modèle de langage (API Mistral) ---------- */
+
+const DEFAULT_MODEL = "mistral-medium-latest";
+/** Modèle utilisé ; une ancienne valeur « claude-… » de SEO_MODEL est ignorée. */
+export const MODEL = process.env.SEO_MODEL && !process.env.SEO_MODEL.startsWith("claude") ? process.env.SEO_MODEL : DEFAULT_MODEL;
+export const hasLlmKey = () => Boolean(process.env.MISTRAL_API_KEY);
+
+/**
+ * Un échange avec le modèle : renvoie le texte de la réponse.
+ * Réessaie deux fois sur 429 / 5xx (quota ou panne passagère), puis lève.
+ */
+export async function chat({ system, user, maxTokens = 4000, json = false }) {
+  for (let attempt = 1; ; attempt++) {
+    const res = await fetch("https://api.mistral.ai/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.MISTRAL_API_KEY}` },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: maxTokens,
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: user },
+        ],
+        ...(json ? { response_format: { type: "json_object" } } : {}),
+      }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return String(data.choices?.[0]?.message?.content ?? "").trim();
+    }
+    const retryable = res.status === 429 || res.status >= 500;
+    if (!retryable || attempt >= 3) throw new Error(`API Mistral ${res.status} : ${(await res.text()).slice(0, 300)}`);
+    await new Promise((r) => setTimeout(r, attempt * 10_000));
+  }
+}
+
+/** Résumé du cycle en cours (article écrit), partagé entre les étapes du workflow. */
+export const RUN_FILE = ".seo-run.json";
+
 export const readJson = (rel, fallback) => {
   const f = resolve(ROOT, rel);
   if (!existsSync(f)) return fallback;
