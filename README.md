@@ -79,7 +79,7 @@ Les prix sont saisis et affichés TTC (`priceTTC` dans `src/config/site.ts`) ; l
 Tous les 5 jours (les 1er, 6, 11, 16, 21 et 26 du mois), le workflow GitHub Actions `.github/workflows/seo.yml` :
 
 1. **Analyse** (`scripts/seo/analyze.mjs`) : lit Search Console (28 jours), repère les requêtes à fort volume mal positionnées et sans page dédiée, les pages bien classées mais peu cliquées, et les articles qui perdent des places. Sans Search Console (site neuf), il travaille à partir de `seo/seed-keywords.json`. Rapport dans `seo/report.md`.
-2. **Rédaction** (`scripts/seo/generate.mjs`) : écrit un article MDX dans `content/articles/` sur le meilleur sujet, avec l'API Anthropic, contraint par une fiche de faits réglementaires (seuils, délais, prix) pour ne rien inventer. Les articles paraissent sur `/conseils`.
+2. **Rédaction** (`scripts/seo/generate.mjs`) : écrit un article MDX dans `content/articles/` sur le meilleur sujet, avec l'API Mistral, contraint par une fiche de faits réglementaires (seuils, délais, prix) pour ne rien inventer. Les articles paraissent sur `/conseils`.
 3. **Illustration** (`scripts/seo/illustrate.mjs`) : dessine une image de couverture au trait (SVG 1200 × 630, palette du site) dans `public/conseils/<slug>.svg` et la renseigne dans l'article.
 4. **Balises** (`scripts/seo/optimize.mjs`) : pour les pages au CTR trop bas, propose un nouveau titre et une nouvelle description, écrits dans `seo/meta-overrides.json` et appliqués au build via `src/lib/seo.ts`. Une surcharge est conservée six semaines avant d'être réévaluée.
 5. **Build de vérification, commit, push** → Vercel redéploie. **IndexNow** notifie Bing et consorts des URL modifiées ; Google suit via `sitemap.xml`.
@@ -89,14 +89,14 @@ Tous les 5 jours (les 1er, 6, 11, 16, 21 et 26 du mois), le workflow GitHub Acti
 
 | Type | Nom | Valeur |
 |---|---|---|
-| Secret | `ANTHROPIC_API_KEY` | clé API Anthropic |
+| Secret | `MISTRAL_API_KEY` | clé API Mistral (console.mistral.ai → API Keys) |
 | Secret | `GSC_SERVICE_ACCOUNT_JSON` | JSON du compte de service Google, ajouté comme utilisateur (lecture) de la propriété Search Console |
 | Secret | `INDEXNOW_KEY` | 32 caractères hexadécimaux au choix ; le même dans les variables Vercel |
 | Secret | `RESEND_API_KEY` | la même clé que dans Vercel (e-mail de notification) |
 | Variable | `GSC_PROPERTY` | `sc-domain:permis-maison-individuelle.fr` (ou `https://permis-maison-individuelle.fr/`) |
 | Variable | `NEXT_PUBLIC_SITE_URL` | `https://permis-maison-individuelle.fr` |
 | Variable | `MAIL_TO` / `MAIL_FROM` | facultatifs, comme dans Vercel (`contact@id-maitrise.com` par défaut) |
-| Variable | `SEO_MODEL` | facultatif, `claude-sonnet-4-5` par défaut |
+| Variable | `SEO_MODEL` | facultatif, `mistral-medium-latest` par défaut (`mistral-large-latest` pour plus de qualité, `mistral-small-latest` pour moins cher) |
 
 En local : `npm run seo:analyze` (rapport), `npm run seo:article -- --query "…"` (forcer un sujet), `npm run seo:article -- --refresh <slug>` (réécrire un article), `npm run seo` (cycle complet). Le workflow se lance aussi à la main depuis l'onglet Actions, avec un sujet imposé si besoin.
 

@@ -7,13 +7,11 @@
  * Jamais d'exception : sans illustration, l'article paraît quand même
  * (la liste /conseils affiche alors son motif par défaut).
  */
-import Anthropic from "@anthropic-ai/sdk";
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 import matter from "gray-matter";
-import { readJson, ROOT, RUN_FILE } from "./lib.mjs";
+import { readJson, ROOT, RUN_FILE, chat, hasLlmKey } from "./lib.mjs";
 
-const MODEL = process.env.SEO_MODEL ?? "claude-sonnet-4-5";
 const MAX_BYTES = 60_000;
 
 const run = readJson(RUN_FILE, null);
@@ -21,8 +19,8 @@ if (!run?.slug) {
   console.log("Aucun article écrit pendant ce cycle : pas d'illustration.");
   process.exit(0);
 }
-if (!process.env.ANTHROPIC_API_KEY) {
-  console.error("ANTHROPIC_API_KEY manquante : pas d'illustration.");
+if (!hasLlmKey()) {
+  console.error("MISTRAL_API_KEY manquante : pas d'illustration.");
   process.exit(0);
 }
 
@@ -59,7 +57,6 @@ function check(svg) {
   return { svg, alt: title.replace(/&apos;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, "&") };
 }
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const user = `Article : « ${article.data.title} »
 Résumé : ${article.data.description}
 
@@ -68,8 +65,7 @@ Dessine l'illustration de couverture de cet article.`;
 let result = { error: "aucune tentative" };
 for (let attempt = 1; attempt <= 2 && result.error; attempt++) {
   try {
-    const res = await client.messages.create({ model: MODEL, max_tokens: 16000, system: SYSTEM, messages: [{ role: "user", content: user }] });
-    result = check(res.content.map((c) => (c.type === "text" ? c.text : "")).join(""));
+    result = check(await chat({ system: SYSTEM, user, maxTokens: 16000 }));
   } catch (e) {
     result = { error: e.message };
   }

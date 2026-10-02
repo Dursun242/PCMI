@@ -20,7 +20,6 @@
     "check:seo": "node scripts/check-seo.mjs"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.126.0",
     "@fontsource/cormorant-garamond": "^5.3.0",
     "@fontsource/lato": "^5.3.0",
     "@vercel/analytics": "^2.0.1",
