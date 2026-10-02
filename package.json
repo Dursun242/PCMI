@@ -13,6 +13,8 @@
     "seo:analyze": "node scripts/seo/analyze.mjs",
     "seo:article": "node scripts/seo/generate.mjs",
     "seo:meta": "node scripts/seo/optimize.mjs",
+    "seo:image": "node scripts/seo/illustrate.mjs",
+    "seo:notify": "node scripts/seo/notify.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "check:seo": "node scripts/check-seo.mjs"

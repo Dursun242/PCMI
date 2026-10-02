@@ -10,6 +10,9 @@ export const ROOT = resolve(import.meta.dirname, "../..");
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://permis.id-maitrise.com").replace(/\/$/, "");
 export const GSC_PROPERTY = process.env.GSC_PROPERTY ?? `sc-domain:${new URL(SITE_URL).hostname.replace(/^permis\./, "")}`;
 
+/** Résumé du cycle en cours (article écrit), partagé entre les étapes du workflow. */
+export const RUN_FILE = ".seo-run.json";
+
 export const readJson = (rel, fallback) => {
   const f = resolve(ROOT, rel);
   if (!existsSync(f)) return fallback;

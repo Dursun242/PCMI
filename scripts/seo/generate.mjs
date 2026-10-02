@@ -8,7 +8,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import matter from "gray-matter";
-import { readJson, writeJson, slugify, listArticles, FACTS, ROOT } from "./lib.mjs";
+import { readJson, writeJson, slugify, listArticles, FACTS, ROOT, RUN_FILE } from "./lib.mjs";
 import { TITLE_MAX, DESCRIPTION_MAX, trimTo } from "./limits.mjs";
 
 const args = process.argv.slice(2);
@@ -105,6 +105,7 @@ if (refreshSlug) {
   parsed.data.date = current.data.date;
   parsed.data.updated = new Date().toISOString().slice(0, 10);
   writeFileSync(file, matter.stringify(parsed.content, parsed.data));
+  writeJson(RUN_FILE, { kind: "refresh", slug: refreshSlug, title: parsed.data.title, query: current.data.keywords?.[0] ?? null, opportunity: null });
   console.log(`Article rafraîchi : ${refreshSlug}`);
   process.exit(0);
 }
@@ -123,4 +124,6 @@ writeFileSync(resolve(ROOT, `content/articles/${slug}.mdx`), matter.stringify(pa
 const done = readJson("seo/topics-done.json", []);
 done.push({ query, slug, date: parsed.data.date, source: report.opportunities?.[0]?.source ?? "manual" });
 writeJson("seo/topics-done.json", done);
+// Lu par illustrate.mjs et notify.mjs ; jamais commité (voir .gitignore).
+writeJson(RUN_FILE, { kind: "new", slug, title: parsed.data.title, query, opportunity: arg("--query") ? null : report.opportunities?.[0] ?? null, mode: report.mode ?? null });
 console.log(`Article écrit : content/articles/${slug}.mdx`);
