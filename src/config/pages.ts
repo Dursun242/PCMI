@@ -50,6 +50,14 @@ export const staticPages: StaticPage[] = [
       "Guide complet : permis ou déclaration préalable, seuil des 150 m², pièces du dossier, délai d'instruction de 2 mois, affichage, recours des tiers, validité de 3 ans.",
   },
   {
+    path: "/permis-de-construire-normandie",
+    lastModified: "2026-10-03",
+    changeFrequency: "monthly",
+    priority: 0.9,
+    summary:
+      "Permis de construire de maison en Normandie : bureau d'études au Havre, documents d'urbanisme, risques (marnières, inondation, littoral) et périmètres ABF des grandes villes et des communes du littoral (Étretat, Fécamp, Honfleur, Deauville, Trouville, Cabourg, Bayeux, Granville) de Seine-Maritime, du Calvados, de l'Eure, de la Manche et de l'Orne.",
+  },
+  {
     path: "/a-propos",
     lastModified: "2026-09-19",
     changeFrequency: "monthly",

@@ -221,6 +221,14 @@ export default function HomePage() {
               <p className="mt-6 text-lg leading-relaxed text-paper/75">
                 {site.parent} réunit l&apos;ingénierie d&apos;un bureau d&apos;études et la conception architecturale : dessinateur-projeteur, ingénieur béton armé et structure, thermicien, et architecte partenaire quand la loi l&apos;impose. La maison est dessinée par ceux qui la calculent. Nous concevons et suivons des chantiers toute l&apos;année, nous savons ce qu&apos;un instructeur regarde, ce qu&apos;un PLU interdit, et ce qui fait qu&apos;un dossier passe du premier coup et se construit ensuite sans surprise.
               </p>
+              <p className="mt-4 text-lg leading-relaxed text-paper/75">
+                Installés au Havre, nous travaillons partout en France et connaissons la Normandie de près : marnières,
+                zones inondables, centres-villes protégés.{" "}
+                <Link href="/permis-de-construire-normandie" className="text-paper underline decoration-brass-2 underline-offset-4 hover:text-brass-2">
+                  Le permis de construire en Normandie, ville par ville
+                </Link>
+                .
+              </p>
             </div>
             <div className="relative h-64 sm:h-80 overflow-hidden">
               <Image

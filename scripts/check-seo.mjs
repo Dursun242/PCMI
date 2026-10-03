@@ -34,6 +34,7 @@ const EXPECTATIONS = [
   { path: "/plans-execution", types: ["Service", "FAQPage", "ContactPage", "BreadcrumbList"] },
   { path: "/etude-thermique-re2020", types: ["Service", "FAQPage", "ContactPage", "BreadcrumbList"] },
   { path: "/dossier", types: ["ContactPage", "BreadcrumbList"] },
+  { path: "/permis-de-construire-normandie", types: ["Service", "FAQPage", "BreadcrumbList"] },
   { path: "/mentions-legales", types: [] },
   { path: "/cgv", types: [] },
 ];
@@ -126,12 +127,29 @@ async function discoverArticles() {
   return [...xml.matchAll(/<loc>([^<]*\/conseils\/[^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname);
 }
 
+/** Pages villes (/permis-de-construire-normandie/[ville]), lues dans le sitemap comme les articles. */
+async function discoverVilles() {
+  const xml = await fetchPage("/sitemap.xml");
+  return [...xml.matchAll(/<loc>([^<]*\/permis-de-construire-normandie\/[^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname);
+}
+
+const VILLE_TYPES = ["Service", "FAQPage", "BreadcrumbList"];
+
+/** Une page ville doit rattacher son Service à une City : c'est le signal local. */
+const villeAreaServed = (nodes) => nodes.find((n) => n["@type"] === "Service")?.areaServed?.["@type"] === "City";
+
 async function run() {
   const failures = [];
   const checked = [];
 
   const cases = [...EXPECTATIONS];
   for (const path of await discoverArticles()) cases.push({ path, types: ARTICLE_TYPES });
+  const villes = await discoverVilles();
+  if (villes.length === 0) failures.push("/sitemap.xml — aucune page ville /permis-de-construire-normandie/…");
+  for (const path of villes) {
+    cases.push({ path, types: VILLE_TYPES });
+    ASSERTIONS.push({ path, label: "le Service est rattaché à une City (areaServed)", check: villeAreaServed });
+  }
 
   for (const { path, types } of cases) {
     let html;

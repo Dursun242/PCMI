@@ -2,6 +2,8 @@ import Link from "next/link";
 import { site } from "@/config/site";
 import Logo from "./Logo";
 import WhatsAppLink from "./WhatsAppLink";
+import { villes } from "@/config/normandie";
+import { NORMANDIE_PATH, villePath } from "@/lib/normandie";
 
 /**
  * Pied de page en forme de cartouche de planche PCMI, sur fond vert profond.
@@ -53,7 +55,7 @@ export default function Footer() {
             <p className="mt-4 text-paper/70 leading-relaxed">
               Réponse sous 4 h ouvrées.
               <br />
-              Intervention partout en France.
+              En Normandie et partout en France.
             </p>
             <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
               {site.social.instagram && (
@@ -94,6 +96,7 @@ export default function Footer() {
               <li><Link href="/plans-execution" className="hover:text-brass-2">Plans d&apos;exécution</Link></li>
               <li><Link href="/etude-thermique-re2020" className="hover:text-brass-2">Étude thermique RE2020</Link></li>
               <li><Link href="/permis-de-construire-maison" className="hover:text-brass-2">Le guide du permis</Link></li>
+              <li><Link href={NORMANDIE_PATH} className="hover:text-brass-2">Permis en Normandie</Link></li>
               <li><Link href="/conseils" className="hover:text-brass-2">Conseils</Link></li>
               <li><Link href="/a-propos" className="hover:text-brass-2">À propos</Link></li>
               <li><Link href="/devis" className="hover:text-brass-2">Demander un devis</Link></li>
@@ -129,6 +132,17 @@ export default function Footer() {
             </ul>
           </div>
         </div>
+
+        <nav aria-label="Permis de construire en Normandie" className="flex flex-wrap items-baseline gap-x-4 gap-y-2 border-t border-brass/25 py-6 text-sm">
+          <Link href={NORMANDIE_PATH} className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-brass-2 hover:text-paper">
+            En Normandie
+          </Link>
+          {villes.map((v) => (
+            <Link key={v.slug} href={villePath(v)} className="text-paper/80 hover:text-brass-2">
+              {v.nom}
+            </Link>
+          ))}
+        </nav>
 
         <p className="border-t border-brass/25 pt-6 text-xs text-paper/70">
           © {year} {site.legal.company}. {site.name} est l&apos;offre permis de construire de {site.parent}, bureau d&apos;études au Havre qui allie ingénierie et architecture.

@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { site } from "@/config/site";
 import { sitemapPages } from "@/config/pages";
 import { getArticles } from "@/lib/articles";
+import { villes, VILLES_LAST_MODIFIED } from "@/config/normandie";
+import { villePath } from "@/lib/normandie";
 
 /**
  * Les pages statiques portent la date de leur dernier changement de contenu
@@ -25,6 +27,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: p.priority,
       };
     }),
+    // Pages villes : même date de revue pour toutes, tenue dans src/config/normandie.ts.
+    ...villes.map((v) => ({
+      url: `${site.url}${villePath(v)}`,
+      lastModified: new Date(VILLES_LAST_MODIFIED),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
     ...articles.map((a) => ({
       url: `${site.url}/conseils/${a.slug}`,
       lastModified: new Date(a.updated ?? a.date),

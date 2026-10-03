@@ -217,6 +217,11 @@ export default function GuidePage() {
           <p>
             Le dépôt papier reste possible, en général en quatre exemplaires, avec un exemplaire supplémentaire dans certains cas (site protégé, avis de l&apos;Architecte des Bâtiments de France). C&apos;est la date du récépissé qui fait courir le délai d&apos;instruction.
           </p>
+          <p>
+            Le guichet en ligne dépend de la commune ou de l&apos;agglomération. En Normandie, nous détaillons le document
+            d&apos;urbanisme, le guichet et les risques propres à chaque grande ville :{" "}
+            <Link href="/permis-de-construire-normandie">le permis de construire en Normandie</Link>.
+          </p>
 
           <h2 id="delais" className="scroll-mt-28">Les délais d&apos;instruction</h2>
           <ul>

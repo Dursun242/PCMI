@@ -1,4 +1,11 @@
 import { site, plans, exePlans, exePacks, metiers, thermique } from "@/config/site";
+import { villes } from "@/config/normandie";
+
+const NORMANDIE_AREA = { "@type": "AdministrativeArea", name: "Normandie" };
+
+function cityArea(name: string) {
+  return { "@type": "City", name, containedInPlace: NORMANDIE_AREA };
+}
 
 export const organizationSchema = {
   "@context": "https://schema.org",
@@ -20,7 +27,13 @@ export const organizationSchema = {
     addressRegion: site.address.region,
     addressCountry: site.address.country,
   },
-  areaServed: { "@type": "Country", name: "France" },
+  // France entière à distance, et la Normandie de près : bureau au Havre,
+  // rendez-vous et déplacements possibles dans la région.
+  areaServed: [
+    { "@type": "Country", name: "France" },
+    NORMANDIE_AREA,
+    ...villes.map((v) => cityArea(v.nom)),
+  ],
   // Comptes de l'entreprise uniquement. Les entrées vides sont écartées.
   sameAs: Object.values(site.social).filter(Boolean),
   foundingLocation: { "@type": "Place", name: `${site.address.city}, ${site.address.region}` },
@@ -140,6 +153,30 @@ export function serviceSchema() {
         priceCurrency: "EUR",
         valueAddedTaxIncluded: true,
       },
+    })),
+  };
+}
+
+/**
+ * Service local : page Normandie (toute la région) ou page d'une ville.
+ * Même prestation que /tarifs, rattachée à une zone précise.
+ */
+export function localServiceSchema(opts: { path: string; name: string; description: string; ville?: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: opts.name,
+    serviceType: "Dossier de permis de construire de maison individuelle",
+    provider: ORG_REF,
+    areaServed: opts.ville ? cityArea(opts.ville) : NORMANDIE_AREA,
+    url: `${site.url}${opts.path}`,
+    description: opts.description,
+    offers: plans.map((p) => ({
+      "@type": "Offer",
+      name: `Formule ${p.name}`,
+      price: p.priceTTC,
+      priceCurrency: "EUR",
+      url: `${site.url}/tarifs#${p.id}`,
     })),
   };
 }
