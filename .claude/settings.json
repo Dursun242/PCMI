@@ -1,4 +1,19 @@
 {
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "ecc@ecc": true
+  },
   "extraKnownMarketplaces": {
     "ecc": {
       "source": {
@@ -7,8 +22,5 @@
         "ref": "v2.2.3"
       }
     }
-  },
-  "enabledPlugins": {
-    "ecc@ecc": true
   }
 }
