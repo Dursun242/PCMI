@@ -38,8 +38,14 @@ const specificites: { titre: string; texte: string; villes: string[] }[] = [
   {
     titre: "Des centres-villes protégés",
     texte:
-      "Le Havre, Rouen, Caen, Évreux ou Alençon ont un site patrimonial remarquable. Dans ces périmètres et aux abords des monuments historiques, l'Architecte des Bâtiments de France donne son avis et l'instruction prend un mois de plus.",
-    villes: ["le-havre", "rouen", "caen", "evreux", "alencon"],
+      "Le Havre, Rouen, Caen, Bayeux, Honfleur ou Évreux ont un site patrimonial remarquable. Dans ces périmètres et aux abords des monuments historiques, l'Architecte des Bâtiments de France donne son avis et l'instruction prend un mois de plus.",
+    villes: ["le-havre", "rouen", "caen", "bayeux", "honfleur", "evreux"],
+  },
+  {
+    titre: "Le littoral, ses villas et ses sites classés",
+    texte:
+      "Sur la côte, la loi Littoral limite la construction près du rivage, les stations protègent leurs villas, et autour des falaises d'Étretat un site classé impose une autorisation spéciale de l'État pour tout permis.",
+    villes: ["etretat", "fecamp", "deauville", "trouville-sur-mer", "cabourg", "granville"],
   },
   {
     titre: "Des documents d'urbanisme qui changent",

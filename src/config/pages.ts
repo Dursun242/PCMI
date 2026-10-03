@@ -55,7 +55,7 @@ export const staticPages: StaticPage[] = [
     changeFrequency: "monthly",
     priority: 0.9,
     summary:
-      "Permis de construire de maison en Normandie : bureau d'études au Havre, documents d'urbanisme, risques (marnières, inondation, littoral) et périmètres ABF des grandes villes de Seine-Maritime, du Calvados, de l'Eure, de la Manche et de l'Orne.",
+      "Permis de construire de maison en Normandie : bureau d'études au Havre, documents d'urbanisme, risques (marnières, inondation, littoral) et périmètres ABF des grandes villes et des communes du littoral (Étretat, Fécamp, Honfleur, Deauville, Trouville, Cabourg, Bayeux, Granville) de Seine-Maritime, du Calvados, de l'Eure, de la Manche et de l'Orne.",
   },
   {
     path: "/a-propos",
