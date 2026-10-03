@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Logo from "./Logo";
 import TrackedLink from "./TrackedLink";
 
@@ -17,6 +17,16 @@ const nav = [
 export default function Header() {
   const [open, setOpen] = useState(false);
 
+  // Échap ferme le menu mobile, comme tout menu déroulant.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
+
   return (
     <header className="sticky top-0 z-40 bg-paper/92 backdrop-blur border-b border-stone-2">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 h-[4.5rem] flex items-center justify-between gap-4">
@@ -24,7 +34,7 @@ export default function Header() {
           <Logo priority compact />
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-5 xl:gap-7 text-[0.92rem] whitespace-nowrap">
+        <nav aria-label="Navigation principale" className="hidden lg:flex items-center gap-5 xl:gap-7 text-[0.92rem] whitespace-nowrap">
           {nav.map((n) => (
             <Link key={n.href} href={n.href} className="hover:text-brass transition-colors">
               {n.label}
@@ -51,7 +61,7 @@ export default function Header() {
       </div>
 
       {open && (
-        <nav id="menu-mobile" className="lg:hidden border-t border-stone-2 bg-paper px-5 py-5 grid gap-1">
+        <nav id="menu-mobile" aria-label="Menu mobile" className="lg:hidden border-t border-stone-2 bg-paper px-5 py-5 grid gap-1">
           {nav.map((n) => (
             <Link key={n.href} href={n.href} onClick={() => setOpen(false)} className="py-3 text-lg display">
               {n.label}

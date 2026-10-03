@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { plans, site, faq } from "@/config/site";
 import HouseDrawing from "@/components/HouseDrawing";
+import HeroVideo from "@/components/HeroVideo";
 import PlanCard from "@/components/PlanCard";
 import Faq from "@/components/Faq";
 import FormulaFinder from "@/components/FormulaFinder";
@@ -105,19 +106,9 @@ export default function HomePage() {
               même vert que le hero. Le dessin SVG reste en repli pour les
               navigateurs sans vidéo et pour les lecteurs d'écran.
             */}
-            <video
-              className="w-full h-auto aspect-video object-cover [mask-image:radial-gradient(ellipse_at_center,#000_58%,transparent_100%)]"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              poster="/hero/facade-poster.jpg"
-              aria-label="Façade d'une maison contemporaine qui se dessine trait par trait, comme sur la planche PCMI 5"
-            >
-              <source src="/hero/facade.mp4" type="video/mp4" />
+            <HeroVideo>
               <HouseDrawing className="w-full h-auto" />
-            </video>
+            </HeroVideo>
             {/* Voile dégradé sur le coin bas droit : cache le filigrane de la vidéo. */}
             <div
               className="pointer-events-none absolute inset-0"
