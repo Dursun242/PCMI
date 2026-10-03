@@ -1,22 +1,10 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
 import { site, plans } from "@/config/site";
-import { attachmentsList, collectFiles, section } from "@/lib/mailer";
+import { attachmentsList, collectFiles, esc, ipOf, rateLimited, section, sendPair } from "@/lib/mailer";
 
 export const runtime = "nodejs";
 
-/* Limitation de débit très simple, en mémoire (suffisante sur Vercel pour filtrer les rafales) */
-const hits = new Map<string, { n: number; t: number }>();
-function rateLimited(ip: string) {
-  const now = Date.now();
-  const h = hits.get(ip);
-  if (!h || now - h.t > 10 * 60_000) {
-    hits.set(ip, { n: 1, t: now });
-    return false;
-  }
-  h.n += 1;
-  return h.n > 5;
-}
+const MAX_DEVIS_PER_WINDOW = 5;
 
 const labels: Record<string, Record<string, string>> = {
   projectType: {
@@ -33,13 +21,9 @@ const labels: Record<string, Record<string, string>> = {
   },
 };
 
-function esc(s: string) {
-  return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] as string);
-}
-
 export async function POST(req: Request) {
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "anon";
-  if (rateLimited(ip)) {
+  const ip = ipOf(req);
+  if (rateLimited(`devis:${ip}`, MAX_DEVIS_PER_WINDOW)) {
     return NextResponse.json({ ok: false, error: "Trop de demandes. Réessayez dans quelques minutes." }, { status: 429 });
   }
 
@@ -135,33 +119,16 @@ export async function POST(req: Request) {
     </div>
   `;
 
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.MAIL_FROM ?? `${site.name} <contact@id-maitrise.com>`;
-  const to = process.env.MAIL_TO ?? site.email;
-
-  if (!apiKey) {
-    console.warn("[devis] RESEND_API_KEY absente : demande non envoyée (mode développement).", rows);
-    return NextResponse.json({ ok: true, dev: true });
-  }
-
   try {
-    const resend = new Resend(apiKey);
-    await resend.emails.send({
-      from,
-      to,
-      replyTo: email,
+    const { dev } = await sendPair({
       subject: `Devis permis — ${name} — ${city} — ${plan}`,
-      html: internalHtml,
-      attachments: files?.inline.map((f) => ({ filename: f.filename, content: f.content! })),
+      internalHtml,
+      replyTo: email,
+      clientSubject: `Votre demande de devis est bien reçue — ${site.name}`,
+      clientHtml,
+      attachments: files?.inline,
     });
-    await resend.emails.send({
-      from,
-      to: email,
-      replyTo: to,
-      subject: `Votre demande de devis est bien reçue — ${site.name}`,
-      html: clientHtml,
-    });
-    return NextResponse.json({ ok: true });
+    return NextResponse.json(dev ? { ok: true, dev: true } : { ok: true });
   } catch (err) {
     console.error("[devis] envoi Resend échoué", err);
     return NextResponse.json({ ok: false, error: "L'envoi a échoué." }, { status: 502 });

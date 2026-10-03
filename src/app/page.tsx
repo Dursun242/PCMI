@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { plans, site, faq } from "@/config/site";
 import HouseDrawing from "@/components/HouseDrawing";
+import HeroVideo from "@/components/HeroVideo";
 import PlanCard from "@/components/PlanCard";
 import Faq from "@/components/Faq";
 import FormulaFinder from "@/components/FormulaFinder";
@@ -105,19 +106,9 @@ export default function HomePage() {
               même vert que le hero. Le dessin SVG reste en repli pour les
               navigateurs sans vidéo et pour les lecteurs d'écran.
             */}
-            <video
-              className="w-full h-auto aspect-video object-cover [mask-image:radial-gradient(ellipse_at_center,#000_58%,transparent_100%)]"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              poster="/hero/facade-poster.jpg"
-              aria-label="Façade d'une maison contemporaine qui se dessine trait par trait, comme sur la planche PCMI 5"
-            >
-              <source src="/hero/facade.mp4" type="video/mp4" />
+            <HeroVideo>
               <HouseDrawing className="w-full h-auto" />
-            </video>
+            </HeroVideo>
             {/* Voile dégradé sur le coin bas droit : cache le filigrane de la vidéo. */}
             <div
               className="pointer-events-none absolute inset-0"
@@ -165,7 +156,7 @@ export default function HomePage() {
           <ol className="grid sm:grid-cols-2 border-t border-ink">
             {pieces.map((p) => (
               <li key={p.code} className="py-6 pr-6 border-b border-stone-2 sm:[&:nth-child(odd)]:border-r sm:[&:nth-child(even)]:pl-6">
-                <div className="text-[0.7rem] font-bold tracking-[0.2em] text-brass">{p.code}</div>
+                <div className="text-[0.7rem] font-bold tracking-[0.2em] text-bronze">{p.code}</div>
                 <h3 className="display mt-2 text-2xl leading-tight">{p.name}</h3>
                 <p className="mt-2 text-[0.95rem] text-ink-2 leading-relaxed">{p.what}</p>
               </li>
@@ -182,7 +173,7 @@ export default function HomePage() {
           <ol className="mt-14 grid gap-12 md:grid-cols-2 lg:grid-cols-4 border-t border-ink pt-8">
             {steps.map((s, i) => (
               <li key={s.title}>
-                <div className="numeral text-4xl text-brass">{String(i + 1).padStart(2, "0")}</div>
+                <div className="numeral text-4xl text-bronze">{String(i + 1).padStart(2, "0")}</div>
                 <h3 className="display mt-4 text-2xl leading-tight">{s.title}</h3>
                 <p className="mt-3 leading-relaxed text-ink-2">{s.text}</p>
               </li>

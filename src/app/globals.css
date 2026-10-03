@@ -17,11 +17,14 @@
   --color-stone-2: #e4e0d7;
   --color-ink: #1b1f1d;
   --color-ink-2: #5a645e;
-  --color-ink-3: #939b96;
+  --color-ink-3: #666e69; /* 4,6:1 sur pierre — le gris précédent (#939b96) tombait à 2,5:1 */
   --color-forest: #22352c;
   --color-forest-2: #2d4639;
-  --color-brass: #a9884f;
+  --color-brass: #a9884f; /* décor : filets, bordures, tampons */
   --color-brass-2: #d9c69d;
+  /* Laiton pour le TEXTE : #a9884f ne fait que 3,2:1 sur papier, sous le
+     minimum de 4,5:1. Éclairci automatiquement sur fond sombre (plus bas). */
+  --color-bronze: #82663a;
   --color-alert: #a3402c;
 
   --font-sans: "Lato", ui-sans-serif, system-ui, sans-serif;
@@ -49,8 +52,15 @@ body {
   color: var(--color-ink);
 }
 
+/* Sur les fonds sombres, le texte bronze s'éclaircit pour rester lisible (5,9:1 sur vert forêt). */
+.bg-forest,
+.bg-forest-2,
+.bg-ink {
+  --color-bronze: #c9ab72;
+}
+
 :focus-visible {
-  outline: 2px solid var(--color-brass);
+  outline: 2px solid var(--color-bronze);
   outline-offset: 4px;
 }
 
@@ -252,11 +262,16 @@ body {
   min-height: 6.5rem;
   resize: vertical;
 }
-.field input:focus,
+/* Focus bien visible : trait bronze épais et léger fond laiton. Le sélecteur
+   reprend les :not() de la règle de base : sans eux, celle-ci (plus
+   spécifique) annulait le focus des champs texte, privés de tout indicateur. */
+.field input:not([type="radio"]):not([type="checkbox"]):focus,
 .field select:focus,
 .field textarea:focus {
-  border-bottom-color: var(--color-brass);
+  border-bottom-color: var(--color-bronze);
   border-bottom-width: 2px;
+  box-shadow: 0 1px 0 0 var(--color-bronze);
+  background-color: color-mix(in srgb, var(--color-brass-2) 40%, transparent);
   outline: none;
 }
 .field ::placeholder {
@@ -305,7 +320,9 @@ body {
 .prose-guide li + li {
   margin-top: 0.45rem;
 }
-.prose-guide a {
+/* Liens texte uniquement : sans :not(.btn), les boutons d'appel à l'action
+   insérés dans le guide prenaient la couleur encre sur leur fond encre. */
+.prose-guide a:not(.btn) {
   color: var(--color-ink);
   text-decoration: underline;
   text-decoration-color: var(--color-brass);

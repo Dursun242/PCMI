@@ -13,6 +13,7 @@
  */
 import { spawn } from "node:child_process";
 import process from "node:process";
+import { TITLE_MAX } from "./seo/limits.mjs";
 
 const arg = (n) => process.argv.find((a) => a.startsWith(`--${n}=`))?.split("=").slice(1).join("=");
 
@@ -72,6 +73,16 @@ const ASSERTIONS = [
 ];
 
 const ARTICLE_TYPES = ["BlogPosting", "BreadcrumbList"];
+
+/** Décode les entités que React émet dans <title> (apostrophes, guillemets, &). */
+function decodeEntities(s) {
+  return s
+    .replace(/&#x27;|&#39;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+}
 
 function extractJsonLd(html) {
   const nodes = [];
@@ -139,7 +150,12 @@ async function run() {
       if (!present.includes(t)) failures.push(`${path} — schéma ${t} absent (présents : ${present.join(", ") || "aucun"})`);
     }
 
-    if (!/<title>/.test(html)) failures.push(`${path} — <title> absent`);
+    const title = html.match(/<title>([^<]*)<\/title>/)?.[1];
+    if (title === undefined) failures.push(`${path} — <title> absent`);
+    else {
+      const length = decodeEntities(title).length;
+      if (length > TITLE_MAX) failures.push(`${path} — <title> de ${length} caractères (max ${TITLE_MAX}, tronqué par Google) : ajouter une surcharge dans seo/meta-overrides.json`);
+    }
     if (!/rel="canonical"/.test(html) && !path.startsWith("/mentions") && path !== "/cgv") {
       failures.push(`${path} — canonical absent`);
     }

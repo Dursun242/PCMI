@@ -15,7 +15,7 @@ export default function PlanCard({ plan, compact = false }: { plan: Plan; compac
       }`}
     >
       {hi && (
-        <span className="absolute -top-3 left-6 sm:left-8 bg-paper px-2 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-brass">
+        <span className="absolute -top-3 left-6 sm:left-8 bg-paper px-2 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-bronze">
           La plus choisie
         </span>
       )}

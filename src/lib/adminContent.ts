@@ -24,6 +24,13 @@ export function isGithubConfigured(): boolean {
   return Boolean(GITHUB_TOKEN && GITHUB_REPO);
 }
 
+/** Sur Vercel, écrire sur le disque échouerait (ou serait perdu) : on le dit clairement. */
+function assertLocalWritable(): void {
+  if (process.env.VERCEL) {
+    throw new Error("Enregistrement impossible : ADMIN_GITHUB_TOKEN et ADMIN_GITHUB_REPO ne sont pas configurés sur Vercel.");
+  }
+}
+
 function githubHeaders() {
   return {
     Authorization: `Bearer ${GITHUB_TOKEN}`,
@@ -102,6 +109,7 @@ export async function writeContentFile(path: string, content: string, message: s
     await githubPutFile(path, content, message);
     return;
   }
+  assertLocalWritable();
   const abs = join(process.cwd(), path);
   mkdirSync(dirname(abs), { recursive: true });
   writeFileSync(abs, content, "utf8");
@@ -113,6 +121,7 @@ export async function writeBinaryContentFile(path: string, base64Content: string
     await githubPutFileBase64(path, base64Content, message);
     return;
   }
+  assertLocalWritable();
   const abs = join(process.cwd(), path);
   mkdirSync(dirname(abs), { recursive: true });
   writeFileSync(abs, Buffer.from(base64Content, "base64"));
@@ -142,6 +151,7 @@ export async function deleteContentFile(path: string, message: string): Promise<
     await githubDeleteFile(path, message);
     return;
   }
+  assertLocalWritable();
   const abs = join(process.cwd(), path);
   if (existsSync(abs)) unlinkSync(abs);
 }

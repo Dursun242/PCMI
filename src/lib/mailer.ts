@@ -69,16 +69,30 @@ export async function sendPair(opts: {
     console.warn(`[mail] RESEND_API_KEY absente — non envoyé : ${opts.subject}`);
     return { dev: true };
   }
+  /*
+   * Le SDK Resend ne lève pas d'exception sur un refus de l'API (clé invalide,
+   * domaine non vérifié, quota) : il renvoie { error }. Sans ce contrôle, le
+   * visiteur verrait « Merci » alors que la demande n'est jamais arrivée.
+   */
   const resend = new Resend(apiKey);
-  await resend.emails.send({
+  const internal = await resend.emails.send({
     from,
     to,
     replyTo: opts.replyTo,
     subject: opts.subject,
     html: opts.internalHtml,
-    attachments: opts.attachments?.map((a) => (a.content ? { filename: a.filename, content: a.content } : { filename: a.filename, path: a.path! })),
+    attachments: opts.attachments?.map((a) => (a.content ? { filename: a.filename, content: a.content } : { filename: a.filename, path: a.path ?? "" })),
   });
-  await resend.emails.send({ from, to: opts.replyTo, replyTo: to, subject: opts.clientSubject, html: opts.clientHtml });
+  if (internal.error) throw new Error(`Resend (e-mail interne) : ${internal.error.message}`);
+
+  // La demande est arrivée : un échec de l'accusé de réception ne doit pas
+  // faire croire au visiteur que l'envoi a échoué (il renverrait un doublon).
+  try {
+    const ack = await resend.emails.send({ from, to: opts.replyTo, replyTo: to, subject: opts.clientSubject, html: opts.clientHtml });
+    if (ack.error) console.error(`[mail] accusé de réception non envoyé : ${ack.error.message}`);
+  } catch (err) {
+    console.error("[mail] accusé de réception non envoyé", err);
+  }
   return { dev: false };
 }
 

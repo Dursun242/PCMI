@@ -19,7 +19,7 @@ export default function DevisRecap({ planId, surface }: { planId: PlanId | "cons
     <div className="sticky top-[4.5rem] z-20 -mx-6 sm:-mx-10 mb-8 border-b border-stone-2 bg-stone/97 px-6 sm:px-10 py-4 backdrop-blur">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-brass">
+          <p className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-bronze">
             {horsFormules ? "Votre projet" : "Votre formule"}
           </p>
 

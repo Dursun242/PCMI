@@ -27,7 +27,7 @@ export default function Gallery() {
         </div>
 
         <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {available.map((p, i) => (
+          {available.map((p) => (
             <li key={p.file} className={`relative overflow-hidden bg-stone-2 h-64 sm:h-80 ${p.wide ? "sm:col-span-2" : ""}`}>
               <Image
                 src={`/photos/${p.file}`}
@@ -35,7 +35,6 @@ export default function Gallery() {
                 fill
                 sizes={p.wide ? "(min-width: 1024px) 66vw, 100vw" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"}
                 className="object-cover"
-                priority={i === 0}
               />
               <span className="absolute left-0 bottom-0 m-4 bg-paper/92 px-3 py-1.5 text-xs tracking-[0.06em] text-ink">
                 {p.caption}

@@ -29,7 +29,7 @@ export default function DossierPage() {
           <ol className="mt-10 grid gap-3 border-t border-ink pt-6 text-[0.95rem]">
             {["Identité du demandeur", "Le terrain et ses références cadastrales", "Le projet", "Surfaces et dimensions", "Aspect extérieur et raccordements", "Votre attente et vos documents"].map((t, i) => (
               <li key={t} className="flex gap-4">
-                <span className="numeral text-xl text-brass w-7 shrink-0">{String(i + 1).padStart(2, "0")}</span>
+                <span className="numeral text-xl text-bronze w-7 shrink-0">{String(i + 1).padStart(2, "0")}</span>
                 <span>{t}</span>
               </li>
             ))}

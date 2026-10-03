@@ -11,7 +11,7 @@ export default function Faq({ items = faq }: { items?: typeof faq }) {
               width="22"
               height="22"
               viewBox="0 0 24 24"
-              className="mt-1 shrink-0 text-brass transition-transform group-open:rotate-45"
+              className="mt-1 shrink-0 text-bronze transition-transform group-open:rotate-45"
               aria-hidden="true"
             >
               <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />

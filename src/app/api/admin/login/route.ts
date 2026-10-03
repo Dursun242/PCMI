@@ -33,9 +33,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Requête illisible." }, { status: 400 });
   }
 
-  if (!body.password || !checkPassword(body.password)) {
+  if (!body.password || !(await checkPassword(body.password))) {
     return NextResponse.json({ ok: false, error: "Mot de passe incorrect." }, { status: 401 });
   }
+  attempts.delete(ip);
 
   const token = await createSessionToken();
   const res = NextResponse.json({ ok: true });

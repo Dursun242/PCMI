@@ -88,7 +88,7 @@ export default function GuidePage() {
       <section className="bg-stone border-b border-stone-2">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24">
           <span className="rule" aria-hidden="true" />
-          <p className="mt-6 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-brass">Le guide</p>
+          <p className="mt-6 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-bronze">Le guide</p>
           <h1 className="display mt-4 text-5xl sm:text-6xl lg:text-7xl max-w-[16ch]">
             Le permis de construire d&apos;une maison individuelle, <em>expliqué par un maître d&apos;œuvre.</em>
           </h1>
@@ -183,6 +183,8 @@ export default function GuidePage() {
           <p>
             La pièce PCMI 6 (insertion graphique) est celle que l&apos;instructeur regarde en premier : voir notre article{" "}
             <Link href="/conseils/pcmi-6-insertion-graphique-reussie">PCMI 6 : réussir l&apos;insertion graphique de votre maison</Link>.
+            Pour la notice, voir notre exemple commenté :{" "}
+            <Link href="/conseils/notice-descriptive-pcmi4-exemple">PCMI 4 : rédiger la notice descriptive de son projet</Link>.
           </p>
 
           <Cta
@@ -225,7 +227,8 @@ export default function GuidePage() {
           </ul>
           <p>
             Un dossier complet dès le premier jour, avec des cotes cohérentes entre le plan de masse, les coupes et les façades, est le meilleur moyen de tenir ces{" "}
-            <a href="https://www.service-public.fr/particuliers/vosdroits/F17656" target="_blank" rel="noopener noreferrer">délais d&apos;instruction</a>. C&apos;est la raison d&apos;être de notre contrôle de conformité au PLU avant dépôt.
+            <a href="https://www.service-public.fr/particuliers/vosdroits/F17656" target="_blank" rel="noopener noreferrer">délais d&apos;instruction</a>. C&apos;est la raison d&apos;être de notre contrôle de conformité au PLU avant dépôt. Pour vérifier vous-même les règles de votre terrain, voir{" "}
+            <Link href="/conseils/lire-le-plu-avant-de-dessiner-sa-maison">lire le PLU de sa commune avant de dessiner sa maison</Link>.
           </p>
           <p>
             Le détail du décompte — point de départ, suspension par une demande de pièces, majorations, permis tacite et
@@ -248,7 +251,8 @@ export default function GuidePage() {
 
           <h2 id="affichage" className="scroll-mt-28">L&apos;affichage et le recours des tiers</h2>
           <p>
-            Dès l&apos;obtention du permis, un panneau réglementaire doit être affiché sur le terrain, visible depuis la voie publique, pendant toute la durée des travaux. Il indique notamment le nom du bénéficiaire, la date et le numéro du permis, la nature du projet, la surface de plancher et la hauteur.
+            Dès l&apos;obtention du permis, un panneau réglementaire doit être affiché sur le terrain, visible depuis la voie publique, pendant toute la durée des travaux. Il indique notamment le nom du bénéficiaire, la date et le numéro du permis, la nature du projet, la surface de plancher et la hauteur. Format, durée et risques en cas d&apos;oubli :{" "}
+            <Link href="/conseils/panneau-permis-de-construire-affichage-obligatoire">les règles d&apos;affichage du panneau de permis</Link>.
           </p>
           <p>
             Le{" "}
@@ -281,7 +285,8 @@ export default function GuidePage() {
             <li>
               À la fin, la{" "}
               <a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F1997" target="_blank" rel="noopener noreferrer">déclaration attestant l&apos;achèvement et la conformité des travaux (DAACT)</a>{" "}
-              clôt le dossier, dans les 90 jours suivant la fin du chantier. La mairie dispose de 3 mois pour contester la conformité (5 mois dans certains secteurs).
+              clôt le dossier, dans les 90 jours suivant la fin du chantier. La mairie dispose de 3 mois pour contester la conformité (5 mois dans certains secteurs). Pièces à joindre et erreurs à éviter :{" "}
+              <Link href="/conseils/daact-declaration-achevement-travaux">DAACT : déclarer l&apos;achèvement des travaux</Link>.
             </li>
             <li>
               La taxe d&apos;aménagement, calculée sur la surface taxable, est due après l&apos;achèvement des travaux (voir la section <a href="#taxe-amenagement">taxe d&apos;aménagement</a> ci-dessus).
@@ -294,7 +299,7 @@ export default function GuidePage() {
               <details key={item.q} className="group">
                 <summary className="flex cursor-pointer items-start justify-between gap-6 py-5 display text-xl leading-tight list-none [&::-webkit-details-marker]:hidden">
                   <span>{item.q}</span>
-                  <svg width="20" height="20" viewBox="0 0 24 24" className="mt-1 shrink-0 text-brass transition-transform group-open:rotate-45" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" className="mt-1 shrink-0 text-bronze transition-transform group-open:rotate-45" aria-hidden="true">
                     <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
                   </svg>
                 </summary>
@@ -309,7 +314,7 @@ export default function GuidePage() {
             <ul className="!list-none !pl-0 mt-5 grid gap-4 sm:grid-cols-3">
               {articles.map((a) => (
                 <li key={a.slug}>
-                  <Link href={`/conseils/${a.slug}`} className="display text-xl leading-tight hover:text-brass">
+                  <Link href={`/conseils/${a.slug}`} className="display text-xl leading-tight hover:text-bronze">
                     {a.title}
                   </Link>
                 </li>

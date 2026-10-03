@@ -104,7 +104,7 @@ export default function EtudeThermiquePage() {
                 </span>
               </dt>
               <dd className="mt-2">
-                <span className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-brass">{t.when}</span>
+                <span className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-bronze">{t.when}</span>
                 <p className="mt-2 leading-relaxed text-ink-2">{t.description}</p>
                 <ul className="mt-3 grid gap-1.5 text-sm">
                   {t.deliverables.map((d) => (

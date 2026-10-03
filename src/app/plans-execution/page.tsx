@@ -100,7 +100,7 @@ export default function PlansExecutionPage() {
               <dt className="flex items-baseline justify-between gap-4">
                 <span className="display text-2xl leading-tight">
                   {p.name}
-                  {p.withBet ? <span className="text-brass" aria-label="avec calcul du bureau d'études"> *</span> : null}
+                  {p.withBet ? <span className="text-bronze" aria-label="avec calcul du bureau d'études"> *</span> : null}
                 </span>
                 <span className="shrink-0 text-right">
                   <span className="block text-[0.62rem] font-bold uppercase tracking-[0.14em] text-ink-2">à partir de</span>
@@ -108,7 +108,7 @@ export default function PlansExecutionPage() {
                 </span>
               </dt>
               <dd className="mt-2">
-                <span className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-brass">{p.forTrade}</span>
+                <span className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-bronze">{p.forTrade}</span>
                 <p className="mt-2 leading-relaxed text-ink-2">{p.description}</p>
                 <ul className="mt-3 grid gap-1.5 text-sm">
                   {p.deliverables.map((d) => (
@@ -184,7 +184,7 @@ export default function PlansExecutionPage() {
         <ol className="grid gap-7 border-t border-ink pt-8">
           {etapes.map(([t, d], i) => (
             <li key={t} className="flex gap-5">
-              <span className="numeral text-3xl text-brass w-8 shrink-0">{String(i + 1).padStart(2, "0")}</span>
+              <span className="numeral text-3xl text-bronze w-8 shrink-0">{String(i + 1).padStart(2, "0")}</span>
               <div>
                 <div className="display text-2xl leading-tight">{t}</div>
                 <div className="mt-1 text-ink-2 text-[0.95rem] leading-relaxed">{d}</div>

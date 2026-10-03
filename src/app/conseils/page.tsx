@@ -18,10 +18,10 @@ function Placeholder({ index, keyword }: { index: number; keyword?: string }) {
   return (
     <div className="relative aspect-[1200/630] w-full overflow-hidden bg-stone border border-stone-2">
       <div className="absolute inset-0 grid place-items-center">
-        <span className="numeral text-[6rem] leading-none text-stone-2 select-none">{String(index).padStart(2, "0")}</span>
+        <span className="numeral text-[6rem] leading-none text-stone-2 select-none" aria-hidden="true">{String(index).padStart(2, "0")}</span>
       </div>
       {keyword && (
-        <span className="absolute left-5 bottom-4 text-[0.68rem] font-bold uppercase tracking-[0.2em] text-brass">{keyword}</span>
+        <span className="absolute left-5 bottom-4 text-[0.68rem] font-bold uppercase tracking-[0.2em] text-bronze">{keyword}</span>
       )}
     </div>
   );
@@ -73,7 +73,7 @@ export default function ConseilsPage() {
           <div>
             <div className="flex items-center gap-3">
               <span className="rule" aria-hidden="true" />
-              <span className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass">Le journal du permis</span>
+              <span className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">Le journal du permis</span>
             </div>
             <h1 className="display mt-7 text-5xl sm:text-6xl lg:text-7xl max-w-[14ch]">Conseils d&apos;un maître d&apos;œuvre.</h1>
             <p className="lead mt-8 max-w-[52ch]">
@@ -98,7 +98,7 @@ export default function ConseilsPage() {
           {/* Article à la une */}
           <section className="mx-auto max-w-7xl px-5 sm:px-8 pt-14 sm:pt-20">
             <div className="flex items-center gap-3">
-              <span className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass">À la une</span>
+              <span className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">À la une</span>
               <span className="h-px flex-1 bg-ink" aria-hidden="true" />
             </div>
             <article className="group mt-8 grid gap-8 lg:grid-cols-[1.25fr_1fr] lg:gap-14 lg:items-center">
@@ -108,12 +108,12 @@ export default function ConseilsPage() {
               <div>
                 <Meta a={featured} />
                 <h2 className="display mt-5 text-4xl sm:text-5xl leading-[1.02]">
-                  <Link href={`/conseils/${featured.slug}`} className="hover:text-brass transition-colors">{featured.title}</Link>
+                  <Link href={`/conseils/${featured.slug}`} className="hover:text-bronze transition-colors">{featured.title}</Link>
                 </h2>
                 <p className="mt-6 text-ink-2 leading-relaxed text-lg max-w-[52ch]">{featured.description}</p>
                 <Link
                   href={`/conseils/${featured.slug}`}
-                  className="mt-8 inline-flex items-center gap-3 text-[0.8rem] font-bold uppercase tracking-[0.16em] text-ink hover:text-brass transition-colors"
+                  className="mt-8 inline-flex items-center gap-3 text-[0.8rem] font-bold uppercase tracking-[0.16em] text-ink hover:text-bronze transition-colors"
                 >
                   Lire l&apos;article
                   <span aria-hidden="true" className="h-px w-8 bg-current transition-all group-hover:w-12" />
@@ -126,7 +126,7 @@ export default function ConseilsPage() {
           {rest.length > 0 && (
             <section className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24">
               <div className="flex items-center gap-3">
-                <span className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass">Tous les articles</span>
+                <span className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">Tous les articles</span>
                 <span className="h-px flex-1 bg-ink" aria-hidden="true" />
               </div>
               <ul className="mt-10 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
@@ -138,13 +138,13 @@ export default function ConseilsPage() {
                     <div className="mt-6 flex flex-col flex-1">
                       <Meta a={a} />
                       <h2 className="display mt-4 text-[1.75rem] leading-[1.08]">
-                        <Link href={`/conseils/${a.slug}`} className="hover:text-brass transition-colors">{a.title}</Link>
+                        <Link href={`/conseils/${a.slug}`} className="hover:text-bronze transition-colors">{a.title}</Link>
                       </h2>
                       <p className="mt-3 text-ink-2 leading-relaxed text-[0.97rem] line-clamp-3">{a.description}</p>
                       <div className="mt-auto pt-5">
                         <Link
                           href={`/conseils/${a.slug}`}
-                          className="inline-flex items-center gap-3 text-[0.75rem] font-bold uppercase tracking-[0.16em] text-ink hover:text-brass transition-colors"
+                          className="inline-flex items-center gap-3 text-[0.75rem] font-bold uppercase tracking-[0.16em] text-ink hover:text-bronze transition-colors"
                         >
                           Lire
                           <span aria-hidden="true" className="h-px w-6 bg-current transition-all group-hover:w-10" />

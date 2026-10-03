@@ -141,14 +141,14 @@ export default function DossierForm() {
       {/* progression */}
       <ol className="flex flex-wrap gap-x-4 gap-y-1 text-[0.72rem] font-bold uppercase tracking-[0.14em]">
         {steps.map((s, i) => (
-          <li key={s.id} className={i === step ? "text-ink" : i < step ? "text-brass" : "text-ink-3"}>
+          <li key={s.id} className={i === step ? "text-ink" : i < step ? "text-bronze" : "text-ink-3"}>
             {String(i + 1).padStart(2, "0")} {s.title}
           </li>
         ))}
       </ol>
 
       <div>
-        <p className="text-[0.72rem] font-bold uppercase tracking-[0.2em] text-brass">CERFA 13406 · {current.cerfa}</p>
+        <p className="text-[0.72rem] font-bold uppercase tracking-[0.2em] text-bronze">CERFA 13406 · {current.cerfa}</p>
         <h2 className="display text-4xl mt-2">{current.title}</h2>
         {current.intro && <p className="mt-3 text-ink-2 text-[0.95rem] leading-relaxed">{current.intro}</p>}
       </div>

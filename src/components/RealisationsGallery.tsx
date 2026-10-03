@@ -21,7 +21,7 @@ export default function RealisationsGallery({ items }: { items: Realisation[] })
         </div>
 
         <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((r, i) => (
+          {items.map((r) => (
             <li key={r.titre} className="relative overflow-hidden bg-stone-2 h-64 sm:h-80">
               {r.images[0] && (
                 <Image
@@ -30,7 +30,6 @@ export default function RealisationsGallery({ items }: { items: Realisation[] })
                   fill
                   sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                   className="object-cover"
-                  priority={i === 0}
                 />
               )}
               <span className="absolute left-0 bottom-0 m-4 bg-paper/92 px-3 py-1.5 text-xs tracking-[0.06em] text-ink">

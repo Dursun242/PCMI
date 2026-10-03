@@ -42,6 +42,35 @@ export function withSeo(path: string, base: Metadata & { title: string; descript
     title: o?.title ?? base.title,
     description: o?.description ?? base.description,
     alternates: { ...base.alternates, canonical: path },
-    openGraph: { ...base.openGraph, url },
+    // Next remplace l'objet openGraph du layout au lieu de le fusionner :
+    // sans ces valeurs ici, les pages intérieures perdraient fr_FR et le nom du site.
+    // Même chose pour l'image générée par src/app/opengraph-image.tsx : une page
+    // qui définit son openGraph la masque, il faut la redonner explicitement.
+    openGraph: {
+      type: "website",
+      locale: "fr_FR",
+      siteName: site.name,
+      ...base.openGraph,
+      images: base.openGraph?.images ?? [DEFAULT_SHARE_IMAGE],
+      url,
+    } as Metadata["openGraph"],
   };
+}
+
+/** Image de partage par défaut, servie par src/app/opengraph-image.tsx. */
+export const DEFAULT_SHARE_IMAGE = {
+  url: "/opengraph-image",
+  width: 1200,
+  height: 630,
+  alt: `${site.name} — permis de construire de maison individuelle, prix fixe, partout en France`,
+};
+
+/**
+ * Image de partage d'un article. Les réseaux sociaux (Facebook, LinkedIn,
+ * WhatsApp, X) n'affichent pas le SVG : on le laisse de côté, et la page
+ * retombe alors sur l'image de partage par défaut du site.
+ */
+export function shareableImages(image: string | undefined): { url: string }[] | undefined {
+  if (!image || /\.svg$/i.test(image)) return undefined;
+  return [{ url: image }];
 }
