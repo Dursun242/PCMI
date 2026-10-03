@@ -1,6 +1,8 @@
 import { site, plans, options, whatsappUrl, exePlans, exePacks, metiers, thermique } from "@/config/site";
 import { staticPages } from "@/config/pages";
 import { getArticles } from "@/lib/articles";
+import { villes } from "@/config/normandie";
+import { getVille, villePath } from "@/lib/normandie";
 import { SURFACE_ARCHITECTE, SURFACE_MAX } from "@/lib/formulaFinder";
 
 /**
@@ -56,6 +58,12 @@ ${thermique.map((t) => `- ${t.name} (${t.when.toLowerCase()}) — à partir de $
 ## Pages
 
 ${pages.map((p) => `- [${p.path}](${site.url}${p.path}) : ${p.summary}`).join("\n")}
+
+## Normandie
+
+Bureau d'études ${getVille("le-havre")?.a ?? `à ${site.address.city}`}. Pour chaque grande ville normande : document d'urbanisme applicable, guichet de dépôt, risques (marnières, inondation, littoral) et périmètres de l'Architecte des Bâtiments de France, avec leurs sources officielles.
+
+${villes.map((v) => `- [Permis de construire ${v.a}](${site.url}${villePath(v)}) : ${v.description}`).join("\n")}
 
 ## Articles
 
