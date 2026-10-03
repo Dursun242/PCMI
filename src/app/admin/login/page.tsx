@@ -2,6 +2,7 @@
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { safeAdminRedirect } from "@/lib/adminAuth";
 
 function LoginForm() {
   const router = useRouter();
@@ -25,7 +26,7 @@ function LoginForm() {
         setError(data.error ?? "Connexion impossible.");
         return;
       }
-      router.push(params.get("next") || "/admin");
+      router.push(safeAdminRedirect(params.get("next")));
       router.refresh();
     } catch {
       setError("Connexion impossible.");

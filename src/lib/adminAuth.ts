@@ -23,13 +23,24 @@ function base64urlToBytes(input: string): Uint8Array {
   return arr;
 }
 
+function getPassword(): string | null {
+  const password = process.env.ADMIN_PASSWORD;
+  return password && password.length > 0 ? password : null;
+}
+
+/**
+ * Clé de signature du cookie. ADMIN_SESSION_SECRET (longue chaîne aléatoire)
+ * est préférable : si un cookie fuit, un mot de passe court pourrait sinon
+ * être retrouvé hors ligne à partir de sa signature. Repli sur le mot de passe
+ * pour ne pas casser une installation existante.
+ */
 function getSecret(): string | null {
-  const secret = process.env.ADMIN_PASSWORD;
-  return secret && secret.length > 0 ? secret : null;
+  const secret = process.env.ADMIN_SESSION_SECRET;
+  return secret && secret.length > 0 ? secret : getPassword();
 }
 
 export function isAdminConfigured(): boolean {
-  return getSecret() !== null;
+  return getPassword() !== null;
 }
 
 async function getHmacKey(secret: string): Promise<CryptoKey> {
@@ -44,10 +55,25 @@ function timingSafeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
-export function checkPassword(candidate: string): boolean {
-  const secret = getSecret();
-  if (!secret) return false;
-  return timingSafeEqual(candidate, secret);
+async function sha256B64(value: string): Promise<string> {
+  return bytesToBase64url(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value)));
+}
+
+/** Compare les empreintes (longueur fixe) : ne révèle pas la longueur du mot de passe. */
+export async function checkPassword(candidate: string): Promise<boolean> {
+  const password = getPassword();
+  if (!password) return false;
+  return timingSafeEqual(await sha256B64(candidate), await sha256B64(password));
+}
+
+/**
+ * Destination après connexion (paramètre ?next=) : uniquement un chemin de
+ * l'espace admin, jamais une autre origine (//site, https://, \) — sinon la
+ * page de connexion servirait de redirection ouverte pour du phishing.
+ */
+export function safeAdminRedirect(next: string | null | undefined): string {
+  if (!next || !/^\/admin(?:[/?#]|$)/.test(next) || next.includes("\\") || next.includes("..")) return "/admin";
+  return next;
 }
 
 export async function createSessionToken(): Promise<string> {

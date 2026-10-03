@@ -23,7 +23,12 @@ function slugifyBase(name: string): string {
 }
 
 export async function POST(req: Request) {
-  const form = await req.formData();
+  let form: FormData;
+  try {
+    form = await req.formData();
+  } catch {
+    return NextResponse.json({ ok: false, error: "Formulaire illisible." }, { status: 400 });
+  }
   const file = form.get("file");
   if (!(file instanceof File)) {
     return NextResponse.json({ ok: false, error: "Fichier manquant." }, { status: 400 });
