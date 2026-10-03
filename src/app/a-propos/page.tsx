@@ -26,7 +26,7 @@ export default function AProposPage() {
       <section className="bg-stone border-b border-stone-2">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24">
           <span className="rule" aria-hidden="true" />
-          <p className="mt-6 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-brass">À propos</p>
+          <p className="mt-6 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-bronze">À propos</p>
           <h1 className="display mt-4 text-5xl sm:text-6xl lg:text-7xl max-w-[18ch]">
             Derrière le site, un bureau d&apos;études qui allie <em>ingénierie</em> et <em>architecture</em>.
           </h1>

@@ -101,7 +101,7 @@ export default function PlanDeMassePage() {
               ["Vous recevez notre retour sous 4 h ouvrées", "Ce qui est conforme, ce qui ne l'est pas, ce qui manque, et le prix pour compléter le dossier."],
             ].map(([t, d], i) => (
               <li key={t} className="flex gap-5">
-                <span className="numeral text-3xl text-brass w-8 shrink-0">{String(i + 1).padStart(2, "0")}</span>
+                <span className="numeral text-3xl text-bronze w-8 shrink-0">{String(i + 1).padStart(2, "0")}</span>
                 <div>
                   <div className="display text-2xl leading-tight">{t}</div>
                   <div className="mt-1 text-ink-2 text-[0.95rem] leading-relaxed">{d}</div>

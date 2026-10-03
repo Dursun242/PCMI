@@ -17,7 +17,7 @@ function Question({ n, titre, aide, children }: { n: number; titre: string; aide
   return (
     <fieldset className="field border-t border-stone-2 pt-5">
       <legend className="flex items-baseline gap-2">
-        <span className="numeral text-brass not-italic">{String(n).padStart(2, "0")}</span>
+        <span className="numeral text-bronze not-italic">{String(n).padStart(2, "0")}</span>
         <span>{titre}</span>
       </legend>
       {aide && <p className="hint mt-1 normal-case tracking-normal">{aide}</p>}
@@ -153,7 +153,7 @@ export default function FormulaFinder({ className = "" }: { className?: string }
             </div>
           ) : (
             <div className="border-t border-ink pt-5 lg:border-t-0 lg:pt-0">
-              <p className="text-[0.72rem] font-bold uppercase tracking-[0.2em] text-brass">Formule conseillée</p>
+              <p className="text-[0.72rem] font-bold uppercase tracking-[0.2em] text-bronze">Formule conseillée</p>
               <p className="display mt-3 text-4xl">{result.planName}</p>
               {plan ? (
                 <p className="mt-2">

@@ -55,7 +55,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       <section className="bg-stone border-b border-stone-2">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24">
           <span className="rule" aria-hidden="true" />
-          <p className="mt-6 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-brass">
+          <p className="mt-6 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-bronze">
             <Link href="/conseils" className="hover:text-ink">Conseils</Link>
           </p>
           <h1 className="display mt-4 text-4xl sm:text-5xl lg:text-6xl max-w-[22ch]">{a.title}</h1>
@@ -91,7 +91,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <ul className="mt-4 grid gap-4">
                 {others.map((o) => (
                   <li key={o.slug}>
-                    <Link href={`/conseils/${o.slug}`} className="display text-xl leading-tight hover:text-brass">{o.title}</Link>
+                    <Link href={`/conseils/${o.slug}`} className="display text-xl leading-tight hover:text-bronze">{o.title}</Link>
                   </li>
                 ))}
               </ul>

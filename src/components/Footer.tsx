@@ -130,7 +130,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <p className="border-t border-brass/25 pt-6 text-xs text-paper/45">
+        <p className="border-t border-brass/25 pt-6 text-xs text-paper/70">
           © {year} {site.legal.company}. {site.name} est l&apos;offre permis de construire de {site.parent}, bureau d&apos;études au Havre qui allie ingénierie et architecture.
         </p>
       </div>

@@ -36,7 +36,7 @@ export default function Header() {
 
         <nav aria-label="Navigation principale" className="hidden lg:flex items-center gap-5 xl:gap-7 text-[0.92rem] whitespace-nowrap">
           {nav.map((n) => (
-            <Link key={n.href} href={n.href} className="hover:text-brass transition-colors">
+            <Link key={n.href} href={n.href} className="hover:text-bronze transition-colors">
               {n.label}
             </Link>
           ))}

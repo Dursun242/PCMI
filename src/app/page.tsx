@@ -156,7 +156,7 @@ export default function HomePage() {
           <ol className="grid sm:grid-cols-2 border-t border-ink">
             {pieces.map((p) => (
               <li key={p.code} className="py-6 pr-6 border-b border-stone-2 sm:[&:nth-child(odd)]:border-r sm:[&:nth-child(even)]:pl-6">
-                <div className="text-[0.7rem] font-bold tracking-[0.2em] text-brass">{p.code}</div>
+                <div className="text-[0.7rem] font-bold tracking-[0.2em] text-bronze">{p.code}</div>
                 <h3 className="display mt-2 text-2xl leading-tight">{p.name}</h3>
                 <p className="mt-2 text-[0.95rem] text-ink-2 leading-relaxed">{p.what}</p>
               </li>
@@ -173,7 +173,7 @@ export default function HomePage() {
           <ol className="mt-14 grid gap-12 md:grid-cols-2 lg:grid-cols-4 border-t border-ink pt-8">
             {steps.map((s, i) => (
               <li key={s.title}>
-                <div className="numeral text-4xl text-brass">{String(i + 1).padStart(2, "0")}</div>
+                <div className="numeral text-4xl text-bronze">{String(i + 1).padStart(2, "0")}</div>
                 <h3 className="display mt-4 text-2xl leading-tight">{s.title}</h3>
                 <p className="mt-3 leading-relaxed text-ink-2">{s.text}</p>
               </li>

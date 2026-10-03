@@ -13,7 +13,7 @@ export default function NotFound() {
   return (
     <div className="mx-auto max-w-3xl px-5 sm:px-8 py-20 sm:py-28">
       <span className="rule" aria-hidden="true" />
-      <p className="mt-6 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-brass">Erreur 404</p>
+      <p className="mt-6 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-bronze">Erreur 404</p>
       <h1 className="display mt-4 text-5xl sm:text-6xl">Cette page n&apos;existe pas.</h1>
       <p className="lead mt-7">
         Le lien est peut-être ancien, ou l&apos;adresse comporte une faute de frappe. Voici les pages les plus utiles.
@@ -27,7 +27,7 @@ export default function NotFound() {
           ["/devis", "Demander un devis", "Réponse chiffrée sous 4 h ouvrées, sans engagement."],
         ].map(([href, titre, texte]) => (
           <div key={href}>
-            <Link href={href} className="display text-2xl hover:text-brass">{titre}</Link>
+            <Link href={href} className="display text-2xl hover:text-bronze">{titre}</Link>
             <p className="mt-1 text-ink-2 text-[0.95rem] leading-relaxed">{texte}</p>
           </div>
         ))}
@@ -39,7 +39,7 @@ export default function NotFound() {
           <ul className="mt-4 grid gap-3">
             {articles.map((a) => (
               <li key={a.slug}>
-                <Link href={`/conseils/${a.slug}`} className="underline decoration-brass underline-offset-4 hover:text-brass">
+                <Link href={`/conseils/${a.slug}`} className="underline decoration-brass underline-offset-4 hover:text-bronze">
                   {a.title}
                 </Link>
               </li>
