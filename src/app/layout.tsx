@@ -11,7 +11,7 @@ import { withSeo } from "@/lib/seo";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
 
 const home = withSeo("/", {
-  title: "Permis de construire maison individuelle — prix fixe, partout en France",
+  title: "Permis de construire maison individuelle à prix fixe",
   description:
     "Dossier PCMI 1 à 8 complet, rendus 3D, dépôt en mairie et suivi jusqu'à l'accord. Bureau d'études architecture et ingénierie, prix fixe, partout en France.",
 });
