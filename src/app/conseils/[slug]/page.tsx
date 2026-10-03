@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getArticle, getArticles } from "@/lib/articles";
-import { withSeo } from "@/lib/seo";
+import { shareableImages, withSeo } from "@/lib/seo";
 import { formatFrDate } from "@/lib/format";
 import { site } from "@/config/site";
 import JsonLd from "@/components/JsonLd";
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       type: "article",
       publishedTime: a.date,
       modifiedTime: a.updated ?? a.date,
-      images: a.image ? [{ url: a.image }] : undefined,
+      images: shareableImages(a.image),
     },
   });
 }
