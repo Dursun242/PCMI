@@ -29,7 +29,7 @@ export interface StaticPage {
 export const staticPages: StaticPage[] = [
   {
     path: "/",
-    lastModified: "2026-09-19",
+    lastModified: "2026-10-08",
     changeFrequency: "weekly",
     priority: 1,
     summary:
@@ -45,7 +45,7 @@ export const staticPages: StaticPage[] = [
   },
   {
     path: "/permis-de-construire-maison",
-    lastModified: "2026-09-19",
+    lastModified: "2026-10-08",
     changeFrequency: "monthly",
     priority: 0.9,
     summary:
