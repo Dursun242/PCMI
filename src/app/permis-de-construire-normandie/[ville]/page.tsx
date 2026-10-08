@@ -84,10 +84,6 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
             Le permis de construire de votre maison {v.a}.
           </h1>
           <p className="lead mt-8 max-w-[62ch]">{v.accroche}</p>
-          <p className="mt-5 max-w-[62ch] text-ink-2 leading-relaxed">
-            Notre bureau d&apos;études est au Havre : nous lisons le règlement de votre terrain avant de chiffrer, puis
-            montons le dossier PCMI complet à prix fixe, dès {formatEuro(plans[0].priceTTC)} TTC.
-          </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <TrackedLink href="/devis" source={source} className="btn btn-ink">Demander un devis</TrackedLink>
             <Link href="/tarifs" className="btn btn-line">Voir les formules</Link>
@@ -157,7 +153,13 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
           <div>
             <span className="rule" aria-hidden="true" />
             <h2 className="h-section mt-6">Votre dossier {v.a}, à prix fixe</h2>
+            {/* Présentation commerciale, placée après le contenu local : en haut de page, c'est
+                elle que Google reprenait comme extrait, la même pour toutes les villes. */}
             <p className="mt-6 text-ink-2 leading-relaxed">
+              Notre bureau d&apos;études est au Havre : nous lisons le règlement de votre terrain avant de chiffrer, puis
+              montons le dossier PCMI complet à prix fixe, dès {formatEuro(plans[0].priceTTC)} TTC.
+            </p>
+            <p className="mt-4 text-ink-2 leading-relaxed">
               Le prix ne dépend ni de la commune ni de la surface, jusqu&apos;à 149 m² de surface de plancher. Échanges en
               visio ou à notre bureau du Havre ; déplacement possible en Normandie.
             </p>

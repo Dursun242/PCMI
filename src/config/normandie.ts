@@ -877,7 +877,7 @@ export const villes: Ville[] = [
     departement: "14",
     intercommunalite: "Bayeux Intercom, qui regroupe 36 communes",
     description:
-      "Permis de construire de maison à Bayeux : PLUi de Bayeux Intercom, secteur sauvegardé autour de la cathédrale, vallée de l'Aure. Dossier complet, prix fixe.",
+      "Permis de construire de maison à Bayeux : PLUi de Bayeux Intercom, secteur sauvegardé autour de la cathédrale, vallée de l'Aure. Prix fixe.",
     accroche:
       "À Bayeux, le centre ancien autour de la cathédrale est un secteur sauvegardé depuis 1971 : on y construit avec le plan de sauvegarde sous les yeux. Au-delà, c'est le PLUi de Bayeux Intercom qui fixe les règles.",
     urbanisme: {
