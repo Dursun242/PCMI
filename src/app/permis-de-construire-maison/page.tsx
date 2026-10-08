@@ -303,7 +303,7 @@ export default function GuidePage() {
             {guideFaq.map((item) => (
               <details key={item.q} className="group">
                 <summary className="flex cursor-pointer items-start justify-between gap-6 py-5 display text-xl leading-tight list-none [&::-webkit-details-marker]:hidden">
-                  <span>{item.q}</span>
+                  <h3>{item.q}</h3>
                   <svg width="20" height="20" viewBox="0 0 24 24" className="mt-1 shrink-0 text-bronze transition-transform group-open:rotate-45" aria-hidden="true">
                     <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
                   </svg>
