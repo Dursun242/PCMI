@@ -4,11 +4,24 @@ import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getArticle, getArticles } from "@/lib/articles";
 import { shareableImages, withSeo } from "@/lib/seo";
-import { formatFrDate } from "@/lib/format";
-import { site } from "@/config/site";
+import { formatEuro, formatFrDate } from "@/lib/format";
+import { plans, site } from "@/config/site";
 import JsonLd from "@/components/JsonLd";
 import ArticleCtaLink from "@/components/ArticleCtaLink";
 import { blogPostingSchema, breadcrumb } from "@/lib/schema";
+
+/**
+ * Composants disponibles dans les articles MDX. <Prix formule="essentiel" />
+ * affiche le prix de la formule tiré de src/config/site.ts : un article ne
+ * peut plus annoncer un prix différent de la page Tarifs.
+ */
+const mdxComponents = {
+  Prix({ formule }: { formule: string }) {
+    const plan = plans.find((p) => p.id === formule);
+    if (!plan) throw new Error(`<Prix formule="${formule}" /> : formule inconnue`);
+    return <>{formatEuro(plan.priceTTC)}</>;
+  },
+};
 
 export const dynamicParams = false;
 
@@ -75,7 +88,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
       <div className="mx-auto max-w-7xl px-5 sm:px-8 py-14 grid gap-14 lg:grid-cols-[1fr_300px]">
         <article className="prose-guide">
-          <MDXRemote source={a.content} />
+          <MDXRemote source={a.content} components={mdxComponents} />
         </article>
 
         <aside className="lg:sticky lg:top-28 lg:self-start">

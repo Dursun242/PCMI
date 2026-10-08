@@ -1,3 +1,5 @@
+import { plans } from "./site";
+
 /**
  * Structure de la fiche projet complète, calquée sur les rubriques du CERFA n° 13406
  * (demande de permis de construire pour une maison individuelle et/ou ses annexes).
@@ -128,7 +130,7 @@ export const steps: Step[] = [
     title: "Votre attente et vos documents",
     intro: "Joignez ce que vous avez : plan du constructeur, croquis, esquisse Kasaplan, photos du terrain, plan de bornage, certificat d'urbanisme, acte ou compromis. Chaque document nous fait gagner du temps.",
     fields: [
-      { id: "formule", label: "Formule envisagée", type: "radio", required: true, options: [["essentiel", "Essentiel — 1 490 € TTC"], ["complet", "Complet — 1 990 € TTC"], ["premium", "Premium — 2 990 € TTC"], ["conseil", "Conseillez-moi"]] },
+      { id: "formule", label: "Formule envisagée", type: "radio", required: true, options: [...plans.map((p): [string, string] => [p.id, `${p.name} — ${p.priceTTC.toLocaleString("fr-FR")} € TTC`]), ["conseil", "Conseillez-moi"]] },
       { id: "plans_existants", label: "Disposez-vous déjà de plans ?", type: "select", required: true, options: [["aucun", "Aucun plan"], ["croquis", "Un croquis ou une esquisse"], ["constructeur", "Des plans de constructeur"], ["kasaplan", "Une esquisse Kasaplan ou logiciel 3D"], ["dessinateur", "Des plans de dessinateur ou d'architecte"]] },
       { id: "constructeur", label: "Un constructeur ou un artisan est-il déjà choisi ?", type: "radio", options: ouiNon },
       { id: "delai", label: "Quand souhaitez-vous déposer le permis ?", type: "select", half: true, options: [["asap", "Dès que possible"], ["1-3", "Dans 1 à 3 mois"], ["3-6", "Dans 3 à 6 mois"], [">6", "Dans plus de 6 mois"]] },
