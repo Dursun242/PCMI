@@ -74,7 +74,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <h1 className="display mt-4 text-4xl sm:text-5xl lg:text-6xl max-w-[22ch]">{a.title}</h1>
           <p className="lead mt-8 max-w-[60ch]">{a.description}</p>
           <p className="mt-6 text-sm text-ink-2">
-            Par {site.author}, maître d&apos;œuvre · <time dateTime={a.updated ?? a.date}>{formatFrDate(a.updated ?? a.date)}</time> · {a.readingMinutes} min
+            Par {site.author}, maître d&apos;œuvre · Publié le <time dateTime={a.date}>{formatFrDate(a.date)}</time>
+            {a.updated && a.updated !== a.date && (
+              <>
+                {" "}· mis à jour le <time dateTime={a.updated}>{formatFrDate(a.updated)}</time>
+              </>
+            )}{" "}
+            · {a.readingMinutes} min
           </p>
         </div>
       </section>
