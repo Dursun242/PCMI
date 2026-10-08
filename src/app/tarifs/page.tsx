@@ -64,7 +64,7 @@ export default function TarifsPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-5 sm:px-8 pt-16 sm:pt-20">
-        <div className="grid gap-8 lg:gap-0 lg:grid-cols-3 lg:items-stretch">
+        <div data-stagger className="grid gap-8 lg:gap-0 lg:grid-cols-3 lg:items-stretch">
           {plans.map((p) => (
             <div key={p.id} id={p.id} className="scroll-mt-24 flex">
               <PlanCard plan={p} />

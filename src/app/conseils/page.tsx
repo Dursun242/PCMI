@@ -129,7 +129,7 @@ export default function ConseilsPage() {
                 <span className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">Tous les articles</span>
                 <span className="h-px flex-1 bg-ink" aria-hidden="true" />
               </div>
-              <ul className="mt-10 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+              <ul data-stagger className="mt-10 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
                 {rest.map((a, i) => (
                   <li key={a.slug} className="group flex flex-col">
                     <Link href={`/conseils/${a.slug}`} className="block" aria-label={a.title}>

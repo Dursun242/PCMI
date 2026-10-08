@@ -82,7 +82,7 @@ export default function HomePage() {
       {/* ---------- Hero ---------- */}
       <section className="bg-forest text-paper">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 pt-16 pb-20 sm:pt-24 sm:pb-28 grid gap-14 lg:grid-cols-[1fr_1.1fr] lg:items-center">
-          <div>
+          <div className="hero-entree hero-sortie">
             <div className="flex items-center gap-3">
               <span className="rule" aria-hidden="true" />
               <span className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">100 % en ligne · partout en France</span>
@@ -100,21 +100,24 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="relative">
-            {/*
-              Vidéo de la façade qui se dessine (20 s, muette, en boucle), sur le
-              même vert que le hero. Le dessin SVG reste en repli pour les
-              navigateurs sans vidéo et pour les lecteurs d'écran.
-            */}
-            <HeroVideo>
-              <HouseDrawing className="w-full h-auto" />
-            </HeroVideo>
-            {/* Voile dégradé sur le coin bas droit : cache le filigrane de la vidéo. */}
-            <div
-              className="pointer-events-none absolute inset-0"
-              style={{ background: "radial-gradient(circle at 100% 100%, #22352c 0, #22352c 15%, rgba(34,53,44,0) 30%)" }}
-              aria-hidden="true"
-            />
+          {/* Deux enveloppes : une animation d'entrée, une de sortie au défilement (une seule par élément). */}
+          <div className="hero-sortie-visuel">
+            <div className="hero-entree-visuel relative">
+              {/*
+                Vidéo de la façade qui se dessine (20 s, muette, en boucle), sur le
+                même vert que le hero. Le dessin SVG reste en repli pour les
+                navigateurs sans vidéo et pour les lecteurs d'écran.
+              */}
+              <HeroVideo>
+                <HouseDrawing className="w-full h-auto" />
+              </HeroVideo>
+              {/* Voile dégradé sur le coin bas droit : cache le filigrane de la vidéo. */}
+              <div
+                className="pointer-events-none absolute inset-0"
+                style={{ background: "radial-gradient(circle at 100% 100%, #22352c 0, #22352c 15%, rgba(34,53,44,0) 30%)" }}
+                aria-hidden="true"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -122,7 +125,7 @@ export default function HomePage() {
       {/* ---------- Chiffres ---------- */}
       {stats.length > 0 && (
         <section className="border-b border-stone-2">
-          <div className="mx-auto max-w-7xl px-5 sm:px-8 py-12 grid gap-10 sm:grid-cols-3">
+          <div data-stagger className="mx-auto max-w-7xl px-5 sm:px-8 py-12 grid gap-10 sm:grid-cols-3">
             {stats.map((s) => (
               <div key={s.label}>
                 <div className="numeral text-5xl sm:text-6xl">{s.value}</div>
@@ -153,7 +156,7 @@ export default function HomePage() {
               .
             </p>
           </div>
-          <ol className="grid sm:grid-cols-2 border-t border-ink">
+          <ol data-stagger className="grid sm:grid-cols-2 border-t border-ink">
             {pieces.map((p) => (
               <li key={p.code} className="py-6 pr-6 border-b border-stone-2 sm:[&:nth-child(odd)]:border-r sm:[&:nth-child(even)]:pl-6">
                 <div className="text-[0.7rem] font-bold tracking-[0.2em] text-bronze">{p.code}</div>
@@ -170,15 +173,19 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-20 sm:py-28">
           <span className="rule" aria-hidden="true" />
           <h2 className="h-section mt-6 max-w-[16ch]">Du premier échange au permis accordé</h2>
-          <ol className="mt-14 grid gap-12 md:grid-cols-2 lg:grid-cols-4 border-t border-ink pt-8">
-            {steps.map((s, i) => (
-              <li key={s.title}>
-                <div className="numeral text-4xl text-bronze">{String(i + 1).padStart(2, "0")}</div>
-                <h3 className="display mt-4 text-2xl leading-tight">{s.title}</h3>
-                <p className="mt-3 leading-relaxed text-ink-2">{s.text}</p>
-              </li>
-            ))}
-          </ol>
+          {/* Un fil laiton se trace sur le trait au défilement ; chaque étape allume son point. */}
+          <div className="relative mt-14">
+            <span className="etapes-fil" aria-hidden="true" />
+            <ol data-stagger className="grid gap-12 md:grid-cols-2 lg:grid-cols-4 border-t border-ink pt-8">
+              {steps.map((s, i) => (
+                <li key={s.title} className="etape">
+                  <div className="numeral text-4xl text-bronze">{String(i + 1).padStart(2, "0")}</div>
+                  <h3 className="display mt-4 text-2xl leading-tight">{s.title}</h3>
+                  <p className="mt-3 leading-relaxed text-ink-2">{s.text}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
       </section>
 
@@ -194,7 +201,7 @@ export default function HomePage() {
           </div>
           <Link href="/tarifs" className="btn btn-line">Comparer en détail</Link>
         </div>
-        <div className="mt-14 grid gap-8 lg:gap-0 lg:grid-cols-3 lg:items-stretch">
+        <div data-stagger className="mt-14 grid gap-8 lg:gap-0 lg:grid-cols-3 lg:items-stretch">
           {plans.map((p) => (
             <PlanCard key={p.id} plan={p} compact />
           ))}
@@ -230,7 +237,7 @@ export default function HomePage() {
                 .
               </p>
             </div>
-            <div className="relative h-64 sm:h-80 overflow-hidden">
+            <div data-reveal="photo" className="defile-zoom relative h-64 sm:h-80 overflow-hidden">
               <Image
                 src="/office/bureau-id-maitrise.jpg"
                 alt={`Bureau d'${site.parent}, ingénierie et architecture au Havre`}
@@ -252,7 +259,7 @@ export default function HomePage() {
                   <th className="py-3 font-bold border-b border-brass/50">Ce qu&apos;il faut savoir</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody data-stagger>
                 {compare.map((c) => (
                   <tr key={c.who} className={c.me ? "text-paper" : "text-paper/75"}>
                     <td className={`py-5 pr-6 align-top border-b border-paper/15 ${c.me ? "display text-xl" : "font-bold"}`}>{c.who}</td>
@@ -316,7 +323,7 @@ export default function HomePage() {
 
       {/* ---------- CTA final ---------- */}
       <section className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="border-t border-ink pt-12 flex flex-wrap items-end justify-between gap-8">
+        <div data-reveal="" className="border-t border-ink pt-12 flex flex-wrap items-end justify-between gap-8">
           <div className="max-w-[36ch]">
             <h2 className="display text-4xl sm:text-5xl">Votre devis chiffré sous 4 h ouvrées.</h2>
             <p className="mt-4 text-ink-2 leading-relaxed">Trois minutes pour décrire votre projet. Aucun engagement, aucun frais caché.</p>

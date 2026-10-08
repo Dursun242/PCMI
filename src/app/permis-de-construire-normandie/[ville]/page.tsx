@@ -105,7 +105,7 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
             aspect des façades.
           </p>
         </div>
-        <div className="grid gap-6">
+        <div data-stagger className="grid gap-6">
           <SourcedFact titre="Le document d'urbanisme" fait={v.urbanisme} />
           <SourcedFact titre="Où déposer votre demande" fait={v.depot} />
         </div>
@@ -116,14 +116,14 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
           <div>
             <span className="rule" aria-hidden="true" />
             <h2 className="h-section mt-6">Ce qu&apos;il faut vérifier sur votre terrain</h2>
-            <div className="mt-8 grid gap-6">
+            <div data-stagger className="mt-8 grid gap-6">
               {v.risques.map((f) => <SourcedFact key={f.texte} fait={f} />)}
             </div>
           </div>
           <div>
             <span className="rule" aria-hidden="true" />
             <h2 className="h-section mt-6">Patrimoine et aspect extérieur</h2>
-            <div className="mt-8 grid gap-6">
+            <div data-stagger className="mt-8 grid gap-6">
               {v.patrimoine.map((f) => <SourcedFact key={f.texte} fait={f} />)}
               {v.architecture && <SourcedFact fait={v.architecture} />}
             </div>
@@ -134,7 +134,7 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
       <section className="mx-auto max-w-7xl px-5 sm:px-8 py-20">
         <span className="rule" aria-hidden="true" />
         <h2 className="h-section mt-6">Construire en {d.terrain ? d.nom : "Normandie"}, en chiffres</h2>
-        <dl className="mt-10 grid gap-8 sm:grid-cols-3">
+        <dl data-stagger className="mt-10 grid gap-8 sm:grid-cols-3">
           {chiffres.lignes.map(([chiffre, legende]) => (
             <div key={legende} className="border-t border-ink pt-5">
               <dt className="numeral text-4xl">{chiffre}</dt>
@@ -162,7 +162,7 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
               visio ou à notre bureau du Havre ; déplacement possible en Normandie.
             </p>
           </div>
-          <ul className="grid gap-5 sm:grid-cols-3">
+          <ul data-stagger className="grid gap-5 sm:grid-cols-3">
             {plans.map((p) => (
               <li key={p.id} className="border-t border-ink pt-5">
                 <p className="display text-2xl">{p.name}</p>

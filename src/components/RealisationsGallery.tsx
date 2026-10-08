@@ -20,9 +20,9 @@ export default function RealisationsGallery({ items }: { items: Realisation[] })
           </div>
         </div>
 
-        <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul data-stagger className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((r) => (
-            <li key={r.titre} className="relative overflow-hidden bg-stone-2 h-64 sm:h-80">
+            <li key={r.titre} data-reveal="photo" className="defile-zoom relative overflow-hidden bg-stone-2 h-64 sm:h-80">
               {r.images[0] && (
                 <Image
                   src={`/realisations/${r.images[0]}`}

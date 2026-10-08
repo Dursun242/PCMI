@@ -94,7 +94,7 @@ export default function PlansExecutionPage() {
             vos artisans. Les lots marqués d&apos;un astérisque comprennent le calcul de notre bureau d&apos;études structure.
           </p>
         </div>
-        <dl className="mt-12 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
+        <dl data-stagger className="mt-12 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
           {exePlans.map((p) => (
             <div key={p.id} id={p.id} className="border-t border-ink pt-5 scroll-mt-24">
               <dt className="flex items-baseline justify-between gap-4">
@@ -181,7 +181,7 @@ export default function PlansExecutionPage() {
             même temps que le dossier de permis pour gagner plusieurs semaines sur le démarrage du chantier.
           </p>
         </div>
-        <ol className="grid gap-7 border-t border-ink pt-8">
+        <ol data-stagger className="grid gap-7 border-t border-ink pt-8">
           {etapes.map(([t, d], i) => (
             <li key={t} className="flex gap-5">
               <span className="numeral text-3xl text-bronze w-8 shrink-0">{String(i + 1).padStart(2, "0")}</span>

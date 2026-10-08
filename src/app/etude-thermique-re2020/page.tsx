@@ -93,7 +93,7 @@ export default function EtudeThermiquePage() {
             TTC ; le devis exact dépend de la surface, du mode constructif et du système de chauffage.
           </p>
         </div>
-        <dl className="mt-12 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
+        <dl data-stagger className="mt-12 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
           {thermique.map((t) => (
             <div key={t.id} id={t.id} className={`border-t pt-5 scroll-mt-24 ${t.highlight ? "border-brass" : "border-ink"}`}>
               <dt className="flex items-baseline justify-between gap-4">

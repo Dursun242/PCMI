@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import StickyCta from "@/components/StickyCta";
 import WhatsAppBubble from "@/components/WhatsAppBubble";
+import ScrollReveal from "@/components/ScrollReveal";
 import JsonLd from "@/components/JsonLd";
 import { withSeo } from "@/lib/seo";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
@@ -38,9 +39,21 @@ export const metadata: Metadata = {
   alternates: home.alternates,
 };
 
+/**
+ * Active les apparitions au défilement avant le premier affichage (sinon les
+ * blocs s'afficheraient puis disparaîtraient). Si ScrollReveal ne s'est pas
+ * signalé au bout de 5 s (JavaScript bloqué, réseau très lent), on rend tout
+ * visible : le contenu ne doit jamais rester masqué.
+ */
+const ACTIVER_ANIMATIONS = `(function(){var h=document.documentElement;if(!("IntersectionObserver" in window))return;h.classList.add("reveal-on");setTimeout(function(){if(!h.hasAttribute("data-reveal-pret"))h.classList.remove("reveal-on")},5000)})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr">
+    // suppressHydrationWarning : le script ci-dessous ajoute une classe à <html> avant React.
+    <html lang="fr" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: ACTIVER_ANIMATIONS }} />
+      </head>
       <body className="min-h-screen flex flex-col">
         <JsonLd data={[organizationSchema, websiteSchema]} />
         <a
@@ -56,6 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <StickyCta />
         <WhatsAppBubble />
+        <ScrollReveal />
         {/* Mesure d'audience sans cookie ni identifiant individuel (Vercel Web Analytics). */}
         <Analytics />
       </body>

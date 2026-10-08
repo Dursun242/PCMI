@@ -97,7 +97,7 @@ export default function NormandiePage() {
       <section className="mx-auto max-w-7xl px-5 sm:px-8 py-20">
         <span className="rule" aria-hidden="true" />
         <h2 className="h-section mt-6">Construire en Normandie, en chiffres</h2>
-        <dl className="mt-10 grid gap-8 sm:grid-cols-3">
+        <dl data-stagger className="mt-10 grid gap-8 sm:grid-cols-3">
           {[
             [chiffresNormandie.permis.toLocaleString("fr-FR"), `maisons autorisées pour des particuliers en ${chiffresNormandie.annee}`],
             [`${chiffresNormandie.prixTerrainM2} €/m²`, "prix moyen du terrain à bâtir"],
@@ -122,7 +122,7 @@ export default function NormandiePage() {
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-20">
           <span className="rule" aria-hidden="true" />
           <h2 className="h-section mt-6">Ce qui fait un permis normand</h2>
-          <dl className="mt-10 grid gap-10 sm:grid-cols-2">
+          <dl data-stagger className="mt-10 grid gap-10 sm:grid-cols-2">
             {specificites.map((s) => (
               <div key={s.titre} className="border-t border-ink pt-5">
                 <dt className="display text-2xl leading-tight">{s.titre}</dt>
@@ -152,7 +152,7 @@ export default function NormandiePage() {
       <section className="mx-auto max-w-7xl px-5 sm:px-8 py-20">
         <span className="rule" aria-hidden="true" />
         <h2 className="h-section mt-6">Votre ville</h2>
-        <div className="mt-10 grid gap-12 lg:grid-cols-2">
+        <div data-stagger className="mt-10 grid gap-12 lg:grid-cols-2">
           {departements.map((d) => {
             const liste = villesDu(d.code);
             if (liste.length === 0) return null;
@@ -161,7 +161,7 @@ export default function NormandiePage() {
                 <h3 className="display text-3xl">
                   {d.nom} <span className="text-ink-2">({d.code})</span>
                 </h3>
-                <ul className="mt-5 grid gap-5">
+                <ul data-stagger className="mt-5 grid gap-5">
                   {liste.map((v) => (
                     <li key={v.slug} className="border-t border-stone-2 pt-4">
                       <Link href={villePath(v)} className="display text-2xl hover:text-bronze">

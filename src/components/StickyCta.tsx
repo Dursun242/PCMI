@@ -40,7 +40,7 @@ export default function StickyCta() {
     <>
       {/* Réserve la hauteur de la barre pour que le bas de page reste atteignable. */}
       <div className="h-[4.75rem] md:hidden" aria-hidden="true" />
-      <div className="md:hidden fixed inset-x-0 bottom-0 z-30 border-t border-stone-2 bg-paper/97 backdrop-blur px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center gap-3">
+      <div className="barre-cta md:hidden fixed inset-x-0 bottom-0 z-30 border-t border-stone-2 bg-paper/97 backdrop-blur px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center gap-3">
         <div className="min-w-0 flex-1">
           <p className="display text-lg leading-tight">Devis gratuit sous 4 h</p>
           <p className="text-xs text-ink-2 truncate">

@@ -26,9 +26,9 @@ export default function Gallery() {
           </div>
         </div>
 
-        <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul data-stagger className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {available.map((p) => (
-            <li key={p.file} className={`relative overflow-hidden bg-stone-2 h-64 sm:h-80 ${p.wide ? "sm:col-span-2" : ""}`}>
+            <li key={p.file} data-reveal="photo" className={`defile-zoom relative overflow-hidden bg-stone-2 h-64 sm:h-80 ${p.wide ? "sm:col-span-2" : ""}`}>
               <Image
                 src={`/photos/${p.file}`}
                 alt={p.alt}

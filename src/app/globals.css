@@ -5,6 +5,7 @@
 @import "@fontsource/cormorant-garamond/500.css";
 @import "@fontsource/cormorant-garamond/500-italic.css";
 @import "@fontsource/cormorant-garamond/600.css";
+@import "./motion.css";
 
 /* ---------- Jetons de design ----------
    Cabinet d'architecture haut de gamme : pierre claire, encre presque noire,
@@ -195,7 +196,8 @@ body {
   transition:
     background-color 0.18s ease,
     color 0.18s ease,
-    border-color 0.18s ease;
+    border-color 0.18s ease,
+    transform 0.15s ease;
 }
 .btn-ink {
   background: var(--color-ink);
