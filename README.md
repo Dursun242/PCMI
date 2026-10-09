@@ -63,12 +63,13 @@ Sans `ADMIN_GITHUB_TOKEN`/`ADMIN_GITHUB_REPO`, `/admin` reste utilisable **en lo
 
 Ce que `/admin` permet aujourd'hui : créer/modifier/supprimer les articles de `/conseils` (avec envoi direct de l'image depuis l'ordinateur, jpg/png/webp/svg, 4 Mo max — stockée dans `public/uploads/`), éditer les chiffres clés de l'accueil, gérer la liste des réalisations. Pour le reste (prix, FAQ, textes des pages), on continue de modifier le code comme indiqué ci-dessus.
 
-## Photos
+## Photos et références
 
-La galerie de la page d'accueil (`src/components/Gallery.tsx`) affiche les photos listées dans `src/config/photos.ts` et présentes dans `public/photos/`.
+Le site ne montre que de vraies réalisations d'ID Maîtrise, aucune photo d'illustration.
 
-- `npm run photos` télécharge les six photos Unsplash sélectionnées (licence libre, usage commercial autorisé). Ce script tourne aussi automatiquement avant chaque `npm run build`, donc sur Vercel.
-- Pour vos propres réalisations : déposez vos JPEG dans `public/photos/` et décrivez-les dans `src/config/photos.ts` (le champ `credit` est facultatif). Les photos absentes sont simplement ignorées ; sans aucune photo, la section n'apparaît pas.
+- `src/config/references.ts` : les chantiers de référence (titre, commune, position, photo dans `public/references-chantiers/`). Ils alimentent la carte de `/references-chantiers` ; ajouter une ligne et sa photo suffit.
+- Dans le même fichier, la liste `vitrine` choisit les plus belles références et leur ordre dans le carrousel de l'accueil (`src/components/ReferencesSlider.tsx`).
+- `AFFICHER_ADRESSES` (même fichier) : à `false`, seule la commune est publiée.
 
 ## Prix
 

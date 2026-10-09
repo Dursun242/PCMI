@@ -7,8 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "photos": "node scripts/fetch-photos.mjs",
-    "prebuild": "node scripts/fetch-photos.mjs",
     "seo": "node scripts/seo/run.mjs",
     "seo:analyze": "node scripts/seo/analyze.mjs",
     "seo:article": "node scripts/seo/generate.mjs",

@@ -57,3 +57,20 @@ export const chantiers: Chantier[] = [
   { titre: "Maison individuelle", adresse: "24 rue Henri Domergue", commune: "Le Havre", lat: 49.5143121, lon: 0.1258694, photo: "/references-chantiers/chantier-29.jpg" },
   { titre: "Maison contemporaine à toit plat", adresse: "Rue des Brumes (fond de l'allée du n° 23)", commune: "Cauville-sur-Mer", lat: 49.5926027, lon: 0.1279656, photo: "/references-chantiers/chantier-30.jpg" },
 ];
+
+/**
+ * Les plus belles références, dans l'ordre du carrousel de l'accueil
+ * (components/ReferencesSlider.tsx). Une photo de la liste ci-dessus par ligne ;
+ * changer l'ordre ou en retirer suffit.
+ */
+export const vitrine: string[] = [
+  "/references-chantiers/chantier-23.jpg", // maison contemporaine avec piscine
+  "/references-chantiers/chantier-15.jpg", // maison avec piscine
+  "/references-chantiers/chantier-13.jpg",
+  "/references-chantiers/chantier-29.jpg",
+  "/references-chantiers/chantier-03.jpg", // maison contemporaine, Sainte-Adresse
+  "/references-chantiers/chantier-27.jpg", // plain-pied avec double garage, vu du ciel
+  "/references-chantiers/chantier-24.jpg",
+  "/references-chantiers/chantier-26.jpg",
+  "/references-chantiers/chantier-01.jpg", // maison contemporaine à toit plat
+];

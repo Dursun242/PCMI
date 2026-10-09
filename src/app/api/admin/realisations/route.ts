@@ -7,9 +7,9 @@ export const runtime = "nodejs";
 const PATH = "data/realisations.ts";
 
 const HEADER = `/**
- * Réalisations réelles (permis obtenus). Remplace la galerie de photos
- * d'illustration (src/components/Gallery.tsx) dès que 3 entrées ou plus
- * existent ici — voir src/components/RealisationsGallery.tsx.
+ * Réalisations réelles (permis obtenus). Affichées sur l'accueil, sous le
+ * carrousel des références, dès que 3 entrées ou plus existent ici — voir
+ * src/components/RealisationsGallery.tsx.
  *
  * Ne pas ajouter de projet fictif : chaque entrée doit correspondre à un
  * permis réellement obtenu, avec des images dont vous détenez les droits.

@@ -5,8 +5,8 @@ import type { Realisation } from "@data/realisations";
 const planName = (id: Realisation["formule"]) => plans.find((p) => p.id === id)?.name ?? id;
 
 /**
- * Galerie de réalisations réelles. Remplace <Gallery /> (photos d'illustration
- * Unsplash) dès que data/realisations.ts contient 3 entrées ou plus.
+ * Galerie des permis obtenus via ce site. S'affiche sous le carrousel des
+ * références dès que data/realisations.ts contient 3 entrées ou plus.
  */
 export default function RealisationsGallery({ items }: { items: Realisation[] }) {
   return (
