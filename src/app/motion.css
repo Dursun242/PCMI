@@ -367,6 +367,7 @@ html[data-defile="bas"]:not(:has(.entete :focus-within, .entete [aria-expanded="
   .entete nav[aria-label="Navigation principale"] > :nth-child(5) { animation-delay: 0.32s; }
   .entete nav[aria-label="Navigation principale"] > :nth-child(6) { animation-delay: 0.37s; }
   .entete nav[aria-label="Navigation principale"] > :nth-child(7) { animation-delay: 0.42s; }
+  .entete nav[aria-label="Navigation principale"] > :nth-child(8) { animation-delay: 0.47s; }
 
   /* Barre d'appel mobile (StickyCta.tsx) : elle monte avec un léger rebond. */
   .barre-cta {
