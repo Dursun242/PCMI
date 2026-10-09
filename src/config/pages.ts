@@ -1,4 +1,3 @@
-import { chantiers } from "./references";
 import { plans } from "./site";
 
 /**
@@ -73,7 +72,7 @@ export const staticPages: StaticPage[] = [
     lastModified: "2026-10-08",
     changeFrequency: "monthly",
     priority: 0.7,
-    summary: `Carte des ${chantiers.length} chantiers de référence d'ID Maîtrise autour du Havre : maisons individuelles, immeubles de logements, bureaux et équipements, avec photos.`,
+    summary: "Carte des chantiers de référence d'ID Maîtrise autour du Havre : maisons individuelles, immeubles de logements, bureaux et équipements, avec photos.",
   },
   {
     path: "/conseils",

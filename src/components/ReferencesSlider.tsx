@@ -10,21 +10,22 @@ const DUREE_MS = 5500;
 
 type Props = {
   items: ReferenceVitrine[];
-  /** Nombre total de références, pour le lien vers la carte. */
-  total: number;
 };
 
 /**
  * Carrousel des plus belles références de l'accueil : de vraies photos de
  * chantiers d'ID Maîtrise (src/config/references.ts, liste `vitrine`).
  *
- * Défile seul toutes les 5,5 s, avec une barre qui montre le temps restant ;
+ * Défile seul toutes les 5,5 s. Sous la piste, un trait par référence : le
+ * trait en cours se remplit au rythme du défilement et chaque trait mène à sa
+ * référence. Flèches rondes posées sur les photos (grand écran) ; au doigt, la
+ * piste se balaie nativement. Le défilement automatique
  * s'arrête au survol, au clavier, hors de l'écran, sur demande (bouton pause,
  * exigé pour un contenu qui bouge seul) et pour les personnes qui ont demandé
- * à réduire les animations. Au doigt, la piste se balaie nativement.
+ * à réduire les animations.
  * Styles : section « Carrousel des références » de globals.css.
  */
-export default function ReferencesSlider({ items, total }: Props) {
+export default function ReferencesSlider({ items }: Props) {
   const section = useRef<HTMLElement>(null);
   const piste = useRef<HTMLUListElement>(null);
   const [actif, setActif] = useState(0);
@@ -98,8 +99,6 @@ export default function ReferencesSlider({ items, total }: Props) {
     return () => clearTimeout(t);
   }, [enMarche, actif, aller]);
 
-  const deuxChiffres = (k: number) => String(k).padStart(2, "0");
-
   return (
     <section
       ref={section}
@@ -113,65 +112,82 @@ export default function ReferencesSlider({ items, total }: Props) {
         if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setSuspendu(false);
       }}
     >
-      <div className="mx-auto flex max-w-7xl flex-wrap items-end justify-between gap-8 px-5 sm:px-8">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="max-w-[46ch]">
           <span className="rule" aria-hidden="true" />
           <h2 className="h-section mt-6">Des maisons réelles, conçues et suivies par notre bureau d&apos;études</h2>
           <p className="lead mt-6">
-            Aucune photo d&apos;illustration : ce sont nos chantiers, menés autour du Havre. En voici quelques-uns parmi
-            nos {total} références.
+            Aucune photo d&apos;illustration : ce sont nos chantiers, menés autour du Havre. En voici quelques-uns.
           </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <p className="mr-2 font-display text-xl tabular-nums" aria-hidden="true">
-            {deuxChiffres(actif + 1)} <span className="text-ink-3">/ {deuxChiffres(n)}</span>
-          </p>
-          <button type="button" className="vitrine-bouton" aria-label="Référence précédente" onClick={() => aller(actif - 1)}>
-            ←
-          </button>
-          <button
-            type="button"
-            className="vitrine-bouton"
-            aria-label={lecture ? "Mettre le défilement en pause" : "Reprendre le défilement"}
-            onClick={() => setLecture((v) => !v)}
-          >
-            {lecture ? "❚❚" : "▶"}
-          </button>
-          <button type="button" className="vitrine-bouton" aria-label="Référence suivante" onClick={() => aller(actif + 1)}>
-            →
-          </button>
         </div>
       </div>
 
-      <ul ref={piste} className="vitrine-piste mt-12 flex gap-4 overflow-x-auto sm:gap-6">
-        {items.map((r, i) => (
-          <li
-            key={r.photo}
-            role="group"
-            aria-roledescription="diapositive"
-            aria-label={`${i + 1} sur ${n} : ${r.titre}, ${r.commune}`}
-            data-actif={i === actif || undefined}
-            className="vitrine-diapo relative aspect-[16/10] w-[86%] shrink-0 overflow-hidden bg-stone-2 sm:w-[72%] lg:w-[58%]"
-          >
-            <Image src={r.photo} alt={`${r.titre}, ${r.commune}`} fill sizes="(min-width: 1024px) 58vw, 86vw" className="object-cover" />
-            <div className="vitrine-legende absolute inset-x-0 bottom-0 px-4 pb-4 pt-10 text-paper sm:px-7 sm:pb-7 sm:pt-16">
-              <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">{r.commune}</p>
-              <p className="display mt-1 text-xl leading-tight sm:text-3xl">{r.titre}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <div className="relative mt-12">
+        <ul ref={piste} className="vitrine-piste flex gap-4 overflow-x-auto sm:gap-6">
+          {items.map((r, i) => (
+            <li
+              key={r.photo}
+              role="group"
+              aria-roledescription="diapositive"
+              aria-label={`${i + 1} sur ${n} : ${r.titre}, ${r.commune}`}
+              data-actif={i === actif || undefined}
+              className="vitrine-diapo relative aspect-[16/10] w-[86%] shrink-0 overflow-hidden bg-stone-2 sm:w-[72%] lg:w-[58%]"
+            >
+              <Image src={r.photo} alt={`${r.titre}, ${r.commune}`} fill sizes="(min-width: 1024px) 58vw, 86vw" className="object-cover" />
+              <div className="vitrine-legende absolute inset-x-0 bottom-0 px-4 pb-4 pt-10 text-paper sm:px-7 sm:pb-7 sm:pt-16">
+                <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">{r.commune}</p>
+                <p className="display mt-1 text-xl leading-tight sm:text-3xl">{r.titre}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+        {/* Flèches posées sur les photos ; sur mobile on balaie au doigt. */}
+        <button type="button" className="vitrine-fleche gauche" aria-label="Référence précédente" onClick={() => aller(actif - 1)}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+        </button>
+        <button type="button" className="vitrine-fleche droite" aria-label="Référence suivante" onClick={() => aller(actif + 1)}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+        </button>
+      </div>
 
-      <div className="mx-auto mt-8 flex max-w-7xl flex-wrap items-center justify-between gap-6 px-5 sm:px-8">
-        <div className="relative h-px w-full max-w-xs bg-stone-2" aria-hidden="true">
-          <span
-            key={`${actif}-${enMarche}`}
-            className={`vitrine-temps absolute inset-0 bg-bronze${enMarche ? "" : " arret"}`}
-            style={{ animationDuration: `${DUREE_MS}ms` }}
-          />
+      <div className="mx-auto mt-8 flex max-w-7xl flex-wrap items-center justify-between gap-x-10 gap-y-6 px-5 sm:px-8">
+        <div className="flex w-full max-w-md items-center gap-4">
+          <button
+            type="button"
+            className="vitrine-pause"
+            aria-label={lecture ? "Mettre le défilement en pause" : "Reprendre le défilement"}
+            onClick={() => setLecture((v) => !v)}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              {lecture ? <path d="M9 6v12M15 6v12" /> : <path d="M8 5.5v13l11-6.5z" />}
+            </svg>
+          </button>
+          <ol className="flex flex-1 items-center gap-1.5">
+            {items.map((r, i) => (
+              <li key={r.photo} className="flex-1">
+                <button
+                  type="button"
+                  className="vitrine-trait"
+                  aria-label={`Voir la référence ${i + 1} : ${r.titre}`}
+                  aria-current={i === actif || undefined}
+                  onClick={() => aller(i)}
+                >
+                  <span className={i < actif ? "plein" : ""}>
+                    {i === actif && (
+                      <i
+                        key={String(enMarche)}
+                        className={`vitrine-temps${enMarche ? "" : " arret"}`}
+                        style={{ animationDuration: `${DUREE_MS}ms` }}
+                      />
+                    )}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ol>
         </div>
         <Link href="/references-chantiers" className="btn btn-line">
-          Voir les {total} références sur la carte
+          Voir nos références sur la carte
         </Link>
       </div>
     </section>

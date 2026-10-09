@@ -13,9 +13,8 @@ import { withSeo } from "@/lib/seo";
 const PATH = "/references-chantiers";
 const points = pointsPublics(carte as FondDeCarte, chantiers, AFFICHER_ADRESSES);
 const communes = [...communesAvecChantier(chantiers)];
-const maisons = chantiers.filter((c) => /maison/i.test(c.titre)).length;
 
-const description = `${chantiers.length} chantiers d'ID Maîtrise autour du Havre, sur une carte : maisons individuelles, logements, bureaux. ${communes.length} communes, photos à l'appui.`;
+const description = "Les chantiers d'ID Maîtrise autour du Havre, sur une carte : maisons individuelles, immeubles de logements, bureaux. Photos à l'appui.";
 
 export const metadata: Metadata = withSeo(PATH, {
   title: "Références chantiers d'ID Maîtrise autour du Havre",
@@ -66,9 +65,9 @@ export default function ReferencesChantiersPage() {
             Nos références de chantiers autour du Havre.
           </h1>
           <p className="lead mt-8 max-w-[62ch]">
-            {chantiers.length} chantiers conçus ou suivis par {site.parent}, notre bureau d&apos;études : {maisons} maisons,
-            mais aussi des immeubles de logements, des bureaux et des équipements, dans {communes.length}{" "}
-            communes. Touchez un repère pour voir la photo.
+            Des chantiers conçus ou suivis par {site.parent}, notre bureau d&apos;études : des maisons individuelles
+            surtout, mais aussi des immeubles de logements, des bureaux et des équipements. Touchez un repère pour voir
+            la photo.
           </p>
         </div>
       </section>
