@@ -7,11 +7,13 @@ import PlanCard from "@/components/PlanCard";
 import Faq from "@/components/Faq";
 import FormulaFinder from "@/components/FormulaFinder";
 import TrackedLink from "@/components/TrackedLink";
-import Gallery from "@/components/Gallery";
+import ReferencesSlider from "@/components/ReferencesSlider";
 import RealisationsGallery from "@/components/RealisationsGallery";
 import JsonLd from "@/components/JsonLd";
 import { faqPageSchema } from "@/lib/schema";
 import { realisations } from "@data/realisations";
+import { chantiers, vitrine } from "@/config/references";
+import { enVitrine } from "@/lib/vitrine";
 import { chiffresCles } from "@data/chiffres";
 
 const pieces = [
@@ -220,7 +222,9 @@ export default function HomePage() {
       </section>
 
       {/* ---------- Galerie ---------- */}
-      {realisations.length >= 3 ? <RealisationsGallery items={realisations} /> : <Gallery />}
+      {/* Les plus belles références d'ID Maîtrise : de vraies photos de chantiers. */}
+      <ReferencesSlider items={enVitrine(chantiers, vitrine)} total={chantiers.length} />
+      {realisations.length >= 3 && <RealisationsGallery items={realisations} />}
 
       {/* ---------- Pourquoi ID Maîtrise ---------- */}
       <section className="bg-forest text-paper">

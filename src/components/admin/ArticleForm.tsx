@@ -178,7 +178,7 @@ export default function ArticleForm({ article }: { article?: Article }) {
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="field">
           <label htmlFor="image">Image (chemin dans /public, optionnel)</label>
-          <input id="image" value={image} onChange={(e) => setImage(e.target.value)} placeholder="/photos/xxx.jpg" />
+          <input id="image" value={image} onChange={(e) => setImage(e.target.value)} placeholder="/uploads/xxx.jpg" />
           <div className="mt-2 flex items-center gap-3">
             {image && (
               // eslint-disable-next-line @next/next/no-img-element
