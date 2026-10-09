@@ -10,7 +10,7 @@ import { formatEuro } from "@/lib/format";
 import { withSeo } from "@/lib/seo";
 
 const PUBLISHED_AT = "2026-09-17";
-const UPDATED_AT = "2026-09-19";
+const UPDATED_AT = "2026-10-08";
 
 const guideFaq = [
   {
@@ -42,7 +42,7 @@ const guideFaq = [
 export const metadata: Metadata = withSeo("/permis-de-construire-maison", {
   title: "Permis de construire maison individuelle : le guide complet",
   description:
-    "Pièces PCMI 1 à 8, seuil des 150 m² et architecte, délais d'instruction, dépôt en ligne, affichage, RE2020, validité : le guide avant de déposer votre permis.",
+    "Pièces PCMI 1 à 8, seuil des 150 m² et architecte, délais d'instruction, dépôt, affichage, RE2020, validité : le guide avant de déposer votre permis.",
 });
 
 const toc = [
@@ -285,7 +285,11 @@ export default function GuidePage() {
               Le permis est{" "}
               <a href="https://www.service-public.fr/particuliers/vosdroits/F1988" target="_blank" rel="noopener noreferrer">valable 3 ans</a>. Il peut être prorogé deux fois pour un an, sur demande faite au moins deux mois avant l&apos;échéance.
             </li>
-            <li>Une déclaration d&apos;ouverture de chantier (DOC) est déposée au démarrage des travaux.</li>
+            <li>
+              Une déclaration d&apos;ouverture de chantier (DOC) est déposée au démarrage des travaux. Les artisans, eux,
+              construisent d&apos;après les <Link href="/plans-execution">plans d&apos;exécution</Link> (fondations, béton
+              armé, charpente, réseaux), plus détaillés que les pièces du permis.
+            </li>
             <li>Si le projet évolue en cours de route, un permis modificatif suffit tant que la nature du projet n&apos;est pas bouleversée.</li>
             <li>
               À la fin, la{" "}
@@ -303,7 +307,7 @@ export default function GuidePage() {
             {guideFaq.map((item) => (
               <details key={item.q} className="group">
                 <summary className="flex cursor-pointer items-start justify-between gap-6 py-5 display text-xl leading-tight list-none [&::-webkit-details-marker]:hidden">
-                  <span>{item.q}</span>
+                  <h3>{item.q}</h3>
                   <svg width="20" height="20" viewBox="0 0 24 24" className="mt-1 shrink-0 text-bronze transition-transform group-open:rotate-45" aria-hidden="true">
                     <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
                   </svg>

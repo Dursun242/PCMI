@@ -6,7 +6,8 @@ export default function Faq({ items = faq }: { items?: typeof faq }) {
       {items.map((item) => (
         <details key={item.q} className="group">
           <summary className="flex cursor-pointer items-start justify-between gap-6 py-6 display text-[1.45rem] leading-tight list-none [&::-webkit-details-marker]:hidden">
-            <span>{item.q}</span>
+            {/* Titre sémantique ; le preflight Tailwind lui laisse taille et graisse héritées, rendu identique. */}
+            <h3>{item.q}</h3>
             <svg
               width="22"
               height="22"

@@ -1,4 +1,5 @@
 import { chantiers } from "./references";
+import { plans } from "./site";
 
 /**
  * Inventaire des pages statiques du site.
@@ -29,7 +30,7 @@ export interface StaticPage {
 export const staticPages: StaticPage[] = [
   {
     path: "/",
-    lastModified: "2026-09-19",
+    lastModified: "2026-10-08",
     changeFrequency: "weekly",
     priority: 1,
     summary:
@@ -41,11 +42,11 @@ export const staticPages: StaticPage[] = [
     changeFrequency: "weekly",
     priority: 1,
     summary:
-      "Les trois formules à prix fixe (Essentiel 1 490 €, Complet 1 990 €, Premium 2 990 € TTC), le comparatif ligne par ligne, les options et les conditions de paiement.",
+      `Les trois formules à prix fixe (${plans.map((p) => `${p.name} ${p.priceTTC.toLocaleString("fr-FR")} €`).join(", ")} TTC), le comparatif ligne par ligne, les options et les conditions de paiement.`,
   },
   {
     path: "/permis-de-construire-maison",
-    lastModified: "2026-09-19",
+    lastModified: "2026-10-08",
     changeFrequency: "monthly",
     priority: 0.9,
     summary:
