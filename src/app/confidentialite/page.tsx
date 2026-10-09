@@ -36,11 +36,12 @@ export default function ConfidentialitePage() {
       <h2>Cookies et mesure d&apos;audience</h2>
       <p>
         Ce site ne dépose aucun cookie publicitaire et ne pratique aucun suivi entre sites. La fréquentation est mesurée
-        avec Vercel Web Analytics, un outil sans cookie : il n&apos;enregistre aucun identifiant permettant de vous
-        reconnaître d&apos;une visite à l&apos;autre. Seuls sont comptés des
+        avec Vercel Web Analytics et Umami, deux outils sans cookie : ils n&apos;enregistrent aucun identifiant
+        permettant de vous reconnaître d&apos;une visite à l&apos;autre. Umami ne mesure rien si votre navigateur envoie
+        le signal « Do Not Track ». Seuls sont comptés des
         événements anonymes de parcours (page consultée, clic sur un bouton de devis, formule retenue, tranche de
         surface). Aucune donnée que vous saisissez dans un formulaire — nom, e-mail, téléphone, commune — n&apos;est
-        transmise à cet outil, qui ne conserve pas votre adresse IP. Cette mesure ne reposant sur aucune lecture ni
+        transmise à ces outils, qui ne conservent pas votre adresse IP. Cette mesure ne reposant sur aucune lecture ni
         écriture d&apos;information sur votre appareil, elle ne donne pas lieu à une demande de consentement.
       </p>
       <p>

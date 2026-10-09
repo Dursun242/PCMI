@@ -1,5 +1,6 @@
 /**
- * Mesure d'audience — Vercel Web Analytics.
+ * Mesure d'audience — Vercel Web Analytics et Umami (même identifiant de site
+ * qu'ID Maîtrise, étiquette « permis-maison-individuelle » : voir UmamiScript).
  *
  * Sans cookie et sans identifiant individuel : aucune bannière de consentement
  * n'est requise. Ne jamais faire transiter ici de donnée personnelle
@@ -46,10 +47,17 @@ type Events = {
   article_cta_click: { slug: string; destination: string };
 };
 
+declare global {
+  interface Window {
+    umami?: { track: (nom?: string, donnees?: Record<string, string>) => void };
+  }
+}
+
 /** Envoie un événement. Silencieux en local et si le script est bloqué. */
 export function trackEvent<K extends keyof Events>(name: K, props: Events[K]) {
   try {
     track(name, props as Record<string, string>);
+    window.umami?.track(name, props as Record<string, string>);
   } catch {
     /* la mesure ne doit jamais casser un parcours */
   }
