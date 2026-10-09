@@ -9,8 +9,4 @@ export interface ChiffresCles {
   noteGoogle?: number; // sur 5, ex. 4.9
 }
 
-export const chiffresCles: ChiffresCles = {
-  permisDeposes: 125,
-  tauxAccordPremierDepot: 100,
-  noteGoogle: 5,
-};
+export const chiffresCles: ChiffresCles = {};
