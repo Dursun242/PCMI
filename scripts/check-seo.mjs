@@ -187,12 +187,16 @@ async function run() {
 
   // llms.txt doit exister et rester synchronisé avec les prix affichés.
   try {
-    const llms = await fetchPage("/llms.txt");
+    // Les montants séparent les milliers par une espace normale, insécable
+    // (U+00A0) ou fine insécable (U+202F, celle de toLocaleString("fr-FR")) :
+    // on les ramène toutes à une espace normale avant de comparer.
+    const espaces = (t) => t.replace(/[\u00a0\u202f]/g, " ");
+    const llms = espaces(await fetchPage("/llms.txt"));
     if (!/## Formules/.test(llms)) failures.push("/llms.txt — section « Formules » absente");
-    const tarifs = await fetchPage("/tarifs");
+    const tarifs = espaces(await fetchPage("/tarifs"));
     for (const prix of ["1 490", "1 990", "2 990"]) {
       const dansLlms = llms.includes(prix);
-      const dansTarifs = tarifs.includes(prix) || tarifs.includes(prix.replace(" ", " "));
+      const dansTarifs = tarifs.includes(prix);
       if (dansTarifs && !dansLlms) failures.push(`/llms.txt — le prix ${prix} € affiché sur /tarifs est absent`);
     }
     checked.push("/llms.txt");
