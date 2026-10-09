@@ -529,26 +529,98 @@ body {
 .vitrine-legende {
   background: linear-gradient(to top, rgb(27 31 29 / 0.78), rgb(27 31 29 / 0));
 }
-.vitrine-bouton {
-  display: inline-grid;
+/* Flèches rondes posées sur les photos (grand écran ; au doigt, on balaie). */
+.vitrine-fleche {
+  position: absolute;
+  top: 50%;
+  display: none;
   place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  border: 1px solid var(--color-ink);
-  font-size: 1rem;
-  transition: background-color 0.18s ease, color 0.18s ease;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 999px;
+  background: rgb(252 251 249 / 0.92);
+  color: var(--color-ink);
+  box-shadow: 0 10px 30px rgb(27 31 29 / 0.22);
+  transform: translateY(-50%);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.25s var(--ease-sortie);
 }
-.vitrine-bouton:hover {
+.vitrine-fleche.gauche {
+  left: calc(max(1.25rem, (100% - 80rem) / 2 + 2rem) + 1rem);
+}
+.vitrine-fleche.droite {
+  right: 1.75rem;
+}
+.vitrine-fleche:hover {
   background: var(--color-ink);
   color: var(--color-paper);
+  transform: translateY(-50%) scale(1.06);
+}
+.vitrine-fleche svg,
+.vitrine-pause svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+@media (min-width: 768px) {
+  .vitrine-fleche {
+    display: grid;
+  }
+}
+/* Pause : petit bouton rond, exigé pour un contenu qui défile seul. */
+.vitrine-pause {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--color-stone-2);
+  border-radius: 999px;
+  color: var(--color-ink-2);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.vitrine-pause svg {
+  width: 1rem;
+  height: 1rem;
+}
+.vitrine-pause:hover {
+  border-color: var(--color-ink);
+  color: var(--color-ink);
+}
+/* Un trait par référence : zone cliquable haute, trait fin ; le trait en cours se remplit. */
+.vitrine-trait {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 1.5rem;
+}
+.vitrine-trait > span {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 2px;
+  overflow: hidden;
+  background: var(--color-stone-2);
+  transition: background-color 0.3s ease;
+}
+.vitrine-trait > span.plein {
+  background: var(--color-brass-2);
+}
+.vitrine-trait:hover > span {
+  background: var(--color-brass);
 }
 .vitrine-temps {
+  position: absolute;
+  inset: 0;
+  background: var(--color-bronze);
   transform-origin: left;
   animation: vitrine-temps linear forwards;
 }
 .vitrine-temps.arret {
   animation: none;
-  transform: scaleX(0);
 }
 @keyframes vitrine-temps {
   from { transform: scaleX(0); }

@@ -307,7 +307,7 @@ export default function CarteChantiers({ points, communes }: Props) {
 
       <div className="flex flex-col lg:h-[min(76vh,720px)]">
         <p className="text-[0.72rem] font-bold uppercase tracking-[0.2em] text-bronze">
-          {points.length} références
+          Nos références
         </p>
         <ul ref={liste} className="mt-3 grid content-start gap-2.5 lg:overflow-y-auto lg:pr-1.5">
           {points.map((p, i) => (

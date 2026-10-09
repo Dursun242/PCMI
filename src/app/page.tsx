@@ -223,7 +223,7 @@ export default function HomePage() {
 
       {/* ---------- Galerie ---------- */}
       {/* Les plus belles références d'ID Maîtrise : de vraies photos de chantiers. */}
-      <ReferencesSlider items={enVitrine(chantiers, vitrine)} total={chantiers.length} />
+      <ReferencesSlider items={enVitrine(chantiers, vitrine)} />
       {realisations.length >= 3 && <RealisationsGallery items={realisations} />}
 
       {/* ---------- Pourquoi ID Maîtrise ---------- */}
