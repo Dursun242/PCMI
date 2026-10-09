@@ -89,6 +89,29 @@ export default function ConseilsPage() {
         </div>
       </section>
 
+      {/* Le guide complet, en tête des conseils : il n'a plus d'entrée propre dans le menu. */}
+      <section className="mx-auto max-w-7xl px-5 sm:px-8 pt-14 sm:pt-20">
+        <Link
+          href="/permis-de-construire-maison"
+          className="group grid gap-6 bg-forest p-7 text-paper sm:p-10 lg:grid-cols-[1fr_auto] lg:items-center lg:gap-14"
+        >
+          <div>
+            <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">Le guide complet</p>
+            <h2 className="display mt-4 text-3xl leading-tight sm:text-4xl">
+              Le permis de construire de maison individuelle, de A à Z
+            </h2>
+            <p className="mt-4 max-w-[62ch] leading-relaxed text-paper/75">
+              Permis ou déclaration préalable, seuil des 150 m², pièces PCMI 1 à 8, délais d&apos;instruction, affichage,
+              RE2020, validité : tout ce qu&apos;il faut savoir avant de déposer.
+            </p>
+          </div>
+          <span className="btn btn-paper self-start lg:self-auto">
+            Lire le guide
+            <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">→</span>
+          </span>
+        </Link>
+      </section>
+
       {articles.length === 0 ? (
         <section className="mx-auto max-w-7xl px-5 sm:px-8 py-20">
           <p className="text-ink-2">Les premiers articles arrivent.</p>

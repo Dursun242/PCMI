@@ -76,7 +76,7 @@ export const staticPages: StaticPage[] = [
   },
   {
     path: "/conseils",
-    lastModified: "2026-09-18",
+    lastModified: "2026-10-09",
     changeFrequency: "weekly",
     priority: 0.8,
     summary: "Articles pratiques écrits par un maître d'œuvre : prix, refus, panneau d'affichage, insertion graphique.",
