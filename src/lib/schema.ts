@@ -109,6 +109,8 @@ export const websiteSchema = {
   "@id": `${site.url}/#website`,
   url: site.url,
   name: site.name,
+  // Nom secondaire : le domaine, que Google affiche à défaut du nom du site.
+  alternateName: new URL(site.url).hostname,
   inLanguage: "fr-FR",
   publisher: ORG_REF,
 };

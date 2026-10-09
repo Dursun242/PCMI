@@ -13,8 +13,10 @@ import { villePath } from "@/lib/normandie";
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const articles = getArticles();
-  // L'index des conseils change dès qu'un article change : sa date se déduit.
-  const dernierArticle = articles[0]?.updated ?? articles[0]?.date;
+  // L'index des conseils change dès qu'un article change (titre, chapô) : sa date
+  // est la plus récente des dates de publication ou de mise à jour, pas celle du
+  // dernier article publié.
+  const dernierArticle = articles.map((a) => a.updated ?? a.date).sort().at(-1);
 
   return [
     ...sitemapPages.map((p) => {

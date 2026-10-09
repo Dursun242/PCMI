@@ -121,6 +121,14 @@ export interface Plan {
  */
 export const VAT = 0.2;
 export const ht = (ttc: number) => Math.round(ttc / (1 + VAT));
+
+/**
+ * Attestation RE2020 au dépôt du permis : une seule prestation et un seul prix,
+ * qu'elle soit prise en option de la formule Essentiel ou commandée seule. Lu
+ * par la formule Essentiel, les options, l'offre thermique et la FAQ.
+ */
+export const ATTESTATION_RE2020 = { name: "Attestation RE2020 au dépôt du permis", priceTTC: 490 } as const;
+const euros = (n: number) => `${n.toLocaleString("fr-FR")} € TTC`;
 export const plans: Plan[] = [
   {
     id: "essentiel",
@@ -138,7 +146,7 @@ export const plans: Plan[] = [
       "Contrôle de conformité au PLU / PLUi de votre commune",
       "Une série de modifications avant dépôt",
     ],
-    notIncluded: ["Dépôt et suivi en mairie", "Rendus 3D réalistes", "Attestation RE2020 (fournie par votre constructeur ou thermicien, ou en option à 490 € TTC)"],
+    notIncluded: ["Dépôt et suivi en mairie", "Rendus 3D réalistes", `${ATTESTATION_RE2020.name} (fournie par votre constructeur ou thermicien, ou en option à ${euros(ATTESTATION_RE2020.priceTTC)})`],
   },
   {
     id: "complet",
@@ -182,7 +190,7 @@ export const options = [
   { name: "Permis modificatif", priceTTC: 830, note: "Si le projet évolue après l'accord." },
   { name: "Déclaration préalable (DP) à la place du PC", priceTTC: 1070, note: "Extension, garage, abri, clôture, piscine." },
   { name: "Rendu 3D supplémentaire", priceTTC: 230, note: "Par vue." },
-  { name: "Attestation RE2020 seule", priceTTC: 490, note: "Si vous avez déjà votre dossier." },
+  { name: ATTESTATION_RE2020.name, priceTTC: ATTESTATION_RE2020.priceTTC, note: "En option de la formule Essentiel, ou seule si vous avez déjà votre dossier." },
   { name: "Étude eaux pluviales", priceTTC: 710, note: "Dimensionnement d'infiltration / rétention." },
 ];
 
@@ -371,8 +379,8 @@ export interface ThermiqueOffre {
 export const thermique: ThermiqueOffre[] = [
   {
     id: "attestation-depot",
-    name: "Attestation RE2020 au dépôt du permis",
-    fromPriceTTC: 490,
+    name: ATTESTATION_RE2020.name,
+    fromPriceTTC: ATTESTATION_RE2020.priceTTC,
     when: "Au dépôt du permis",
     description: "La pièce obligatoire jointe au CERFA : calcul du Bbio et vérification des exigences de moyens, à partir de vos plans.",
     deliverables: ["Calcul du Bbio", "Attestation officielle générée sur le site du ministère (RT-RE-bâtiment)", "Récapitulatif des hypothèses"],
@@ -457,7 +465,7 @@ export const faq = [
   },
   {
     q: "L'attestation RE2020 est-elle incluse ?",
-    a: "Elle est incluse dans les formules Complet et Premium. Dans la formule Essentiel, elle est fournie par votre constructeur ou thermicien si vous en avez déjà un, ou proposée en option à 490 € TTC. Cette attestation est obligatoire au dépôt du permis pour toute construction neuve.",
+    a: `Elle est incluse dans les formules Complet et Premium. Dans la formule Essentiel, elle est fournie par votre constructeur ou thermicien si vous en avez déjà un, ou proposée en option à ${euros(ATTESTATION_RE2020.priceTTC)}. Cette attestation est obligatoire au dépôt du permis pour toute construction neuve.`,
   },
   {
     q: "Ma maison fait plus de 149 m². Que se passe-t-il ?",

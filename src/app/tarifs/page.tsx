@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { plans, options, site, exePlans } from "@/config/site";
+import { plans, options, site, exePlans, ATTESTATION_RE2020 } from "@/config/site";
 import PlanCard from "@/components/PlanCard";
 import { formatEuro } from "@/lib/format";
 import JsonLd from "@/components/JsonLd";
@@ -16,7 +16,7 @@ export const metadata: Metadata = withSeo("/tarifs", {
     "Prix d'un permis de construire de maison individuelle jusqu'à 149 m² : Essentiel, Complet ou Premium, à prix fixe, partout en France. Au-delà, sur devis.",
 });
 
-const re2020Price = options.find((o) => o.name === "Attestation RE2020 seule")?.priceTTC ?? 0;
+const re2020Price = ATTESTATION_RE2020.priceTTC;
 
 const rows: { label: string; values: (boolean | string)[] }[] = [
   { label: "Pièces PCMI 1 à 8 à l'échelle", values: [true, true, true] },

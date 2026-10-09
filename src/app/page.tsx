@@ -153,6 +153,10 @@ export default function HomePage() {
               <Link href="/permis-de-construire-maison" className="text-ink underline decoration-brass underline-offset-4">
                 guide du permis de construire de maison individuelle
               </Link>
+              , et pour la pièce la plus rédigée, notre{" "}
+              <Link href="/conseils/notice-descriptive-pcmi4-exemple" className="text-ink underline decoration-brass underline-offset-4">
+                exemple de notice descriptive PCMI 4
+              </Link>
               .
             </p>
           </div>
@@ -283,7 +287,15 @@ export default function HomePage() {
             <Link href="/conseils" className="text-ink underline decoration-brass underline-offset-4">
               articles de conseils
             </Link>{" "}
-            traitent les cas particuliers : prix, refus, affichage du panneau, insertion graphique.
+            traitent les cas particuliers : prix, refus, affichage du panneau, insertion graphique, mais aussi le{" "}
+            <Link href="/conseils/delai-instruction-permis-de-construire-permis-tacite" className="text-ink underline decoration-brass underline-offset-4">
+              délai d&apos;instruction et le permis tacite
+            </Link>{" "}
+            ou la{" "}
+            <Link href="/conseils/lire-le-plu-avant-de-dessiner-sa-maison" className="text-ink underline decoration-brass underline-offset-4">
+              lecture du PLU avant de dessiner sa maison
+            </Link>
+            .
           </p>
           <p className="mt-4 text-ink-2 leading-relaxed max-w-[32ch]">
             Une autre question ?{" "}

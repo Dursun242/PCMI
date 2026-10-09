@@ -305,6 +305,11 @@ body {
   font-weight: 700;
   margin: 2rem 0 0.6rem;
 }
+/* Questions de FAQ : titres sémantiques, mais même rendu que le texte du summary. */
+.prose-guide summary h3 {
+  font: inherit;
+  margin: 0;
+}
 .prose-guide p,
 .prose-guide li {
   font-size: 1.06rem;
