@@ -165,7 +165,11 @@ export default function CarteChantiers({ points, communes }: Props) {
     return () => document.removeEventListener("keydown", touche);
   }, [sel]);
 
-  /** Ouvre un chantier ; depuis la liste, la carte vole jusqu'à lui. */
+  /**
+   * Ouvre un chantier ; depuis la liste, la carte vole jusqu'à lui. Sur mobile la
+   * liste est sous la carte : si la carte n'est pas entièrement à l'écran, la page
+   * remonte jusqu'à elle, sinon la fiche s'ouvrirait hors de vue.
+   */
   function choisir(i: number, voler: boolean) {
     setSel(i);
     const p = points[i];
@@ -173,6 +177,11 @@ export default function CarteChantiers({ points, communes }: Props) {
       const w = Math.min(vueRef.current.w, 160);
       const h = w / aspect;
       aller({ x: p.x - w / 2, y: p.y - h * 0.7, w }, true);
+      const r = boite.current?.getBoundingClientRect();
+      if (r && (r.top < 0 || r.bottom > window.innerHeight)) {
+        const doux = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+        boite.current?.scrollIntoView({ block: "center", behavior: doux ? "smooth" : "auto" });
+      }
     } else if (matchMedia("(min-width: 1024px)").matches) {
       liste.current?.children[i]?.scrollIntoView({ block: "nearest", behavior: "smooth" });
     }
