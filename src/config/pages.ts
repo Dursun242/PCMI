@@ -1,3 +1,4 @@
+import { chantiers } from "./references";
 import { plans } from "./site";
 
 /**
@@ -66,6 +67,13 @@ export const staticPages: StaticPage[] = [
     priority: 0.6,
     summary:
       "Qui monte les dossiers : ID Maîtrise, bureau d'études au Havre qui allie ingénierie de la construction et conception architecturale, fondé par Dursun O. Méthode de travail, assurances et engagement de prix fixe.",
+  },
+  {
+    path: "/references-chantiers",
+    lastModified: "2026-10-08",
+    changeFrequency: "monthly",
+    priority: 0.7,
+    summary: `Carte des ${chantiers.length} chantiers de référence d'ID Maîtrise autour du Havre : maisons individuelles, immeubles de logements, bureaux et équipements, avec photos.`,
   },
   {
     path: "/conseils",

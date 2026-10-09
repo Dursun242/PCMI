@@ -23,6 +23,11 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [{ source: "/:key([a-f0-9]{16,64}).txt", destination: "/api/indexnow?key=:key" }];
   },
+  async redirects() {
+    // L'ancienne page autonome des références est devenue une page du site :
+    // les liens déjà partagés vers le fichier .html y mènent toujours.
+    return [{ source: "/references-chantiers.html", destination: "/references-chantiers", permanent: true }];
+  },
 };
 
 export default nextConfig;

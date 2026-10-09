@@ -49,7 +49,8 @@ export default function AProposPage() {
           l&apos;ingénierie du bureau d&apos;études (structure, béton armé, charpente, réseaux, thermique) et la conception
           architecturale (implantation, volumes, façades, plans). Nous concevons, calculons et suivons des chantiers de
           maisons individuelles, d&apos;extensions et de rénovations toute l&apos;année, depuis {site.address.street},{" "}
-          {site.address.zip} {site.address.city}. Le permis de construire n&apos;est qu&apos;une étape de ce métier : nous le déposons chaque semaine, nous savons ce
+          {site.address.zip} {site.address.city} : ils sont sur la{" "}
+          <Link href="/references-chantiers">carte de nos références chantiers</Link>. Le permis de construire n&apos;est qu&apos;une étape de ce métier : nous le déposons chaque semaine, nous savons ce
           qu&apos;un instructeur regarde en premier et ce qui déclenche une demande de pièces complémentaires.
         </p>
         <p>

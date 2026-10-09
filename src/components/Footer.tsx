@@ -99,6 +99,7 @@ export default function Footer() {
               <li><Link href={NORMANDIE_PATH} className="hover:text-brass-2">Permis en Normandie</Link></li>
               <li><Link href="/conseils" className="hover:text-brass-2">Conseils</Link></li>
               <li><Link href="/a-propos" className="hover:text-brass-2">À propos</Link></li>
+              <li><Link href="/references-chantiers" className="hover:text-brass-2">Nos références chantiers</Link></li>
               <li><Link href="/devis" className="hover:text-brass-2">Demander un devis</Link></li>
               <li><Link href="/dossier" className="hover:text-brass-2">Fiche projet complète</Link></li>
               <li><Link href="/plan-de-masse" className="hover:text-brass-2">Envoyer un plan de masse</Link></li>

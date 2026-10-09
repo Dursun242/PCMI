@@ -238,6 +238,10 @@ export default function HomePage() {
                 <Link href="/permis-de-construire-normandie" className="text-paper underline decoration-brass-2 underline-offset-4 hover:text-brass-2">
                   Le permis de construire en Normandie, ville par ville
                 </Link>
+                , et nos{" "}
+                <Link href="/references-chantiers" className="text-paper underline decoration-brass-2 underline-offset-4 hover:text-brass-2">
+                  références de chantiers sur la carte
+                </Link>
                 .
               </p>
             </div>

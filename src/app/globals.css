@@ -365,3 +365,137 @@ body {
   font-weight: 400;
   color: var(--color-ink);
 }
+
+/* ---------- Carte des références (components/CarteChantiers.tsx) ----------
+   Mer vert forêt, communes en tons pierre, communes avec chantier en laiton.
+   Les traits gardent la même épaisseur quel que soit le zoom (non-scaling-stroke). */
+.carte {
+  background: radial-gradient(120% 90% at 70% 40%, var(--color-forest-2) 0%, var(--color-forest) 100%);
+  touch-action: pan-x pan-y;
+  cursor: grab;
+  user-select: none;
+}
+.carte.glisse {
+  cursor: grabbing;
+}
+.carte-rivage path {
+  fill: var(--color-brass-2);
+  stroke: var(--color-brass-2);
+  stroke-width: 7;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.35;
+}
+.carte-communes path {
+  stroke: var(--color-paper);
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.carte-communes .t0 { fill: #efece5; }
+.carte-communes .t1 { fill: #e8e4da; }
+.carte-communes .t2 { fill: #f4f2ec; }
+.carte-communes .t3 { fill: #e2ddd1; }
+.carte-communes .ville { fill: #ece2cc; }
+.carte-communes .hi { fill: var(--color-brass-2); }
+.carte-ville {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  fill: var(--color-ink-2);
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: var(--color-paper);
+  pointer-events: none;
+}
+.carte .pin {
+  cursor: pointer;
+  outline: none;
+}
+.carte .pin path {
+  fill: var(--color-forest);
+  stroke: var(--color-paper);
+  stroke-width: 1.6px;
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.3));
+  transition: fill 0.2s ease;
+}
+.carte .pin .oeil { fill: var(--color-paper); }
+.carte .pin .halo { fill: var(--color-brass); opacity: 0.3; }
+.carte .pin:hover path,
+.carte .pin.on path,
+.carte .pin:focus-visible path {
+  fill: var(--color-bronze);
+}
+.carte .pin:focus-visible .halo {
+  opacity: 0.6;
+}
+.carte-zoom {
+  border: 1px solid var(--color-stone-2);
+  box-shadow: 0 8px 24px rgb(27 31 29 / 0.18);
+}
+.carte-zoom button {
+  width: 2.25rem;
+  height: 2.25rem;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-size: 1.15rem;
+  line-height: 1;
+}
+.carte-zoom button + button {
+  border-top: 1px solid var(--color-stone-2);
+}
+.carte-zoom button:hover {
+  background: var(--color-stone);
+}
+.carte-echelle {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.68rem;
+  color: var(--color-paper);
+  pointer-events: none;
+}
+.carte-echelle i {
+  display: block;
+  height: 5px;
+  border: 1.5px solid var(--color-paper);
+  border-top: 0;
+}
+/* Fiche d'un chantier, au-dessus du repère (ou dessous près du bord haut). */
+.carte-fiche {
+  width: 230px;
+  background: var(--color-paper);
+  box-shadow: 0 14px 36px rgb(27 31 29 / 0.28);
+  transform: translate(-50%, calc(-100% - 30px));
+  cursor: default;
+}
+.carte-fiche.dessous {
+  transform: translate(-50%, 14px);
+}
+.carte-fermer {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  background: rgb(27 31 29 / 0.6);
+  color: var(--color-paper);
+  line-height: 1;
+}
+.carte-carte {
+  transition: border-color 0.18s ease, background-color 0.18s ease;
+}
+.carte-carte:hover {
+  border-color: var(--color-brass);
+}
+.carte-carte[aria-pressed="true"] {
+  border-color: var(--color-bronze);
+  background: var(--color-stone);
+}
+@media (prefers-reduced-motion: reduce) {
+  .carte .pin path,
+  .carte-carte {
+    transition: none;
+  }
+}
