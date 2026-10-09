@@ -124,7 +124,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ---------- Chiffres ---------- */}
+      {/* ---------- Références : de vraies photos de chantiers, juste sous le haut de page ---------- */}
+      <ReferencesSlider items={enVitrine(chantiers, vitrine)} />
+
+      {/* ---------- Chiffres (masqués tant que data/chiffres.ts est vide : chiffres vérifiables uniquement) ---------- */}
       {stats.length > 0 && (
         <section className="border-b border-stone-2">
           <div data-stagger className="mx-auto max-w-7xl px-5 sm:px-8 py-12 grid gap-10 sm:grid-cols-3">
@@ -221,9 +224,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ---------- Galerie ---------- */}
-      {/* Les plus belles références d'ID Maîtrise : de vraies photos de chantiers. */}
-      <ReferencesSlider items={enVitrine(chantiers, vitrine)} />
       {realisations.length >= 3 && <RealisationsGallery items={realisations} />}
 
       {/* ---------- Pourquoi ID Maîtrise ---------- */}
