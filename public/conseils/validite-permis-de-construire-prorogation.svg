@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="val-title" fill="none">
+  <title id="val-title">Calendrier de trois ans barré d'un tampon à côté d'une maison dont le chantier a démarré</title>
+  <rect width="1200" height="630" fill="#f2f0eb" />
+  <line x1="60" y1="486" x2="1140" y2="486" stroke="#1b1f1d" stroke-width="1.6" />
+  <!-- maison en chantier -->
+  <g stroke="#1b1f1d" stroke-width="1.6">
+    <rect x="620" y="300" width="400" height="186" fill="rgba(255,255,255,0.5)" />
+    <path d="M602 300 L820 196 L1038 300 Z" fill="rgba(255,255,255,0.5)" />
+    <rect x="680" y="370" width="110" height="116" fill="rgba(34,53,44,0.05)" stroke-width="1.1" />
+    <rect x="850" y="400" width="52" height="86" fill="rgba(169,136,79,0.28)" stroke-width="1.1" />
+  </g>
+  <!-- echafaudage -->
+  <g stroke="#939b96" stroke-width="1">
+    <line x1="590" y1="486" x2="590" y2="290" /><line x1="640" y1="486" x2="640" y2="290" />
+    <line x1="590" y1="380" x2="640" y2="380" /><line x1="590" y1="330" x2="640" y2="330" />
+    <line x1="590" y1="486" x2="640" y2="380" /><line x1="590" y1="380" x2="640" y2="330" />
+  </g>
+  <!-- calendrier -->
+  <g transform="translate(90 150) rotate(-3)">
+    <rect width="380" height="300" rx="4" fill="#fcfbf9" stroke="#1b1f1d" stroke-width="1.4" />
+    <rect width="380" height="64" rx="4" fill="#1b1f1d" />
+    <g font-family="Lato, sans-serif" fill="#f2f0eb">
+      <text x="24" y="40" font-size="20" font-weight="700" letter-spacing="2">3 ANS</text>
+      <text x="356" y="40" font-size="13" text-anchor="end" opacity="0.8">validité du permis</text>
+    </g>
+    <g stroke="#e4e0d7" stroke-width="1">
+      <line x1="24" y1="130" x2="356" y2="130" /><line x1="24" y1="180" x2="356" y2="180" />
+      <line x1="24" y1="230" x2="356" y2="230" />
+      <line x1="107" y1="90" x2="107" y2="270" /><line x1="190" y1="90" x2="190" y2="270" /><line x1="273" y1="90" x2="273" y2="270" />
+    </g>
+    <circle cx="231" cy="205" r="22" stroke="#a9884f" stroke-width="2.4" />
+    <path d="M221 205l8 8 14-18" stroke="#a9884f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  <!-- cotes -->
+  <g font-family="Lato, sans-serif" font-size="12" fill="#5a645e" text-anchor="middle">
+    <text x="330" y="538">Démarrer avant l&#8217;échéance, ou proroger à temps</text>
+  </g>
+  <g font-family="Lato, sans-serif" fill="#1b1f1d">
+    <text x="60" y="66" font-size="12" font-weight="700" letter-spacing="2.6">CONSEILS</text>
+    <text x="60" y="88" font-size="20" opacity="0.85">Validité du permis — prorogation</text>
+  </g>
+</svg>
