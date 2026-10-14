@@ -1,0 +1,23 @@
+name: Fonds IGN (PCMI 1)
+# Télécharge les fonds IGN (WMS Géoplateforme) demandés dans fonds-ign/requete.json
+# et les recommite sur la même branche. Sert au générateur PC quand son poste n'a pas accès à l'IGN.
+on:
+  push:
+    branches: ["claude/fonds-ign-**"]
+    paths: ["fonds-ign/requete.json"]
+permissions:
+  contents: write
+jobs:
+  fonds:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Télécharger les fonds
+        run: python3 fonds-ign/telecharger.py fonds-ign/requete.json fonds-ign/out
+      - name: Recommiter les images
+        run: |
+          git config user.name "fonds-ign-bot"
+          git config user.email "fonds-ign-bot@users.noreply.github.com"
+          git add fonds-ign/out
+          git commit -m "Fonds IGN téléchargés" || echo "rien à committer"
+          git push
