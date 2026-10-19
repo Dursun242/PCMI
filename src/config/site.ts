@@ -107,7 +107,7 @@ export interface Plan {
   id: PlanId;
   name: string;
   priceTTC: number; // en euros TTC (TVA 20 % incluse) : le prix payé
-  /** Prix habituel, affiché barré tant que l'offre de lancement est active. */
+  /** Prix habituel, affiché barré tant que l'offre est active. */
   regularPriceTTC?: number;
   highlight?: boolean;
   promise: string;
@@ -133,7 +133,8 @@ export const ATTESTATION_RE2020 = { name: "Attestation RE2020 au dépôt du perm
 const euros = (n: number) => `${n.toLocaleString("fr-FR")} € TTC`;
 
 /**
- * Offre de lancement : prix réduits pour les `places` premiers dossiers, jusqu'à la date `fin`.
+ * Offre saisonnière (variable `lancement`, nom affiché : `nom`) : prix réduits pour les
+ * `places` premiers dossiers dont le devis est demandé au plus tard le `fin`.
  * - Mettre `actif: false` dès que les places sont prises ou la date passée :
  *   les prix habituels reviennent seuls.
  * - Le prix barré est le prix habituel, pratiqué depuis l'ouverture du site
@@ -141,8 +142,9 @@ const euros = (n: number) => `${n.toLocaleString("fr-FR")} € TTC`;
  */
 export const lancement = {
   actif: true,
+  nom: "Offre d'automne",
   places: 10,
-  fin: "2026-12-31",
+  fin: "2026-11-30",
   prix: { essentiel: 990, complet: 1490, premium: 2490 } as Record<PlanId, number>,
 };
 
@@ -203,7 +205,7 @@ const plansHabituels: Plan[] = [
   },
 ];
 
-/** Les formules au prix payé : prix de lancement (et prix habituel barré) tant que l'offre est active. */
+/** Les formules au prix payé : prix de l'offre (et prix habituel barré) tant qu'elle est active. */
 export const plans: Plan[] = plansHabituels.map((p) =>
   lancement.actif ? { ...p, priceTTC: lancement.prix[p.id], regularPriceTTC: p.priceTTC } : p,
 );

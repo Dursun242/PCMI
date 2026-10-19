@@ -1,4 +1,4 @@
-import { ht, type Plan } from "@/config/site";
+import { ht, lancement, type Plan } from "@/config/site";
 import { formatEuro } from "@/lib/format";
 import TrackedLink from "@/components/TrackedLink";
 
@@ -23,7 +23,7 @@ export default function PlanCard({ plan, compact = false }: { plan: Plan; compac
       <p className="mt-2 text-ink-2">{plan.promise}</p>
 
       {plan.regularPriceTTC && (
-        <p className="mt-7 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-bronze">Offre de lancement</p>
+        <p className="mt-7 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-bronze">{lancement.nom}</p>
       )}
       <div className={`${plan.regularPriceTTC ? "mt-2" : "mt-7"} flex flex-wrap items-baseline gap-x-3 gap-y-1`}>
         <span className="numeral text-5xl">{formatEuro(plan.priceTTC)}</span>
