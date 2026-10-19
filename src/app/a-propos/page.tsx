@@ -43,7 +43,7 @@ export default function AProposPage() {
       </section>
 
       <div className="mx-auto max-w-3xl px-5 sm:px-8 py-16 prose-guide">
-        <h2>Un bureau d&apos;études et une agence de conception, pas un service en ligne</h2>
+        <h2>Un vrai bureau d&apos;études et de conception, même à distance</h2>
         <p>
           {site.parent} réunit deux métiers que l&apos;on trouve d&apos;ordinaire dans deux entreprises différentes :
           l&apos;ingénierie du bureau d&apos;études (structure, béton armé, charpente, réseaux, thermique) et la conception
