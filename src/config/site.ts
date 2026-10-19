@@ -133,13 +133,15 @@ export const ATTESTATION_RE2020 = { name: "Attestation RE2020 au dépôt du perm
 const euros = (n: number) => `${n.toLocaleString("fr-FR")} € TTC`;
 
 /**
- * Offre de lancement : prix réduits jusqu'à la date `fin`, sans limite de nombre.
- * - Mettre `actif: false` une fois la date passée : les prix habituels reviennent seuls.
+ * Offre de lancement : prix réduits pour les `places` premiers dossiers, jusqu'à la date `fin`.
+ * - Mettre `actif: false` dès que les places sont prises ou la date passée :
+ *   les prix habituels reviennent seuls.
  * - Le prix barré est le prix habituel, pratiqué depuis l'ouverture du site
  *   (code de la consommation, art. L112-1-1 : prix de référence des 30 jours précédents).
  */
 export const lancement = {
   actif: true,
+  places: 10,
   fin: "2026-12-31",
   prix: { essentiel: 990, complet: 1490, premium: 2490 } as Record<PlanId, number>,
 };
