@@ -22,7 +22,24 @@ export default function AdminArticlesPage() {
         <ul className="divide-y divide-ink/10 border border-ink/10 bg-paper">
           {articles.map((a) => (
             <li key={a.slug} className="flex items-center justify-between gap-4 px-5 py-4">
-              <div>
+              <Link href={`/admin/articles/${a.slug}`} className="shrink-0" tabIndex={-1} aria-hidden="true">
+                {a.image ? (
+                  /* eslint-disable-next-line @next/next/no-img-element -- images locales (uploads admin) */
+                  <img
+                    src={a.image}
+                    alt=""
+                    width={120}
+                    height={63}
+                    loading="lazy"
+                    className="h-[63px] w-[120px] border border-stone-2 bg-stone object-cover"
+                  />
+                ) : (
+                  <span className="grid h-[63px] w-[120px] place-items-center border border-stone-2 bg-stone text-[0.65rem] font-bold uppercase tracking-[0.15em] text-ink-3">
+                    Sans image
+                  </span>
+                )}
+              </Link>
+              <div className="min-w-0 flex-1">
                 <Link href={`/admin/articles/${a.slug}`} className="font-bold hover:text-forest">
                   {a.title}
                 </Link>
