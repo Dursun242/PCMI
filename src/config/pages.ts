@@ -44,6 +44,14 @@ export const staticPages: StaticPage[] = [
       `Les trois formules à prix fixe (${plans.map((p) => `${p.name} ${p.priceTTC.toLocaleString("fr-FR")} €`).join(", ")} TTC), le comparatif ligne par ligne, les options et les conditions de paiement.`,
   },
   {
+    path: "/permis-de-construire-en-ligne",
+    lastModified: "2026-10-19",
+    changeFrequency: "monthly",
+    priority: 1,
+    summary:
+      "Faire son permis de construire de maison en ligne : les 5 étapes, le délai (préparation du dossier puis 2 mois d'instruction), le prix des formules à prix fixe et les documents à fournir.",
+  },
+  {
     path: "/permis-de-construire-maison",
     lastModified: "2026-10-08",
     changeFrequency: "monthly",

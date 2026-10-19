@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { site } from "@/config/site";
+import { plans, site } from "@/config/site";
+import { formatEuro } from "@/lib/format";
 import { Analytics } from "@vercel/analytics/next";
 import UmamiScript from "@/components/UmamiScript";
 import Header from "@/components/Header";
@@ -13,9 +14,9 @@ import { withSeo } from "@/lib/seo";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
 
 const home = withSeo("/", {
-  title: "Permis de construire maison individuelle à prix fixe",
+  title: "Permis de construire en ligne pour votre maison, à prix fixe",
   description:
-    "Dossier PCMI 1 à 8 complet, rendus 3D, dépôt en mairie et suivi jusqu'à l'accord. Bureau d'études architecture et ingénierie, prix fixe, partout en France.",
+    `Votre permis de construire de maison fait en ligne par un bureau d'études : dossier PCMI 1 à 8 en ${plans[0].delayWorkingDays.replace(" jours ouvrés", "")} à ${plans[plans.length - 1].delayWorkingDays}, dépôt en mairie et suivi jusqu'à l'accord, dès ${formatEuro(plans[0].priceTTC)} TTC.`,
 });
 
 export const metadata: Metadata = {

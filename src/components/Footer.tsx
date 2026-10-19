@@ -92,6 +92,7 @@ export default function Footer() {
           <div>
             <div className={label}>Plan du site</div>
             <ul className="grid gap-2.5">
+              <li><Link href="/permis-de-construire-en-ligne" className="hover:text-brass-2">Permis de construire en ligne</Link></li>
               <li><Link href="/tarifs" className="hover:text-brass-2">Formules et tarifs</Link></li>
               <li><Link href="/plans-execution" className="hover:text-brass-2">Plans d&apos;exécution</Link></li>
               <li><Link href="/etude-thermique-re2020" className="hover:text-brass-2">Étude thermique RE2020</Link></li>

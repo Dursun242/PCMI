@@ -90,7 +90,7 @@ export default function HomePage() {
               <span className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">100 % en ligne · partout en France</span>
             </div>
             <h1 className="display mt-7 text-[2.9rem] sm:text-6xl lg:text-[4.6rem] max-w-[13ch]">
-              Le permis de construire de votre maison individuelle, <em>au prix juste.</em>
+              Le permis de construire de votre maison, <em>en ligne et au prix juste.</em>
             </h1>
             <p className="mt-8 text-lg sm:text-xl leading-relaxed text-paper/75 max-w-[44ch]">
               Dossier complet, rendus 3D, dépôt en mairie et suivi jusqu&apos;à l&apos;accord — à distance, sans rendez-vous physique. Conçu par un bureau d&apos;études qui allie ingénierie et architecture, à partir de{" "}
@@ -100,6 +100,12 @@ export default function HomePage() {
               <TrackedLink href="/devis" source="hero_accueil" className="btn btn-paper">Demander un devis</TrackedLink>
               <Link href="/tarifs" className="btn btn-line-light">Découvrir les formules</Link>
             </div>
+            <p className="mt-6 text-sm text-paper/70">
+              Délai, démarches, prix :{" "}
+              <Link href="/permis-de-construire-en-ligne" className="text-paper underline decoration-brass-2 underline-offset-4 hover:text-brass-2">
+                comment se passe un permis de construire en ligne
+              </Link>
+            </p>
           </div>
 
           {/* Deux enveloppes : une animation d'entrée, une de sortie au défilement (une seule par élément). */}

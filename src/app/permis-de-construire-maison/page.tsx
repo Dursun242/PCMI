@@ -14,6 +14,10 @@ const UPDATED_AT = "2026-10-08";
 
 const guideFaq = [
   {
+    q: "Peut-on faire son permis de construire en ligne ?",
+    a: "Oui. Depuis le 1er janvier 2022, toutes les communes doivent pouvoir recevoir les demandes d'urbanisme par voie électronique. Le dossier peut aussi être préparé entièrement à distance par un professionnel : c'est ce que nous proposons, du devis au dépôt sur le guichet numérique de votre commune.",
+  },
+  {
     q: "Le permis de construire est-il payant ?",
     a: "L'instruction du dossier par la mairie est gratuite. En revanche, la taxe d'aménagement est due après l'achèvement des travaux, et le montage du dossier a un coût si vous le confiez à un professionnel (voir la section « Combien coûte un permis de construire »).",
   },
@@ -40,9 +44,9 @@ const guideFaq = [
 ];
 
 export const metadata: Metadata = withSeo("/permis-de-construire-maison", {
-  title: "Permis de construire maison individuelle : le guide complet",
+  title: "Permis de construire maison : délai, prix, pièces, démarches",
   description:
-    "Pièces PCMI 1 à 8, seuil des 150 m² et architecte, délais d'instruction, dépôt, affichage, RE2020, validité : le guide avant de déposer votre permis.",
+    "Le guide du permis de construire de maison individuelle : délai d'instruction de 2 mois, prix, pièces PCMI 1 à 8, dépôt en ligne, affichage et recours, par un maître d'œuvre.",
 });
 
 const toc = [
@@ -119,7 +123,16 @@ export default function GuidePage() {
         </aside>
 
         <article className="prose-guide">
-          <h2 id="pc-ou-dp" className="!mt-0 scroll-mt-28">Permis de construire ou déclaration préalable ?</h2>
+          {/* L'essentiel en trois lignes, pour qui cherche « délai », « prix » ou « en ligne ». */}
+          <div className="!mt-0 mb-12 border border-stone-2 bg-stone p-6 sm:p-8">
+            <p className="text-[0.72rem] font-bold uppercase tracking-[0.2em] text-bronze">En bref</p>
+            <ul>
+              <li><strong>Délai :</strong> 2 mois d&apos;instruction pour une maison, 3 mois en secteur protégé (<a href="#delais">détail</a>).</li>
+              <li><strong>Prix :</strong> instruction gratuite en mairie ; montage du dossier de {formatEuro(plans[0].priceTTC)} à {formatEuro(plans[plans.length - 1].priceTTC)} TTC chez nous (<a href="#cout">détail</a>).</li>
+              <li><strong>En ligne :</strong> toutes les communes acceptent le dépôt dématérialisé ; nous pouvons monter et déposer votre dossier à distance (<Link href="/permis-de-construire-en-ligne">permis de construire en ligne</Link>).</li>
+            </ul>
+          </div>
+          <h2 id="pc-ou-dp" className="scroll-mt-28">Permis de construire ou déclaration préalable ?</h2>
           <p>
             Une maison neuve relève toujours du permis de construire. La déclaration préalable (DP) est réservée aux petits travaux : une construction nouvelle entre 5 et 20 m² d&apos;emprise au sol ou de surface de plancher, une extension jusqu&apos;à 20 m² (portée à 40 m² en zone urbaine d&apos;un PLU, tant que la surface totale après travaux ne franchit pas le seuil des 150 m²), une clôture, une piscine de moins de 100 m², un changement d&apos;aspect de façade.
           </p>

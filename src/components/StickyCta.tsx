@@ -8,7 +8,7 @@ import WhatsAppLink from "./WhatsAppLink";
 
 /** Pages de contenu : on y rappelle l'appel à l'action. */
 function showsOn(pathname: string) {
-  if (pathname === "/" || pathname === "/tarifs" || pathname === "/permis-de-construire-maison") return true;
+  if (pathname === "/" || pathname === "/tarifs" || pathname === "/permis-de-construire-maison" || pathname === "/permis-de-construire-en-ligne") return true;
   return pathname === "/conseils" || pathname.startsWith("/conseils/");
 }
 
