@@ -106,7 +106,9 @@ export type PlanId = "essentiel" | "complet" | "premium";
 export interface Plan {
   id: PlanId;
   name: string;
-  priceTTC: number; // en euros TTC (TVA 20 % incluse)
+  priceTTC: number; // en euros TTC (TVA 20 % incluse) : le prix payé
+  /** Prix habituel, affiché barré tant que l'offre de lancement est active. */
+  regularPriceTTC?: number;
   highlight?: boolean;
   promise: string;
   forWho: string;
@@ -129,7 +131,22 @@ export const ht = (ttc: number) => Math.round(ttc / (1 + VAT));
  */
 export const ATTESTATION_RE2020 = { name: "Attestation RE2020 au dépôt du permis", priceTTC: 490 } as const;
 const euros = (n: number) => `${n.toLocaleString("fr-FR")} € TTC`;
-export const plans: Plan[] = [
+
+/**
+ * Offre de lancement : prix réduits pour les premiers dossiers obtenus grâce au site.
+ * - `places` et `fin` sont affichés tels quels : mettre `actif: false` dès que les
+ *   places sont prises ou la date passée (les prix habituels reviennent seuls).
+ * - Le prix barré est le prix habituel, pratiqué depuis l'ouverture du site
+ *   (code de la consommation, art. L112-1-1 : prix de référence des 30 jours précédents).
+ */
+export const lancement = {
+  actif: true,
+  places: 5,
+  fin: "2026-12-31",
+  prix: { essentiel: 990, complet: 1490, premium: 2490 } as Record<PlanId, number>,
+};
+
+const plansHabituels: Plan[] = [
   {
     id: "essentiel",
     name: "Essentiel",
@@ -185,6 +202,11 @@ export const plans: Plan[] = [
     ],
   },
 ];
+
+/** Les formules au prix payé : prix de lancement (et prix habituel barré) tant que l'offre est active. */
+export const plans: Plan[] = plansHabituels.map((p) =>
+  lancement.actif ? { ...p, priceTTC: lancement.prix[p.id], regularPriceTTC: p.priceTTC } : p,
+);
 
 export const options = [
   { name: "Permis modificatif", priceTTC: 830, note: "Si le projet évolue après l'accord." },

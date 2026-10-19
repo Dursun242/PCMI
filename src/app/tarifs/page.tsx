@@ -71,6 +71,22 @@ export default function TarifsPage() {
             </div>
           ))}
         </div>
+        {/* Le vrai calcul entre Essentiel et Complet : l'option RE2020 seule coûte presque l'écart. */}
+        {(() => {
+          const ess = plans.find((p) => p.id === "essentiel");
+          const com = plans.find((p) => p.id === "complet");
+          if (!ess || !com) return null;
+          const ecart = com.priceTTC - (ess.priceTTC + re2020Price);
+          if (ecart < 0 || ecart > 100) return null;
+          return (
+            <p className="mt-10 max-w-[70ch] text-[1.02rem] leading-relaxed">
+              <strong>Le bon calcul :</strong> Essentiel + attestation RE2020 = {formatEuro(ess.priceTTC + re2020Price)}. Pour{" "}
+              {ecart === 0 ? "le même prix" : `${formatEuro(ecart)} de plus`}, la formule {com.name} ajoute le dépôt en mairie, les
+              réponses aux demandes de pièces, l&apos;insertion 3D et les modifications illimitées jusqu&apos;à l&apos;accord.
+              Pour comparaison, un architecte facture le plus souvent entre 3 000 et 8 000 € pour une mission limitée au permis.
+            </p>
+          );
+        })()}
         <div className="mt-10 border-t border-ink pt-6 flex flex-wrap items-center justify-between gap-6">
           <div className="max-w-[60ch]">
             <p className="display text-2xl">Maison de 150 m² et plus : sur devis.</p>

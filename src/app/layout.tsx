@@ -4,6 +4,7 @@ import { plans, site } from "@/config/site";
 import { formatEuro } from "@/lib/format";
 import { Analytics } from "@vercel/analytics/next";
 import UmamiScript from "@/components/UmamiScript";
+import BandeauLancement from "@/components/BandeauLancement";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import StickyCta from "@/components/StickyCta";
@@ -64,6 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Aller au contenu
         </a>
+        <BandeauLancement />
         <Header />
         <main id="contenu" className="flex-1">
           {children}

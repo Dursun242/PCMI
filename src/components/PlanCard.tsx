@@ -16,18 +16,29 @@ export default function PlanCard({ plan, compact = false }: { plan: Plan; compac
     >
       {hi && (
         <span className="absolute -top-3 left-6 sm:left-8 bg-paper px-2 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-bronze">
-          La plus choisie
+          Recommandée
         </span>
       )}
       <h3 className="display text-3xl">{plan.name}</h3>
       <p className="mt-2 text-ink-2">{plan.promise}</p>
 
-      <div className="mt-7 flex items-baseline gap-2">
+      {plan.regularPriceTTC && (
+        <p className="mt-7 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-bronze">Offre de lancement</p>
+      )}
+      <div className={`${plan.regularPriceTTC ? "mt-2" : "mt-7"} flex flex-wrap items-baseline gap-x-3 gap-y-1`}>
         <span className="numeral text-5xl">{formatEuro(plan.priceTTC)}</span>
         <span className="text-xs font-bold tracking-[0.1em] uppercase text-ink-2">TTC</span>
+        {plan.regularPriceTTC && (
+          <span className="text-lg text-ink-3 line-through decoration-1" aria-label={`au lieu de ${formatEuro(plan.regularPriceTTC)}`}>
+            {formatEuro(plan.regularPriceTTC)}
+          </span>
+        )}
       </div>
       <p className="mt-1 text-sm text-ink-2">
         soit {formatEuro(ht(plan.priceTTC))} HT. Livré sous {plan.delayWorkingDays}.
+      </p>
+      <p className="mt-1 text-sm text-ink-2">
+        Pour démarrer : acompte de {formatEuro(Math.round(plan.priceTTC * 0.4))}, le solde à la remise du dossier.
       </p>
 
       {!compact && <p className="mt-6 text-[0.98rem] leading-relaxed">{plan.forWho}</p>}

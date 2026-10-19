@@ -126,7 +126,7 @@ export default function DevisForm({ presetFormule, presetSurface }: { presetForm
                   <span>{l}</span>
                   {misEnAvant && (
                     <span className="ml-auto text-[0.62rem] font-bold uppercase tracking-[0.14em] text-bronze">
-                      La plus choisie
+                      Recommandée
                     </span>
                   )}
                 </label>
