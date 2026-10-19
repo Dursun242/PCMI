@@ -16,7 +16,7 @@ import { withSeo } from "@/lib/seo";
  */
 export const metadata: Metadata = withSeo("/permis-de-construire-en-ligne", {
   title: "Permis de construire en ligne : délai, démarches et prix",
-  description: `Faites votre permis de construire de maison en ligne : devis sous 4 h ouvrées, dossier PCMI prêt en ${plans[0].delayWorkingDays.replace(" jours ouvrés", "")} à ${plans[plans.length - 1].delayWorkingDays}, dépôt dématérialisé, prix fixe dès ${formatEuro(plans[0].priceTTC)} TTC.`,
+  description: `Permis de construire de maison en ligne : devis sous 4 h ouvrées, dossier PCMI en ${plans[0].delayWorkingDays.replace(" jours ouvrés", "")} à ${plans[plans.length - 1].delayWorkingDays}, dépôt dématérialisé, prix fixe dès ${formatEuro(plans[0].priceTTC)} TTC.`,
 });
 
 const optionDp = options.find((o) => o.name.startsWith("Déclaration préalable"));

@@ -13,7 +13,7 @@ import { withSeo } from "@/lib/seo";
 export const metadata: Metadata = withSeo("/tarifs", {
   title: "Tarifs permis de construire maison : trois formules à prix fixe",
   description:
-    "Prix d'un permis de construire de maison individuelle jusqu'à 149 m² : Essentiel, Complet ou Premium, à prix fixe, partout en France. Au-delà, sur devis.",
+    `Prix d'un permis de construire de maison jusqu'à 149 m² : trois formules à prix fixe dès ${formatEuro(plans[0].priceTTC)} TTC, partout en France. Au-delà, sur devis.`,
 });
 
 const re2020Price = ATTESTATION_RE2020.priceTTC;

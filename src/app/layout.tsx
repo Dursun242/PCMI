@@ -17,7 +17,7 @@ import { organizationSchema, websiteSchema } from "@/lib/schema";
 const home = withSeo("/", {
   title: "Permis de construire en ligne pour votre maison, à prix fixe",
   description:
-    `Votre permis de construire de maison fait en ligne par un bureau d'études : dossier PCMI 1 à 8 en ${plans[0].delayWorkingDays.replace(" jours ouvrés", "")} à ${plans[plans.length - 1].delayWorkingDays}, dépôt en mairie et suivi jusqu'à l'accord, dès ${formatEuro(plans[0].priceTTC)} TTC.`,
+    `Permis de construire de maison en ligne dès ${formatEuro(plans[0].priceTTC)} TTC : dossier PCMI 1 à 8 en ${plans[0].delayWorkingDays.replace(" jours ouvrés", "")} à ${plans[plans.length - 1].delayWorkingDays} par un bureau d'études, devis sous 4 h ouvrées.`,
 });
 
 export const metadata: Metadata = {

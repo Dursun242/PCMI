@@ -46,7 +46,7 @@ const guideFaq = [
 export const metadata: Metadata = withSeo("/permis-de-construire-maison", {
   title: "Permis de construire maison : délai, prix, pièces, démarches",
   description:
-    "Le guide du permis de construire de maison individuelle : délai d'instruction de 2 mois, prix, pièces PCMI 1 à 8, dépôt en ligne, affichage et recours, par un maître d'œuvre.",
+    "Permis de construire de maison individuelle : délai d'instruction de 2 mois, prix, pièces PCMI 1 à 8, dépôt en ligne, affichage et recours.",
 });
 
 const toc = [
