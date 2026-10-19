@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="rf-title" fill="none">
+  <title id="rf-title">Frise du recours des tiers : affichage au jour 1, deux mois pour contester, quinze jours pour notifier le recours, permis purgé</title>
+  <rect width="1200" height="630" fill="#f2f0eb" />
+  <g font-family="Lato, sans-serif" fill="#1b1f1d">
+    <text x="60" y="66" font-size="12" font-weight="700" letter-spacing="2.6">CONSEILS</text>
+    <text x="60" y="88" font-size="20" opacity="0.85">Le recours des tiers, étape par étape</text>
+  </g>
+  <!-- axe: 2 mois = 800px depuis x=100 -->
+  <line x1="100" y1="330" x2="1100" y2="330" stroke="#1b1f1d" stroke-width="1.6" />
+  <g stroke="#1b1f1d" stroke-width="1.2">
+    <line x1="100" y1="318" x2="100" y2="342" /><line x1="900" y1="318" x2="900" y2="342" /><line x1="1100" y1="318" x2="1100" y2="342" />
+  </g>
+  <rect x="100" y="262" width="800" height="44" fill="rgba(34,53,44,0.08)" stroke="#1b1f1d" stroke-width="1.2" />
+  <rect x="900" y="262" width="200" height="44" fill="rgba(169,136,79,0.2)" stroke="#a9884f" stroke-width="1.4" />
+  <g font-family="Lato, sans-serif" fill="#1b1f1d" text-anchor="middle">
+    <text x="500" y="290" font-size="16" font-weight="700">2 mois pour contester</text>
+    <text x="1000" y="290" font-size="14" font-weight="700">+ 15 jours</text>
+    <text x="100" y="372" font-size="13" fill="#5a645e">Jour 1 : affichage</text>
+    <text x="900" y="372" font-size="13" fill="#5a645e">Fin du délai</text>
+    <text x="1100" y="372" font-size="13" fill="#5a645e">Permis purgé</text>
+  </g>
+  <g stroke="#a9884f" stroke-width="1.4"><line x1="1000" y1="200" x2="1000" y2="262" /></g>
+  <g font-family="Lato, sans-serif" font-size="13" fill="#a9884f" text-anchor="middle" font-weight="700">
+    <text x="1000" y="190">Notification du recours</text>
+  </g>
+  <g stroke="#1b1f1d" stroke-width="1.2"><line x1="300" y1="440" x2="300" y2="342" /></g>
+  <g font-family="Lato, sans-serif" font-size="14" fill="#1b1f1d" text-anchor="middle">
+    <text x="300" y="462">Photos datées et constat de l&#8217;affichage</text>
+    <text x="300" y="482" fill="#5a645e" font-size="13">à garder comme preuve</text>
+  </g>
+</svg>

@@ -10,5 +10,11 @@
     "slug": "validite-permis-de-construire-prorogation",
     "date": "2026-10-12",
     "source": "seed"
+  },
+  {
+    "query": "recours des tiers permis de construire délai",
+    "slug": "recours-des-tiers-permis-de-construire-delai",
+    "date": "2026-10-19",
+    "source": "seed"
   }
 ]
