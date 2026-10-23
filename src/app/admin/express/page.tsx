@@ -1,7 +1,9 @@
 import Link from "next/link";
 import AdminShell from "@/components/admin/AdminShell";
+import AnalyseExpress from "@/components/admin/AnalyseExpress";
 import RemiseAZero from "@/components/admin/RemiseAZero";
 import { express } from "@/config/site";
+import { analyser } from "@/lib/bilan";
 import { compter, contacts, jourParis, joursAvant, parJour, tauxContact, TRANCHES_TEMPS, type Compteurs } from "@/lib/suivi";
 import { lireEvenements, suiviConfigure } from "@/lib/suiviStore";
 
@@ -88,6 +90,7 @@ export default async function CompteurExpress() {
   const mois = periodes[2][2];
   const debutMois = joursAvant(aujourdhui, 29);
   const moisAds = compter(evenements.filter((e) => e.source === "ads"), debutMois);
+  const analyse = analyser(evenements.flatMap((e) => (e.bilan && e.jour >= debutMois ? [e.bilan] : [])));
   const jours = parJour(evenements, aujourdhui, 14);
 
   return (
@@ -133,6 +136,8 @@ export default async function CompteurExpress() {
       <p className="mt-2 text-xs text-ink-2">
         Temps où la page était à l&apos;écran, mesuré au premier départ du visiteur (fermeture, autre appli, appel).
       </p>
+
+      <AnalyseExpress a={analyse} />
 
       <h2 className="mt-10 sm:mt-12 text-sm font-bold uppercase tracking-[0.18em] text-ink-2">Par période</h2>
       {/* Titres courts et explications masquées sur téléphone : le tableau tient dans l'écran. */}
