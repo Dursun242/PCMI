@@ -47,11 +47,15 @@ export interface Ville {
   accroche: string;
   urbanisme: Fait;
   depot: Fait;
+  /** Règles concrètes du règlement local (zone, hauteur, toiture, clôtures…), article cité. */
+  regles?: Fait[];
   risques: Fait[];
   patrimoine: Fait[];
-  architecture?: Fait;
+  architecture?: Fait[];
   communesVoisines: string[];
   faq: { q: string; a: string }[];
+  /** Date de dernière revue de la page (sitemap), si plus récente que VILLES_LAST_MODIFIED. */
+  revue?: string;
 }
 
 const EPTB_NORMANDIE_2024: Source = {
@@ -359,11 +363,13 @@ export const villes: Ville[] = [
         source: delaiAbf.source,
       },
     ],
-    architecture: {
-      texte:
-        "Le règlement du PLU demande des couvertures de teinte et d'aspect ardoise ou schiste ; la petite tuile plate n'est admise qu'à titre exceptionnel, en teinte ardoise.",
-      source: { label: "Règlement du PLU de Cherbourg-en-Cotentin", url: "https://www.lecotentin.fr/wp-content/uploads/2025/08/4-RE.pdf" },
-    },
+    architecture: [
+      {
+        texte:
+          "Le règlement du PLU demande des couvertures de teinte et d'aspect ardoise ou schiste ; la petite tuile plate n'est admise qu'à titre exceptionnel, en teinte ardoise.",
+        source: { label: "Règlement du PLU de Cherbourg-en-Cotentin", url: "https://www.lecotentin.fr/wp-content/uploads/2025/08/4-RE.pdf" },
+      },
+    ],
     communesVoisines: ["Tollevast", "Martinvast", "La Hague"],
     faq: [
       {
@@ -424,14 +430,16 @@ export const villes: Ville[] = [
         },
       },
     ],
-    architecture: {
-      texte:
-        "Dans le centre (zone UA), le règlement du PLUi interdit les tuiles claires ou à ondulation, étrangères aux toitures normandes, et demande des toits-terrasses végétalisés à 80 %.",
-      source: {
-        label: "Règlement du PLUi-HD d'Évreux Portes de Normandie",
-        url: "https://data.geopf.fr/annexes/gpu/documents/DU_200071454/a6fbfbeae54ed7ebedac6b77091d0fb7/200071454_reglement_20251216.pdf",
+    architecture: [
+      {
+        texte:
+          "Dans le centre (zone UA), le règlement du PLUi interdit les tuiles claires ou à ondulation, étrangères aux toitures normandes, et demande des toits-terrasses végétalisés à 80 %.",
+        source: {
+          label: "Règlement du PLUi-HD d'Évreux Portes de Normandie",
+          url: "https://data.geopf.fr/annexes/gpu/documents/DU_200071454/a6fbfbeae54ed7ebedac6b77091d0fb7/200071454_reglement_20251216.pdf",
+        },
       },
-    },
+    ],
     communesVoisines: ["Guichainville", "Saint-Sébastien-de-Morsent", "Gravigny", "Arnières-sur-Iton"],
     faq: [
       {
@@ -496,14 +504,16 @@ export const villes: Ville[] = [
         },
       },
     ],
-    architecture: {
-      texte:
-        "En pays de Caux, le CAUE de Seine-Maritime recommande brique, silex et toitures à deux pans pentus (40 à 50°) en ardoise ou en terre cuite : des recommandations, que le PLU traduit ou non selon les secteurs.",
-      source: {
-        label: "CAUE 76, guide de la maison individuelle en Seine-Maritime",
-        url: "https://www.culture.gouv.fr/content/download/262637/file/Guide%20construction%20maisons%20individuelles%2076-%20BD.pdf?inLanguage=fre-FR",
+    architecture: [
+      {
+        texte:
+          "En pays de Caux, le CAUE de Seine-Maritime recommande brique, silex et toitures à deux pans pentus (40 à 50°) en ardoise ou en terre cuite : des recommandations, que le PLU traduit ou non selon les secteurs.",
+        source: {
+          label: "CAUE 76, guide de la maison individuelle en Seine-Maritime",
+          url: "https://www.culture.gouv.fr/content/download/262637/file/Guide%20construction%20maisons%20individuelles%2076-%20BD.pdf?inLanguage=fre-FR",
+        },
       },
-    },
+    ],
     communesVoisines: ["Hautot-sur-Mer", "Offranville", "Martin-Église", "Arques-la-Bataille"],
     faq: [
       {
@@ -719,11 +729,13 @@ export const villes: Ville[] = [
         },
       },
     ],
-    architecture: {
-      texte:
-        "Le règlement du PLUi interdit les teintes claires et les matériaux brillants en toiture, et demande que les extensions et annexes reprennent les teintes de l'existant.",
-      source: { label: "Règlement du PLUi de Saint-Lô Agglo", url: "https://www.saint-amand-villages.fr/wp-content/uploads/2025/03/Reglement-PLUI.pdf" },
-    },
+    architecture: [
+      {
+        texte:
+          "Le règlement du PLUi interdit les teintes claires et les matériaux brillants en toiture, et demande que les extensions et annexes reprennent les teintes de l'existant.",
+        source: { label: "Règlement du PLUi de Saint-Lô Agglo", url: "https://www.saint-amand-villages.fr/wp-content/uploads/2025/03/Reglement-PLUI.pdf" },
+      },
+    ],
     communesVoisines: ["Agneaux", "Saint-Georges-Montcocq", "Baudre", "Canisy"],
     faq: [
       {
@@ -909,14 +921,16 @@ export const villes: Ville[] = [
         source: { label: "Sites & Cités remarquables, Bayeux", url: "https://www.sites-cites.fr/territoires/bayeux/" },
       },
     ],
-    architecture: {
-      texte:
-        "Dans le secteur sauvegardé, le règlement demande des toitures de teinte sombre (ardoise, gris moyen, brun) et interdit les matériaux brillants.",
-      source: {
-        label: "Règlement du plan de sauvegarde de Bayeux",
-        url: "https://data.geopf.fr/annexes/gpu/documents/PSMV_241400555/79511531972e2132dc5532ea45bf4499/241400555_reglement_20241227.pdf",
+    architecture: [
+      {
+        texte:
+          "Dans le secteur sauvegardé, le règlement demande des toitures de teinte sombre (ardoise, gris moyen, brun) et interdit les matériaux brillants.",
+        source: {
+          label: "Règlement du plan de sauvegarde de Bayeux",
+          url: "https://data.geopf.fr/annexes/gpu/documents/PSMV_241400555/79511531972e2132dc5532ea45bf4499/241400555_reglement_20241227.pdf",
+        },
       },
-    },
+    ],
     communesVoisines: ["Saint-Vigor-le-Grand", "Vaucelles", "Saint-Martin-des-Entrées", "Saint-Loup-Hors"],
     faq: [
       {

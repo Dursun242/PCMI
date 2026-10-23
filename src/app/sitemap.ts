@@ -29,10 +29,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: p.priority,
       };
     }),
-    // Pages villes : même date de revue pour toutes, tenue dans src/config/normandie.ts.
+    // Pages villes : date de revue propre à la ville, sinon la date commune (src/config/normandie.ts).
     ...villes.map((v) => ({
       url: `${site.url}${villePath(v)}`,
-      lastModified: new Date(VILLES_LAST_MODIFIED),
+      lastModified: new Date(v.revue ?? VILLES_LAST_MODIFIED),
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),

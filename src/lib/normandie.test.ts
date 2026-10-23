@@ -19,7 +19,7 @@ describe("données des villes de Normandie", () => {
 
   test("chaque fait réglementaire cite une source officielle ou vérifiable en https", () => {
     for (const v of villes) {
-      const faits = [v.urbanisme, v.depot, ...v.risques, ...v.patrimoine, ...(v.architecture ? [v.architecture] : [])];
+      const faits = [v.urbanisme, v.depot, ...(v.regles ?? []), ...v.risques, ...v.patrimoine, ...(v.architecture ?? [])];
       for (const f of faits) {
         expect(f.texte.length, `${v.slug} : fait vide`).toBeGreaterThan(20);
         expect(f.source.url, `${v.slug} : « ${f.texte.slice(0, 40)}… » sans source`).toMatch(/^https:\/\//);
@@ -29,7 +29,7 @@ describe("données des villes de Normandie", () => {
 
   test("chaque page a assez de contenu propre pour ne pas être une page « ville » dupliquée", () => {
     for (const v of villes) {
-      const specifiques = v.risques.length + v.patrimoine.length + (v.architecture ? 1 : 0);
+      const specifiques = (v.regles?.length ?? 0) + v.risques.length + v.patrimoine.length + (v.architecture?.length ?? 0);
       expect(specifiques, `${v.slug} : trop peu d'éléments locaux`).toBeGreaterThanOrEqual(2);
       expect(v.communesVoisines.length, `${v.slug} : communes voisines`).toBeGreaterThanOrEqual(2);
       expect(v.faq.length, `${v.slug} : FAQ locale`).toBeGreaterThanOrEqual(2);

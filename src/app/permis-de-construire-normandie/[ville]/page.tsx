@@ -107,6 +107,20 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
         </div>
       </section>
 
+      {v.regles && v.regles.length > 0 && (
+        <section className="mx-auto max-w-7xl px-5 sm:px-8 pb-20">
+          <span className="rule" aria-hidden="true" />
+          <h2 className="h-section mt-6">Ce que le règlement impose à une maison {v.a}</h2>
+          <p className="mt-6 max-w-[64ch] text-ink-2 leading-relaxed">
+            Quelques règles relevées dans le document applicable. Elles varient d&apos;une zone à l&apos;autre : nous lisons
+            celles de votre parcelle avant de dessiner.
+          </p>
+          <div data-stagger className="mt-8 grid gap-6 sm:grid-cols-2">
+            {v.regles.map((f) => <SourcedFact key={f.texte} fait={f} />)}
+          </div>
+        </section>
+      )}
+
       <section className="bg-stone border-y border-stone-2">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-20 grid gap-14 lg:grid-cols-2">
           <div>
@@ -121,7 +135,7 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
             <h2 className="h-section mt-6">Patrimoine et aspect extérieur</h2>
             <div data-stagger className="mt-8 grid gap-6">
               {v.patrimoine.map((f) => <SourcedFact key={f.texte} fait={f} />)}
-              {v.architecture && <SourcedFact fait={v.architecture} />}
+              {v.architecture?.map((f) => <SourcedFact key={f.texte} fait={f} />)}
             </div>
           </div>
         </div>
