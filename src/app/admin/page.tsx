@@ -19,6 +19,10 @@ export default function AdminDashboard() {
       )}
 
       <div className="grid gap-4 sm:grid-cols-3">
+        <Link href="/admin/express" className="border border-ink/10 bg-paper p-6 hover:border-brass sm:col-span-3">
+          <h2 className="font-bold text-lg mb-1">Compteur de la page Express</h2>
+          <p className="text-sm text-ink-2">Visites, formulaires, demandes, clics Appeler et WhatsApp de la campagne Google Ads.</p>
+        </Link>
         <Link href="/admin/articles" className="border border-ink/10 bg-paper p-6 hover:border-brass">
           <h2 className="font-bold text-lg mb-1">Articles</h2>
           <p className="text-sm text-ink-2">Créer, modifier ou supprimer les articles du blog (/conseils).</p>

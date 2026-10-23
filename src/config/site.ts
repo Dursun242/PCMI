@@ -148,6 +148,45 @@ export const lancement = {
   prix: { essentiel: 990, complet: 1490, premium: 2490 } as Record<PlanId, number>,
 };
 
+/**
+ * Formule Express plain-pied : page /permis-express, destination de la
+ * campagne Google Ads (Seine-Maritime, Eure, Calvados).
+ *
+ * C'est une formule à part entière, avec son propre contenu, et non une
+ * remise sur une autre formule : pas de prix barré, donc pas de prix de
+ * référence à justifier. Elle est réservée aux projets simples, ce qui
+ * explique un prix sous l'Essentiel.
+ * - `actif: false` coupe l'offre : la page renvoie alors vers /devis.
+ * - Changer `prixTTC` ici met à jour la page, l'e-mail et la confirmation.
+ *   Penser à aligner les annonces Google Ads (le prix affiché dans l'annonce
+ *   doit figurer sur la page, sinon Google les refuse).
+ */
+export const express = {
+  actif: true,
+  nom: "Express plain-pied",
+  prixTTC: 890,
+  surfaceMax: 110,
+  delai: "5 jours ouvrés",
+  premiersPlans: "72 h",
+  places: 10,
+  fin: "2026-12-31",
+  departements: ["Seine-Maritime (76)", "Eure (27)", "Calvados (14)"],
+  inclus: [
+    "Pièces PCMI 1 à 8 complètes, à l'échelle",
+    "CERFA 13406 rempli et vérifié",
+    "Contrôle du PLU de votre commune avant de dessiner",
+    "Premiers plans sous 72 h pour validation",
+    "Une série de modifications avant dépôt",
+    "Dépôt en ligne sur le guichet numérique de votre mairie",
+  ],
+  conditions: [
+    `Maison de plain-pied jusqu'à 110 m² de surface de plancher`,
+    "Plan de forme simple, terrain plat ou en faible pente",
+    "Hors secteur protégé (Architecte des Bâtiments de France)",
+    "Terrain en Seine-Maritime, dans l'Eure ou le Calvados",
+  ],
+};
+
 const plansHabituels: Plan[] = [
   {
     id: "essentiel",

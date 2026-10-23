@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next";
 import UmamiScript from "@/components/UmamiScript";
 import GoogleAds from "@/components/GoogleAds";
 import BandeauLancement from "@/components/BandeauLancement";
+import HorsPages from "@/components/HorsPages";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import StickyCta from "@/components/StickyCta";
@@ -66,7 +67,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Aller au contenu
         </a>
-        <BandeauLancement />
+        <HorsPages chemins={["/permis-express"]}>
+          <BandeauLancement />
+        </HorsPages>
         <Header />
         <main id="contenu" className="flex-1">
           {children}
