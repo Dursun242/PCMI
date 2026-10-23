@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { express, site } from "@/config/site";
 import { esc, ipOf, rateLimited, sendPair } from "@/lib/mailer";
 import { formatEuro } from "@/lib/format";
+import { enregistrer } from "@/lib/suiviStore";
 import {
   ECHEANCES,
   RENDEZ_VOUS,
@@ -92,6 +93,7 @@ export async function POST(req: Request) {
       clientSubject: `Votre demande de permis est bien reçue — ${site.name}`,
       clientHtml: mailClient(d),
     });
+    await enregistrer(estUrgente(d) ? "demande-urgente" : "demande", d.gclid ? "ads" : "direct");
     return NextResponse.json(dev ? { ok: true, dev: true } : { ok: true });
   } catch (err) {
     console.error("[express] envoi Resend échoué", err);

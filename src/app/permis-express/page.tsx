@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import ExpressForm from "@/components/ExpressForm";
 import ExpressBarre from "@/components/ExpressBarre";
+import ExpressVue from "@/components/ExpressVue";
 import TelLink from "@/components/TelLink";
 import WhatsAppLink from "@/components/WhatsAppLink";
 import { express, site } from "@/config/site";
@@ -223,6 +224,7 @@ export default function PermisExpressPage() {
       </section>
 
       <ExpressBarre />
+      <ExpressVue />
     </>
   );
 }
