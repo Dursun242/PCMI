@@ -70,11 +70,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <HorsPages chemins={["/permis-express"]}>
           <BandeauLancement />
         </HorsPages>
-        <Header />
+        {/* /permis-express a son propre en-tête et son propre pied (components/ExpressCadre). */}
+        <HorsPages chemins={["/permis-express"]}>
+          <Header />
+        </HorsPages>
         <main id="contenu" className="flex-1">
           {children}
         </main>
-        <Footer />
+        <HorsPages chemins={["/permis-express"]}>
+          <Footer />
+        </HorsPages>
         <StickyCta />
         <WhatsAppBubble />
         <ScrollReveal />

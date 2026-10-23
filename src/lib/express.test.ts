@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { eligibleExpress, estUrgente, libelle, lireDemande, TYPES_MAISON } from "./express";
+import { eligibleExpress, estUrgente, libelle, lireDemande, TYPES_MAISON, verdictExpress } from "./express";
 
 const base = {
   name: "Jean Martin",
@@ -61,6 +61,24 @@ describe("eligibleExpress", () => {
   it("écarte une maison à étage ou sans surface", () => {
     expect(eligibleExpress({ typeMaison: "etage", surface: 90 })).toBe(false);
     expect(eligibleExpress({ typeMaison: "plain-pied", surface: null })).toBe(false);
+  });
+});
+
+describe("verdictExpress", () => {
+  it("retient un plain-pied dans la surface", () => {
+    expect(verdictExpress({ typeMaison: "plain-pied", surface: 95 })).toBe("eligible");
+  });
+
+  it("écarte une maison à étage ou trop grande", () => {
+    expect(verdictExpress({ typeMaison: "etage", surface: null })).toBe("hors");
+    expect(verdictExpress({ typeMaison: "plain-pied", surface: 140 })).toBe("hors");
+    expect(verdictExpress({ typeMaison: "", surface: 140 })).toBe("hors");
+  });
+
+  it("laisse à vérifier un projet dont le type ou la surface manque", () => {
+    expect(verdictExpress({ typeMaison: "", surface: null })).toBe("a-verifier");
+    expect(verdictExpress({ typeMaison: "plain-pied", surface: null })).toBe("a-verifier");
+    expect(verdictExpress({ typeMaison: "ne-sait-pas", surface: 90 })).toBe("a-verifier");
   });
 });
 

@@ -8,8 +8,8 @@ import {
   RENDEZ_VOUS,
   SITUATIONS_TERRAIN,
   TYPES_MAISON,
-  eligibleExpress,
   estUrgente,
+  verdictExpress,
   libelle,
   lireDemande,
   type DemandeExpress,
@@ -18,6 +18,12 @@ import {
 export const runtime = "nodejs";
 
 const MAX_PAR_FENETRE = 5;
+
+const VERDICTS = {
+  eligible: `Éligible (${formatEuro(express.prixTTC)} TTC)`,
+  hors: "Hors critères : orienter vers une autre formule",
+  "a-verifier": "À vérifier au rappel (type de maison ou surface non précisés)",
+};
 
 function lignes(d: DemandeExpress): [string, string][] {
   return [
@@ -30,7 +36,7 @@ function lignes(d: DemandeExpress): [string, string][] {
     ["Terrain", libelle(SITUATIONS_TERRAIN, d.terrain)],
     ["Dépôt souhaité", libelle(ECHEANCES, d.echeance)],
     ["Rendez-vous", libelle(RENDEZ_VOUS, d.rendezVous)],
-    ["Formule Express", eligibleExpress(d) ? `Éligible (${formatEuro(express.prixTTC)} TTC)` : "À vérifier : hors critères, orienter vers une autre formule"],
+    ["Formule Express", VERDICTS[verdictExpress(d)]],
     // Pour importer la conversion dans Google Ads (Outils › Conversions › Importer).
     ["Clic Google Ads (gclid)", d.gclid || "Aucun (visite hors annonce)"],
   ];

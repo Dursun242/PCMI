@@ -11,17 +11,17 @@ import { ECHEANCES, RENDEZ_VOUS, SITUATIONS_TERRAIN, TYPES_MAISON, eligibleExpre
 type Status = "idle" | "sending" | "error";
 
 /** Groupe de boutons radio présentés en pastilles, plus rapides à toucher qu'une liste déroulante. */
-function Pastilles({ name, legend, choix, defaut }: { name: string; legend: string; choix: Choix; defaut?: string }) {
+function Pastilles({ name, legend, choix, serre = false }: { name: string; legend: string; choix: Choix; serre?: boolean }) {
   return (
     <fieldset className="field">
       <legend>{legend}</legend>
-      <div className="mt-1 grid gap-2 sm:grid-cols-2">
+      <div className={`mt-1 grid gap-2 ${serre ? "grid-cols-2" : "sm:grid-cols-2"}`}>
         {choix.map(([v, l]) => (
           <label
             key={v}
             className="opt flex min-h-12 items-center gap-3 border border-stone-2 bg-paper px-4 py-3 has-[:checked]:border-ink cursor-pointer"
           >
-            <input type="radio" name={name} value={v} defaultChecked={v === defaut} className="accent-ink h-4 w-4 shrink-0" />
+            <input type="radio" name={name} value={v} className="accent-ink h-4 w-4 shrink-0" />
             <span className="leading-snug">{l}</span>
           </label>
         ))}
@@ -32,8 +32,10 @@ function Pastilles({ name, legend, choix, defaut }: { name: string; legend: stri
 
 /**
  * Formulaire court de la page /permis-express : trois champs obligatoires
- * (nom, téléphone, commune), le reste se coche en un geste. Les réponses
- * servent à trier les demandes (éligibilité Express, urgence) dans l'e-mail.
+ * (nom, téléphone, commune) et l'échéance en un geste ; le reste est replié
+ * sous « Préciser mon projet ». Aucun choix n'est coché d'avance : une réponse
+ * non donnée arrive « Non précisé » dans l'e-mail, au lieu d'une réponse
+ * par défaut qui fausserait le tri (éligibilité Express, urgence).
  */
 export default function ExpressForm() {
   const router = useRouter();
@@ -84,7 +86,13 @@ export default function ExpressForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} onChange={markStarted} className="grid gap-6">
+    <form
+      onSubmit={onSubmit}
+      onChange={markStarted}
+      // Un champ invalide dans « Préciser mon projet » replié : on déplie pour que le navigateur puisse le montrer.
+      onInvalidCapture={(e) => (e.target as HTMLElement).closest("details")?.setAttribute("open", "")}
+      className="grid gap-6"
+    >
       {/* pot de miel anti-spam : caché aux humains */}
       <div className="hidden" aria-hidden="true">
         <label htmlFor="website">Site web</label>
@@ -107,45 +115,48 @@ export default function ExpressForm() {
         </div>
       </div>
 
-      <Pastilles name="typeMaison" legend="Votre maison" choix={TYPES_MAISON} defaut="plain-pied" />
+      <Pastilles name="echeance" legend="Dépôt du permis souhaité" choix={ECHEANCES} serre />
 
-      <div className="field">
-        <label htmlFor="surface">Surface approximative (m²)</label>
-        <input id="surface" name="surface" type="number" inputMode="numeric" min={20} max={600} placeholder="ex. 100" />
-        <span className="hint">Formule Express jusqu&apos;à {express.surfaceMax} m². Au-delà, nous vous proposons la formule adaptée.</span>
-      </div>
+      <details className="group border-y border-stone-2">
+        <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 py-3 font-bold">
+          <span>
+            Préciser mon projet <span className="font-normal text-ink-2">(facultatif)</span>
+          </span>
+          <span aria-hidden="true" className="text-xl text-bronze transition-transform group-open:rotate-45">+</span>
+        </summary>
+        <div className="grid gap-6 pb-6 pt-2">
+          <Pastilles name="typeMaison" legend="Votre maison" choix={TYPES_MAISON} />
 
-      <div className="grid gap-6 sm:grid-cols-2">
-        <div className="field">
-          <label htmlFor="terrain">Votre terrain</label>
-          <select id="terrain" name="terrain" defaultValue="compromis">
-            {SITUATIONS_TERRAIN.map(([v, l]) => (
-              <option key={v} value={v}>{l}</option>
-            ))}
-          </select>
+          <div className="field">
+            <label htmlFor="surface">Surface approximative (m²)</label>
+            <input id="surface" name="surface" type="number" inputMode="numeric" min={20} max={600} placeholder="ex. 100" />
+            <span className="hint">Formule Express jusqu&apos;à {express.surfaceMax} m². Au-delà, nous vous proposons la formule adaptée.</span>
+          </div>
+
+          <div className="field">
+            <label htmlFor="terrain">Votre terrain</label>
+            <select id="terrain" name="terrain" defaultValue="">
+              <option value="">Choisir…</option>
+              {SITUATIONS_TERRAIN.map(([v, l]) => (
+                <option key={v} value={v}>{l}</option>
+              ))}
+            </select>
+          </div>
+
+          <Pastilles name="rendezVous" legend="Vous préférez" choix={RENDEZ_VOUS} />
+
+          <div className="field">
+            <label htmlFor="email">E-mail</label>
+            <input id="email" name="email" type="email" autoComplete="email" />
+            <span className="hint">Pour recevoir le devis écrit et nous envoyer vos documents.</span>
+          </div>
+
+          <div className="field">
+            <label htmlFor="message">Un mot sur le projet</label>
+            <textarea id="message" name="message" rows={3} placeholder="Nombre de chambres, garage accolé, date limite du compromis…" />
+          </div>
         </div>
-        <div className="field">
-          <label htmlFor="echeance">Dépôt du permis souhaité</label>
-          <select id="echeance" name="echeance" defaultValue="1-mois">
-            {ECHEANCES.map(([v, l]) => (
-              <option key={v} value={v}>{l}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <Pastilles name="rendezVous" legend="Vous préférez" choix={RENDEZ_VOUS} defaut="distance" />
-
-      <div className="field">
-        <label htmlFor="email">E-mail (facultatif)</label>
-        <input id="email" name="email" type="email" autoComplete="email" />
-        <span className="hint">Pour recevoir le devis écrit et nous envoyer vos documents.</span>
-      </div>
-
-      <div className="field">
-        <label htmlFor="message">Un mot sur le projet (facultatif)</label>
-        <textarea id="message" name="message" rows={3} placeholder="Nombre de chambres, garage accolé, date limite du compromis…" />
-      </div>
+      </details>
 
       <label className="flex items-start gap-3 text-sm text-ink-2">
         <input type="checkbox" name="consent" required className="mt-1 accent-ink h-4 w-4" />
@@ -162,7 +173,7 @@ export default function ExpressForm() {
       )}
 
       <button type="submit" className="btn btn-ink" disabled={status === "sending"}>
-        {status === "sending" ? "Envoi en cours…" : "Être rappelé avec mon devis"}
+        {status === "sending" ? "Envoi en cours…" : "Recevoir mon devis gratuit"}
       </button>
       <p className="text-xs text-ink-2">Gratuit et sans engagement. Aucune revente de vos données.</p>
     </form>

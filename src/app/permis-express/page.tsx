@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import ExpressForm from "@/components/ExpressForm";
 import ExpressBarre from "@/components/ExpressBarre";
 import ExpressVue from "@/components/ExpressVue";
+import { ExpressEntete, ExpressPied } from "@/components/ExpressCadre";
 import TelLink from "@/components/TelLink";
 import WhatsAppLink from "@/components/WhatsAppLink";
+import { chantiers } from "@/config/references";
 import { express, site } from "@/config/site";
 import { formatEuro, formatFrDate } from "@/lib/format";
+import { enVitrine } from "@/lib/vitrine";
 
 /**
  * Page d'atterrissage de la campagne Google Ads « permis express »
@@ -28,6 +32,14 @@ const etapes: [string, string, string][] = [
   [`Sous ${express.premiersPlans}`, "Premiers plans", "Plan, façades et implantation sur le terrain, à valider ou corriger."],
   [`En ${express.delai}`, "Dossier complet et dépôt", "Pièces PCMI 1 à 8, CERFA, dépôt en ligne sur le guichet de votre mairie."],
 ];
+
+/** Vrais chantiers de plain-pied du bureau (src/config/references.ts), communes seulement. */
+const plainsPieds = enVitrine(chantiers, [
+  "/references-chantiers/chantier-27.jpg",
+  "/references-chantiers/chantier-02.jpg",
+  "/references-chantiers/chantier-14.jpg",
+  "/references-chantiers/chantier-09.jpg",
+]);
 
 const faq: [string, string][] = [
   [
@@ -57,9 +69,10 @@ export default function PermisExpressPage() {
 
   return (
     <>
+      <ExpressEntete />
       {/* Hero et formulaire côte à côte sur grand écran : l'action est visible sans défiler. */}
       <section className="bg-forest text-paper">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8 py-12 sm:py-20 grid gap-12 lg:grid-cols-[1.05fr_1fr] lg:items-start">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 pt-8 pb-12 sm:py-20 grid gap-12 lg:grid-cols-[1.05fr_1fr] lg:items-start">
           <div>
             <div className="flex items-center gap-3">
               <span className="rule" aria-hidden="true" />
@@ -67,13 +80,43 @@ export default function PermisExpressPage() {
                 Seine-Maritime · Eure · Calvados
               </span>
             </div>
-            <h1 className="display mt-6 text-5xl sm:text-6xl lg:text-[4.25rem] max-w-[16ch]">
+            <h1 className="display mt-5 sm:mt-6 text-[2.6rem] leading-[1.05] sm:text-6xl lg:text-[4.25rem] max-w-[16ch]">
               Votre permis de construire de plain-pied, <em>prêt en {express.delai.replace(" ouvrés", "")}.</em>
             </h1>
-            <p className="mt-7 text-lg sm:text-xl leading-relaxed text-paper/80 max-w-[48ch]">
+            <p className="mt-5 sm:mt-7 text-base sm:text-xl leading-relaxed text-paper/80 max-w-[48ch]">
               Compromis signé, date butoir, banque qui attend : un maître d&apos;œuvre du Havre monte votre dossier
               et le dépose en ligne, sans vous faire perdre une semaine.
             </p>
+
+            {/* Prix et actions dans le premier écran du téléphone : le visiteur vient d'une annonce qui les promet. */}
+            <div className="mt-6 sm:mt-10 border-l-2 border-brass-2 pl-5">
+              <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">Formule {express.nom}</p>
+              <p className="mt-1 sm:mt-2">
+                <span className="display text-4xl sm:text-5xl">{formatEuro(express.prixTTC)}</span>{" "}
+                <span className="text-paper/80">TTC, prix fixe</span>
+              </p>
+              <p className="mt-1 sm:mt-2 text-sm text-paper/70 max-w-[46ch]">
+                Maison de plain-pied jusqu&apos;à {express.surfaceMax} m², dépôt en ligne inclus. Réservée aux{" "}
+                {express.places} premiers dossiers, devis demandé avant le {formatFrDate(express.fin)}.
+              </p>
+            </div>
+
+            <div className="mt-6 sm:mt-10 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-4">
+              <a href="#devis" className="btn btn-paper !px-3 sm:!px-7 lg:!hidden">
+                Mon devis gratuit
+              </a>
+              <TelLink source="express_hero" className="btn btn-line-light !px-3 sm:!px-7 lg:!border-transparent lg:!bg-paper lg:!text-ink lg:hover:!bg-brass-2">
+                <span className="sm:hidden">Appeler</span>
+                <span className="hidden sm:inline">Appeler le {site.phone}</span>
+              </TelLink>
+              <WhatsAppLink
+                source="express_hero"
+                text="Bonjour, j'ai besoin d'un permis de construire rapidement pour une maison de plain-pied."
+                className="col-span-2 justify-self-start text-paper underline decoration-brass-2 underline-offset-4"
+              >
+                Écrire sur WhatsApp
+              </WhatsAppLink>
+            </div>
 
             <dl className="mt-10 grid grid-cols-3 gap-px bg-paper/15 max-w-xl">
               {[
@@ -90,31 +133,6 @@ export default function PermisExpressPage() {
                 </div>
               ))}
             </dl>
-
-            <div className="mt-10 border-l-2 border-brass-2 pl-5">
-              <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">Formule {express.nom}</p>
-              <p className="mt-2">
-                <span className="display text-5xl">{formatEuro(express.prixTTC)}</span>{" "}
-                <span className="text-paper/80">TTC, prix fixe</span>
-              </p>
-              <p className="mt-2 text-sm text-paper/70 max-w-[46ch]">
-                Maison de plain-pied jusqu&apos;à {express.surfaceMax} m², dépôt en ligne inclus. Réservée aux{" "}
-                {express.places} premiers dossiers, devis demandé avant le {formatFrDate(express.fin)}.
-              </p>
-            </div>
-
-            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
-              <TelLink source="express_hero" className="btn btn-paper">
-                Appeler le {site.phone}
-              </TelLink>
-              <WhatsAppLink
-                source="express_hero"
-                text="Bonjour, j'ai besoin d'un permis de construire rapidement pour une maison de plain-pied."
-                className="text-paper underline decoration-brass-2 underline-offset-4"
-              >
-                Écrire sur WhatsApp
-              </WhatsAppLink>
-            </div>
           </div>
 
           <div id="devis" className="scroll-mt-24 bg-paper text-ink px-6 py-8 sm:px-9 sm:py-10 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)]">
@@ -126,6 +144,30 @@ export default function PermisExpressPage() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 sm:px-8 pt-16 sm:pt-24" aria-labelledby="realises">
+        <span className="rule" aria-hidden="true" />
+        <h2 id="realises" className="h-section mt-6">Des plain-pied déjà sortis de terre</h2>
+        <p className="mt-4 text-ink-2 leading-relaxed max-w-[60ch]">
+          Quelques-uns des {chantiers.length} chantiers référencés du bureau, autour du Havre. Même équipe, mêmes
+          plans à l&apos;échelle, pour votre dossier.
+        </p>
+        <ul className="mt-8 -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
+          {plainsPieds.map((c) => (
+            <li key={c.photo} className="w-[78%] shrink-0 snap-start sm:w-auto">
+              <figure>
+                <div className="relative aspect-[4/3] overflow-hidden bg-stone-2">
+                  <Image src={c.photo} alt={`${c.titre}, ${c.commune}`} fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 78vw" className="object-cover" />
+                </div>
+                <figcaption className="mt-3 text-sm leading-snug">
+                  <strong>{c.titre}</strong>
+                  <span className="block text-ink-2">{c.commune}</span>
+                </figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24" aria-labelledby="deroule">
@@ -223,6 +265,7 @@ export default function PermisExpressPage() {
         </div>
       </section>
 
+      <ExpressPied />
       <ExpressBarre />
       <ExpressVue />
     </>
