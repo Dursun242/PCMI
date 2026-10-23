@@ -7,10 +7,10 @@ import ExpressVue from "@/components/ExpressVue";
 import { ExpressEntete, ExpressPied } from "@/components/ExpressCadre";
 import TelLink from "@/components/TelLink";
 import WhatsAppLink from "@/components/WhatsAppLink";
-import { chantiers } from "@/config/references";
+import { chantiers, vitrine } from "@/config/references";
 import { express, site } from "@/config/site";
 import { formatEuro, formatFrDate } from "@/lib/format";
-import { enVitrine } from "@/lib/vitrine";
+import type { ReferenceVitrine } from "@/lib/vitrine";
 
 /**
  * Page d'atterrissage de la campagne Google Ads « permis express »
@@ -33,13 +33,38 @@ const etapes: [string, string, string][] = [
   [`En ${express.delai}`, "Dossier complet et dépôt", "Pièces PCMI 1 à 8, CERFA, dépôt en ligne sur le guichet de votre mairie."],
 ];
 
-/** Vrais chantiers de plain-pied du bureau (src/config/references.ts), communes seulement. */
-const plainsPieds = enVitrine(chantiers, [
-  "/references-chantiers/chantier-27.jpg",
-  "/references-chantiers/chantier-02.jpg",
-  "/references-chantiers/chantier-14.jpg",
-  "/references-chantiers/chantier-09.jpg",
-]);
+/**
+ * Toutes les maisons des références du bureau (src/config/references.ts),
+ * les plus belles d'abord (ordre de la `vitrine` de l'accueil). Communes
+ * seulement, jamais d'adresse ; immeubles et bâtiments publics écartés.
+ */
+const rang = (photo: string) => (vitrine.includes(photo) ? vitrine.indexOf(photo) : vitrine.length);
+const maisons: ReferenceVitrine[] = chantiers
+  .filter((c) => /maison|plain-pied|logements individuels/i.test(c.titre))
+  .sort((a, b) => rang(a.photo) - rang(b.photo))
+  .map(({ titre, commune, photo }) => ({ titre, commune, photo }));
+
+/** Relance vers le formulaire, posée entre les sections. */
+function RelanceDevis({ titre }: { titre: string }) {
+  return (
+    <div className="mx-auto max-w-7xl px-5 sm:px-8">
+      <div className="flex flex-col gap-5 border border-ink bg-paper p-6 sm:p-8 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="display text-3xl leading-tight">{titre}</p>
+          <p className="mt-2 text-ink-2">
+            Devis gratuit sous 4 h ouvrées, prix fixe de {formatEuro(express.prixTTC)} TTC. Sans engagement.
+          </p>
+        </div>
+        <div className="grid shrink-0 grid-cols-[3fr_2fr] gap-3 md:flex">
+          <a href="#devis" className="btn btn-ink whitespace-nowrap !px-3 sm:!px-7">Mon devis gratuit</a>
+          <TelLink source="express_relance" className="btn btn-line !px-3 sm:!px-7">
+            Appeler
+          </TelLink>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const faq: [string, string][] = [
   [
@@ -118,7 +143,7 @@ export default function PermisExpressPage() {
               </WhatsAppLink>
             </div>
 
-            <dl className="mt-10 grid grid-cols-3 gap-px bg-paper/15 max-w-xl">
+            <dl className="mt-10 hidden grid-cols-3 gap-px bg-paper/15 max-w-xl sm:grid">
               {[
                 ["Devis", "4 h", "ouvrées"],
                 ["Plans", express.premiersPlans, "pour valider"],
@@ -148,17 +173,24 @@ export default function PermisExpressPage() {
 
       <section className="mx-auto max-w-7xl px-5 sm:px-8 pt-16 sm:pt-24" aria-labelledby="realises">
         <span className="rule" aria-hidden="true" />
-        <h2 id="realises" className="h-section mt-6">Des plain-pied déjà sortis de terre</h2>
+        <h2 id="realises" className="h-section mt-6">Des maisons déjà sorties de terre</h2>
         <p className="mt-4 text-ink-2 leading-relaxed max-w-[60ch]">
-          Quelques-uns des {chantiers.length} chantiers référencés du bureau, autour du Havre. Même équipe, mêmes
-          plans à l&apos;échelle, pour votre dossier.
+          Des maisons dessinées par le bureau, autour du Havre. Même équipe, mêmes plans à l&apos;échelle, pour votre
+          dossier.
         </p>
-        <ul className="mt-8 -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
-          {plainsPieds.map((c) => (
-            <li key={c.photo} className="w-[78%] shrink-0 snap-start sm:w-auto">
+        <ul className="mt-8 -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-3 sm:-mx-8 sm:scroll-px-8 sm:px-8 lg:mx-0 lg:scroll-px-0 lg:px-0">
+          {maisons.map((c, i) => (
+            <li key={c.photo} className="w-[78%] shrink-0 snap-start sm:w-[45%] lg:w-[23.5%]">
               <figure>
                 <div className="relative aspect-[4/3] overflow-hidden bg-stone-2">
-                  <Image src={c.photo} alt={`${c.titre}, ${c.commune}`} fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 78vw" className="object-cover" />
+                  <Image
+                    src={c.photo}
+                    alt={`${c.titre}, ${c.commune}`}
+                    fill
+                    loading={i < 4 ? "eager" : "lazy"}
+                    sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 78vw"
+                    className="object-cover"
+                  />
                 </div>
                 <figcaption className="mt-3 text-sm leading-snug">
                   <strong>{c.titre}</strong>
@@ -168,6 +200,7 @@ export default function PermisExpressPage() {
             </li>
           ))}
         </ul>
+        <p className="mt-2 text-xs text-ink-2 lg:hidden" aria-hidden="true">Faites glisser pour voir les autres maisons →</p>
       </section>
 
       <section className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24" aria-labelledby="deroule">
@@ -185,7 +218,9 @@ export default function PermisExpressPage() {
         </ol>
       </section>
 
-      <section className="bg-stone">
+      <RelanceDevis titre="Votre maison sera la prochaine." />
+
+      <section className="mt-16 sm:mt-24 bg-stone">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24 grid gap-14 lg:grid-cols-2">
           <div>
             <span className="rule" aria-hidden="true" />
@@ -215,6 +250,9 @@ export default function PermisExpressPage() {
               prix fixe annoncé avant de commencer.
             </p>
           </div>
+        </div>
+        <div className="pb-16 sm:pb-24">
+          <RelanceDevis titre={"Un doute sur votre projet\u00a0? Demandez, c\u2019est gratuit."} />
         </div>
       </section>
 
@@ -257,7 +295,7 @@ export default function PermisExpressPage() {
             <p className="mt-3 text-paper/75">Devis sous 4 h ouvrées. Dossier prêt en {express.delai}.</p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <a href="#devis" className="btn btn-paper">Recevoir mon devis</a>
+            <a href="#devis" className="btn btn-paper">Mon devis gratuit</a>
             <TelLink source="express_bas" className="btn btn-line-light">
               {site.phone}
             </TelLink>
