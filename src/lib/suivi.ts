@@ -14,8 +14,38 @@ export const PREFIXE_SUIVI = "suivi/express/";
 /** Remises à zéro : suivi/express-zero/<instant en ms>.txt. Seule la plus récente compte. */
 export const PREFIXE_ZERO = "suivi/express-zero/";
 
-export const TYPES_SUIVI = ["vue", "formulaire", "demande", "demande-urgente", "appel", "whatsapp"] as const;
+/**
+ * Temps passé sur la page, par tranche (bornes hautes en secondes). Un
+ * événement par visite, envoyé quand le visiteur quitte la page ; seul compte
+ * le temps où elle était à l'écran.
+ */
+export const TRANCHES_TEMPS = [
+  ["temps-10s", 10, "Moins de 10 s"],
+  ["temps-30s", 30, "10 à 30 s"],
+  ["temps-1min", 60, "30 s à 1 min"],
+  ["temps-3min", 180, "1 à 3 min"],
+  ["temps-plus", Infinity, "Plus de 3 min"],
+] as const;
+export type TrancheTemps = (typeof TRANCHES_TEMPS)[number][0];
+
+export const TYPES_SUIVI = [
+  "vue",
+  "formulaire",
+  "demande",
+  "demande-urgente",
+  "appel",
+  "whatsapp",
+  ...TRANCHES_TEMPS.map(([t]) => t),
+] as const;
 export type TypeSuivi = (typeof TYPES_SUIVI)[number];
+
+export function trancheTemps(ms: number): TrancheTemps {
+  return TRANCHES_TEMPS.find(([, max]) => ms < max * 1000)?.[0] ?? "temps-plus";
+}
+
+function estTranche(t: TypeSuivi): t is TrancheTemps {
+  return t.startsWith("temps-");
+}
 
 /** « ads » : la visite vient d'une annonce Google (gclid ou utm_source=google). */
 export type SourceSuivi = "ads" | "direct";
@@ -77,6 +107,7 @@ export interface Compteurs {
   demandesUrgentes: number;
   appels: number;
   whatsapp: number;
+  temps: Record<TrancheTemps, number>;
 }
 
 export const COMPTEURS_VIDES: Compteurs = {
@@ -87,9 +118,11 @@ export const COMPTEURS_VIDES: Compteurs = {
   demandesUrgentes: 0,
   appels: 0,
   whatsapp: 0,
+  temps: { "temps-10s": 0, "temps-30s": 0, "temps-1min": 0, "temps-3min": 0, "temps-plus": 0 },
 };
 
 function ajouter(c: Compteurs, e: Evenement): Compteurs {
+  if (estTranche(e.type)) return { ...c, temps: { ...c.temps, [e.type]: c.temps[e.type] + 1 } };
   switch (e.type) {
     case "vue":
       return { ...c, visites: c.visites + 1, visitesAds: c.visitesAds + (e.source === "ads" ? 1 : 0) };
