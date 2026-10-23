@@ -16,7 +16,7 @@ export default function WhatsAppBubble() {
   const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   const href = whatsappUrl();
-  const eligible = Boolean(href) && pathname !== "/contact" && !pathname.startsWith("/admin");
+  const eligible = Boolean(href) && pathname !== "/contact" && pathname !== "/permis-express" && !pathname.startsWith("/admin");
 
   useEffect(() => {
     if (!eligible) {

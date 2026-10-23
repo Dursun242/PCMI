@@ -107,6 +107,16 @@ export function eligibleExpress(d: Pick<DemandeExpress, "typeMaison" | "surface"
   return d.typeMaison === "plain-pied" && d.surface !== null && d.surface <= express.surfaceMax;
 }
 
+/**
+ * Verdict pour l'e-mail : « hors » seulement quand une réponse donnée exclut
+ * l'Express (étage, surface trop grande) ; une réponse manquante laisse le
+ * projet « à vérifier » au rappel plutôt que de l'écarter.
+ */
+export function verdictExpress(d: Pick<DemandeExpress, "typeMaison" | "surface">): "eligible" | "hors" | "a-verifier" {
+  if (d.typeMaison === "etage" || (d.surface !== null && d.surface > express.surfaceMax)) return "hors";
+  return eligibleExpress(d) ? "eligible" : "a-verifier";
+}
+
 /** À rappeler en priorité : date butoir proche, ou compromis en cours. */
 export function estUrgente(d: Pick<DemandeExpress, "echeance" | "terrain">): boolean {
   return ECHEANCES_URGENTES.has(d.echeance) || d.terrain === "compromis";
