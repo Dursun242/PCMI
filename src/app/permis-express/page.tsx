@@ -9,6 +9,7 @@ import TelLink from "@/components/TelLink";
 import WhatsAppLink from "@/components/WhatsAppLink";
 import { chantiers, vitrine } from "@/config/references";
 import { express, site } from "@/config/site";
+import { FAQ_EXPRESS } from "@/lib/express";
 import { formatEuro, formatFrDate } from "@/lib/format";
 import type { ReferenceVitrine } from "@/lib/vitrine";
 
@@ -45,9 +46,9 @@ const maisons: ReferenceVitrine[] = chantiers
   .map(({ titre, commune, photo }) => ({ titre, commune, photo }));
 
 /** Relance vers le formulaire, posée entre les sections. */
-function RelanceDevis({ titre }: { titre: string }) {
+function RelanceDevis({ titre, zone }: { titre: string; zone: "relance1" | "relance2" }) {
   return (
-    <div className="mx-auto max-w-7xl px-5 sm:px-8">
+    <div data-zone={zone} className="mx-auto max-w-7xl px-5 sm:px-8">
       <div className="flex flex-col gap-5 border border-ink bg-paper p-6 sm:p-8 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="display text-3xl leading-tight">{titre}</p>
@@ -66,29 +67,6 @@ function RelanceDevis({ titre }: { titre: string }) {
   );
 }
 
-const faq: [string, string][] = [
-  [
-    "Mon compromis a une date limite de dépôt. Vous pouvez tenir ?",
-    `C'est notre spécialité. Dites-nous la date dès le premier appel : le dossier est prêt en ${express.delai} une fois vos informations réunies, et nous vous remettons le récépissé de dépôt, la preuve à transmettre au notaire.`,
-  ],
-  [
-    "Et si ma maison a un étage ou dépasse " + express.surfaceMax + " m² ?",
-    "Nous faisons aussi ces permis, avec une autre formule. Vous le saurez au devis, avant tout engagement, avec un prix fixe.",
-  ],
-  [
-    "Combien de temps la mairie met-elle ensuite ?",
-    "Deux mois d'instruction pour une maison individuelle, trois en secteur protégé. Un dossier complet dès le dépôt évite la demande de pièces qui relance ce délai.",
-  ],
-  [
-    "Faut-il se déplacer ?",
-    `Non : tout peut se faire par téléphone et e-mail. Si vous préférez en parler de vive voix, le bureau vous reçoit au ${site.address.street}, ${site.address.city}.`,
-  ],
-  [
-    "Que dois-je préparer ?",
-    "Le plan du terrain (bornage ou extrait cadastral), votre idée de plan, même griffonnée, ou un plan de constructeur, et deux photos du terrain. Rien n'est nécessaire pour demander le devis.",
-  ],
-];
-
 export default function PermisExpressPage() {
   if (!express.actif) redirect("/devis");
 
@@ -98,7 +76,7 @@ export default function PermisExpressPage() {
       {/* Hero et formulaire côte à côte sur grand écran : l'action est visible sans défiler. */}
       <section className="bg-forest text-paper">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 pt-8 pb-12 sm:py-20 grid gap-12 lg:grid-cols-[1.05fr_1fr] lg:items-start">
-          <div>
+          <div data-zone="hero">
             <div className="flex items-center gap-3">
               <span className="rule" aria-hidden="true" />
               <span className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">
@@ -160,7 +138,7 @@ export default function PermisExpressPage() {
             </dl>
           </div>
 
-          <div id="devis" className="scroll-mt-24 bg-paper text-ink px-6 py-8 sm:px-9 sm:py-10 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)]">
+          <div id="devis" data-section="formulaire" className="scroll-mt-24 bg-paper text-ink px-6 py-8 sm:px-9 sm:py-10 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)]">
             <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">Gratuit · sans engagement</p>
             <h2 className="display mt-3 text-4xl leading-tight">Recevez votre devis sous 4 h ouvrées</h2>
             <p className="mt-3 text-sm text-ink-2">Trois champs obligatoires, une minute. Nous vous rappelons avec un prix fixe.</p>
@@ -171,7 +149,7 @@ export default function PermisExpressPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 sm:px-8 pt-16 sm:pt-24" aria-labelledby="realises">
+      <section data-section="maisons" className="mx-auto max-w-7xl px-5 sm:px-8 pt-16 sm:pt-24" aria-labelledby="realises">
         <span className="rule" aria-hidden="true" />
         <h2 id="realises" className="h-section mt-6">Des maisons déjà sorties de terre</h2>
         <p className="mt-4 text-ink-2 leading-relaxed max-w-[60ch]">
@@ -203,7 +181,7 @@ export default function PermisExpressPage() {
         <p className="mt-2 text-xs text-ink-2 lg:hidden" aria-hidden="true">Faites glisser pour voir les autres maisons →</p>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24" aria-labelledby="deroule">
+      <section data-section="deroule" className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24" aria-labelledby="deroule">
         <span className="rule" aria-hidden="true" />
         <h2 id="deroule" className="h-section mt-6">Du premier appel au dépôt</h2>
         <ol className="mt-10 grid gap-px bg-stone-2 md:grid-cols-3">
@@ -218,9 +196,9 @@ export default function PermisExpressPage() {
         </ol>
       </section>
 
-      <RelanceDevis titre="Votre maison sera la prochaine." />
+      <RelanceDevis zone="relance1" titre="Votre maison sera la prochaine." />
 
-      <section className="mt-16 sm:mt-24 bg-stone">
+      <section data-section="compris" className="mt-16 sm:mt-24 bg-stone">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24 grid gap-14 lg:grid-cols-2">
           <div>
             <span className="rule" aria-hidden="true" />
@@ -252,7 +230,7 @@ export default function PermisExpressPage() {
           </div>
         </div>
         <div className="pb-16 sm:pb-24">
-          <RelanceDevis titre={"Un doute sur votre projet\u00a0? Demandez, c\u2019est gratuit."} />
+          <RelanceDevis zone="relance2" titre={"Un doute sur votre projet\u00a0? Demandez, c\u2019est gratuit."} />
         </div>
       </section>
 
@@ -264,7 +242,7 @@ export default function PermisExpressPage() {
             {site.legal.company}, bureau d&apos;études installé au Havre. Un seul interlocuteur, joignable directement,
             qui connaît les règlements d&apos;urbanisme de la Seine-Maritime, de l&apos;Eure et du Calvados.
           </p>
-          <address className="mt-6 not-italic text-sm leading-relaxed">
+          <address data-zone="bureau" className="mt-6 not-italic text-sm leading-relaxed">
             <strong>{site.parent}</strong>
             <br />
             {site.address.street}, {site.address.zip} {site.address.city}
@@ -272,11 +250,11 @@ export default function PermisExpressPage() {
             <TelLink source="express_bureau" className="underline decoration-brass underline-offset-4" />
           </address>
         </div>
-        <div>
+        <div data-section="questions">
           <h2 className="display text-3xl">Vos questions</h2>
           <div className="mt-6 border-t border-ink">
-            {faq.map(([q, r]) => (
-              <details key={q} className="group border-b border-stone-2 py-5">
+            {FAQ_EXPRESS.map(({ cle, question: q, reponse: r }) => (
+              <details key={cle} data-faq={cle} className="group border-b border-stone-2 py-5">
                 <summary className="flex cursor-pointer list-none items-start justify-between gap-4 font-bold leading-snug">
                   {q}
                   <span aria-hidden="true" className="text-bronze transition-transform group-open:rotate-45">+</span>
@@ -288,7 +266,7 @@ export default function PermisExpressPage() {
         </div>
       </section>
 
-      <section className="bg-forest text-paper">
+      <section data-section="fin" data-zone="bas" className="bg-forest text-paper">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-14 sm:py-20 flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="display text-4xl sm:text-5xl max-w-[20ch]">Votre date butoir approche ?</p>

@@ -3,7 +3,8 @@
  * Ne fait rien ailleurs sur le site, ce qui permet de l'appeler depuis des
  * composants partagés (lien téléphone, lien WhatsApp).
  */
-import { trancheTemps, type TypeSuivi } from "./suivi";
+import type { Bilan } from "./bilan";
+import type { TypeSuivi } from "./suivi";
 
 const CLE_ADS = "pcmi_express_ads";
 
@@ -18,22 +19,29 @@ export function visiteAds(): boolean {
   }
 }
 
-export function suivreExpress(type: Exclude<TypeSuivi, "demande" | "demande-urgente">) {
+export function suivreExpress(type: "vue" | "formulaire" | "appel" | "whatsapp") {
   if (window.location.pathname !== "/permis-express") return;
   envoyer(type);
 }
 
 /**
- * Temps passé, envoyé par ExpressVue en quittant la page. Sans contrôle de
+ * Bilan de la visite, envoyé par ExpressVue au départ. Sans contrôle de
  * l'adresse : après l'envoi du formulaire, elle est déjà celle de la page merci.
  */
-export function suivreTemps(ms: number) {
-  envoyer(trancheTemps(ms));
+export function envoyerBilan(bilan: Bilan) {
+  envoyer("bilan", { bilan });
 }
 
-function envoyer(type: TypeSuivi) {
+/** Formulaire envoyé pendant cette visite : le bilan ne le compte pas comme abandonné. */
+let formulaireEnvoye = false;
+export const noterEnvoi = () => {
+  formulaireEnvoye = true;
+};
+export const formulaireAEteEnvoye = () => formulaireEnvoye;
+
+function envoyer(type: TypeSuivi, extra: Record<string, unknown> = {}) {
   try {
-    const corps = JSON.stringify({ type, ads: visiteAds() });
+    const corps = JSON.stringify({ type, ads: visiteAds(), ...extra });
     // sendBeacon survit à l'ouverture de l'appli Téléphone ou WhatsApp, contrairement à fetch.
     if (!navigator.sendBeacon?.("/api/express/suivi", corps)) {
       void fetch("/api/express/suivi", { method: "POST", body: corps, keepalive: true });

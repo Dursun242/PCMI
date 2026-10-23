@@ -13,6 +13,7 @@ import {
   type SourceSuivi,
   type TypeSuivi,
 } from "./suivi";
+import type { Bilan } from "./bilan";
 
 /**
  * Accès au stockage du compteur (Vercel Blob, jeton BLOB_READ_WRITE_TOKEN).
@@ -23,10 +24,10 @@ export function suiviConfigure(): boolean {
 }
 
 /** Enregistre un événement. Ne lève jamais : la mesure ne doit pas casser un parcours. */
-export async function enregistrer(type: TypeSuivi, source: SourceSuivi): Promise<void> {
+export async function enregistrer(type: TypeSuivi, source: SourceSuivi, bilan?: Bilan): Promise<void> {
   if (!suiviConfigure()) return;
   const maintenant = new Date();
-  const evenement: Evenement = { jour: jourParis(maintenant), type, source, instant: maintenant.getTime() };
+  const evenement: Evenement = { jour: jourParis(maintenant), type, source, instant: maintenant.getTime(), bilan };
   try {
     await put(cheminEvenement(evenement, crypto.randomUUID()), "1", {
       access: "public",

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { express } from "@/config/site";
 import { surfaceBucket, trackEvent } from "@/lib/analytics";
-import { suivreExpress } from "@/lib/suiviClient";
+import { noterEnvoi, suivreExpress } from "@/lib/suiviClient";
 import { ECHEANCES, RENDEZ_VOUS, SITUATIONS_TERRAIN, TYPES_MAISON, eligibleExpress, estUrgente, type Choix } from "@/lib/express";
 
 type Status = "idle" | "sending" | "error";
@@ -78,6 +78,7 @@ export default function ExpressForm() {
         urgent: String(estUrgente({ echeance: data.echeance ?? "", terrain: data.terrain ?? "" })),
         surface_bucket: surfaceBucket(surface),
       });
+      noterEnvoi();
       router.push("/devis/merci/express");
     } catch (err) {
       setStatus("error");

@@ -10,7 +10,7 @@ import { site } from "@/config/site";
  */
 export function ExpressEntete() {
   return (
-    <header className="sticky top-0 z-40 border-b border-paper/10 bg-forest text-paper">
+    <header data-zone="entete" className="sticky top-0 z-40 border-b border-paper/10 bg-forest text-paper">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3 sm:px-8">
         <Logo light priority compact />
         <TelLink source="express_entete" className="btn btn-paper !min-h-10 shrink-0 whitespace-nowrap !px-4 text-sm">

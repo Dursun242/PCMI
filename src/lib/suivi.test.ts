@@ -11,7 +11,6 @@ import {
   lireChemin,
   parJour,
   tauxContact,
-  trancheTemps,
   type Evenement,
 } from "./suivi";
 
@@ -73,18 +72,28 @@ describe("compter", () => {
 });
 
 describe("temps passé", () => {
-  it("range une durée dans sa tranche", () => {
-    expect(trancheTemps(3_000)).toBe("temps-10s");
-    expect(trancheTemps(10_000)).toBe("temps-30s");
-    expect(trancheTemps(45_000)).toBe("temps-1min");
-    expect(trancheTemps(120_000)).toBe("temps-3min");
-    expect(trancheTemps(600_000)).toBe("temps-plus");
-  });
-
   it("compte chaque tranche sans toucher aux visites", () => {
     const c = compter([e("2026-10-23", "temps-10s"), e("2026-10-23", "temps-10s"), e("2026-10-23", "temps-plus")]);
     expect(c.temps).toEqual({ "temps-10s": 2, "temps-30s": 0, "temps-1min": 0, "temps-3min": 0, "temps-plus": 1 });
     expect(c.visites).toBe(0);
+  });
+
+  it("compte le temps des bilans de visite", () => {
+    const bilan: Evenement["bilan"] = { temps: "temps-3min", appareil: "telephone", sections: [], faq: [], clics: [], abandon: null, envoye: false };
+    const c = compter([{ ...e("2026-10-23", "bilan"), bilan }]);
+    expect(c.temps["temps-3min"]).toBe(1);
+    expect(c.visites).toBe(0);
+  });
+
+  it("relit un chemin de bilan, et ignore un bilan illisible", () => {
+    const ev: Evenement = {
+      ...e("2026-10-23", "bilan", "ads", 1761231600000),
+      bilan: { temps: "temps-1min", appareil: "ordinateur", sections: ["formulaire"], faq: ["etage"], clics: ["hero-appel"], abandon: null, envoye: true },
+    };
+    const chemin = cheminEvenement(ev, "0b5c-uuid");
+    expect(chemin).toBe("suivi/express/2026-10-23/bilan/ads/1761231600000-0b5c-uuid_ttemps-1min_aordinateur_sformulaire_qetage_chero-appel_e1.txt");
+    expect(lireChemin(chemin)).toEqual(ev);
+    expect(lireChemin("suivi/express/2026-10-23/bilan/ads/1761231600000-0b5c-uuid.txt")).toBeNull();
   });
 
   it("relit un chemin de tranche", () => {
