@@ -21,11 +21,15 @@ const LIGNES: { titre: string; valeur: (c: Compteurs) => string; aide?: string }
   { titre: "Taux de contact", valeur: (c) => (tauxContact(c) === null ? "—" : `${tauxContact(c)} %`), aide: "Demandes + appels + WhatsApp, rapportés aux visites." },
 ];
 
+function libelleJour(jour: string) {
+  return new Date(`${jour}T12:00:00Z`).toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
+}
+
 function Chiffre({ label, valeur, sous }: { label: string; valeur: number | string; sous?: string }) {
   return (
-    <div className="bg-paper p-5">
+    <div className="bg-paper p-4 sm:p-5">
       <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-ink-2">{label}</p>
-      <p className="display mt-2 text-5xl leading-none">{valeur}</p>
+      <p className="display mt-2 text-4xl leading-none sm:text-5xl">{valeur}</p>
       {sous && <p className="mt-2 text-xs text-ink-2">{sous}</p>}
     </div>
   );
@@ -46,20 +50,21 @@ export default async function CompteurExpress() {
 
   const { evenements, tronque, zero } = await lireEvenements();
   const aujourdhui = jourParis(new Date());
-  const periodes: [string, Compteurs][] = [
-    ["Aujourd'hui", compter(evenements, aujourdhui)],
-    ["7 jours", compter(evenements, joursAvant(aujourdhui, 6))],
-    ["30 jours", compter(evenements, joursAvant(aujourdhui, 29))],
-    ["Depuis le lancement", compter(evenements)],
+  // [titre, titre court pour téléphone, compteurs]
+  const periodes: [string, string, Compteurs][] = [
+    ["Aujourd'hui", "Auj.", compter(evenements, aujourdhui)],
+    ["7 jours", "7 j", compter(evenements, joursAvant(aujourdhui, 6))],
+    ["30 jours", "30 j", compter(evenements, joursAvant(aujourdhui, 29))],
+    [zero > 0 ? "Depuis la remise à zéro" : "Depuis le lancement", "Total", compter(evenements)],
   ];
-  const mois = periodes[2][1];
+  const mois = periodes[2][2];
   const jours = parJour(evenements, aujourdhui, 14);
 
   return (
     <AdminShell>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="display text-3xl">Compteur de la page Express</h1>
+          <h1 className="display text-2xl sm:text-3xl">Compteur de la page Express</h1>
           <p className="mt-1 text-sm text-ink-2">
             Campagne Google Ads · formule {express.nom} à {express.prixTTC} € · chiffres à l&apos;heure de Paris
           </p>
@@ -85,7 +90,7 @@ export default async function CompteurExpress() {
         </p>
       )}
 
-      <h2 className="mt-10 text-sm font-bold uppercase tracking-[0.18em] text-ink-2">30 derniers jours</h2>
+      <h2 className="mt-8 sm:mt-10 text-sm font-bold uppercase tracking-[0.18em] text-ink-2">30 derniers jours</h2>
       <div className="mt-3 grid gap-px bg-stone-2 grid-cols-2 lg:grid-cols-4">
         <Chiffre label="Visites" valeur={mois.visites} sous={`${mois.visitesAds} via Google Ads`} />
         <Chiffre label="Contacts" valeur={contacts(mois)} sous={`${mois.demandes} demandes · ${mois.appels} appels · ${mois.whatsapp} WhatsApp`} />
@@ -93,36 +98,70 @@ export default async function CompteurExpress() {
         <Chiffre label="Taux de contact" valeur={tauxContact(mois) === null ? "—" : `${tauxContact(mois)} %`} sous="Contacts / visites" />
       </div>
 
-      <h2 className="mt-12 text-sm font-bold uppercase tracking-[0.18em] text-ink-2">Par période</h2>
-      <div className="mt-3 overflow-x-auto">
-        <table className="w-full min-w-[560px] border-collapse bg-paper text-sm">
-          <thead>
-            <tr className="border-b border-ink text-left">
-              <th className="p-3 font-bold">Indicateur</th>
-              {periodes.map(([p]) => (
-                <th key={p} className="p-3 text-right font-bold">{p}</th>
+      <h2 className="mt-10 sm:mt-12 text-sm font-bold uppercase tracking-[0.18em] text-ink-2">Par période</h2>
+      {/* Titres courts et explications masquées sur téléphone : le tableau tient dans l'écran. */}
+      <table className="mt-3 w-full border-collapse bg-paper text-sm">
+        <thead>
+          <tr className="border-b border-ink text-left">
+            <th className="p-2 font-bold sm:p-3">
+              <span className="sr-only sm:not-sr-only">Indicateur</span>
+            </th>
+            {periodes.map(([p, court]) => (
+              <th key={p} className="p-2 text-right font-bold sm:p-3">
+                <abbr title={p} className="no-underline sm:hidden">{court}</abbr>
+                <span className="hidden sm:inline">{p}</span>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {LIGNES.map((l) => (
+            <tr key={l.titre} className="border-b border-stone-2">
+              <td className="p-2 sm:p-3">
+                <span className={l.titre.startsWith("dont") ? "pl-3 text-ink-2 sm:pl-4" : "font-bold"}>{l.titre}</span>
+                {l.aide && <span className="hidden text-xs text-ink-2 sm:block">{l.aide}</span>}
+              </td>
+              {periodes.map(([p, , c]) => (
+                <td key={p} className="p-2 text-right tabular-nums whitespace-nowrap sm:p-3">{l.valeur(c)}</td>
               ))}
             </tr>
-          </thead>
-          <tbody>
-            {LIGNES.map((l) => (
-              <tr key={l.titre} className="border-b border-stone-2">
-                <td className="p-3">
-                  <span className={l.titre.startsWith("dont") ? "pl-4 text-ink-2" : "font-bold"}>{l.titre}</span>
-                  {l.aide && <span className="block text-xs text-ink-2">{l.aide}</span>}
-                </td>
-                {periodes.map(([p, c]) => (
-                  <td key={p} className="p-3 text-right tabular-nums">{l.valeur(c)}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
 
-      <h2 className="mt-12 text-sm font-bold uppercase tracking-[0.18em] text-ink-2">Jour par jour (14 jours)</h2>
-      <div className="mt-3 overflow-x-auto">
-        <table className="w-full min-w-[560px] border-collapse bg-paper text-sm">
+      <h2 className="mt-10 sm:mt-12 text-sm font-bold uppercase tracking-[0.18em] text-ink-2">Jour par jour (14 jours)</h2>
+      {/* Téléphone : une ligne par jour, visites à gauche, contacts à droite. */}
+      <ul className="mt-3 bg-paper text-sm sm:hidden">
+        {jours.map(({ jour, compteurs: c }) => {
+          const vide = c.visites === 0 && contacts(c) === 0;
+          const detail = [
+            c.demandes > 0 && `${c.demandes} demande${c.demandes > 1 ? "s" : ""}`,
+            c.appels > 0 && `${c.appels} appel${c.appels > 1 ? "s" : ""}`,
+            c.whatsapp > 0 && `${c.whatsapp} WhatsApp`,
+          ].filter(Boolean);
+          return (
+            <li key={jour} className={`flex items-baseline justify-between gap-3 border-b border-stone-2 px-3 py-2.5 ${vide ? "text-ink-3" : ""}`}>
+              <div>
+                <p className="font-bold">{libelleJour(jour)}</p>
+                {!vide && (
+                  <p className="text-xs text-ink-2">
+                    {c.visitesAds} via Ads · {c.formulaires} formulaire{c.formulaires > 1 ? "s" : ""}
+                  </p>
+                )}
+              </div>
+              <div className="text-right">
+                <p className="tabular-nums">
+                  <strong>{c.visites}</strong> visite{c.visites > 1 ? "s" : ""}
+                </p>
+                {detail.length > 0 && <p className="text-xs font-bold text-forest">{detail.join(" · ")}</p>}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="mt-3 hidden sm:block">
+        <table className="w-full border-collapse bg-paper text-sm">
           <thead>
             <tr className="border-b border-ink text-left">
               {["Jour", "Visites", "dont Ads", "Formulaires", "Demandes", "Appels", "WhatsApp"].map((h) => (
@@ -133,9 +172,7 @@ export default async function CompteurExpress() {
           <tbody>
             {jours.map(({ jour, compteurs: c }) => (
               <tr key={jour} className={`border-b border-stone-2 ${c.visites === 0 && contacts(c) === 0 ? "text-ink-3" : ""}`}>
-                <td className="p-3">
-                  {new Date(`${jour}T12:00:00Z`).toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })}
-                </td>
+                <td className="p-3">{libelleJour(jour)}</td>
                 {[c.visites, c.visitesAds, c.formulaires, c.demandes, c.appels, c.whatsapp].map((v, i) => (
                   <td key={i} className="p-3 text-right tabular-nums">{v}</td>
                 ))}
