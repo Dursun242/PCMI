@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { plans, site, type PlanId } from "@/config/site";
+import { express, plans, site, type PlanId } from "@/config/site";
 import { formatEuro } from "@/lib/format";
 import WhatsAppLink from "./WhatsAppLink";
 
@@ -23,7 +23,7 @@ const documents: [string, string][] = [
 ];
 
 /** Segments acceptés après /devis/merci. */
-export const MERCI_TYPES = [...plans.map((p) => p.id), "conseil", "plan-de-masse", "plans-execution", "etude-thermique"] as const;
+export const MERCI_TYPES = [...plans.map((p) => p.id), "conseil", "plan-de-masse", "plans-execution", "etude-thermique", "express"] as const;
 export type MerciType = (typeof MERCI_TYPES)[number];
 
 export function isMerciType(v: string): v is MerciType {
@@ -35,6 +35,7 @@ export default function MerciContent({ type }: { type?: MerciType }) {
   const viaPlanDeMasse = type === "plan-de-masse";
   const viaExe = type === "plans-execution";
   const viaThermique = type === "etude-thermique";
+  const viaExpress = type === "express";
 
   return (
     <div className="mx-auto max-w-3xl px-5 sm:px-8 py-16 sm:py-24">
@@ -45,6 +46,7 @@ export default function MerciContent({ type }: { type?: MerciType }) {
         indésirables.{viaPlanDeMasse ? " Votre plan nous est bien parvenu." : ""}
         {viaExe ? " Votre demande porte sur des plans d'exécution : le devis détaille un prix fixe par lot." : ""}
         {viaThermique ? " Votre demande porte sur une étude thermique RE2020 : notre thermicien vous répond avec un prix fixe par prestation." : ""}
+        {viaExpress ? ` Nous vous rappelons sous 4 h ouvrées pour la formule ${express.nom} (${formatEuro(express.prixTTC)} TTC, dossier prêt en ${express.delai}) ou la formule adaptée à votre projet.` : ""}
         {plan ? ` Votre demande porte sur la formule ${plan.name} (${formatEuro(plan.priceTTC)} TTC, livrée sous ${plan.delayWorkingDays}).` : ""}
       </p>
 
