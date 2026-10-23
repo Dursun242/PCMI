@@ -37,7 +37,7 @@ export default function ExpressBarre() {
         Appeler
       </TelLink>
       <a href="#devis" className="btn btn-ink !min-h-12 !px-3">
-        Mon devis
+        Mon devis gratuit
       </a>
     </div>
   );

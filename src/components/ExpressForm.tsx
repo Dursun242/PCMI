@@ -172,10 +172,19 @@ export default function ExpressForm() {
         </p>
       )}
 
+      <ul className="grid gap-1.5 text-sm">
+        {["Rappel sous 4 h ouvrées", "Prix fixe annoncé avant tout engagement", "Aucune revente de vos données"].map((t) => (
+          <li key={t} className="flex gap-2">
+            <span aria-hidden="true" className="text-bronze">✓</span>
+            {t}
+          </li>
+        ))}
+      </ul>
+
       <button type="submit" className="btn btn-ink" disabled={status === "sending"}>
         {status === "sending" ? "Envoi en cours…" : "Recevoir mon devis gratuit"}
       </button>
-      <p className="text-xs text-ink-2">Gratuit et sans engagement. Aucune revente de vos données.</p>
+      <p className="text-xs text-ink-2">Gratuit et sans engagement.</p>
     </form>
   );
 }
