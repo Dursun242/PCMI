@@ -4,6 +4,7 @@ import { plans, site } from "@/config/site";
 import { formatEuro } from "@/lib/format";
 import { Analytics } from "@vercel/analytics/next";
 import UmamiScript from "@/components/UmamiScript";
+import GoogleAds from "@/components/GoogleAds";
 import BandeauLancement from "@/components/BandeauLancement";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -77,6 +78,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Mesure d'audience sans cookie ni identifiant individuel (Vercel Web Analytics). */}
         <Analytics />
         <UmamiScript />
+        {/* Conversions Google Ads, soumises au consentement (bannière incluse). */}
+        <GoogleAds />
       </body>
     </html>
   );
