@@ -14,19 +14,9 @@ export const PREFIXE_SUIVI = "suivi/express/";
 /** Remises à zéro : suivi/express-zero/<instant en ms>.txt. Seule la plus récente compte. */
 export const PREFIXE_ZERO = "suivi/express-zero/";
 
-/**
- * Temps passé sur la page, par tranche (bornes hautes en secondes). Un
- * événement par visite, envoyé quand le visiteur quitte la page ; seul compte
- * le temps où elle était à l'écran.
- */
-export const TRANCHES_TEMPS = [
-  ["temps-10s", 10, "Moins de 10 s"],
-  ["temps-30s", 30, "10 à 30 s"],
-  ["temps-1min", 60, "30 s à 1 min"],
-  ["temps-3min", 180, "1 à 3 min"],
-  ["temps-plus", Infinity, "Plus de 3 min"],
-] as const;
-export type TrancheTemps = (typeof TRANCHES_TEMPS)[number][0];
+import { decoderBilan, encoderBilan, TRANCHES_TEMPS, type Bilan, type TrancheTemps } from "./bilan";
+
+export { TRANCHES_TEMPS, trancheTemps, type TrancheTemps } from "./bilan";
 
 export const TYPES_SUIVI = [
   "vue",
@@ -35,13 +25,12 @@ export const TYPES_SUIVI = [
   "demande-urgente",
   "appel",
   "whatsapp",
+  // Bilan de visite (bilan.ts), dont le détail suit l'identifiant dans le nom du fichier.
+  "bilan",
+  // Temps passé envoyé seul : premières mesures, avant le bilan. Encore lues, plus envoyées.
   ...TRANCHES_TEMPS.map(([t]) => t),
 ] as const;
 export type TypeSuivi = (typeof TYPES_SUIVI)[number];
-
-export function trancheTemps(ms: number): TrancheTemps {
-  return TRANCHES_TEMPS.find(([, max]) => ms < max * 1000)?.[0] ?? "temps-plus";
-}
 
 function estTranche(t: TypeSuivi): t is TrancheTemps {
   return t.startsWith("temps-");
@@ -56,6 +45,8 @@ export interface Evenement {
   source: SourceSuivi;
   /** Instant de l'événement en ms (0 pour les premiers événements, enregistrés sans). */
   instant: number;
+  /** Seulement pour le type « bilan ». */
+  bilan?: Bilan;
 }
 
 export function estTypeSuivi(v: unknown): v is TypeSuivi {
@@ -69,7 +60,8 @@ export function jourParis(date: Date): string {
 
 /** Le nom du fichier commence par l'instant : c'est ce qui permet la remise à zéro sans rien effacer. */
 export function cheminEvenement(e: Evenement, id: string): string {
-  return `${PREFIXE_SUIVI}${e.jour}/${e.type}/${e.source}/${e.instant}-${id}.txt`;
+  const detail = e.bilan ? `_${encoderBilan(e.bilan)}` : "";
+  return `${PREFIXE_SUIVI}${e.jour}/${e.type}/${e.source}/${e.instant}-${id}${detail}.txt`;
 }
 
 /** Relit un chemin ; null pour tout chemin qui n'a pas la forme attendue. */
@@ -79,7 +71,9 @@ export function lireChemin(chemin: string): Evenement | null {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(jour ?? "") || !estTypeSuivi(type)) return null;
   if (source !== "ads" && source !== "direct") return null;
   const instant = Number(/^(\d{12,14})-/.exec(fichier)?.[1] ?? 0);
-  return { jour, type, source, instant };
+  if (type !== "bilan") return { jour, type, source, instant };
+  const bilan = decoderBilan(/_(.+)\.txt$/.exec(fichier)?.[1] ?? "");
+  return bilan ? { jour, type, source, instant, bilan } : null;
 }
 
 export function cheminZero(instant: number): string {
@@ -123,6 +117,9 @@ export const COMPTEURS_VIDES: Compteurs = {
 
 function ajouter(c: Compteurs, e: Evenement): Compteurs {
   if (estTranche(e.type)) return { ...c, temps: { ...c.temps, [e.type]: c.temps[e.type] + 1 } };
+  if (e.type === "bilan") {
+    return e.bilan ? { ...c, temps: { ...c.temps, [e.bilan.temps]: c.temps[e.bilan.temps] + 1 } } : c;
+  }
   switch (e.type) {
     case "vue":
       return { ...c, visites: c.visites + 1, visitesAds: c.visitesAds + (e.source === "ads" ? 1 : 0) };

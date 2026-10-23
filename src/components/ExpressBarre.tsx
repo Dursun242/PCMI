@@ -32,7 +32,7 @@ export default function ExpressBarre() {
 
   if (!visible) return null;
   return (
-    <div className="barre-cta md:hidden fixed inset-x-0 bottom-0 z-30 border-t border-stone-2 bg-paper/97 backdrop-blur px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] grid grid-cols-2 gap-3">
+    <div data-zone="barre" className="barre-cta md:hidden fixed inset-x-0 bottom-0 z-30 border-t border-stone-2 bg-paper/97 backdrop-blur px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] grid grid-cols-2 gap-3">
       <TelLink source="express_barre" className="btn btn-line !min-h-12 !px-3">
         Appeler
       </TelLink>

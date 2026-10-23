@@ -5,7 +5,7 @@
  * vit ici : libellés des choix, lecture et contrôle de la demande, tri des
  * demandes urgentes. Aucune dépendance serveur : importable des deux côtés.
  */
-import { express } from "@/config/site";
+import { express, site } from "@/config/site";
 
 export type Choix = readonly (readonly [string, string])[];
 
@@ -121,3 +121,35 @@ export function verdictExpress(d: Pick<DemandeExpress, "typeMaison" | "surface">
 export function estUrgente(d: Pick<DemandeExpress, "echeance" | "terrain">): boolean {
   return ECHEANCES_URGENTES.has(d.echeance) || d.terrain === "compromis";
 }
+
+/**
+ * Questions de la page. La clé sert au compteur (questions ouvertes) :
+ * ne pas la changer, sous peine de perdre l'historique de la question.
+ */
+export const FAQ_EXPRESS: readonly { cle: string; question: string; reponse: string }[] = [
+  {
+    cle: "delai",
+    question: "Mon compromis a une date limite de dépôt. Vous pouvez tenir\u00a0?",
+    reponse: `C'est notre spécialité. Dites-nous la date dès le premier appel : le dossier est prêt en ${express.delai} une fois vos informations réunies, et nous vous remettons le récépissé de dépôt, la preuve à transmettre au notaire.`,
+  },
+  {
+    cle: "etage",
+    question: `Et si ma maison a un étage ou dépasse ${express.surfaceMax} m²\u00a0?`,
+    reponse: "Nous faisons aussi ces permis, avec une autre formule. Vous le saurez au devis, avant tout engagement, avec un prix fixe.",
+  },
+  {
+    cle: "mairie",
+    question: "Combien de temps la mairie met-elle ensuite\u00a0?",
+    reponse: "Deux mois d'instruction pour une maison individuelle, trois en secteur protégé. Un dossier complet dès le dépôt évite la demande de pièces qui relance ce délai.",
+  },
+  {
+    cle: "deplacer",
+    question: "Faut-il se déplacer\u00a0?",
+    reponse: `Non : tout peut se faire par téléphone et e-mail. Si vous préférez en parler de vive voix, le bureau vous reçoit au ${site.address.street}, ${site.address.city}.`,
+  },
+  {
+    cle: "preparer",
+    question: "Que dois-je préparer\u00a0?",
+    reponse: "Le plan du terrain (bornage ou extrait cadastral), votre idée de plan, même griffonnée, ou un plan de constructeur, et deux photos du terrain. Rien n'est nécessaire pour demander le devis.",
+  },
+];

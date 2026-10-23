@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { ipOf, rateLimited } from "@/lib/mailer";
+import { nettoyerBilan } from "@/lib/bilan";
 import { estTypeSuivi } from "@/lib/suivi";
 import { enregistrer } from "@/lib/suiviStore";
 
@@ -11,7 +12,7 @@ const ROBOTS = /bot|crawl|spider|slurp|preview|lighthouse|headless|monitor/i;
 
 /**
  * Reçoit les événements du navigateur (vue, formulaire commencé, clics sur
- * Appeler et WhatsApp). Les demandes envoyées, elles, sont comptées côté
+ * Appeler et WhatsApp, bilan de visite). Les demandes envoyées, elles, sont comptées côté
  * serveur par /api/express, pour ne dépendre d'aucun script bloqué.
  * Répond toujours 204 : le navigateur n'a rien à faire de la réponse.
  */
@@ -20,7 +21,7 @@ export async function POST(req: Request) {
   if (ROBOTS.test(req.headers.get("user-agent") ?? "")) return vide;
   if (rateLimited(`suivi:${ipOf(req)}`, MAX_PAR_FENETRE)) return vide;
 
-  let body: { type?: unknown; ads?: unknown };
+  let body: { type?: unknown; ads?: unknown; bilan?: unknown };
   try {
     body = JSON.parse(await req.text());
   } catch {
@@ -28,7 +29,13 @@ export async function POST(req: Request) {
   }
   // Les demandes ne passent pas par ici : elles sont comptées à l'envoi réel.
   if (!estTypeSuivi(body.type) || body.type.startsWith("demande")) return vide;
+  const source = body.ads === true ? "ads" : "direct";
 
-  await enregistrer(body.type, body.ads === true ? "ads" : "direct");
+  if (body.type === "bilan") {
+    const bilan = nettoyerBilan(body.bilan);
+    if (bilan) await enregistrer("bilan", source, bilan);
+    return vide;
+  }
+  await enregistrer(body.type, source);
   return vide;
 }
