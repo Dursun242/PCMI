@@ -2,11 +2,12 @@
  * Mesure d'audience — Vercel Web Analytics et Umami (même identifiant de site
  * qu'ID Maîtrise, étiquette « permis-maison-individuelle » : voir UmamiScript).
  *
- * Sans cookie et sans identifiant individuel : aucune bannière de consentement
- * n'est requise. Ne jamais faire transiter ici de donnée personnelle
+ * Sans cookie et sans identifiant individuel. Certains événements valent aussi
+ * conversion Google Ads (voir lib/googleAds.ts, soumis au consentement). Ne jamais faire transiter ici de donnée personnelle
  * (nom, e-mail, téléphone, commune) : uniquement des libellés de parcours.
  */
 import { track } from "@vercel/analytics";
+import { sendGoogleAdsConversion } from "./googleAds";
 
 /** Tranches de surface : on mesure le marché, jamais le projet nominatif. */
 export type SurfaceBucket = "non-precisee" | "moins-de-80" | "80-119" | "120-149" | "150-et-plus";
@@ -43,6 +44,8 @@ type Events = {
   etude_thermique_submit: { prestations: string };
   /** Ouverture de la conversation WhatsApp. */
   whatsapp_click: { source: string };
+  /** Clic sur un numéro de téléphone (lien tel:). */
+  phone_click: { source: string };
   /** Clic sur l'appel à l'action d'un article de conseils. */
   article_cta_click: { slug: string; destination: string };
 };
@@ -58,6 +61,7 @@ export function trackEvent<K extends keyof Events>(name: K, props: Events[K]) {
   try {
     track(name, props as Record<string, string>);
     window.umami?.track(name, props as Record<string, string>);
+    sendGoogleAdsConversion(name);
   } catch {
     /* la mesure ne doit jamais casser un parcours */
   }
