@@ -1,5 +1,6 @@
 import Link from "next/link";
 import AdminShell from "@/components/admin/AdminShell";
+import RemiseAZero from "@/components/admin/RemiseAZero";
 import { express } from "@/config/site";
 import { compter, contacts, jourParis, joursAvant, parJour, tauxContact, type Compteurs } from "@/lib/suivi";
 import { lireEvenements, suiviConfigure } from "@/lib/suiviStore";
@@ -43,7 +44,7 @@ export default async function CompteurExpress() {
     );
   }
 
-  const { evenements, tronque } = await lireEvenements();
+  const { evenements, tronque, zero } = await lireEvenements();
   const aujourdhui = jourParis(new Date());
   const periodes: [string, Compteurs][] = [
     ["Aujourd'hui", compter(evenements, aujourdhui)],
@@ -63,10 +64,20 @@ export default async function CompteurExpress() {
             Campagne Google Ads · formule {express.nom} à {express.prixTTC} € · chiffres à l&apos;heure de Paris
           </p>
         </div>
-        <Link href="/permis-express" target="_blank" className="btn btn-line text-sm">
-          Voir la page
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <RemiseAZero />
+          <Link href="/permis-express" target="_blank" className="btn btn-line text-sm !min-h-10">
+            Voir la page
+          </Link>
+        </div>
       </div>
+
+      {zero > 0 && (
+        <p className="mt-4 text-sm text-ink-2">
+          Compté depuis la remise à zéro du{" "}
+          {new Date(zero).toLocaleString("fr-FR", { timeZone: "Europe/Paris", dateStyle: "long", timeStyle: "short" })}.
+        </p>
+      )}
 
       {tronque && (
         <p className="mt-6 border border-alert/40 bg-alert/5 p-3 text-sm text-alert">

@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   cheminEvenement,
+  cheminZero,
+  depuisRemise,
+  derniereRemise,
   compter,
   contacts,
   jourParis,
@@ -11,11 +14,16 @@ import {
   type Evenement,
 } from "./suivi";
 
-const e = (jour: string, type: Evenement["type"], source: Evenement["source"] = "ads"): Evenement => ({ jour, type, source });
+const e = (jour: string, type: Evenement["type"], source: Evenement["source"] = "ads", instant = 0): Evenement => ({
+  jour,
+  type,
+  source,
+  instant,
+});
 
 describe("chemins", () => {
   it("relit le chemin qu'il a écrit", () => {
-    const ev = e("2026-10-23", "demande-urgente", "direct");
+    const ev = e("2026-10-23", "demande-urgente", "direct", 1761231600000);
     expect(lireChemin(cheminEvenement(ev, "abc"))).toEqual(ev);
   });
 
@@ -60,6 +68,23 @@ describe("compter", () => {
     expect(jours.map((j) => j.jour)).toEqual(["2026-10-23", "2026-10-22", "2026-10-21", "2026-10-20"]);
     expect(jours[2].compteurs.visites).toBe(0);
     expect(jours[0].compteurs.demandes).toBe(2);
+  });
+});
+
+describe("remise à zéro", () => {
+  it("lit les premiers événements, enregistrés sans instant, comme antérieurs à toute remise", () => {
+    expect(lireChemin("suivi/express/2026-10-23/vue/ads/0b5c-uuid.txt")?.instant).toBe(0);
+  });
+
+  it("retient la remise la plus récente et ignore les autres fichiers", () => {
+    expect(derniereRemise([cheminZero(1000), cheminZero(3000), cheminZero(2000), "suivi/express/x"])).toBe(3000);
+    expect(derniereRemise([])).toBe(0);
+  });
+
+  it("ne garde que ce qui suit la remise", () => {
+    const evs = [e("2026-10-23", "vue", "ads", 0), e("2026-10-23", "vue", "ads", 1500), e("2026-10-23", "vue", "ads", 2500)];
+    expect(depuisRemise(evs, 2000)).toHaveLength(1);
+    expect(depuisRemise(evs, 0)).toHaveLength(3);
   });
 });
 
