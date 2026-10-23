@@ -19,6 +19,7 @@ const CONVERSIONS = {
 /** Événements du site (lib/analytics.ts) qui valent conversion Google Ads. */
 const EVENT_TO_CONVERSION: Record<string, keyof typeof CONVERSIONS> = {
   devis_submit: "devis",
+  express_submit: "devis",
   dossier_submit: "devis",
   plan_de_masse_submit: "devis",
   whatsapp_click: "contact",
