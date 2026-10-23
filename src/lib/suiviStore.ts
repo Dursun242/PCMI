@@ -1,6 +1,18 @@
 import "server-only";
 import { list, put } from "@vercel/blob";
-import { cheminEvenement, jourParis, lireChemin, PREFIXE_SUIVI, type Evenement, type SourceSuivi, type TypeSuivi } from "./suivi";
+import {
+  cheminEvenement,
+  cheminZero,
+  depuisRemise,
+  derniereRemise,
+  jourParis,
+  lireChemin,
+  PREFIXE_SUIVI,
+  PREFIXE_ZERO,
+  type Evenement,
+  type SourceSuivi,
+  type TypeSuivi,
+} from "./suivi";
 
 /**
  * Accès au stockage du compteur (Vercel Blob, jeton BLOB_READ_WRITE_TOKEN).
@@ -13,7 +25,8 @@ export function suiviConfigure(): boolean {
 /** Enregistre un événement. Ne lève jamais : la mesure ne doit pas casser un parcours. */
 export async function enregistrer(type: TypeSuivi, source: SourceSuivi): Promise<void> {
   if (!suiviConfigure()) return;
-  const evenement: Evenement = { jour: jourParis(new Date()), type, source };
+  const maintenant = new Date();
+  const evenement: Evenement = { jour: jourParis(maintenant), type, source, instant: maintenant.getTime() };
   try {
     await put(cheminEvenement(evenement, crypto.randomUUID()), "1", {
       access: "public",
@@ -28,8 +41,22 @@ export async function enregistrer(type: TypeSuivi, source: SourceSuivi): Promise
 /** Plafond de pages lues (1 000 événements chacune) : au-delà, le compteur est tronqué. */
 const PAGES_MAX = 20;
 
-/** Tous les événements enregistrés, relus depuis les chemins. */
-export async function lireEvenements(): Promise<{ evenements: Evenement[]; tronque: boolean }> {
+/** Pose une remise à zéro : rien n'est effacé, les événements antérieurs sont simplement ignorés. */
+export async function remettreAZero(): Promise<number> {
+  const instant = Date.now();
+  await put(cheminZero(instant), "1", { access: "public", contentType: "text/plain", addRandomSuffix: false });
+  return instant;
+}
+
+/** Événements comptés depuis la dernière remise à zéro, et l'instant de cette remise (0 si aucune). */
+export async function lireEvenements(): Promise<{ evenements: Evenement[]; tronque: boolean; zero: number }> {
+  const zeros = await list({ prefix: PREFIXE_ZERO, limit: 1000 });
+  const zero = derniereRemise(zeros.blobs.map((b) => b.pathname));
+  const { evenements, tronque } = await lireTous();
+  return { evenements: depuisRemise(evenements, zero), tronque, zero };
+}
+
+async function lireTous(): Promise<{ evenements: Evenement[]; tronque: boolean }> {
   const evenements: Evenement[] = [];
   let cursor: string | undefined;
   for (let page = 0; page < PAGES_MAX; page++) {
