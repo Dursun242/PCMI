@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { site } from "@/config/site";
 import { withSeo } from "@/lib/seo";
+import { CookieSettingsButton } from "@/components/GoogleAds";
 
 export const metadata: Metadata = withSeo("/confidentialite", {
   title: "Politique de confidentialité",
@@ -35,7 +36,7 @@ export default function ConfidentialitePage() {
 
       <h2>Cookies et mesure d&apos;audience</h2>
       <p>
-        Ce site ne dépose aucun cookie publicitaire et ne pratique aucun suivi entre sites. La fréquentation est mesurée
+        Hors balise Google Ads décrite ci-dessous, ce site ne dépose aucun cookie publicitaire. La fréquentation est mesurée
         avec Vercel Web Analytics et Umami, deux outils sans cookie : ils n&apos;enregistrent aucun identifiant
         permettant de vous reconnaître d&apos;une visite à l&apos;autre. Umami ne mesure rien si votre navigateur envoie
         le signal « Do Not Track ». Seuls sont comptés des
@@ -43,6 +44,14 @@ export default function ConfidentialitePage() {
         surface). Aucune donnée que vous saisissez dans un formulaire — nom, e-mail, téléphone, commune — n&apos;est
         transmise à ces outils, qui ne conservent pas votre adresse IP. Cette mesure ne reposant sur aucune lecture ni
         écriture d&apos;information sur votre appareil, elle ne donne pas lieu à une demande de consentement.
+      </p>
+      <p>
+        Nous diffusons par ailleurs des annonces sur Google. Pour savoir si une demande de devis, un appel ou un message
+        WhatsApp fait suite à l&apos;une de ces annonces, le site utilise la balise Google Ads (Google Ireland Ltd). Elle
+        ne dépose de cookie publicitaire qu&apos;avec votre accord, donné ou refusé dans le bandeau affiché lors de votre
+        première visite ; sans accord, seul un signal anonyme sans cookie est envoyé. Aucune donnée saisie dans nos
+        formulaires n&apos;est transmise à Google. Votre choix reste modifiable à tout moment :{" "}
+        <CookieSettingsButton className="text-ink underline decoration-brass underline-offset-4" />.
       </p>
       <p>
         Le formulaire de fiche projet enregistre en revanche votre brouillon dans le stockage local de votre navigateur,
