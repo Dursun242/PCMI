@@ -2,7 +2,7 @@ import Link from "next/link";
 import AdminShell from "@/components/admin/AdminShell";
 import RemiseAZero from "@/components/admin/RemiseAZero";
 import { express } from "@/config/site";
-import { compter, contacts, jourParis, joursAvant, parJour, tauxContact, type Compteurs } from "@/lib/suivi";
+import { compter, contacts, jourParis, joursAvant, parJour, tauxContact, TRANCHES_TEMPS, type Compteurs } from "@/lib/suivi";
 import { lireEvenements, suiviConfigure } from "@/lib/suiviStore";
 
 /** Toujours à jour : les chiffres sont relus à chaque ouverture de la page. */
@@ -20,6 +20,34 @@ const LIGNES: { titre: string; valeur: (c: Compteurs) => string; aide?: string }
   { titre: "Clics WhatsApp", valeur: (c) => String(c.whatsapp) },
   { titre: "Taux de contact", valeur: (c) => (tauxContact(c) === null ? "—" : `${tauxContact(c)} %`), aide: "Demandes + appels + WhatsApp, rapportés aux visites." },
 ];
+
+/** Répartition des visites par temps passé, avec la part venue des annonces. */
+function TempsPasse({ tous, ads }: { tous: Compteurs; ads: Compteurs }) {
+  const total = TRANCHES_TEMPS.reduce((n, [t]) => n + tous.temps[t], 0);
+  if (total === 0) {
+    return <p className="mt-3 bg-paper p-4 text-sm text-ink-2">Aucune visite mesurée pour l&apos;instant.</p>;
+  }
+  return (
+    <ul className="mt-3 bg-paper text-sm">
+      {TRANCHES_TEMPS.map(([t, , libelle]) => {
+        const n = tous.temps[t];
+        const part = Math.round((n / total) * 100);
+        return (
+          <li key={t} className="grid grid-cols-[7rem_1fr_6.5rem] items-center gap-3 border-b border-stone-2 px-3 py-2.5 sm:grid-cols-[9rem_1fr_7rem] sm:px-4">
+            <span className="font-bold">{libelle}</span>
+            <span className="h-2 bg-stone-2" aria-hidden="true">
+              <span className="block h-full bg-forest" style={{ width: `${part}%` }} />
+            </span>
+            <span className="text-right tabular-nums">
+              {n} <span className="text-ink-2">· {part} %</span>
+              {ads.temps[t] > 0 && <span className="block text-xs text-ink-2">dont {ads.temps[t]} Ads</span>}
+            </span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
 
 function libelleJour(jour: string) {
   return new Date(`${jour}T12:00:00Z`).toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
@@ -58,6 +86,8 @@ export default async function CompteurExpress() {
     [zero > 0 ? "Depuis la remise à zéro" : "Depuis le lancement", "Total", compter(evenements)],
   ];
   const mois = periodes[2][2];
+  const debutMois = joursAvant(aujourdhui, 29);
+  const moisAds = compter(evenements.filter((e) => e.source === "ads"), debutMois);
   const jours = parJour(evenements, aujourdhui, 14);
 
   return (
@@ -97,6 +127,12 @@ export default async function CompteurExpress() {
         <Chiffre label="Demandes urgentes" valeur={mois.demandesUrgentes} sous="À rappeler en premier" />
         <Chiffre label="Taux de contact" valeur={tauxContact(mois) === null ? "—" : `${tauxContact(mois)} %`} sous="Contacts / visites" />
       </div>
+
+      <h2 className="mt-10 sm:mt-12 text-sm font-bold uppercase tracking-[0.18em] text-ink-2">Temps passé sur la page (30 jours)</h2>
+      <TempsPasse tous={mois} ads={moisAds} />
+      <p className="mt-2 text-xs text-ink-2">
+        Temps où la page était à l&apos;écran, mesuré au premier départ du visiteur (fermeture, autre appli, appel).
+      </p>
 
       <h2 className="mt-10 sm:mt-12 text-sm font-bold uppercase tracking-[0.18em] text-ink-2">Par période</h2>
       {/* Titres courts et explications masquées sur téléphone : le tableau tient dans l'écran. */}

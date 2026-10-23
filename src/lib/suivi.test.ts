@@ -11,6 +11,7 @@ import {
   lireChemin,
   parJour,
   tauxContact,
+  trancheTemps,
   type Evenement,
 } from "./suivi";
 
@@ -68,6 +69,27 @@ describe("compter", () => {
     expect(jours.map((j) => j.jour)).toEqual(["2026-10-23", "2026-10-22", "2026-10-21", "2026-10-20"]);
     expect(jours[2].compteurs.visites).toBe(0);
     expect(jours[0].compteurs.demandes).toBe(2);
+  });
+});
+
+describe("temps passé", () => {
+  it("range une durée dans sa tranche", () => {
+    expect(trancheTemps(3_000)).toBe("temps-10s");
+    expect(trancheTemps(10_000)).toBe("temps-30s");
+    expect(trancheTemps(45_000)).toBe("temps-1min");
+    expect(trancheTemps(120_000)).toBe("temps-3min");
+    expect(trancheTemps(600_000)).toBe("temps-plus");
+  });
+
+  it("compte chaque tranche sans toucher aux visites", () => {
+    const c = compter([e("2026-10-23", "temps-10s"), e("2026-10-23", "temps-10s"), e("2026-10-23", "temps-plus")]);
+    expect(c.temps).toEqual({ "temps-10s": 2, "temps-30s": 0, "temps-1min": 0, "temps-3min": 0, "temps-plus": 1 });
+    expect(c.visites).toBe(0);
+  });
+
+  it("relit un chemin de tranche", () => {
+    const ev = e("2026-10-23", "temps-1min", "ads", 1761231600000);
+    expect(lireChemin(cheminEvenement(ev, "abc"))).toEqual(ev);
   });
 });
 

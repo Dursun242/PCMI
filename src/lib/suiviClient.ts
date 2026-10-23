@@ -3,7 +3,7 @@
  * Ne fait rien ailleurs sur le site, ce qui permet de l'appeler depuis des
  * composants partagés (lien téléphone, lien WhatsApp).
  */
-import type { TypeSuivi } from "./suivi";
+import { trancheTemps, type TypeSuivi } from "./suivi";
 
 const CLE_ADS = "pcmi_express_ads";
 
@@ -19,8 +19,20 @@ export function visiteAds(): boolean {
 }
 
 export function suivreExpress(type: Exclude<TypeSuivi, "demande" | "demande-urgente">) {
+  if (window.location.pathname !== "/permis-express") return;
+  envoyer(type);
+}
+
+/**
+ * Temps passé, envoyé par ExpressVue en quittant la page. Sans contrôle de
+ * l'adresse : après l'envoi du formulaire, elle est déjà celle de la page merci.
+ */
+export function suivreTemps(ms: number) {
+  envoyer(trancheTemps(ms));
+}
+
+function envoyer(type: TypeSuivi) {
   try {
-    if (window.location.pathname !== "/permis-express") return;
     const corps = JSON.stringify({ type, ads: visiteAds() });
     // sendBeacon survit à l'ouverture de l'appli Téléphone ou WhatsApp, contrairement à fetch.
     if (!navigator.sendBeacon?.("/api/express/suivi", corps)) {
