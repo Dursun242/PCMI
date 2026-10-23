@@ -11,6 +11,8 @@
  */
 
 export const PREFIXE_SUIVI = "suivi/express/";
+/** Remises à zéro : suivi/express-zero/<instant en ms>.txt. Seule la plus récente compte. */
+export const PREFIXE_ZERO = "suivi/express-zero/";
 
 export const TYPES_SUIVI = ["vue", "formulaire", "demande", "demande-urgente", "appel", "whatsapp"] as const;
 export type TypeSuivi = (typeof TYPES_SUIVI)[number];
@@ -22,6 +24,8 @@ export interface Evenement {
   jour: string; // AAAA-MM-JJ, heure de Paris
   type: TypeSuivi;
   source: SourceSuivi;
+  /** Instant de l'événement en ms (0 pour les premiers événements, enregistrés sans). */
+  instant: number;
 }
 
 export function estTypeSuivi(v: unknown): v is TypeSuivi {
@@ -33,17 +37,36 @@ export function jourParis(date: Date): string {
   return date.toLocaleDateString("sv-SE", { timeZone: "Europe/Paris" });
 }
 
+/** Le nom du fichier commence par l'instant : c'est ce qui permet la remise à zéro sans rien effacer. */
 export function cheminEvenement(e: Evenement, id: string): string {
-  return `${PREFIXE_SUIVI}${e.jour}/${e.type}/${e.source}/${id}.txt`;
+  return `${PREFIXE_SUIVI}${e.jour}/${e.type}/${e.source}/${e.instant}-${id}.txt`;
 }
 
 /** Relit un chemin ; null pour tout chemin qui n'a pas la forme attendue. */
 export function lireChemin(chemin: string): Evenement | null {
   if (!chemin.startsWith(PREFIXE_SUIVI)) return null;
-  const [jour, type, source] = chemin.slice(PREFIXE_SUIVI.length).split("/");
+  const [jour, type, source, fichier = ""] = chemin.slice(PREFIXE_SUIVI.length).split("/");
   if (!/^\d{4}-\d{2}-\d{2}$/.test(jour ?? "") || !estTypeSuivi(type)) return null;
   if (source !== "ads" && source !== "direct") return null;
-  return { jour, type, source };
+  const instant = Number(/^(\d{12,14})-/.exec(fichier)?.[1] ?? 0);
+  return { jour, type, source, instant };
+}
+
+export function cheminZero(instant: number): string {
+  return `${PREFIXE_ZERO}${instant}.txt`;
+}
+
+/** Instant de la dernière remise à zéro (0 s'il n'y en a jamais eu). */
+export function derniereRemise(chemins: string[]): number {
+  return chemins.reduce((max, c) => {
+    const n = Number(/^suivi\/express-zero\/(\d+)\.txt$/.exec(c)?.[1] ?? 0);
+    return n > max ? n : max;
+  }, 0);
+}
+
+/** Ne garde que les événements postérieurs à la remise à zéro. */
+export function depuisRemise(evenements: Evenement[], zero: number): Evenement[] {
+  return zero ? evenements.filter((e) => e.instant > zero) : evenements;
 }
 
 export interface Compteurs {

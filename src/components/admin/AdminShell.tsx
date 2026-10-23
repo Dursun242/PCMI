@@ -24,8 +24,9 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen bg-stone">
       <header className="border-b border-ink/10 bg-paper">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
-          <nav className="flex flex-wrap items-center gap-5">
+        {/* Sur téléphone, le menu tient sur une ligne qui défile au doigt. */}
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:px-6 sm:py-4">
+          <nav className="-mx-1 flex min-w-0 items-center gap-5 overflow-x-auto px-1 py-1 whitespace-nowrap">
             {NAV.map((item) => (
               <Link
                 key={item.href}
@@ -38,12 +39,12 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
               </Link>
             ))}
           </nav>
-          <button type="button" onClick={logout} className="btn btn-line text-sm">
+          <button type="button" onClick={logout} className="btn btn-line shrink-0 text-sm !min-h-10 !px-4">
             Déconnexion
           </button>
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-6 py-10">{children}</main>
+      <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-10">{children}</main>
     </div>
   );
 }
