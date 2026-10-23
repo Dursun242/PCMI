@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { whatsappUrl } from "@/config/site";
 import { trackEvent } from "@/lib/analytics";
+import { suivreExpress } from "@/lib/suiviClient";
 
 /**
  * Lien vers la conversation WhatsApp du maître d'œuvre, mesuré
@@ -35,7 +36,10 @@ export default function WhatsAppLink({
       rel="noopener noreferrer"
       aria-label={iconOnly ? "Écrire sur WhatsApp" : undefined}
       className={`${noIcon ? "" : "inline-flex items-center gap-2"} ${className}`}
-      onClick={() => trackEvent("whatsapp_click", { source })}
+      onClick={() => {
+        trackEvent("whatsapp_click", { source });
+        suivreExpress("whatsapp");
+      }}
     >
       {!noIcon && (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">

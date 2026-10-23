@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { express } from "@/config/site";
 import { surfaceBucket, trackEvent } from "@/lib/analytics";
+import { suivreExpress } from "@/lib/suiviClient";
 import { ECHEANCES, RENDEZ_VOUS, SITUATIONS_TERRAIN, TYPES_MAISON, eligibleExpress, estUrgente, type Choix } from "@/lib/express";
 
 type Status = "idle" | "sending" | "error";
@@ -50,6 +51,7 @@ export default function ExpressForm() {
     if (started.current) return;
     started.current = true;
     trackEvent("devis_start", { formule: "express" });
+    suivreExpress("formulaire");
   }
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
