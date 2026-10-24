@@ -70,21 +70,22 @@ export default function GoogleAds() {
         <div
           role="dialog"
           aria-label="Cookies"
-          className="fixed inset-x-0 bottom-0 z-[60] border-t border-ink bg-paper/95 px-5 py-4 shadow-lg backdrop-blur sm:px-8"
+          className="fixed inset-x-0 bottom-0 z-[60] border-t border-ink bg-paper/95 px-4 py-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] shadow-lg backdrop-blur sm:px-8 sm:py-3"
         >
-          <div className="mx-auto flex max-w-5xl flex-col gap-3 text-sm text-ink-2 md:flex-row md:items-center md:justify-between">
-            <p className="leading-relaxed">
-              Nous utilisons un cookie Google Ads pour savoir si nos annonces vous ont amené jusqu&apos;ici. Aucune
-              donnée saisie dans nos formulaires n&apos;est transmise.{" "}
-              <a href="/confidentialite" className="text-ink underline decoration-brass underline-offset-4">
+          {/* Compact : le bandeau ne doit pas masquer la page. Refuser reste aussi visible qu'Accepter (CNIL). */}
+          <div className="mx-auto flex max-w-5xl items-center gap-3 text-xs text-ink-2 sm:text-sm">
+            <p className="leading-snug">
+              Cookie Google Ads : savoir si nos annonces vous ont amené ici. Rien de ce que vous saisissez n&apos;est
+              transmis.{" "}
+              <a href="/confidentialite" className="text-ink underline decoration-brass underline-offset-2">
                 En savoir plus
               </a>
             </p>
-            <div className="flex shrink-0 gap-2">
-              <button type="button" onClick={() => choisir(false)} className="btn btn-line">
+            <div className="grid shrink-0 gap-1.5 sm:flex sm:gap-2">
+              <button type="button" onClick={() => choisir(false)} className="btn btn-line !min-h-9 !px-3 text-xs sm:!px-5 sm:text-sm">
                 Refuser
               </button>
-              <button type="button" onClick={() => choisir(true)} className="btn btn-ink">
+              <button type="button" onClick={() => choisir(true)} className="btn btn-ink !min-h-9 !px-3 text-xs sm:!px-5 sm:text-sm">
                 Accepter
               </button>
             </div>
