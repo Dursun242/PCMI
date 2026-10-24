@@ -77,7 +77,8 @@ export function lireDemande(body: Record<string, unknown>): Lecture {
 
   if (!name || !city) return { ok: false, error: "Merci d'indiquer votre nom et la commune du terrain." };
   if (phone.replace(/\D/g, "").length < 9) return { ok: false, error: "Merci d'indiquer un numéro de téléphone valide." };
-  if (email && !EMAIL.test(email)) return { ok: false, error: "L'adresse e-mail semble incomplète." };
+  if (!email) return { ok: false, error: "Merci d'indiquer votre adresse e-mail." };
+  if (!EMAIL.test(email)) return { ok: false, error: "L'adresse e-mail semble incomplète." };
   if (!body.consent) return { ok: false, error: "Merci d'accepter le traitement de votre demande." };
 
   const n = Number(texte(body.surface, 10));

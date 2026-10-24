@@ -9,8 +9,8 @@ import { noterEnvoi, suivreExpress } from "@/lib/suiviClient";
 type Status = "idle" | "sending" | "error";
 
 /**
- * Formulaire de la page /permis-express, réduit au strict nécessaire : trois
- * cases (nom, téléphone, commune du terrain). Tout le reste se dit au rappel.
+ * Formulaire de la page /permis-express, réduit au strict nécessaire : quatre
+ * cases (nom, téléphone, e-mail, commune du terrain). Tout le reste se dit au rappel.
  * Cases encadrées, libellé en clair et exemple dedans : on voit où écrire.
  */
 export default function ExpressForm() {
@@ -68,6 +68,7 @@ export default function ExpressForm() {
 
       <Case id="name" libelle="Votre prénom et nom" exemple="ex. Marie Dupont" autoComplete="name" />
       <Case id="phone" libelle="Votre téléphone" exemple="ex. 06 12 34 56 78" type="tel" autoComplete="tel" inputMode="tel" />
+      <Case id="email" libelle="Votre e-mail" exemple="ex. marie.dupont@gmail.com" type="email" autoComplete="email" inputMode="email" />
       <Case id="city" libelle="Commune du terrain" exemple="ex. Montivilliers" autoComplete="address-level2" />
 
       <label className="flex items-start gap-3 text-sm text-ink-2">
@@ -113,7 +114,7 @@ function Case({
   exemple: string;
   type?: string;
   autoComplete?: string;
-  inputMode?: "tel";
+  inputMode?: "tel" | "email";
 }) {
   return (
     <div className="grid gap-1.5">

@@ -31,9 +31,10 @@ describe("lireDemande", () => {
     expect(lireDemande({ ...base, phone: "06 12" }).ok).toBe(false);
   });
 
-  it("rend l'e-mail facultatif mais refuse une adresse mal formée", () => {
-    expect(lireDemande({ ...base, email: "" }).ok).toBe(true);
+  it("exige l'e-mail et refuse une adresse mal formée", () => {
+    expect(lireDemande({ ...base, email: "" })).toEqual({ ok: false, error: "Merci d'indiquer votre adresse e-mail." });
     expect(lireDemande({ ...base, email: "jean@" }).ok).toBe(false);
+    expect(lireDemande(base).ok).toBe(true);
   });
 
   it("exige le consentement", () => {

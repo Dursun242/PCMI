@@ -160,7 +160,7 @@ export default function PermisExpressPage() {
           <div id="devis" data-section="formulaire" className="scroll-mt-24 bg-paper text-ink px-6 py-8 sm:px-9 sm:py-10 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)]">
             <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">Gratuit · sans engagement</p>
             <h2 className="display mt-3 text-4xl leading-tight">Recevez votre devis sous 4 h ouvrées</h2>
-            <p className="mt-3 text-sm text-ink-2">Trois champs obligatoires, une minute. Nous vous rappelons avec un prix fixe.</p>
+            <p className="mt-3 text-sm text-ink-2">Quatre champs, une minute. Nous vous rappelons avec un prix fixe.</p>
             <div className="mt-8">
               <ExpressForm />
             </div>
