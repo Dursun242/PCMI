@@ -28,10 +28,14 @@ export const APPAREILS = [
 ] as const;
 export type Appareil = (typeof APPAREILS)[number][0];
 
-/** Sections de la page, dans leur ordre d'apparition (attribut data-section). */
+/**
+ * Sections de la page, dans leur ordre d'apparition sur téléphone (attribut
+ * data-section). Sur ordinateur, réalisations et formulaire sont côte à côte.
+ * L'ordre ne sert qu'à l'affichage : les clés, elles, ne doivent pas changer.
+ */
 export const SECTIONS = [
+  ["maisons", "Nos réalisations (photos)"],
   ["formulaire", "Formulaire de devis"],
-  ["maisons", "Photos des maisons"],
   ["deroule", "Déroulé en 3 étapes"],
   ["compris", "Compris et conditions"],
   ["questions", "Questions"],
@@ -39,16 +43,16 @@ export const SECTIONS = [
 ] as const;
 export type Section = (typeof SECTIONS)[number][0];
 
-/** Emplacements des boutons (attribut data-zone), et ce qu'on peut y toucher. */
+/** Emplacements des boutons (attribut data-zone), dans l'ordre de la page, et ce qu'on peut y toucher. */
 export const ZONES = [
-  ["entete", "En-tête"],
+  ["entete", "Menu du site"],
   ["hero", "Haut de page"],
   ["relance1", "Encadré après le déroulé"],
   ["relance2", "Encadré après les conditions"],
   ["bureau", "Adresse du bureau"],
   ["bas", "Bas de page"],
-  ["barre", "Barre du téléphone"],
   ["pied", "Pied de page du site"],
+  ["barre", "Barre en bas du téléphone"],
 ] as const;
 export const ACTIONS = [
   ["appel", "Appeler"],
