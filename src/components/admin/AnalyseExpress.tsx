@@ -118,7 +118,11 @@ export default function AnalyseExpress({ a, s }: { a: Analyse; s: AnalyseSuites 
           <Ligne key={e} libelle={libelle} n={a.video[e]} total={a.visites} />
         ))}
       </ul>
-      <Note>Elle se lance sans le son quand elle arrive à l&apos;écran ; « Son activé » compte ceux qui ont touché le bouton.</Note>
+      <Note>
+        Elle se lance seule, sans le son, quand elle arrive à l&apos;écran : la progression dit jusqu&apos;où on l&apos;a
+        vraiment regardée (25 % ≈ fin de l&apos;étape 1, 50 % ≈ étape 3, 75 % ≈ réalisations). « Son activé » et
+        « Relancée à la main » comptent ceux qui ont touché les boutons.
+      </Note>
 
       <h2 className={titre}>Questions ouvertes</h2>
       <ul className="mt-3 bg-paper text-sm">
