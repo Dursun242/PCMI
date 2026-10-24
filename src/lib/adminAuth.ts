@@ -8,6 +8,14 @@ export const ADMIN_COOKIE_NAME = "pcmi_admin_session";
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000; // 12 h
 export const ADMIN_SESSION_MAX_AGE_SECONDS = SESSION_TTL_MS / 1000;
 
+/**
+ * Marqueur posé à la connexion : les visites de cet appareil ne sont pas
+ * comptées par le compteur Express. Il ne donne aucun droit (la session, elle,
+ * est signée) ; au pire, quelqu'un qui le poserait lui-même ne serait pas compté.
+ */
+export const COOKIE_NE_PAS_COMPTER = "pcmi_ne_pas_compter";
+export const NE_PAS_COMPTER_MAX_AGE_SECONDS = 365 * 24 * 60 * 60;
+
 function bytesToBase64url(bytes: ArrayBuffer | Uint8Array): string {
   const arr = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
   let str = "";
@@ -100,4 +108,18 @@ export async function verifySessionToken(token: string | undefined | null): Prom
   } catch {
     return false;
   }
+}
+
+/** Valeur d'un cookie dans l'en-tête Cookie brut. */
+function lireCookie(entete: string | null, nom: string): string | undefined {
+  return entete
+    ?.split(";")
+    .map((c) => c.trim().split("="))
+    .find(([n]) => n === nom)?.[1];
+}
+
+/** Appareil de l'administrateur (marqueur posé à la connexion, ou session ouverte) : ses visites ne se comptent pas. */
+export async function appareilDeLAdmin(enteteCookie: string | null): Promise<boolean> {
+  if (lireCookie(enteteCookie, COOKIE_NE_PAS_COMPTER) === "1") return true;
+  return verifySessionToken(lireCookie(enteteCookie, ADMIN_COOKIE_NAME));
 }

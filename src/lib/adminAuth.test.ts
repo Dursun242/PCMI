@@ -1,5 +1,13 @@
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
-import { checkPassword, createSessionToken, safeAdminRedirect, verifySessionToken } from "./adminAuth";
+import {
+  ADMIN_COOKIE_NAME,
+  COOKIE_NE_PAS_COMPTER,
+  appareilDeLAdmin,
+  checkPassword,
+  createSessionToken,
+  safeAdminRedirect,
+  verifySessionToken,
+} from "./adminAuth";
 
 describe("checkPassword", () => {
   beforeEach(() => {
@@ -53,6 +61,30 @@ describe("jeton de session", () => {
 
     expect(await verifySessionToken(signedWithPassword)).toBe(false);
     expect(await verifySessionToken(await createSessionToken())).toBe(true);
+  });
+});
+
+describe("appareilDeLAdmin", () => {
+  beforeEach(() => {
+    process.env.ADMIN_PASSWORD = "mot-de-passe";
+  });
+  afterEach(() => {
+    delete process.env.ADMIN_PASSWORD;
+  });
+
+  test("reconnaît l'appareil marqué à la connexion", async () => {
+    expect(await appareilDeLAdmin(`autre=1; ${COOKIE_NE_PAS_COMPTER}=1`)).toBe(true);
+  });
+
+  test("reconnaît une session admin valide, même sans marqueur", async () => {
+    expect(await appareilDeLAdmin(`${ADMIN_COOKIE_NAME}=${await createSessionToken()}`)).toBe(true);
+  });
+
+  test("compte un visiteur ordinaire ou une session falsifiée", async () => {
+    expect(await appareilDeLAdmin(null)).toBe(false);
+    expect(await appareilDeLAdmin("autre=1")).toBe(false);
+    expect(await appareilDeLAdmin(`${ADMIN_COOKIE_NAME}=faux.jeton`)).toBe(false);
+    expect(await appareilDeLAdmin(`${COOKIE_NE_PAS_COMPTER}=0`)).toBe(false);
   });
 });
 
