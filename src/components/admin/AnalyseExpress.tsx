@@ -107,7 +107,10 @@ export default function AnalyseExpress({ a, s }: { a: Analyse; s: AnalyseSuites 
           <Ligne key={s} libelle={libelle} n={a.sections[s]} total={a.visites} />
         ))}
       </ul>
-      <Note>Part des {a.visites} visites détaillées qui ont fait défiler la page jusqu&apos;à chaque partie.</Note>
+      <Note>
+        Part des {a.visites} visites détaillées qui ont fait défiler la page jusqu&apos;à chaque partie, dans
+        l&apos;ordre du téléphone. Sur ordinateur, photos et formulaire sont côte à côte, vus ensemble.
+      </Note>
 
       <h2 className={titre}>Questions ouvertes</h2>
       <ul className="mt-3 bg-paper text-sm">
