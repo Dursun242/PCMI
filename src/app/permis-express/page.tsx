@@ -125,7 +125,7 @@ export default function PermisExpressPage() {
                 Nos réalisations en Normandie
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-paper/80 max-w-[52ch]">
-                Plans, permis et études : notre bureau. Ces maisons ont été construites sur cette base.
+                Plans, permis et études : notre bureau. Ces maisons ont été construites à partir de nos plans.
               </p>
               <ul className="mt-5 -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-3 sm:-mx-8 sm:scroll-px-8 sm:px-8 lg:mx-0 lg:scroll-px-0 lg:px-0">
                 {maisons.map((c, i) => (
