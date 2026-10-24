@@ -10,6 +10,7 @@ const bilan = (b: Partial<Bilan> = {}): Bilan => ({
   abandon: null,
   envoye: false,
   sortie: null,
+  video: [],
   ...b,
 });
 
@@ -69,6 +70,20 @@ describe("sortie vers le reste du site", () => {
     expect(a.sorties.total).toBe(2);
     expect(a.sorties.pages).toEqual([["tarifs", 2]]);
     expect(a.sorties.zones).toMatchObject({ entete: 1, pied: 1, page: 0 });
+  });
+});
+
+describe("vidéo du déroulé", () => {
+  it("relit ce que le visiteur a fait de la vidéo", () => {
+    const b = bilan({ video: ["vue", "son", "fin"] });
+    expect(encoderBilan(b)).toContain("_vvue.son.fin");
+    expect(decoderBilan(encoderBilan(b))).toEqual(b);
+    expect(nettoyerBilan({ ...bilan(), video: ["vue", "pirate"] })?.video).toEqual(["vue"]);
+  });
+
+  it("compte lancements, son activé et vidéos vues jusqu'au bout", () => {
+    const a = analyser([bilan({ video: ["vue", "son", "fin"] }), bilan({ video: ["vue"] }), bilan()]);
+    expect(a.video).toEqual({ vue: 2, son: 1, fin: 1 });
   });
 });
 

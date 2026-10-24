@@ -3,6 +3,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import ExpressForm from "@/components/ExpressForm";
 import ExpressBarre from "@/components/ExpressBarre";
+import ExpressVideo from "@/components/ExpressVideo";
 import ExpressVue from "@/components/ExpressVue";
 import TelLink from "@/components/TelLink";
 import WhatsAppLink from "@/components/WhatsAppLink";
@@ -27,10 +28,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "/permis-express" },
 };
 
+/** Les quatre étapes de la vidéo, écrites dessous pour qui ne la lance pas (et pour les moteurs de recherche). */
 const etapes: [string, string, string][] = [
-  ["Jour 0", "Devis sous 4 h ouvrées", "Nous lisons le PLU de votre commune et vous rappelons avec un prix fixe."],
-  [`Sous ${express.premiersPlans}`, "Premiers plans", "Plan, façades et implantation sur le terrain, à valider ou corriger."],
-  [`En ${express.delai}`, "Dossier complet et dépôt", "Pièces PCMI 1 à 8, CERFA, dépôt en ligne sur le guichet de votre mairie."],
+  ["Jour 0", "Votre parcelle", "Vous nous envoyez le numéro de parcelle et vos documents ; nous vérifions le PLU. Devis sous 4 h ouvrées."],
+  [`Sous ${express.premiersPlans}`, "Votre maison", "Une ou deux propositions, en plan et en façade, sur votre terrain."],
+  ["À votre rythme", "Votre accord", "Vous validez, ou nous modifions. Rien n’est déposé sans votre accord."],
+  [`En ${express.delai}`, "Le dépôt", "Pièces PCMI 1 à 8 et CERFA déposées en ligne ; vous recevez le récépissé pour votre notaire."],
 ];
 
 /**
@@ -167,13 +170,16 @@ export default function PermisExpressPage() {
       <section data-section="deroule" className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24" aria-labelledby="deroule">
         <span className="rule" aria-hidden="true" />
         <h2 id="deroule" className="h-section mt-6">Du premier appel au dépôt</h2>
-        <ol className="mt-10 grid gap-px bg-stone-2 md:grid-cols-3">
+        <div className="mt-10">
+          <ExpressVideo />
+        </div>
+        <ol className="mt-px grid gap-px bg-stone-2 sm:grid-cols-2 lg:grid-cols-4">
           {etapes.map(([quand, titre, texte], i) => (
-            <li key={titre} className="bg-paper p-6 md:p-8">
-              <span className="numeral text-3xl text-bronze">{String(i + 1).padStart(2, "0")}</span>
-              <p className="mt-4 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">{quand}</p>
-              <p className="display mt-1 text-3xl leading-tight">{titre}</p>
-              <p className="mt-2 text-ink-2 leading-relaxed">{texte}</p>
+            <li key={titre} className="bg-paper p-5 sm:p-6">
+              <span className="numeral text-2xl text-bronze">{String(i + 1).padStart(2, "0")}</span>
+              <p className="mt-3 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">{quand}</p>
+              <p className="display mt-1 text-2xl leading-tight">{titre}</p>
+              <p className="mt-2 text-sm text-ink-2 leading-relaxed">{texte}</p>
             </li>
           ))}
         </ol>

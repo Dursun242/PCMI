@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { trancheTemps, type Appareil, type Bilan, type Champ, type Clic, type Section, type ZoneSortie } from "@/lib/bilan";
 import { clePage } from "@/lib/suite";
-import { envoyerBilan, formulaireAEteEnvoye, marquerSuite, suivreExpress } from "@/lib/suiviClient";
+import { envoyerBilan, etatsVideo, formulaireAEteEnvoye, marquerSuite, suivreExpress } from "@/lib/suiviClient";
 
 const CLE_VUE = "pcmi_express_vue";
 const CLE_BILAN = "pcmi_express_bilan";
@@ -118,6 +118,7 @@ export default function ExpressVue() {
         abandon: formulaireAEteEnvoye() ? null : (dernierChamp as Champ | null),
         envoye: formulaireAEteEnvoye(),
         sortie: partVers,
+        video: etatsVideo(),
       };
       envoyerBilan(bilan);
     };
