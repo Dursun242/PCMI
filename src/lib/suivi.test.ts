@@ -79,7 +79,7 @@ describe("temps passé", () => {
   });
 
   it("compte le temps des bilans de visite", () => {
-    const bilan: Evenement["bilan"] = { temps: "temps-3min", appareil: "telephone", sections: [], faq: [], clics: [], abandon: null, envoye: false, sortie: null };
+    const bilan: Evenement["bilan"] = { temps: "temps-3min", appareil: "telephone", sections: [], faq: [], clics: [], abandon: null, envoye: false, sortie: null, video: [] };
     const c = compter([{ ...e("2026-10-23", "bilan"), bilan }]);
     expect(c.temps["temps-3min"]).toBe(1);
     expect(c.visites).toBe(0);
@@ -88,7 +88,7 @@ describe("temps passé", () => {
   it("relit un chemin de bilan, et ignore un bilan illisible", () => {
     const ev: Evenement = {
       ...e("2026-10-23", "bilan", "ads", 1761231600000),
-      bilan: { temps: "temps-1min", appareil: "ordinateur", sections: ["formulaire"], faq: ["etage"], clics: ["hero-appel"], abandon: null, envoye: true, sortie: null },
+      bilan: { temps: "temps-1min", appareil: "ordinateur", sections: ["formulaire"], faq: ["etage"], clics: ["hero-appel"], abandon: null, envoye: true, sortie: null, video: [] },
     };
     const chemin = cheminEvenement(ev, "0b5c-uuid");
     expect(chemin).toBe("suivi/express/2026-10-23/bilan/ads/1761231600000-0b5c-uuid_ttemps-1min_aordinateur_sformulaire_qetage_chero-appel_e1.txt");

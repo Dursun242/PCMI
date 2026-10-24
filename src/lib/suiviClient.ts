@@ -3,7 +3,7 @@
  * Ne fait rien ailleurs sur le site, ce qui permet de l'appeler depuis des
  * composants partagés (lien téléphone, lien WhatsApp).
  */
-import type { Bilan } from "./bilan";
+import type { Bilan, EtatVideo } from "./bilan";
 import type { GenreSuite } from "./suite";
 import type { TypeSuivi } from "./suivi";
 
@@ -39,6 +39,13 @@ export const noterEnvoi = () => {
   formulaireEnvoye = true;
 };
 export const formulaireAEteEnvoye = () => formulaireEnvoye;
+
+/** Ce que le visiteur a fait de la vidéo du déroulé pendant cette visite (lue par ExpressVue). */
+const video = new Set<EtatVideo>();
+export const noterVideo = (etat: EtatVideo) => {
+  video.add(etat);
+};
+export const etatsVideo = (): EtatVideo[] => [...video];
 
 const CLE_SUITE = "pcmi_express_suite";
 const CLE_SUITE_VUS = "pcmi_express_suite_vus";

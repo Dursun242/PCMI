@@ -36,7 +36,7 @@ export type Appareil = (typeof APPAREILS)[number][0];
 export const SECTIONS = [
   ["maisons", "Nos réalisations (photos)"],
   ["formulaire", "Formulaire de devis"],
-  ["deroule", "Déroulé en 3 étapes"],
+  ["deroule", "Vidéo du déroulé"],
   ["compris", "Compris et conditions"],
   ["questions", "Questions"],
   ["fin", "Bas de page"],
@@ -70,6 +70,14 @@ export const ZONES_SORTIE = [
 ] as const;
 export type ZoneSortie = (typeof ZONES_SORTIE)[number][0];
 
+/** Ce que le visiteur fait de la vidéo du déroulé. */
+export const ETATS_VIDEO = [
+  ["vue", "Lancée"],
+  ["son", "Son activé"],
+  ["fin", "Vue jusqu'au bout"],
+] as const;
+export type EtatVideo = (typeof ETATS_VIDEO)[number][0];
+
 /** Champs du formulaire (attribut name), pour le dernier touché avant un abandon. */
 export const CHAMPS = [
   ["name", "Nom"],
@@ -98,6 +106,7 @@ export interface Bilan {
   envoye: boolean;
   /** Lien touché pour aller ailleurs sur le site (clé de page, voir suite.ts). */
   sortie: { zone: ZoneSortie; page: string } | null;
+  video: EtatVideo[];
 }
 
 const cles = <T extends string>(liste: readonly (readonly [T, ...unknown[]])[]) => liste.map(([c]) => c);
@@ -109,6 +118,7 @@ const VALEURS = {
   clics: CLICS,
   champs: cles(CHAMPS),
   zonesSortie: cles(ZONES_SORTIE),
+  video: cles(ETATS_VIDEO),
 };
 
 export function trancheTemps(ms: number): TrancheTemps {
@@ -147,6 +157,7 @@ export function nettoyerBilan(brut: unknown): Bilan | null {
     abandon: envoye ? null : un(b.abandon, VALEURS.champs),
     envoye,
     sortie: lireSortie(b.sortie),
+    video: parmi(b.video, VALEURS.video),
   };
 }
 
@@ -163,6 +174,7 @@ export function encoderBilan(b: Bilan): string {
   if (b.abandon) champs.push(`x${b.abandon}`);
   if (b.envoye) champs.push("e1");
   if (b.sortie) champs.push(`o${b.sortie.zone}.${b.sortie.page}`);
+  if (b.video.length) champs.push(`v${b.video.join(".")}`);
   return champs.join("_");
 }
 
@@ -179,6 +191,7 @@ export function decoderBilan(code: string): Bilan | null {
     abandon: champs.get("x"),
     envoye: champs.get("e") === "1",
     sortie: { zone, page },
+    video: liste("v"),
   });
 }
 
@@ -191,6 +204,7 @@ export interface Analyse {
   abandons: Record<Champ, number>;
   /** Visiteurs partis vers une autre page du site : combien, vers où, par quel lien. */
   sorties: { total: number; pages: [string, number][]; zones: Record<ZoneSortie, number> };
+  video: Record<EtatVideo, number>;
 }
 
 const zeros = <T extends string>(liste: readonly T[]) => Object.fromEntries(liste.map((c) => [c, 0])) as Record<T, number>;
@@ -212,6 +226,7 @@ export function analyser(bilans: Bilan[]): Analyse {
       pages: classer(sorties.map((o) => o.page)),
       zones: plusUn(zeros(VALEURS.zonesSortie), sorties.map((o) => o.zone)),
     },
+    video: plusUn(zeros(VALEURS.video), bilans.flatMap((b) => b.video)),
   };
   return bilans.reduce<Analyse>((a, b) => {
     const app = a.appareils[b.appareil];
@@ -230,6 +245,7 @@ export function analyser(bilans: Bilan[]): Analyse {
       clics: plusUn(a.clics, b.clics),
       abandons: b.abandon ? plusUn(a.abandons, [b.abandon]) : a.abandons,
       sorties: a.sorties,
+      video: a.video,
     };
   }, depart);
 }
