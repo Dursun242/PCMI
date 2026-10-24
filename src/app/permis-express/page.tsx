@@ -19,7 +19,7 @@ import type { ReferenceVitrine } from "@/lib/vitrine";
  * appeler ou laisser ses coordonnées. Pas d'indexation : la page sert la
  * publicité et ne doit pas concurrencer les pages du référencement naturel.
  *
- * Contenu commercial (prix, délais, conditions) : `express` dans src/config/site.ts.
+ * Contenu commercial (prix, délais, ce qui est compris) : `express` dans src/config/site.ts.
  */
 export const metadata: Metadata = {
   title: `Permis de construire express dès ${formatEuro(express.prixTTC)}`,
@@ -189,35 +189,17 @@ export default function PermisExpressPage() {
       <RelanceDevis zone="relance1" titre="Votre maison sera la prochaine." />
 
       <section data-section="compris" className="mt-16 sm:mt-24 bg-stone">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24 grid gap-14 lg:grid-cols-2">
-          <div>
-            <span className="rule" aria-hidden="true" />
-            <h2 className="h-section mt-6">Compris dans les {formatEuro(express.prixTTC)}</h2>
-            <ul className="mt-8 grid gap-4 border-t border-ink pt-6">
-              {express.inclus.map((i) => (
-                <li key={i} className="flex gap-3 leading-relaxed">
-                  <span aria-hidden="true" className="text-bronze">✓</span>
-                  <span>{i}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <span className="rule" aria-hidden="true" />
-            <h2 className="h-section mt-6">Pour quels projets</h2>
-            <ul className="mt-8 grid gap-4 border-t border-ink pt-6">
-              {express.conditions.map((c) => (
-                <li key={c} className="flex gap-3 leading-relaxed">
-                  <span aria-hidden="true" className="text-bronze">—</span>
-                  <span>{c}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-6 text-sm text-ink-2 leading-relaxed">
-              Votre projet sort de ce cadre ? Demandez quand même : nous vous proposons la formule adaptée, toujours à
-              prix fixe annoncé avant de commencer.
-            </p>
-          </div>
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24">
+          <span className="rule" aria-hidden="true" />
+          <h2 className="h-section mt-6">Compris dans les {formatEuro(express.prixTTC)}</h2>
+          <ul className="mt-8 grid gap-x-14 gap-y-4 border-t border-ink pt-6 md:grid-cols-2">
+            {express.inclus.map((i) => (
+              <li key={i} className="flex gap-3 leading-relaxed">
+                <span aria-hidden="true" className="text-bronze">✓</span>
+                <span>{i}</span>
+              </li>
+            ))}
+          </ul>
         </div>
         <div className="pb-16 sm:pb-24">
           <RelanceDevis zone="relance2" titre={"Un doute sur votre projet\u00a0? Demandez, c\u2019est gratuit."} />
