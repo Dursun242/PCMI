@@ -23,20 +23,24 @@ const MAX_PAR_FENETRE = 5;
 const VERDICTS = {
   eligible: `Éligible (${formatEuro(express.prixTTC)} TTC)`,
   hors: "Hors critères : orienter vers une autre formule",
-  "a-verifier": "À vérifier au rappel (type de maison ou surface non précisés)",
+  "a-verifier": "À vérifier au rappel (surface de plancher non précisée)",
 };
 
+/** Lignes de l'e-mail interne ; celles que le formulaire court ne demande plus disparaissent quand elles sont vides. */
 function lignes(d: DemandeExpress): [string, string][] {
+  const facultatives: [string, string][] = [
+    ["E-mail", d.email],
+    ["Maison", d.typeMaison && libelle(TYPES_MAISON, d.typeMaison)],
+    ["Surface de plancher", d.surface ? `${d.surface} m²` : ""],
+    ["Terrain", d.terrain && libelle(SITUATIONS_TERRAIN, d.terrain)],
+    ["Dépôt souhaité", d.echeance && libelle(ECHEANCES, d.echeance)],
+    ["Rendez-vous", d.rendezVous && libelle(RENDEZ_VOUS, d.rendezVous)],
+  ];
   return [
     ["Nom", d.name],
     ["Téléphone", d.phone],
-    ["E-mail", d.email || "Non renseigné"],
     ["Commune du terrain", d.city],
-    ["Maison", libelle(TYPES_MAISON, d.typeMaison)],
-    ["Surface de plancher", d.surface ? `${d.surface} m²` : "Non précisée"],
-    ["Terrain", libelle(SITUATIONS_TERRAIN, d.terrain)],
-    ["Dépôt souhaité", libelle(ECHEANCES, d.echeance)],
-    ["Rendez-vous", libelle(RENDEZ_VOUS, d.rendezVous)],
+    ...facultatives.filter(([, v]) => v),
     ["Formule Express", VERDICTS[verdictExpress(d)]],
     // Pour importer la conversion dans Google Ads (Outils › Conversions › Importer).
     ["Clic Google Ads (gclid)", d.gclid || "Aucun (visite hors annonce)"],
@@ -47,7 +51,7 @@ function mailInterne(d: DemandeExpress, ip: string) {
   const urgente = estUrgente(d);
   return `
     ${urgente ? `<p style="font-family:Lato,Arial,sans-serif;background:#a3402c;color:#fff;padding:10px 14px;font-weight:700">À rappeler en priorité : ${esc(libelle(ECHEANCES, d.echeance))} · ${esc(libelle(SITUATIONS_TERRAIN, d.terrain))}</p>` : ""}
-    <h2 style="font-family:Lato,Arial,sans-serif">Demande Express plain-pied — page Google Ads</h2>
+    <h2 style="font-family:Lato,Arial,sans-serif">Demande Express — page Google Ads</h2>
     <table style="border-collapse:collapse;font-family:Lato,Arial,sans-serif;font-size:15px">
       ${lignes(d)
         .map(([k, v]) => `<tr><td style="padding:6px 12px 6px 0;color:#4a5a72">${esc(k)}</td><td style="padding:6px 0;font-weight:700">${esc(v)}</td></tr>`)

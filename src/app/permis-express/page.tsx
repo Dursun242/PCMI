@@ -22,8 +22,8 @@ import type { ReferenceVitrine } from "@/lib/vitrine";
  * Contenu commercial (prix, délais, conditions) : `express` dans src/config/site.ts.
  */
 export const metadata: Metadata = {
-  title: `Permis de construire express, plain-pied dès ${formatEuro(express.prixTTC)}`,
-  description: `Maison de plain-pied jusqu'à ${express.surfaceMax} m² en Seine-Maritime, Eure ou Calvados : devis sous 4 h ouvrées, premiers plans sous ${express.premiersPlans}, dossier PCMI prêt en ${express.delai}.`,
+  title: `Permis de construire express dès ${formatEuro(express.prixTTC)}`,
+  description: `Maison jusqu'à ${express.surfaceMax} m², plain-pied ou à étage, en Seine-Maritime, Eure ou Calvados : devis sous 4 h ouvrées, premiers plans sous ${express.premiersPlans}, dossier PCMI prêt en ${express.delai}.`,
   robots: { index: false, follow: false },
   alternates: { canonical: "/permis-express" },
 };
@@ -85,7 +85,7 @@ export default function PermisExpressPage() {
               </span>
             </div>
             <h1 className="display mt-5 sm:mt-6 text-[2.6rem] leading-[1.05] sm:text-6xl lg:text-[4.25rem] max-w-[16ch]">
-              Votre permis de construire de plain-pied, <em>prêt en {express.delai.replace(" ouvrés", "")}.</em>
+              Votre permis de construire, <em>prêt en {express.delai.replace(" ouvrés", "")}.</em>
             </h1>
             <p className="mt-5 sm:mt-7 text-base sm:text-xl leading-relaxed text-paper/80 max-w-[48ch]">
               Compromis signé, date butoir, banque qui attend : un maître d&apos;œuvre du Havre monte votre dossier
@@ -100,7 +100,8 @@ export default function PermisExpressPage() {
                 <span className="text-paper/80">TTC, prix fixe</span>
               </p>
               <p className="mt-1 sm:mt-2 text-sm text-paper/70 max-w-[46ch]">
-                Maison de plain-pied jusqu&apos;à {express.surfaceMax} m², dépôt en ligne inclus. Réservée aux{" "}
+                Maison jusqu&apos;à {express.surfaceMax} m² de surface de plancher, plain-pied ou à étage, dépôt en ligne
+                inclus. Réservée aux{" "}
                 {express.places} premiers dossiers, devis demandé avant le {formatFrDate(express.fin)}.
               </p>
             </div>
@@ -115,7 +116,7 @@ export default function PermisExpressPage() {
               </TelLink>
               <WhatsAppLink
                 source="express_hero"
-                text="Bonjour, j'ai besoin d'un permis de construire rapidement pour une maison de plain-pied."
+                text="Bonjour, j'ai besoin d'un permis de construire rapidement pour ma maison."
                 className="col-span-2 justify-self-start text-paper underline decoration-brass-2 underline-offset-4"
               >
                 Écrire sur WhatsApp

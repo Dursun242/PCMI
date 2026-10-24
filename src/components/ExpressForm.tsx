@@ -3,39 +3,15 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { express } from "@/config/site";
 import { surfaceBucket, trackEvent } from "@/lib/analytics";
 import { noterEnvoi, suivreExpress } from "@/lib/suiviClient";
-import { ECHEANCES, RENDEZ_VOUS, SITUATIONS_TERRAIN, TYPES_MAISON, eligibleExpress, estUrgente, type Choix } from "@/lib/express";
 
 type Status = "idle" | "sending" | "error";
 
-/** Groupe de boutons radio présentés en pastilles, plus rapides à toucher qu'une liste déroulante. */
-function Pastilles({ name, legend, choix, serre = false }: { name: string; legend: string; choix: Choix; serre?: boolean }) {
-  return (
-    <fieldset className="field">
-      <legend>{legend}</legend>
-      <div className={`mt-1 grid gap-2 ${serre ? "grid-cols-2" : "sm:grid-cols-2"}`}>
-        {choix.map(([v, l]) => (
-          <label
-            key={v}
-            className="opt flex min-h-12 items-center gap-3 border border-stone-2 bg-paper px-4 py-3 has-[:checked]:border-ink cursor-pointer"
-          >
-            <input type="radio" name={name} value={v} className="accent-ink h-4 w-4 shrink-0" />
-            <span className="leading-snug">{l}</span>
-          </label>
-        ))}
-      </div>
-    </fieldset>
-  );
-}
-
 /**
- * Formulaire court de la page /permis-express : trois champs obligatoires
- * (nom, téléphone, commune) et l'échéance en un geste ; le reste est replié
- * sous « Préciser mon projet ». Aucun choix n'est coché d'avance : une réponse
- * non donnée arrive « Non précisé » dans l'e-mail, au lieu d'une réponse
- * par défaut qui fausserait le tri (éligibilité Express, urgence).
+ * Formulaire de la page /permis-express, réduit au strict nécessaire : trois
+ * cases (nom, téléphone, commune du terrain). Tout le reste se dit au rappel.
+ * Cases encadrées, libellé en clair et exemple dedans : on voit où écrire.
  */
 export default function ExpressForm() {
   const router = useRouter();
@@ -72,12 +48,8 @@ export default function ExpressForm() {
       });
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error ?? "Envoi impossible.");
-      const surface = Number(data.surface) || null;
-      trackEvent("express_submit", {
-        eligible: String(eligibleExpress({ typeMaison: data.typeMaison ?? "", surface })),
-        urgent: String(estUrgente({ echeance: data.echeance ?? "", terrain: data.terrain ?? "" })),
-        surface_bucket: surfaceBucket(surface),
-      });
+      // Surface et échéance ne sont plus demandées : elles se précisent au rappel.
+      trackEvent("express_submit", { eligible: "a-verifier", urgent: "false", surface_bucket: surfaceBucket(null) });
       noterEnvoi();
       router.push("/devis/merci/express");
     } catch (err) {
@@ -87,77 +59,16 @@ export default function ExpressForm() {
   }
 
   return (
-    <form
-      onSubmit={onSubmit}
-      onChange={markStarted}
-      // Un champ invalide dans « Préciser mon projet » replié : on déplie pour que le navigateur puisse le montrer.
-      onInvalidCapture={(e) => (e.target as HTMLElement).closest("details")?.setAttribute("open", "")}
-      className="grid gap-6"
-    >
+    <form onSubmit={onSubmit} onChange={markStarted} className="grid gap-5">
       {/* pot de miel anti-spam : caché aux humains */}
       <div className="hidden" aria-hidden="true">
         <label htmlFor="website">Site web</label>
         <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2">
-        <div className="field">
-          <label htmlFor="name">Nom et prénom</label>
-          <input id="name" name="name" required autoComplete="name" />
-        </div>
-        <div className="field">
-          <label htmlFor="phone">Téléphone</label>
-          <input id="phone" name="phone" type="tel" required autoComplete="tel" inputMode="tel" />
-          <span className="hint">Nous vous rappelons sous 4 h ouvrées.</span>
-        </div>
-        <div className="field sm:col-span-2">
-          <label htmlFor="city">Commune et code postal du terrain</label>
-          <input id="city" name="city" required placeholder="ex. Montivilliers 76290" />
-        </div>
-      </div>
-
-      <Pastilles name="echeance" legend="Dépôt du permis souhaité" choix={ECHEANCES} serre />
-
-      <details className="group border-y border-stone-2">
-        <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 py-3 font-bold">
-          <span>
-            Préciser mon projet <span className="font-normal text-ink-2">(facultatif)</span>
-          </span>
-          <span aria-hidden="true" className="text-xl text-bronze transition-transform group-open:rotate-45">+</span>
-        </summary>
-        <div className="grid gap-6 pb-6 pt-2">
-          <Pastilles name="typeMaison" legend="Votre maison" choix={TYPES_MAISON} />
-
-          <div className="field">
-            <label htmlFor="surface">Surface approximative (m²)</label>
-            <input id="surface" name="surface" type="number" inputMode="numeric" min={20} max={600} placeholder="ex. 100" />
-            <span className="hint">Formule Express jusqu&apos;à {express.surfaceMax} m². Au-delà, nous vous proposons la formule adaptée.</span>
-          </div>
-
-          <div className="field">
-            <label htmlFor="terrain">Votre terrain</label>
-            <select id="terrain" name="terrain" defaultValue="">
-              <option value="">Choisir…</option>
-              {SITUATIONS_TERRAIN.map(([v, l]) => (
-                <option key={v} value={v}>{l}</option>
-              ))}
-            </select>
-          </div>
-
-          <Pastilles name="rendezVous" legend="Vous préférez" choix={RENDEZ_VOUS} />
-
-          <div className="field">
-            <label htmlFor="email">E-mail</label>
-            <input id="email" name="email" type="email" autoComplete="email" />
-            <span className="hint">Pour recevoir le devis écrit et nous envoyer vos documents.</span>
-          </div>
-
-          <div className="field">
-            <label htmlFor="message">Un mot sur le projet</label>
-            <textarea id="message" name="message" rows={3} placeholder="Nombre de chambres, garage accolé, date limite du compromis…" />
-          </div>
-        </div>
-      </details>
+      <Case id="name" libelle="Votre prénom et nom" exemple="ex. Marie Dupont" autoComplete="name" />
+      <Case id="phone" libelle="Votre téléphone" exemple="ex. 06 12 34 56 78" type="tel" autoComplete="tel" inputMode="tel" />
+      <Case id="city" libelle="Commune du terrain" exemple="ex. Montivilliers" autoComplete="address-level2" />
 
       <label className="flex items-start gap-3 text-sm text-ink-2">
         <input type="checkbox" name="consent" required className="mt-1 accent-ink h-4 w-4" />
@@ -173,19 +84,52 @@ export default function ExpressForm() {
         </p>
       )}
 
+      <button type="submit" className="btn btn-ink" disabled={status === "sending"}>
+        {status === "sending" ? "Envoi en cours…" : "Recevoir mon devis gratuit"}
+      </button>
       <ul className="grid gap-1.5 text-sm">
-        {["Rappel sous 4 h ouvrées", "Prix fixe annoncé avant tout engagement", "Aucune revente de vos données"].map((t) => (
+        {["Rappel sous 4 h ouvrées", "Prix fixe annoncé avant tout engagement", "Gratuit, sans engagement, aucune revente de vos données"].map((t) => (
           <li key={t} className="flex gap-2">
             <span aria-hidden="true" className="text-bronze">✓</span>
             {t}
           </li>
         ))}
       </ul>
-
-      <button type="submit" className="btn btn-ink" disabled={status === "sending"}>
-        {status === "sending" ? "Envoi en cours…" : "Recevoir mon devis gratuit"}
-      </button>
-      <p className="text-xs text-ink-2">Gratuit et sans engagement.</p>
     </form>
+  );
+}
+
+/** Case de saisie bien visible : libellé en clair au-dessus, cadre, exemple dedans. */
+function Case({
+  id,
+  libelle,
+  exemple,
+  type = "text",
+  autoComplete,
+  inputMode,
+}: {
+  id: string;
+  libelle: string;
+  exemple: string;
+  type?: string;
+  autoComplete?: string;
+  inputMode?: "tel";
+}) {
+  return (
+    <div className="grid gap-1.5">
+      <label htmlFor={id} className="font-bold">
+        {libelle}
+      </label>
+      <input
+        id={id}
+        name={id}
+        type={type}
+        required
+        autoComplete={autoComplete}
+        inputMode={inputMode}
+        placeholder={exemple}
+        className="min-h-13 w-full rounded-md border-2 border-stone-2 bg-stone px-4 text-lg text-ink placeholder:text-ink-3 focus:border-bronze focus:bg-paper focus:outline-none"
+      />
+    </div>
   );
 }

@@ -102,18 +102,18 @@ export function lireDemande(body: Record<string, unknown>): Lecture {
   };
 }
 
-/** Le projet entre-t-il dans la formule Express (plain-pied, surface plafonnée) ? */
-export function eligibleExpress(d: Pick<DemandeExpress, "typeMaison" | "surface">): boolean {
-  return d.typeMaison === "plain-pied" && d.surface !== null && d.surface <= express.surfaceMax;
+/** Le projet entre-t-il dans la formule Express ? Toute maison jusqu'à la surface plafond, plain-pied ou à étage. */
+export function eligibleExpress(d: Pick<DemandeExpress, "surface">): boolean {
+  return d.surface !== null && d.surface <= express.surfaceMax;
 }
 
 /**
- * Verdict pour l'e-mail : « hors » seulement quand une réponse donnée exclut
- * l'Express (étage, surface trop grande) ; une réponse manquante laisse le
- * projet « à vérifier » au rappel plutôt que de l'écarter.
+ * Verdict pour l'e-mail : « hors » seulement pour une surface connue au-delà
+ * du plafond ; sans surface (le formulaire ne la demande plus), le projet
+ * reste « à vérifier » au rappel.
  */
-export function verdictExpress(d: Pick<DemandeExpress, "typeMaison" | "surface">): "eligible" | "hors" | "a-verifier" {
-  if (d.typeMaison === "etage" || (d.surface !== null && d.surface > express.surfaceMax)) return "hors";
+export function verdictExpress(d: Pick<DemandeExpress, "surface">): "eligible" | "hors" | "a-verifier" {
+  if (d.surface !== null && d.surface > express.surfaceMax) return "hors";
   return eligibleExpress(d) ? "eligible" : "a-verifier";
 }
 
@@ -134,8 +134,9 @@ export const FAQ_EXPRESS: readonly { cle: string; question: string; reponse: str
   },
   {
     cle: "etage",
-    question: `Et si ma maison a un étage ou dépasse ${express.surfaceMax} m²\u00a0?`,
-    reponse: "Nous faisons aussi ces permis, avec une autre formule. Vous le saurez au devis, avant tout engagement, avec un prix fixe.",
+    // Clé historique « etage » conservée pour le compteur ; la question porte désormais sur la surface.
+    question: `Et si ma maison dépasse ${express.surfaceMax} m²\u00a0?`,
+    reponse: `Au-delà de ${express.surfaceMax} m² de surface de plancher, la loi impose de faire appel à un architecte pour le permis. Nous vous le disons dès le premier appel, avant tout engagement.`,
   },
   {
     cle: "mairie",
