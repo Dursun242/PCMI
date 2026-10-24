@@ -13,7 +13,7 @@ export default function Footer() {
   const label = "text-[0.68rem] font-bold uppercase tracking-[0.2em] text-brass-2 mb-4";
 
   return (
-    <footer className="mt-28 border-t-2 border-brass bg-forest text-paper">
+    <footer data-zone="pied" className="mt-28 border-t-2 border-brass bg-forest text-paper">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 pt-14 pb-10">
         <div className="flex flex-col gap-6 pb-12 md:flex-row md:items-end md:justify-between">
           <Link href="/" aria-label="Accueil" className="inline-block">

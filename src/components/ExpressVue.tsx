@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { trancheTemps, type Appareil, type Bilan, type Champ, type Clic, type Section } from "@/lib/bilan";
-import { envoyerBilan, formulaireAEteEnvoye, suivreExpress } from "@/lib/suiviClient";
+import { trancheTemps, type Appareil, type Bilan, type Champ, type Clic, type Section, type ZoneSortie } from "@/lib/bilan";
+import { clePage } from "@/lib/suite";
+import { envoyerBilan, formulaireAEteEnvoye, marquerSuite, suivreExpress } from "@/lib/suiviClient";
 
 const CLE_VUE = "pcmi_express_vue";
 const CLE_BILAN = "pcmi_express_bilan";
@@ -35,6 +36,19 @@ function clic(cible: EventTarget | null): string | null {
   return action && `${zone}-${action}`;
 }
 
+/** Lien vers une autre page du site : clé de la page visée et emplacement du lien ; null sinon. */
+function sortie(cible: EventTarget | null): Bilan["sortie"] {
+  const lien = cible instanceof Element ? cible.closest("a") : null;
+  const href = lien?.getAttribute("href");
+  if (!lien || !href || href.startsWith("#")) return null;
+  const url = new URL(href, window.location.href);
+  if (url.origin !== window.location.origin || url.pathname === window.location.pathname) return null;
+  const page = clePage(url.pathname);
+  if (!page) return null;
+  const zone = lien.closest<HTMLElement>("[data-zone]")?.dataset.zone;
+  return { zone: zone === "entete" || zone === "pied" ? (zone as ZoneSortie) : "page", page };
+}
+
 /**
  * Mesure de /permis-express :
  * - une visite, une fois par session (un rechargement ne recompte pas) ;
@@ -42,7 +56,8 @@ function clic(cible: EventTarget | null): string | null {
  *   ou WhatsApp, fermeture, page merci après l'envoi du formulaire) : temps où
  *   la page était à l'écran, appareil, sections vues (data-section), questions
  *   ouvertes (data-faq), boutons touchés (data-zone), dernier champ du
- *   formulaire commencé mais pas envoyé. Les valeurs inconnues sont écartées
+ *   formulaire commencé mais pas envoyé, lien pris vers une autre page du site
+ *   (la suite du parcours est ensuite suivie par SuiteExpress). Les valeurs inconnues sont écartées
  *   par le serveur (lib/bilan.ts).
  */
 export default function ExpressVue() {
@@ -59,6 +74,7 @@ export default function ExpressVue() {
     const faq = new Set<string>();
     const clics = new Set<string>();
     let dernierChamp: string | null = null;
+    let partVers: Bilan["sortie"] = null;
 
     const vues = new IntersectionObserver(
       (entrees) => entrees.forEach((e) => e.isIntersecting && sections.add((e.target as HTMLElement).dataset.section ?? "")),
@@ -74,6 +90,11 @@ export default function ExpressVue() {
     const toucher = (e: MouseEvent) => {
       const c = clic(e.target);
       if (c) clics.add(c);
+      const s = sortie(e.target);
+      if (s) {
+        partVers = s;
+        marquerSuite();
+      }
     };
     // « change » en plus de « focusin » : Safari ne donne pas le focus aux cases et boutons radio touchés.
     const champ = (e: Event) => {
@@ -96,6 +117,7 @@ export default function ExpressVue() {
         clics: [...clics] as Clic[],
         abandon: formulaireAEteEnvoye() ? null : (dernierChamp as Champ | null),
         envoye: formulaireAEteEnvoye(),
+        sortie: partVers,
       };
       envoyerBilan(bilan);
     };

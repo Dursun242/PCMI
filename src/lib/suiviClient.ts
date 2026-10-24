@@ -4,6 +4,7 @@
  * composants partagés (lien téléphone, lien WhatsApp).
  */
 import type { Bilan } from "./bilan";
+import type { GenreSuite } from "./suite";
 import type { TypeSuivi } from "./suivi";
 
 const CLE_ADS = "pcmi_express_ads";
@@ -38,6 +39,39 @@ export const noterEnvoi = () => {
   formulaireEnvoye = true;
 };
 export const formulaireAEteEnvoye = () => formulaireEnvoye;
+
+const CLE_SUITE = "pcmi_express_suite";
+const CLE_SUITE_VUS = "pcmi_express_suite_vus";
+/** Plafond d'événements de suite par visite : une visite normale en envoie quelques-uns. */
+const SUITE_MAX = 25;
+
+/** Le visiteur quitte la page Express pour une autre page du site : sa suite de parcours sera mesurée. */
+export function marquerSuite() {
+  try {
+    sessionStorage.setItem(CLE_SUITE, "1");
+  } catch {
+    /* stockage indisponible : pas de suite mesurée */
+  }
+}
+
+/**
+ * Page vue ou contact pris ailleurs sur le site, après la page Express.
+ * Seulement pour un visiteur parti de la page Express dans cet onglet, et une
+ * fois par page ou par contact : un rechargement ne recompte pas.
+ */
+export function suivreSuite(genre: GenreSuite, valeur: string | null) {
+  if (!valeur) return;
+  try {
+    if (sessionStorage.getItem(CLE_SUITE) !== "1" || window.location.pathname === "/permis-express") return;
+    const vus = JSON.parse(sessionStorage.getItem(CLE_SUITE_VUS) ?? "[]") as string[];
+    const cle = `${genre}.${valeur}`;
+    if (vus.includes(cle) || vus.length >= SUITE_MAX) return;
+    sessionStorage.setItem(CLE_SUITE_VUS, JSON.stringify([...vus, cle]));
+  } catch {
+    return;
+  }
+  envoyer("suite", { suite: { genre, valeur } });
+}
 
 function envoyer(type: TypeSuivi, extra: Record<string, unknown> = {}) {
   try {

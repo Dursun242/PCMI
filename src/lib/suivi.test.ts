@@ -79,7 +79,7 @@ describe("temps passé", () => {
   });
 
   it("compte le temps des bilans de visite", () => {
-    const bilan: Evenement["bilan"] = { temps: "temps-3min", appareil: "telephone", sections: [], faq: [], clics: [], abandon: null, envoye: false };
+    const bilan: Evenement["bilan"] = { temps: "temps-3min", appareil: "telephone", sections: [], faq: [], clics: [], abandon: null, envoye: false, sortie: null };
     const c = compter([{ ...e("2026-10-23", "bilan"), bilan }]);
     expect(c.temps["temps-3min"]).toBe(1);
     expect(c.visites).toBe(0);
@@ -88,7 +88,7 @@ describe("temps passé", () => {
   it("relit un chemin de bilan, et ignore un bilan illisible", () => {
     const ev: Evenement = {
       ...e("2026-10-23", "bilan", "ads", 1761231600000),
-      bilan: { temps: "temps-1min", appareil: "ordinateur", sections: ["formulaire"], faq: ["etage"], clics: ["hero-appel"], abandon: null, envoye: true },
+      bilan: { temps: "temps-1min", appareil: "ordinateur", sections: ["formulaire"], faq: ["etage"], clics: ["hero-appel"], abandon: null, envoye: true, sortie: null },
     };
     const chemin = cheminEvenement(ev, "0b5c-uuid");
     expect(chemin).toBe("suivi/express/2026-10-23/bilan/ads/1761231600000-0b5c-uuid_ttemps-1min_aordinateur_sformulaire_qetage_chero-appel_e1.txt");
@@ -99,6 +99,20 @@ describe("temps passé", () => {
   it("relit un chemin de tranche", () => {
     const ev = e("2026-10-23", "temps-1min", "ads", 1761231600000);
     expect(lireChemin(cheminEvenement(ev, "abc"))).toEqual(ev);
+  });
+});
+
+describe("suite du parcours", () => {
+  it("relit un chemin de suite, et ignore une suite illisible", () => {
+    const ev: Evenement = { ...e("2026-10-24", "suite", "ads", 1761231600000), suite: { genre: "page", valeur: "tarifs" } };
+    const chemin = cheminEvenement(ev, "0b5c-uuid");
+    expect(chemin).toBe("suivi/express/2026-10-24/suite/ads/1761231600000-0b5c-uuid_page.tarifs.txt");
+    expect(lireChemin(chemin)).toEqual(ev);
+    expect(lireChemin("suivi/express/2026-10-24/suite/ads/1761231600000-0b5c-uuid.txt")).toBeNull();
+  });
+
+  it("ne compte pas une suite comme une visite", () => {
+    expect(compter([{ ...e("2026-10-24", "suite"), suite: { genre: "page", valeur: "tarifs" } }]).visites).toBe(0);
   });
 });
 

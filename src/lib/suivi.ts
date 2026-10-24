@@ -15,6 +15,7 @@ export const PREFIXE_SUIVI = "suivi/express/";
 export const PREFIXE_ZERO = "suivi/express-zero/";
 
 import { decoderBilan, encoderBilan, TRANCHES_TEMPS, type Bilan, type TrancheTemps } from "./bilan";
+import { decoderSuite, encoderSuite, type Suite } from "./suite";
 
 export { TRANCHES_TEMPS, trancheTemps, type TrancheTemps } from "./bilan";
 
@@ -27,6 +28,8 @@ export const TYPES_SUIVI = [
   "whatsapp",
   // Bilan de visite (bilan.ts), dont le détail suit l'identifiant dans le nom du fichier.
   "bilan",
+  // Page vue ou contact pris ailleurs sur le site après la page Express (suite.ts).
+  "suite",
   // Temps passé envoyé seul : premières mesures, avant le bilan. Encore lues, plus envoyées.
   ...TRANCHES_TEMPS.map(([t]) => t),
 ] as const;
@@ -47,6 +50,8 @@ export interface Evenement {
   instant: number;
   /** Seulement pour le type « bilan ». */
   bilan?: Bilan;
+  /** Seulement pour le type « suite ». */
+  suite?: Suite;
 }
 
 export function estTypeSuivi(v: unknown): v is TypeSuivi {
@@ -60,7 +65,7 @@ export function jourParis(date: Date): string {
 
 /** Le nom du fichier commence par l'instant : c'est ce qui permet la remise à zéro sans rien effacer. */
 export function cheminEvenement(e: Evenement, id: string): string {
-  const detail = e.bilan ? `_${encoderBilan(e.bilan)}` : "";
+  const detail = e.bilan ? `_${encoderBilan(e.bilan)}` : e.suite ? `_${encoderSuite(e.suite)}` : "";
   return `${PREFIXE_SUIVI}${e.jour}/${e.type}/${e.source}/${e.instant}-${id}${detail}.txt`;
 }
 
@@ -71,9 +76,16 @@ export function lireChemin(chemin: string): Evenement | null {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(jour ?? "") || !estTypeSuivi(type)) return null;
   if (source !== "ads" && source !== "direct") return null;
   const instant = Number(/^(\d{12,14})-/.exec(fichier)?.[1] ?? 0);
-  if (type !== "bilan") return { jour, type, source, instant };
-  const bilan = decoderBilan(/_(.+)\.txt$/.exec(fichier)?.[1] ?? "");
-  return bilan ? { jour, type, source, instant, bilan } : null;
+  const code = /_(.+)\.txt$/.exec(fichier)?.[1] ?? "";
+  if (type === "bilan") {
+    const bilan = decoderBilan(code);
+    return bilan ? { jour, type, source, instant, bilan } : null;
+  }
+  if (type === "suite") {
+    const suite = decoderSuite(code);
+    return suite ? { jour, type, source, instant, suite } : null;
+  }
+  return { jour, type, source, instant };
 }
 
 export function cheminZero(instant: number): string {
@@ -133,6 +145,8 @@ function ajouter(c: Compteurs, e: Evenement): Compteurs {
       return { ...c, appels: c.appels + 1 };
     case "whatsapp":
       return { ...c, whatsapp: c.whatsapp + 1 };
+    case "suite":
+      return c;
   }
 }
 

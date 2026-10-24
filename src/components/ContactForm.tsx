@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import FileField, { appendFiles, filesReady, type PickedFile } from "./FileField";
+import { suivreSuite } from "@/lib/suiviClient";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
@@ -25,6 +26,7 @@ export default function ContactForm() {
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error ?? "Envoi impossible.");
       setStatus("sent");
+      suivreSuite("demande", "contact");
       form.reset();
       setFiles([]);
     } catch (err) {

@@ -9,6 +9,7 @@
  * fichier et rien n'identifie le visiteur. Module pur, importable partout.
  */
 import { FAQ_EXPRESS } from "./express";
+import { classer, estClePage } from "./suite";
 
 /** Temps passé, par tranche (bornes hautes en secondes). Seul compte le temps où la page est à l'écran. */
 export const TRANCHES_TEMPS = [
@@ -47,6 +48,7 @@ export const ZONES = [
   ["bureau", "Adresse du bureau"],
   ["bas", "Bas de page"],
   ["barre", "Barre du téléphone"],
+  ["pied", "Pied de page du site"],
 ] as const;
 export const ACTIONS = [
   ["appel", "Appeler"],
@@ -55,6 +57,14 @@ export const ACTIONS = [
 ] as const;
 export type Clic = `${(typeof ZONES)[number][0]}-${(typeof ACTIONS)[number][0]}`;
 const CLICS = ZONES.flatMap(([z]) => ACTIONS.map(([a]) => `${z}-${a}`)) as Clic[];
+
+/** D'où part un visiteur qui quitte la page vers une autre page du site. */
+export const ZONES_SORTIE = [
+  ["entete", "Menu du site"],
+  ["pied", "Pied de page du site"],
+  ["page", "Lien dans la page"],
+] as const;
+export type ZoneSortie = (typeof ZONES_SORTIE)[number][0];
 
 /** Champs du formulaire (attribut name), pour le dernier touché avant un abandon. */
 export const CHAMPS = [
@@ -82,6 +92,8 @@ export interface Bilan {
   /** Dernier champ touché, quand le formulaire a été commencé sans être envoyé. */
   abandon: Champ | null;
   envoye: boolean;
+  /** Lien touché pour aller ailleurs sur le site (clé de page, voir suite.ts). */
+  sortie: { zone: ZoneSortie; page: string } | null;
 }
 
 const cles = <T extends string>(liste: readonly (readonly [T, ...unknown[]])[]) => liste.map(([c]) => c);
@@ -92,6 +104,7 @@ const VALEURS = {
   faq: FAQ_EXPRESS.map((q) => q.cle),
   clics: CLICS,
   champs: cles(CHAMPS),
+  zonesSortie: cles(ZONES_SORTIE),
 };
 
 export function trancheTemps(ms: number): TrancheTemps {
@@ -105,6 +118,13 @@ function parmi<T extends string>(valeurs: unknown, permises: readonly T[]): T[] 
 }
 
 const un = <T extends string>(v: unknown, permises: readonly T[]): T | null => parmi([v], permises)[0] ?? null;
+
+function lireSortie(v: unknown): Bilan["sortie"] {
+  if (typeof v !== "object" || v === null) return null;
+  const { zone, page } = v as Record<string, unknown>;
+  const z = un(zone, VALEURS.zonesSortie);
+  return z && estClePage(page) ? { zone: z, page } : null;
+}
 
 /** Contrôle le bilan reçu du navigateur ; null s'il n'en est pas un. */
 export function nettoyerBilan(brut: unknown): Bilan | null {
@@ -122,6 +142,7 @@ export function nettoyerBilan(brut: unknown): Bilan | null {
     clics: parmi(b.clics, VALEURS.clics),
     abandon: envoye ? null : un(b.abandon, VALEURS.champs),
     envoye,
+    sortie: lireSortie(b.sortie),
   };
 }
 
@@ -137,12 +158,14 @@ export function encoderBilan(b: Bilan): string {
   if (b.clics.length) champs.push(`c${b.clics.join(".")}`);
   if (b.abandon) champs.push(`x${b.abandon}`);
   if (b.envoye) champs.push("e1");
+  if (b.sortie) champs.push(`o${b.sortie.zone}.${b.sortie.page}`);
   return champs.join("_");
 }
 
 export function decoderBilan(code: string): Bilan | null {
   const champs = new Map(code.split("_").map((c) => [c[0], c.slice(1)] as const));
   const liste = (cle: string) => (champs.get(cle) ?? "").split(".").filter(Boolean);
+  const [zone, page] = (champs.get("o") ?? "").split(".");
   return nettoyerBilan({
     temps: champs.get("t"),
     appareil: champs.get("a"),
@@ -151,6 +174,7 @@ export function decoderBilan(code: string): Bilan | null {
     clics: liste("c"),
     abandon: champs.get("x"),
     envoye: champs.get("e") === "1",
+    sortie: { zone, page },
   });
 }
 
@@ -161,6 +185,8 @@ export interface Analyse {
   faq: Record<string, number>;
   clics: Record<string, number>;
   abandons: Record<Champ, number>;
+  /** Visiteurs partis vers une autre page du site : combien, vers où, par quel lien. */
+  sorties: { total: number; pages: [string, number][]; zones: Record<ZoneSortie, number> };
 }
 
 const zeros = <T extends string>(liste: readonly T[]) => Object.fromEntries(liste.map((c) => [c, 0])) as Record<T, number>;
@@ -169,6 +195,7 @@ const plusUn = <T extends string>(r: Record<T, number>, ajouts: readonly T[]) =>
 
 /** Totaux sur des bilans ; « appels » compte les visites qui ont touché au moins un bouton Appeler. */
 export function analyser(bilans: Bilan[]): Analyse {
+  const sorties = bilans.flatMap((b) => (b.sortie ? [b.sortie] : []));
   const depart: Analyse = {
     visites: 0,
     appareils: Object.fromEntries(VALEURS.appareil.map((a) => [a, { visites: 0, envois: 0, appels: 0 }])) as Analyse["appareils"],
@@ -176,6 +203,11 @@ export function analyser(bilans: Bilan[]): Analyse {
     faq: zeros(VALEURS.faq),
     clics: zeros(VALEURS.clics),
     abandons: zeros(VALEURS.champs),
+    sorties: {
+      total: sorties.length,
+      pages: classer(sorties.map((o) => o.page)),
+      zones: plusUn(zeros(VALEURS.zonesSortie), sorties.map((o) => o.zone)),
+    },
   };
   return bilans.reduce<Analyse>((a, b) => {
     const app = a.appareils[b.appareil];
@@ -193,6 +225,7 @@ export function analyser(bilans: Bilan[]): Analyse {
       faq: plusUn(a.faq, b.faq),
       clics: plusUn(a.clics, b.clics),
       abandons: b.abandon ? plusUn(a.abandons, [b.abandon]) : a.abandons,
+      sorties: a.sorties,
     };
   }, depart);
 }

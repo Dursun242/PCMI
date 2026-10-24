@@ -9,6 +9,7 @@ const bilan = (b: Partial<Bilan> = {}): Bilan => ({
   clics: [],
   abandon: null,
   envoye: false,
+  sortie: null,
   ...b,
 });
 
@@ -44,6 +45,30 @@ describe("encodage", () => {
     expect(decoderBilan("ttemps-1min_atelephone_sformulaire.inconnue_cpirate-appel")).toEqual(bilan({ sections: ["formulaire"] }));
     expect(decoderBilan("atelephone")).toBeNull();
     expect(decoderBilan("ttemps-1min_afrigo")).toBeNull();
+  });
+});
+
+describe("sortie vers le reste du site", () => {
+  it("relit la sortie qu'il a écrite", () => {
+    const b = bilan({ clics: ["pied-appel"], sortie: { zone: "entete", page: "conseils--recours-des-tiers" } });
+    expect(encoderBilan(b)).toContain("_oentete.conseils--recours-des-tiers");
+    expect(decoderBilan(encoderBilan(b))).toEqual(b);
+  });
+
+  it("écarte une sortie mal formée", () => {
+    expect(nettoyerBilan({ ...bilan(), sortie: { zone: "toit", page: "tarifs" } })?.sortie).toBeNull();
+    expect(nettoyerBilan({ ...bilan(), sortie: { zone: "pied", page: "../x" } })?.sortie).toBeNull();
+  });
+
+  it("compte les sorties par page et par emplacement", () => {
+    const a = analyser([
+      bilan({ sortie: { zone: "entete", page: "tarifs" } }),
+      bilan({ sortie: { zone: "pied", page: "tarifs" } }),
+      bilan(),
+    ]);
+    expect(a.sorties.total).toBe(2);
+    expect(a.sorties.pages).toEqual([["tarifs", 2]]);
+    expect(a.sorties.zones).toMatchObject({ entete: 1, pied: 1, page: 0 });
   });
 });
 
