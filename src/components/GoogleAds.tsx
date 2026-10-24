@@ -82,11 +82,11 @@ export default function GoogleAds() {
               </a>
             </p>
             <div className="grid shrink-0 gap-1.5 sm:flex sm:gap-2">
-              <button type="button" onClick={() => choisir(false)} className="btn btn-line !min-h-9 !px-3 text-xs sm:!px-5 sm:text-sm">
-                Refuser
-              </button>
               <button type="button" onClick={() => choisir(true)} className="btn btn-ink !min-h-9 !px-3 text-xs sm:!px-5 sm:text-sm">
                 Accepter
+              </button>
+              <button type="button" onClick={() => choisir(false)} className="btn btn-line !min-h-9 !px-3 text-xs sm:!px-5 sm:text-sm">
+                Refuser
               </button>
             </div>
           </div>
