@@ -70,11 +70,15 @@ export const ZONES_SORTIE = [
 ] as const;
 export type ZoneSortie = (typeof ZONES_SORTIE)[number][0];
 
-/** Ce que le visiteur fait de la vidéo du déroulé. */
+/** Ce que le visiteur fait de la vidéo du déroulé : lancement, progression, son, relance à la main. */
 export const ETATS_VIDEO = [
-  ["vue", "Lancée"],
-  ["son", "Son activé"],
+  ["vue", "Lancée (seule, à l'arrivée à l'écran)"],
+  ["q25", "Regardée jusqu'à 25 %"],
+  ["q50", "Regardée jusqu'à 50 %"],
+  ["q75", "Regardée jusqu'à 75 %"],
   ["fin", "Vue jusqu'au bout"],
+  ["son", "Son activé"],
+  ["clic", "Relancée à la main (Lire, Revoir)"],
 ] as const;
 export type EtatVideo = (typeof ETATS_VIDEO)[number][0];
 

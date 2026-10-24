@@ -62,6 +62,7 @@ export default function ExpressVideo() {
   function lirePause() {
     const v = ref.current;
     if (!v) return;
+    if (v.paused) noterVideo("clic");
     charger(v);
     if (v.ended) v.currentTime = 0;
     if (v.paused) void v.play().catch(() => {});
@@ -84,6 +85,13 @@ export default function ExpressVideo() {
           noterVideo("vue");
         }}
         onPause={() => setLecture(false)}
+        onTimeUpdate={(e) => {
+          const v = e.currentTarget;
+          const part = v.duration ? v.currentTime / v.duration : 0;
+          if (part >= 0.25) noterVideo("q25");
+          if (part >= 0.5) noterVideo("q50");
+          if (part >= 0.75) noterVideo("q75");
+        }}
         onEnded={() => {
           setLecture(false);
           setFinie(true);

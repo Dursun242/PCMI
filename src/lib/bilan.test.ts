@@ -81,9 +81,18 @@ describe("vidéo du déroulé", () => {
     expect(nettoyerBilan({ ...bilan(), video: ["vue", "pirate"] })?.video).toEqual(["vue"]);
   });
 
-  it("compte lancements, son activé et vidéos vues jusqu'au bout", () => {
-    const a = analyser([bilan({ video: ["vue", "son", "fin"] }), bilan({ video: ["vue"] }), bilan()]);
-    expect(a.video).toEqual({ vue: 2, son: 1, fin: 1 });
+  it("compte lancements, progression, son activé et relances", () => {
+    const a = analyser([
+      bilan({ video: ["vue", "q25", "q50", "q75", "fin", "son"] }),
+      bilan({ video: ["vue", "q25", "clic"] }),
+      bilan(),
+    ]);
+    expect(a.video).toEqual({ vue: 2, q25: 2, q50: 1, q75: 1, fin: 1, son: 1, clic: 1 });
+  });
+
+  it("relit la progression dans le nom de fichier", () => {
+    const b = bilan({ video: ["vue", "q25", "q50", "clic"] });
+    expect(decoderBilan(encoderBilan(b))).toEqual(b);
   });
 });
 
