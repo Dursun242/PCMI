@@ -53,32 +53,28 @@ describe("lireDemande", () => {
 });
 
 describe("eligibleExpress", () => {
-  it("retient un plain-pied jusqu'à la surface maximale", () => {
-    expect(eligibleExpress({ typeMaison: "plain-pied", surface: 110 })).toBe(true);
-    expect(eligibleExpress({ typeMaison: "plain-pied", surface: 111 })).toBe(false);
+  it("retient toute maison jusqu'à 150 m², plain-pied ou à étage", () => {
+    expect(eligibleExpress({ surface: 150 })).toBe(true);
+    expect(eligibleExpress({ surface: 98 })).toBe(true);
   });
 
-  it("écarte une maison à étage ou sans surface", () => {
-    expect(eligibleExpress({ typeMaison: "etage", surface: 90 })).toBe(false);
-    expect(eligibleExpress({ typeMaison: "plain-pied", surface: null })).toBe(false);
+  it("écarte une maison au-delà de 150 m² ou sans surface connue", () => {
+    expect(eligibleExpress({ surface: 151 })).toBe(false);
+    expect(eligibleExpress({ surface: null })).toBe(false);
   });
 });
 
 describe("verdictExpress", () => {
-  it("retient un plain-pied dans la surface", () => {
-    expect(verdictExpress({ typeMaison: "plain-pied", surface: 95 })).toBe("eligible");
+  it("retient une maison dans la surface, quel que soit le nombre de niveaux", () => {
+    expect(verdictExpress({ surface: 140 })).toBe("eligible");
   });
 
-  it("écarte une maison à étage ou trop grande", () => {
-    expect(verdictExpress({ typeMaison: "etage", surface: null })).toBe("hors");
-    expect(verdictExpress({ typeMaison: "plain-pied", surface: 140 })).toBe("hors");
-    expect(verdictExpress({ typeMaison: "", surface: 140 })).toBe("hors");
+  it("écarte seulement une maison trop grande", () => {
+    expect(verdictExpress({ surface: 180 })).toBe("hors");
   });
 
-  it("laisse à vérifier un projet dont le type ou la surface manque", () => {
-    expect(verdictExpress({ typeMaison: "", surface: null })).toBe("a-verifier");
-    expect(verdictExpress({ typeMaison: "plain-pied", surface: null })).toBe("a-verifier");
-    expect(verdictExpress({ typeMaison: "ne-sait-pas", surface: 90 })).toBe("a-verifier");
+  it("laisse à vérifier une demande sans surface (le formulaire ne la demande plus)", () => {
+    expect(verdictExpress({ surface: null })).toBe("a-verifier");
   });
 });
 

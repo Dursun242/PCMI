@@ -149,8 +149,10 @@ export const lancement = {
 };
 
 /**
- * Formule Express plain-pied : page /permis-express, destination de la
- * campagne Google Ads (Seine-Maritime, Eure, Calvados).
+ * Formule Express : page /permis-express, destination de la campagne Google
+ * Ads (Seine-Maritime, Eure, Calvados). Toute maison individuelle jusqu'à
+ * 150 m² de surface de plancher, plain-pied ou à étage : au-delà, la loi
+ * impose un architecte (code de l'urbanisme, art. R. 431-2).
  *
  * C'est une formule à part entière, avec son propre contenu, et non une
  * remise sur une autre formule : pas de prix barré, donc pas de prix de
@@ -163,9 +165,9 @@ export const lancement = {
  */
 export const express = {
   actif: true,
-  nom: "Express plain-pied",
+  nom: "Express",
   prixTTC: 890,
-  surfaceMax: 110,
+  surfaceMax: 150,
   delai: "5 jours ouvrés",
   premiersPlans: "72 h",
   places: 10,
@@ -180,7 +182,7 @@ export const express = {
     "Dépôt en ligne sur le guichet numérique de votre mairie",
   ],
   conditions: [
-    `Maison de plain-pied jusqu'à 110 m² de surface de plancher`,
+    "Maison individuelle jusqu'à 150 m² de surface de plancher, plain-pied ou à étage",
     "Plan de forme simple, terrain plat ou en faible pente",
     "Hors secteur protégé (Architecte des Bâtiments de France)",
     "Terrain en Seine-Maritime, dans l'Eure ou le Calvados",
