@@ -76,7 +76,7 @@ export default function PermisExpressPage() {
       {/* Hero et formulaire côte à côte sur grand écran : l'action est visible sans défiler. */}
       <section className="bg-forest text-paper">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 pt-8 pb-12 sm:py-20 grid gap-12 lg:grid-cols-[1.05fr_1fr] lg:items-start">
-          <div data-zone="hero">
+          <div data-zone="hero" className="min-w-0">
             <div className="flex items-center gap-3">
               <span className="rule" aria-hidden="true" />
               <span className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">
@@ -121,21 +121,38 @@ export default function PermisExpressPage() {
               </WhatsAppLink>
             </div>
 
-            <dl className="mt-10 hidden grid-cols-3 gap-px bg-paper/15 max-w-xl sm:grid">
-              {[
-                ["Devis", "4 h", "ouvrées"],
-                ["Plans", express.premiersPlans, "pour valider"],
-                ["Dossier", express.delai.replace(" jours ouvrés", " j"), "ouvrés"],
-              ].map(([t, v, s]) => (
-                <div key={t} className="bg-forest py-5 pr-4 first:pl-0 pl-4">
-                  <dt className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-brass-2">{t}</dt>
-                  <dd className="mt-2">
-                    <span className="display text-4xl">{v}</span>
-                    <span className="block text-xs text-paper/70">{s}</span>
-                  </dd>
-                </div>
-              ))}
-            </dl>
+            {/* Réalisations dès le haut de page : sur téléphone avant le formulaire, sur ordinateur à côté. */}
+            <div data-section="maisons" className="mt-10 sm:mt-12" aria-labelledby="realises">
+              <h2 id="realises" className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">
+                Nos réalisations en Normandie
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-paper/80 max-w-[52ch]">
+                Plans, permis et études : notre bureau. Ces maisons ont été construites sur cette base.
+              </p>
+              <ul className="mt-5 -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-3 sm:-mx-8 sm:scroll-px-8 sm:px-8 lg:mx-0 lg:scroll-px-0 lg:px-0">
+                {maisons.map((c, i) => (
+                  <li key={c.photo} className="w-[78%] shrink-0 snap-start sm:w-[45%]">
+                    <figure>
+                      <div className="relative aspect-[4/3] overflow-hidden bg-paper/10">
+                        <Image
+                          src={c.photo}
+                          alt={`${c.titre}, ${c.commune}, construite sur les plans du bureau`}
+                          fill
+                          loading={i < 2 ? "eager" : "lazy"}
+                          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 78vw"
+                          className="object-cover"
+                        />
+                      </div>
+                      <figcaption className="mt-2 text-sm leading-snug">
+                        <strong>{c.titre}</strong>
+                        <span className="block text-paper/70">{c.commune}</span>
+                      </figcaption>
+                    </figure>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-1 text-xs text-paper/60" aria-hidden="true">Faites glisser pour voir les autres maisons →</p>
+            </div>
           </div>
 
           <div id="devis" data-section="formulaire" className="scroll-mt-24 bg-paper text-ink px-6 py-8 sm:px-9 sm:py-10 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)]">
@@ -147,38 +164,6 @@ export default function PermisExpressPage() {
             </div>
           </div>
         </div>
-      </section>
-
-      <section data-section="maisons" className="mx-auto max-w-7xl px-5 sm:px-8 pt-16 sm:pt-24" aria-labelledby="realises">
-        <span className="rule" aria-hidden="true" />
-        <h2 id="realises" className="h-section mt-6">Des maisons déjà sorties de terre</h2>
-        <p className="mt-4 text-ink-2 leading-relaxed max-w-[60ch]">
-          Des maisons dessinées par le bureau, autour du Havre. Même équipe, mêmes plans à l&apos;échelle, pour votre
-          dossier.
-        </p>
-        <ul className="mt-8 -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-3 sm:-mx-8 sm:scroll-px-8 sm:px-8 lg:mx-0 lg:scroll-px-0 lg:px-0">
-          {maisons.map((c, i) => (
-            <li key={c.photo} className="w-[78%] shrink-0 snap-start sm:w-[45%] lg:w-[23.5%]">
-              <figure>
-                <div className="relative aspect-[4/3] overflow-hidden bg-stone-2">
-                  <Image
-                    src={c.photo}
-                    alt={`${c.titre}, ${c.commune}`}
-                    fill
-                    loading={i < 4 ? "eager" : "lazy"}
-                    sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 78vw"
-                    className="object-cover"
-                  />
-                </div>
-                <figcaption className="mt-3 text-sm leading-snug">
-                  <strong>{c.titre}</strong>
-                  <span className="block text-ink-2">{c.commune}</span>
-                </figcaption>
-              </figure>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-2 text-xs text-ink-2 lg:hidden" aria-hidden="true">Faites glisser pour voir les autres maisons →</p>
       </section>
 
       <section data-section="deroule" className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24" aria-labelledby="deroule">
