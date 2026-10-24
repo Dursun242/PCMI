@@ -1,5 +1,13 @@
 import { NextResponse } from "next/server";
-import { ADMIN_COOKIE_NAME, ADMIN_SESSION_MAX_AGE_SECONDS, checkPassword, createSessionToken, isAdminConfigured } from "@/lib/adminAuth";
+import {
+  ADMIN_COOKIE_NAME,
+  ADMIN_SESSION_MAX_AGE_SECONDS,
+  COOKIE_NE_PAS_COMPTER,
+  NE_PAS_COMPTER_MAX_AGE_SECONDS,
+  checkPassword,
+  createSessionToken,
+  isAdminConfigured,
+} from "@/lib/adminAuth";
 
 export const runtime = "nodejs";
 
@@ -46,6 +54,14 @@ export async function POST(req: Request) {
     sameSite: "lax",
     path: "/",
     maxAge: ADMIN_SESSION_MAX_AGE_SECONDS,
+  });
+  // L'appareil de l'administrateur : ses visites de /permis-express ne faussent plus le compteur, pendant un an.
+  res.cookies.set(COOKIE_NE_PAS_COMPTER, "1", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: NE_PAS_COMPTER_MAX_AGE_SECONDS,
   });
   return res;
 }
