@@ -37,7 +37,7 @@ export const SECTIONS = [
   ["maisons", "Nos réalisations (photos)"],
   ["formulaire", "Formulaire de devis"],
   ["deroule", "Vidéo du déroulé"],
-  ["compris", "Compris et conditions"],
+  ["compris", "Ce qui est compris"],
   ["questions", "Questions"],
   ["fin", "Bas de page"],
 ] as const;
@@ -48,7 +48,7 @@ export const ZONES = [
   ["entete", "Menu du site"],
   ["hero", "Haut de page"],
   ["relance1", "Encadré après le déroulé"],
-  ["relance2", "Encadré après les conditions"],
+  ["relance2", "Encadré après « Compris »"],
   ["bureau", "Adresse du bureau"],
   ["bas", "Bas de page"],
   ["pied", "Pied de page du site"],

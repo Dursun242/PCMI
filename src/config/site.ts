@@ -156,8 +156,8 @@ export const lancement = {
  *
  * C'est une formule à part entière, avec son propre contenu, et non une
  * remise sur une autre formule : pas de prix barré, donc pas de prix de
- * référence à justifier. Elle est réservée aux projets simples, ce qui
- * explique un prix sous l'Essentiel.
+ * référence à justifier. Seule limite affichée : la surface (150 m²), au-delà
+ * de laquelle un architecte est obligatoire.
  * - `actif: false` coupe l'offre : la page renvoie alors vers /devis.
  * - Changer `prixTTC` ici met à jour la page, l'e-mail et la confirmation.
  *   Penser à aligner les annonces Google Ads (le prix affiché dans l'annonce
@@ -180,12 +180,6 @@ export const express = {
     "Premiers plans sous 72 h pour validation",
     "Une série de modifications avant dépôt",
     "Dépôt en ligne sur le guichet numérique de votre mairie",
-  ],
-  conditions: [
-    "Maison individuelle jusqu'à 150 m² de surface de plancher, plain-pied ou à étage",
-    "Plan de forme simple, terrain plat ou en faible pente",
-    "Hors secteur protégé (Architecte des Bâtiments de France)",
-    "Terrain en Seine-Maritime, dans l'Eure ou le Calvados",
   ],
 };
 
