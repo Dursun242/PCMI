@@ -10,6 +10,7 @@ import HorsPages from "@/components/HorsPages";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import StickyCta from "@/components/StickyCta";
+import SuiteExpress from "@/components/SuiteExpress";
 import WhatsAppBubble from "@/components/WhatsAppBubble";
 import ScrollReveal from "@/components/ScrollReveal";
 import JsonLd from "@/components/JsonLd";
@@ -77,6 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <StickyCta />
         <WhatsAppBubble />
+        <SuiteExpress />
         <ScrollReveal />
         {/* Mesure d'audience sans cookie ni identifiant individuel (Vercel Web Analytics). */}
         <Analytics />

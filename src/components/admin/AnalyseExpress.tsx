@@ -1,5 +1,6 @@
-import { ACTIONS, APPAREILS, CHAMPS, SECTIONS, ZONES, type Analyse } from "@/lib/bilan";
+import { ACTIONS, APPAREILS, CHAMPS, SECTIONS, ZONES, ZONES_SORTIE, type Analyse } from "@/lib/bilan";
 import { FAQ_EXPRESS } from "@/lib/express";
+import { libellePage, type AnalyseSuites } from "@/lib/suite";
 
 /**
  * Détail des visites de /permis-express (bilans de visite, lib/bilan.ts) :
@@ -29,7 +30,61 @@ function Note({ children }: { children: React.ReactNode }) {
   return <p className="mt-2 text-xs leading-relaxed text-ink-2">{children}</p>;
 }
 
-export default function AnalyseExpress({ a }: { a: Analyse }) {
+/** Où partent les visiteurs qui quittent la page pour le reste du site, et ce qu'ils y font. */
+function Suite({ a, s }: { a: Analyse; s: AnalyseSuites }) {
+  const contacts = s.appels + s.whatsapp + s.demandes.reduce((n, [, v]) => n + v, 0);
+  return (
+    <>
+      <h2 className={titre}>Partis vers le reste du site</h2>
+      {a.sorties.total === 0 ? (
+        <p className="mt-3 bg-paper p-4 text-sm text-ink-2">Aucun visiteur n&apos;a encore quitté la page pour une autre page du site.</p>
+      ) : (
+        <>
+          <p className="mt-3 bg-paper p-4 text-sm">
+            <strong>{a.sorties.total}</strong> visite{a.sorties.total > 1 ? "s" : ""} sur {a.visites} ({part(a.sorties.total, a.visites)} %) ont
+            continué sur le site, par{" "}
+            {ZONES_SORTIE.filter(([z]) => a.sorties.zones[z])
+              .map(([z, libelle]) => `${libelle.toLowerCase()} (${a.sorties.zones[z]})`)
+              .join(", ")}
+            .
+          </p>
+          <ul className="mt-px bg-paper text-sm">
+            {a.sorties.pages.map(([page, n]) => (
+              <Ligne key={page} libelle={libellePage(page)} n={n} total={a.sorties.total} />
+            ))}
+          </ul>
+        </>
+      )}
+      <Note>Première page ouverte depuis la page Express, et le lien utilisé : menu, pied de page ou lien dans la page.</Note>
+
+      <h2 className={titre}>Ce qu&apos;ils font ensuite sur le site</h2>
+      {s.pages.length === 0 && contacts === 0 ? (
+        <p className="mt-3 bg-paper p-4 text-sm text-ink-2">Rien encore : la suite du parcours se remplit dès qu&apos;un visiteur continue sur le site.</p>
+      ) : (
+        <>
+          <ul className="mt-3 bg-paper text-sm">
+            {s.pages.map(([page, n]) => (
+              <Ligne key={page} libelle={libellePage(page)} n={n} total={a.sorties.total || n} />
+            ))}
+          </ul>
+          <p className="mt-px bg-paper p-4 text-sm">
+            Contacts pris ailleurs sur le site : <strong>{s.appels}</strong> appel{s.appels > 1 ? "s" : ""},{" "}
+            <strong>{s.whatsapp}</strong> WhatsApp
+            {s.demandes.map(([f, n]) => (
+              <span key={f}>
+                , <strong>{n}</strong> demande{n > 1 ? "s" : ""} « {libellePage(f === "devis" || f === "contact" || f === "dossier" ? f : `devis--${f}`)} »
+              </span>
+            ))}
+            .
+          </p>
+        </>
+      )}
+      <Note>Pages vues (une fois par visite) et contacts des visiteurs partis de la page Express. Pourcentages : part des visiteurs partis sur le site.</Note>
+    </>
+  );
+}
+
+export default function AnalyseExpress({ a, s }: { a: Analyse; s: AnalyseSuites }) {
   if (a.visites === 0) {
     return (
       <>
@@ -135,6 +190,8 @@ export default function AnalyseExpress({ a }: { a: Analyse }) {
         Dernier champ touché par les visiteurs partis sans envoyer le formulaire. Un champ qui revient souvent est un
         champ qui bloque.
       </Note>
+
+      <Suite a={a} s={s} />
     </>
   );
 }

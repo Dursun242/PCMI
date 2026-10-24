@@ -5,6 +5,7 @@ import Link from "next/link";
 import { steps, type Field } from "@/config/dossier";
 import FileField, { appendFiles, filesReady, type PickedFile } from "./FileField";
 import { trackEvent } from "@/lib/analytics";
+import { suivreSuite } from "@/lib/suiviClient";
 
 type Values = Record<string, string>;
 type Status = "idle" | "sending" | "sent" | "error";
@@ -75,6 +76,7 @@ export default function DossierForm() {
       if (!res.ok || !json.ok) throw new Error(json.error ?? "Envoi impossible.");
       trackEvent("dossier_submit", {});
       setStatus("sent");
+      suivreSuite("demande", "dossier");
       try {
         localStorage.removeItem(STORAGE);
       } catch {}

@@ -3,6 +3,7 @@ import { ipOf, rateLimited } from "@/lib/mailer";
 import { appareilDeLAdmin } from "@/lib/adminAuth";
 import { nettoyerBilan } from "@/lib/bilan";
 import { estTypeSuivi } from "@/lib/suivi";
+import { nettoyerSuite } from "@/lib/suite";
 import { enregistrer } from "@/lib/suiviStore";
 
 export const runtime = "nodejs";
@@ -13,7 +14,7 @@ const ROBOTS = /bot|crawl|spider|slurp|preview|lighthouse|headless|monitor/i;
 
 /**
  * Reçoit les événements du navigateur (vue, formulaire commencé, clics sur
- * Appeler et WhatsApp, bilan de visite). Les demandes envoyées, elles, sont comptées côté
+ * Appeler et WhatsApp, bilan de visite, suite du parcours sur le site). Les demandes envoyées, elles, sont comptées côté
  * serveur par /api/express, pour ne dépendre d'aucun script bloqué.
  * Répond toujours 204 : le navigateur n'a rien à faire de la réponse.
  */
@@ -24,7 +25,7 @@ export async function POST(req: Request) {
   if (await appareilDeLAdmin(req.headers.get("cookie"))) return vide;
   if (rateLimited(`suivi:${ipOf(req)}`, MAX_PAR_FENETRE)) return vide;
 
-  let body: { type?: unknown; ads?: unknown; bilan?: unknown };
+  let body: { type?: unknown; ads?: unknown; bilan?: unknown; suite?: unknown };
   try {
     body = JSON.parse(await req.text());
   } catch {
@@ -36,7 +37,12 @@ export async function POST(req: Request) {
 
   if (body.type === "bilan") {
     const bilan = nettoyerBilan(body.bilan);
-    if (bilan) await enregistrer("bilan", source, bilan);
+    if (bilan) await enregistrer("bilan", source, { bilan });
+    return vide;
+  }
+  if (body.type === "suite") {
+    const suite = nettoyerSuite(body.suite);
+    if (suite) await enregistrer("suite", source, { suite });
     return vide;
   }
   await enregistrer(body.type, source);
