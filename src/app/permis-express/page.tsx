@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import ExpressForm from "@/components/ExpressForm";
 import ExpressBarre from "@/components/ExpressBarre";
 import ExpressVue from "@/components/ExpressVue";
-import { ExpressEntete, ExpressPied } from "@/components/ExpressCadre";
 import TelLink from "@/components/TelLink";
 import WhatsAppLink from "@/components/WhatsAppLink";
 import { chantiers, vitrine } from "@/config/references";
@@ -72,7 +71,6 @@ export default function PermisExpressPage() {
 
   return (
     <>
-      <ExpressEntete />
       {/* Hero et formulaire côte à côte sur grand écran : l'action est visible sans défiler. */}
       <section className="bg-forest text-paper">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 pt-8 pb-12 sm:py-20 grid gap-12 lg:grid-cols-[1.05fr_1fr] lg:items-start">
@@ -266,7 +264,6 @@ export default function PermisExpressPage() {
         </div>
       </section>
 
-      <ExpressPied />
       <ExpressBarre />
       <ExpressVue />
     </>

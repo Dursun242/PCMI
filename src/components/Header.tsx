@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ETAT_INITIAL, suivreDefilement } from "@/lib/defilement";
 import Logo from "./Logo";
@@ -70,10 +71,12 @@ export default function Header() {
   }, []);
 
   const fermer = () => setOpen(false);
+  // Sur la page de campagne, « Demander un devis » mène à son formulaire Express plutôt qu'au devis général.
+  const lienDevis = usePathname() === "/permis-express" ? "#devis" : "/devis";
 
   return (
     <>
-      <header className="entete sticky top-0 z-40 bg-paper/92 backdrop-blur border-b border-stone-2">
+      <header data-zone="entete" className="entete sticky top-0 z-40 bg-paper/92 backdrop-blur border-b border-stone-2">
         <div className="entete-ligne mx-auto max-w-7xl px-5 sm:px-8 flex items-center justify-between gap-4">
           <Link href="/" aria-label="Accueil" className="entete-logo entete-logo-entree">
             <Logo priority compact />
@@ -85,7 +88,7 @@ export default function Header() {
                 {n.label}
               </Link>
             ))}
-            <TrackedLink href="/devis" source="header" className="btn btn-ink !min-h-11 whitespace-nowrap">
+            <TrackedLink href={lienDevis} source="header" className="btn btn-ink !min-h-11 whitespace-nowrap">
               <span className="xl:hidden">Devis</span>
               <span className="hidden xl:inline">Demander un devis</span>
             </TrackedLink>
@@ -127,7 +130,7 @@ export default function Header() {
             </Link>
           ))}
           <TrackedLink
-            href="/devis"
+            href={lienDevis}
             source="menu_mobile"
             onClickCapture={fermer}
             className="menu-item btn btn-ink mt-3"
