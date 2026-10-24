@@ -75,13 +75,12 @@ export default function GoogleAds() {
           {/* Compact : le bandeau ne doit pas masquer la page. Refuser reste aussi visible qu'Accepter (CNIL). */}
           <div className="mx-auto flex max-w-5xl items-center gap-3 text-xs text-ink-2 sm:text-sm">
             <p className="leading-snug">
-              Cookie Google Ads : savoir si nos annonces vous ont amené ici. Rien de ce que vous saisissez n&apos;est
-              transmis.{" "}
+              Cookies : mesure de nos annonces Google.{" "}
               <a href="/confidentialite" className="text-ink underline decoration-brass underline-offset-2">
                 En savoir plus
               </a>
             </p>
-            <div className="grid shrink-0 gap-1.5 sm:flex sm:gap-2">
+            <div className="flex shrink-0 gap-1.5 sm:gap-2">
               <button type="button" onClick={() => choisir(true)} className="btn btn-ink !min-h-9 !px-3 text-xs sm:!px-5 sm:text-sm">
                 Accepter
               </button>
