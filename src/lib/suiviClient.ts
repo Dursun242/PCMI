@@ -85,7 +85,8 @@ function envoyer(type: TypeSuivi, extra: Record<string, unknown> = {}) {
     const corps = JSON.stringify({ type, ads: visiteAds(), ...extra });
     // sendBeacon survit à l'ouverture de l'appli Téléphone ou WhatsApp, contrairement à fetch.
     if (!navigator.sendBeacon?.("/api/express/suivi", corps)) {
-      void fetch("/api/express/suivi", { method: "POST", body: corps, keepalive: true });
+      // Réseau coupé ou bloqueur : la promesse rejetée ne doit pas finir en erreur dans la console.
+      fetch("/api/express/suivi", { method: "POST", body: corps, keepalive: true }).catch(() => {});
     }
   } catch {
     /* la mesure ne doit jamais casser un parcours */

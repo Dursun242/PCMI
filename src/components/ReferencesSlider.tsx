@@ -127,16 +127,16 @@ export default function ReferencesSlider({ items }: Props) {
           {items.map((r, i) => (
             <li
               key={r.photo}
-              role="group"
-              aria-roledescription="diapositive"
-              aria-label={`${i + 1} sur ${n} : ${r.titre}, ${r.commune}`}
               data-actif={i === actif || undefined}
               className="vitrine-diapo relative aspect-[16/10] w-[86%] shrink-0 overflow-hidden bg-stone-2 sm:w-[72%] lg:w-[58%]"
             >
-              <Image src={r.photo} alt={`${r.titre}, ${r.commune}`} fill sizes="(min-width: 1024px) 58vw, 86vw" className="object-cover" />
-              <div className="vitrine-legende absolute inset-x-0 bottom-0 px-4 pb-4 pt-10 text-paper sm:px-7 sm:pb-7 sm:pt-16">
-                <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">{r.commune}</p>
-                <p className="display mt-1 text-xl leading-tight sm:text-3xl">{r.titre}</p>
+              {/* Rôle « diapositive » sur un bloc intérieur : un <li> doit garder son rôle d'élément de liste. */}
+              <div role="group" aria-roledescription="diapositive" aria-label={`${i + 1} sur ${n} : ${r.titre}, ${r.commune}`} className="absolute inset-0">
+                <Image src={r.photo} alt={`${r.titre}, ${r.commune}`} fill sizes="(min-width: 1024px) 58vw, 86vw" className="object-cover" />
+                <div className="vitrine-legende absolute inset-x-0 bottom-0 px-4 pb-4 pt-10 text-paper sm:px-7 sm:pb-7 sm:pt-16">
+                  <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">{r.commune}</p>
+                  <p className="display mt-1 text-xl leading-tight sm:text-3xl">{r.titre}</p>
+                </div>
               </div>
             </li>
           ))}

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { cormorant, lato } from "./fonts";
 import { plans, site } from "@/config/site";
 import { formatEuro } from "@/lib/format";
 import { Analytics } from "@vercel/analytics/next";
@@ -56,7 +57,7 @@ const ACTIVER_ANIMATIONS = `(function(){var h=document.documentElement;if(!("Int
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // suppressHydrationWarning : le script ci-dessous ajoute une classe à <html> avant React.
-    <html lang="fr" suppressHydrationWarning>
+    <html lang="fr" className={`${lato.variable} ${cormorant.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: ACTIVER_ANIMATIONS }} />
       </head>

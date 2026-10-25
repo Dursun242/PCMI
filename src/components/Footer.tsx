@@ -16,7 +16,7 @@ export default function Footer() {
     <footer data-zone="pied" className="mt-28 border-t-2 border-brass bg-forest text-paper">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 pt-14 pb-10">
         <div className="flex flex-col gap-6 pb-12 md:flex-row md:items-end md:justify-between">
-          <Link href="/" aria-label="Accueil" className="inline-block">
+          <Link href="/" aria-label="ID Maîtrise, Permis en ligne : accueil" className="inline-block">
             <Logo light />
           </Link>
           <p className="max-w-sm text-sm leading-relaxed text-paper/55 md:text-right">
