@@ -63,7 +63,7 @@ export default function VideoDerouleBouton() {
           </button>
         </div>
         {/* Image d'attente posée à l'ouverture seulement : rien n'est chargé avant le clic. */}
-        <video ref={video} className="block aspect-video w-full bg-forest" controls playsInline preload="none" />
+        <video ref={video} data-mesure="déroulé (bouton du haut)" className="block aspect-video w-full bg-forest" controls playsInline preload="none" />
       </dialog>
     </>
   );

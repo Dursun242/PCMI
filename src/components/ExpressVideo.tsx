@@ -73,6 +73,7 @@ export default function ExpressVideo() {
     <div className="relative overflow-hidden bg-forest shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)]">
       <video
         ref={ref}
+        data-mesure="déroulé"
         className="block aspect-video w-full"
         poster={IMAGE}
         muted
