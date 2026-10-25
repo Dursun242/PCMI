@@ -3,12 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { noterVideo } from "@/lib/suiviClient";
 
-const SOURCE_TELEPHONE = "/videos/deroule-permis-en-ligne-mobile.mp4"; // 720p, 2 Mo
-const SOURCE_ORDINATEUR = "/videos/deroule-permis-en-ligne.mp4"; // 1080p, 5 Mo
+const SOURCE_TELEPHONE = "/videos/deroule-permis-en-ligne-mobile.mp4"; // 720p, 1,6 Mo
+const SOURCE_ORDINATEUR = "/videos/deroule-permis-en-ligne.mp4"; // 1080p, 3,4 Mo
 const IMAGE = "/videos/deroule-permis-en-ligne.jpg";
 
 /**
- * Vidéo du déroulé (motion design, 48 s) sur /permis-express.
+ * Vidéo du déroulé (motion design et voix off du gérant, 39 s) sur /permis-express.
  * Chargée seulement à l'approche (version légère sur téléphone), lancée sans
  * le son quand elle est à moitié visible, mise en pause quand on s'en éloigne.
  * Les navigateurs interdisent le son automatique : un bouton l'active et
