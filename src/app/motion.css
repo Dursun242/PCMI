@@ -102,7 +102,10 @@ body {
   [data-stagger] > :nth-child(7) { --delai: 0.48s; }
   [data-stagger] > :nth-child(n + 8) { --delai: 0.56s; }
 
-  /* Changement de page : le contenu entre en fondu (app/template.tsx). */
+  /* Changement de page : le contenu glisse en place (app/template.tsx).
+     Pas de départ à opacité 0 ici ni dans « monte » : le grand titre doit être
+     visible dès le premier affichage, sinon le téléphone le compte comme
+     affiché à la fin de l'animation (LCP mobile retardé d'environ 1 s). */
   .entree-page {
     animation: entree-page 0.6s var(--ease-sortie) backwards;
   }
@@ -119,10 +122,10 @@ body {
   }
 }
 @keyframes entree-page {
-  from { opacity: 0; transform: translateY(14px); }
+  from { transform: translateY(14px); }
 }
 @keyframes monte {
-  from { opacity: 0; transform: translateY(24px); }
+  from { transform: translateY(24px); }
 }
 @keyframes entree-visuel {
   from { opacity: 0; transform: scale(0.96); }
