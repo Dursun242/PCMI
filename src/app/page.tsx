@@ -9,6 +9,7 @@ import FormulaFinder from "@/components/FormulaFinder";
 import TrackedLink from "@/components/TrackedLink";
 import ReferencesSlider from "@/components/ReferencesSlider";
 import ExpressVideo from "@/components/ExpressVideo";
+import VideoDerouleBouton from "@/components/VideoDerouleBouton";
 import RealisationsGallery from "@/components/RealisationsGallery";
 import JsonLd from "@/components/JsonLd";
 import { faqPageSchema } from "@/lib/schema";
@@ -100,6 +101,9 @@ export default function HomePage() {
             <div className="mt-10 flex flex-wrap gap-3">
               <TrackedLink href="/devis" source="hero_accueil" className="btn btn-paper">Demander un devis</TrackedLink>
               <Link href="/tarifs" className="btn btn-line-light">Découvrir les formules</Link>
+            </div>
+            <div className="mt-7">
+              <VideoDerouleBouton />
             </div>
             <p className="mt-6 text-sm text-paper/70">
               Délai, démarches, prix :{" "}
