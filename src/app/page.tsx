@@ -8,6 +8,7 @@ import Faq from "@/components/Faq";
 import FormulaFinder from "@/components/FormulaFinder";
 import TrackedLink from "@/components/TrackedLink";
 import ReferencesSlider from "@/components/ReferencesSlider";
+import ExpressVideo from "@/components/ExpressVideo";
 import RealisationsGallery from "@/components/RealisationsGallery";
 import JsonLd from "@/components/JsonLd";
 import { faqPageSchema } from "@/lib/schema";
@@ -200,6 +201,16 @@ export default function HomePage() {
                 </li>
               ))}
             </ol>
+          </div>
+          {/* Vidéo du déroulé (même fichier que /permis-express), chargée seulement à l'approche. */}
+          <div className="mt-16 sm:mt-20 grid gap-8 lg:grid-cols-[1fr_1.6fr] lg:items-center">
+            <div>
+              <h3 className="display text-3xl sm:text-4xl leading-tight">Le déroulé en 40&nbsp;secondes</h3>
+              <p className="mt-4 leading-relaxed text-ink-2 max-w-[40ch]">
+                Dursun, gérant d&apos;{site.parent}, vous explique comment se passe votre permis : de la parcelle au dépôt en mairie.
+              </p>
+            </div>
+            <ExpressVideo />
           </div>
         </div>
       </section>
