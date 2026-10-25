@@ -1,11 +1,6 @@
 @import "tailwindcss";
-@import "@fontsource/lato/400.css";
-@import "@fontsource/lato/400-italic.css";
-@import "@fontsource/lato/700.css";
-@import "@fontsource/cormorant-garamond/500.css";
-@import "@fontsource/cormorant-garamond/500-italic.css";
-@import "@fontsource/cormorant-garamond/600.css";
 @import "./motion.css";
+/* Polices : déclarées par next/font dans app/fonts.ts (préchargement et repli aux mêmes métriques). */
 
 /* ---------- Jetons de design ----------
    Cabinet d'architecture haut de gamme : pierre claire, encre presque noire,
@@ -28,8 +23,8 @@
   --color-bronze: #82663a;
   --color-alert: #a3402c;
 
-  --font-sans: "Lato", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Cormorant Garamond", "Times New Roman", serif;
+  --font-sans: var(--font-lato), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-cormorant), "Times New Roman", serif;
 
   --radius-sm: 2px;
   --radius-md: 3px;
@@ -58,6 +53,11 @@ body {
 .bg-forest-2,
 .bg-ink {
   --color-bronze: #c9ab72;
+}
+/* …et reprend sa teinte foncée dans une carte claire posée sur un fond sombre
+   (formulaire de /permis-express : 2,4:1 sinon). */
+:is(.bg-forest, .bg-forest-2, .bg-ink) :is(.bg-paper, .bg-stone, .bg-white) {
+  --color-bronze: #82663a;
 }
 
 :focus-visible {

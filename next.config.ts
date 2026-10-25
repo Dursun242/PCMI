@@ -26,7 +26,16 @@ const nextConfig: NextConfig = {
   async redirects() {
     // L'ancienne page autonome des références est devenue une page du site :
     // les liens déjà partagés vers le fichier .html y mènent toujours.
-    return [{ source: "/references-chantiers.html", destination: "/references-chantiers", permanent: true }];
+    return [
+      { source: "/references-chantiers.html", destination: "/references-chantiers", permanent: true },
+      // www servait une copie du site (même contenu, deux adresses) : une seule adresse, sans www.
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.permis-maison-individuelle.fr" }],
+        destination: "https://permis-maison-individuelle.fr/:path*",
+        permanent: true,
+      },
+    ];
   },
 };
 

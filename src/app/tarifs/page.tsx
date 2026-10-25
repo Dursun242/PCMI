@@ -36,7 +36,7 @@ const rows: { label: string; values: (boolean | string)[] }[] = [
 ];
 
 function Cell({ v }: { v: boolean | string }) {
-  if (v === true) return <span className="inline-block h-px w-4 bg-brass align-middle" aria-label="Inclus" />;
+  if (v === true) return <span role="img" className="inline-block h-px w-4 bg-brass align-middle" aria-label="Inclus" />;
   if (v === false) return <span className="text-ink-3" aria-label="Non inclus">·</span>;
   return <span>{v}</span>;
 }

@@ -78,7 +78,7 @@ export default function Header() {
     <>
       <header data-zone="entete" className="entete sticky top-0 z-40 bg-paper/92 backdrop-blur border-b border-stone-2">
         <div className="entete-ligne mx-auto max-w-7xl px-5 sm:px-8 flex items-center justify-between gap-4">
-          <Link href="/" aria-label="Accueil" className="entete-logo entete-logo-entree">
+          <Link href="/" aria-label="ID Maîtrise, Permis en ligne : accueil" className="entete-logo entete-logo-entree">
             <Logo priority compact />
           </Link>
 
