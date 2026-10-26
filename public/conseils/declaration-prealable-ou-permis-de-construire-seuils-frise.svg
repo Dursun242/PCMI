@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="sd-title" fill="none">
+  <title id="sd-title">Échelle des surfaces : aucune formalité sous 5 m², déclaration préalable de 5 à 20 m² (jusqu'à 40 m² en extension en zone urbaine), permis de construire au-delà</title>
+  <rect width="1200" height="630" fill="#f2f0eb" />
+  <g font-family="Lato, sans-serif" fill="#1b1f1d">
+    <text x="60" y="66" font-size="12" font-weight="700" letter-spacing="2.6">CONSEILS</text>
+    <text x="60" y="88" font-size="20" opacity="0.85">Les seuils de surface à connaître</text>
+  </g>
+  <!-- axe: 0 à 50 m², 20px par m² depuis x=100 (non linéaire au-delà, symbolisé) -->
+  <line x1="100" y1="330" x2="1100" y2="330" stroke="#1b1f1d" stroke-width="1.6" />
+  <g stroke="#1b1f1d" stroke-width="1.2">
+    <line x1="100" y1="318" x2="100" y2="342" /><line x1="200" y1="318" x2="200" y2="342" />
+    <line x1="500" y1="318" x2="500" y2="342" /><line x1="900" y1="318" x2="900" y2="342" />
+  </g>
+  <rect x="100" y="262" width="100" height="44" fill="rgba(34,53,44,0.05)" stroke="#1b1f1d" stroke-width="1.2" />
+  <rect x="200" y="262" width="300" height="44" fill="rgba(169,136,79,0.2)" stroke="#a9884f" stroke-width="1.4" />
+  <rect x="500" y="262" width="400" height="44" fill="rgba(169,136,79,0.08)" stroke="#a9884f" stroke-width="1.2" stroke-dasharray="6 4" />
+  <rect x="900" y="262" width="200" height="44" fill="rgba(34,53,44,0.08)" stroke="#1b1f1d" stroke-width="1.2" />
+  <g font-family="Lato, sans-serif" fill="#1b1f1d" text-anchor="middle">
+    <text x="150" y="290" font-size="13" font-weight="700">Rien</text>
+    <text x="350" y="290" font-size="14" font-weight="700">Déclaration préalable</text>
+    <text x="700" y="290" font-size="13" font-weight="700">DP en extension, zone urbaine</text>
+    <text x="1000" y="290" font-size="14" font-weight="700">Permis</text>
+    <text x="100" y="372" font-size="13" fill="#5a645e">0</text>
+    <text x="200" y="372" font-size="13" fill="#5a645e">5 m²</text>
+    <text x="500" y="372" font-size="13" fill="#5a645e">20 m²</text>
+    <text x="900" y="372" font-size="13" fill="#5a645e">40 m²</text>
+  </g>
+  <g font-family="Lato, sans-serif" font-size="14" fill="#1b1f1d" text-anchor="middle">
+    <text x="600" y="450">Au-delà de 150 m² de surface de plancher au total, le recours</text>
+    <text x="600" y="472">à un architecte devient obligatoire pour un particulier.</text>
+  </g>
+</svg>
