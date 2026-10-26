@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="dp-title" fill="none">
+  <title id="dp-title">Une maison et un abri de jardin côte à côte : le petit volume relève d'une déclaration préalable, la maison d'un permis de construire</title>
+  <rect width="1200" height="630" fill="#f2f0eb" />
+  <line x1="60" y1="486" x2="1140" y2="486" stroke="#1b1f1d" stroke-width="1.6" />
+  <!-- abri de jardin -->
+  <g stroke="#1b1f1d" stroke-width="1.6">
+    <rect x="150" y="390" width="190" height="96" fill="rgba(255,255,255,0.5)" />
+    <path d="M136 390 L245 336 L354 390 Z" fill="rgba(255,255,255,0.5)" />
+    <rect x="262" y="424" width="52" height="62" fill="rgba(169,136,79,0.28)" stroke-width="1.1" />
+  </g>
+  <!-- maison -->
+  <g stroke="#1b1f1d" stroke-width="1.6">
+    <rect x="620" y="300" width="400" height="186" fill="rgba(255,255,255,0.5)" />
+    <path d="M602 300 L820 196 L1038 300 Z" fill="rgba(255,255,255,0.5)" />
+    <rect x="680" y="370" width="110" height="116" fill="rgba(34,53,44,0.05)" stroke-width="1.1" />
+    <rect x="850" y="400" width="52" height="86" fill="rgba(169,136,79,0.28)" stroke-width="1.1" />
+  </g>
+  <!-- étiquettes -->
+  <g font-family="Lato, sans-serif" text-anchor="middle" fill="#1b1f1d">
+    <text x="245" y="540" font-size="13" font-weight="700" letter-spacing="2.2" fill="#a9884f">DÉCLARATION PRÉALABLE</text>
+    <text x="245" y="564" font-size="14" fill="#5a645e">de 5 à 20 m²</text>
+    <text x="820" y="540" font-size="13" font-weight="700" letter-spacing="2.2" fill="#a9884f">PERMIS DE CONSTRUIRE</text>
+    <text x="820" y="564" font-size="14" fill="#5a645e">au-delà de 20 m²</text>
+  </g>
+  <g font-family="Lato, sans-serif" fill="#1b1f1d">
+    <text x="60" y="66" font-size="12" font-weight="700" letter-spacing="2.6">CONSEILS</text>
+    <text x="60" y="88" font-size="20" opacity="0.85">Déclaration préalable ou permis de construire ?</text>
+  </g>
+</svg>
