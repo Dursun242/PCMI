@@ -3,7 +3,8 @@
  * Voir commun.ts pour les règles de sourçage.
  */
 import type { Ville } from "../normandie";
+import { communesCaen } from "./caen";
 import { communesDieppe } from "./dieppe";
 import { communesRouen } from "./rouen";
 
-export const communesPeripherie: Ville[] = [...communesRouen, ...communesDieppe];
+export const communesPeripherie: Ville[] = [...communesRouen, ...communesCaen, ...communesDieppe];

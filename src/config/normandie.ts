@@ -267,6 +267,7 @@ const villesPrincipales: Ville[] = [
   {
     slug: "caen",
     nom: "Caen",
+    lastModified: "2026-10-27",
     a: "à Caen",
     autour: "autour de Caen",
     departement: "14",
