@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import ExpressForm from "@/components/ExpressForm";
 import ExpressBarre from "@/components/ExpressBarre";
 import ExpressVideo from "@/components/ExpressVideo";
-import ExpressConfiance from "@/components/ExpressConfiance";
+import ExpressConfiance, { AVIS_GOOGLE, NOTE_GOOGLE } from "@/components/ExpressConfiance";
 import ExpressVue from "@/components/ExpressVue";
 import TelLink from "@/components/TelLink";
 import WhatsAppLink from "@/components/WhatsAppLink";
@@ -162,7 +162,19 @@ export default function PermisExpressPage() {
             <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">Gratuit · sans engagement</p>
             <h2 className="display mt-3 text-4xl leading-tight">Recevez votre devis sous 4 h ouvrées</h2>
             <p className="mt-3 text-sm text-ink-2">Quatre champs, une minute. Nous vous rappelons avec un prix fixe.</p>
-            <div className="mt-8">
+            {/* La preuve au moment d'hésiter : qui rappelle, et ce qu'en disent les clients. */}
+            <a href={AVIS_GOOGLE} target="_blank" rel="noopener noreferrer" className="mt-5 flex items-center gap-3 border-y border-stone-2 py-3">
+              <Image src="/confiance/dursun-ozkan-medaillon.jpg" alt="" width={48} height={48} className="h-12 w-12 shrink-0 rounded-full object-cover" />
+              <span className="text-sm leading-snug">
+                <span className="font-bold">Dursun Ozkan</span> vous rappelle
+                <span className="block text-ink-2">
+                  <span className="font-bold text-ink">{NOTE_GOOGLE.moyenne}</span>{" "}
+                  <span aria-hidden="true" className="tracking-[0.1em] text-bronze">★★★★★</span>{" "}
+                  <span className="underline decoration-brass underline-offset-2">{NOTE_GOOGLE.nombre} avis Google</span>
+                </span>
+              </span>
+            </a>
+            <div className="mt-6">
               <ExpressForm />
             </div>
           </div>

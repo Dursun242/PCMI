@@ -3,10 +3,10 @@ import ChronoPermis from "@/components/ChronoPermis";
 import { site } from "@/config/site";
 
 /** Fiche Google d'ID Maîtrise (lien du site id-maitrise.com). */
-const AVIS_GOOGLE = "https://g.co/kgs/9n829AX";
+export const AVIS_GOOGLE = "https://g.co/kgs/9n829AX";
 
 /** Avis Google, recopiés mot pour mot (repris du site d'ID Maîtrise) ; note et nombre au moment de la reprise. */
-const NOTE = { moyenne: "5,0", nombre: 7 };
+export const NOTE_GOOGLE = { moyenne: "5,0", nombre: 7 };
 const AVIS = [
   {
     texte:
@@ -70,9 +70,9 @@ export default function ExpressConfiance() {
               rel="noopener noreferrer"
               className="mt-8 inline-flex items-center gap-3 border-b border-ink pb-2"
             >
-              <span className="display text-4xl leading-none">{NOTE.moyenne}</span>
+              <span className="display text-4xl leading-none">{NOTE_GOOGLE.moyenne}</span>
               <span aria-hidden="true" className="text-xl tracking-[0.15em] text-bronze">★★★★★</span>
-              <span className="text-sm text-ink-2 underline decoration-brass underline-offset-4">{NOTE.nombre} avis sur Google</span>
+              <span className="text-sm text-ink-2 underline decoration-brass underline-offset-4">{NOTE_GOOGLE.nombre} avis sur Google</span>
             </a>
 
             <ul className="mt-6 grid gap-5">
