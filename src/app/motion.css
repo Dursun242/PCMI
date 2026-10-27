@@ -174,6 +174,63 @@ body {
   from { transform: scaleX(0); }
 }
 
+/* ---------- Chronologie du permis (components/ChronoPermis.tsx) ----------
+   Un fil vertical gris, doublé d'un fil laiton qui se trace au défilement ;
+   chaque étape a un point qui s'allume quand elle apparaît. */
+.chrono::before,
+.chrono-fil {
+  content: "";
+  position: absolute;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  left: 7px;
+  width: 2px;
+  pointer-events: none;
+}
+.chrono::before {
+  background: var(--color-stone-2);
+}
+.chrono-fil {
+  background: var(--color-brass);
+  transform-origin: top;
+}
+.chrono-etape::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.15rem;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  border: 2px solid var(--color-brass);
+  background: var(--color-brass);
+  transition:
+    background 0.6s ease var(--delai, 0s),
+    border-color 0.6s ease var(--delai, 0s);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-on .chrono-etape:not(.is-visible)::before {
+    border-color: var(--color-ink-3);
+    background: var(--color-stone);
+    transition-delay: 0s;
+  }
+  .chrono-etape.is-visible::before {
+    animation: noeud-onde 1.4s ease-out calc(var(--delai, 0s) + 0.2s) backwards;
+  }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .chrono-fil {
+      animation: chrono-trace linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 65%;
+    }
+  }
+}
+@keyframes chrono-trace {
+  from { transform: scaleY(0); }
+}
+
 /* ---------- Étapes de l'accueil : un fil laiton les relie ---------- */
 .etapes-fil {
   position: absolute;

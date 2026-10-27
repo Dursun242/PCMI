@@ -36,6 +36,7 @@ export type Appareil = (typeof APPAREILS)[number][0];
 export const SECTIONS = [
   ["maisons", "Nos réalisations (photos)"],
   ["formulaire", "Formulaire de devis"],
+  ["confiance", "Bureau et panneaux de chantier"],
   ["deroule", "Vidéo du déroulé"],
   ["compris", "Ce qui est compris"],
   ["questions", "Questions"],
