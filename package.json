@@ -33,7 +33,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
@@ -41,6 +41,12 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.2.7"
+    "vitest": "^5.0.5"
+  },
+  "overrides": {
+    "zod": "^4.6.6",
+    "next": {
+      "postcss": "^8.5.32"
+    }
   }
 }
