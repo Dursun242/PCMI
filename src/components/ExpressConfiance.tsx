@@ -43,7 +43,7 @@ export default function ExpressConfiance() {
 
         <div className="mt-10 grid gap-8 md:grid-cols-[0.75fr_1.25fr] md:items-start">
           <figure>
-            <div className="relative aspect-[3/4] overflow-hidden bg-stone-2">
+            <div data-reveal="photo" className="defile-zoom relative aspect-[3/4] overflow-hidden bg-stone-2">
               <Image
                 src="/confiance/dursun-ozkan.jpg"
                 alt={`Dursun Ozkan, fondateur et gérant d'${site.parent}, au bureau du Havre`}
@@ -104,7 +104,7 @@ export default function ExpressConfiance() {
 
         <div className="mt-14 grid gap-3 md:grid-cols-[1.35fr_1fr]">
           <figure>
-            <div className="relative aspect-[4/3] overflow-hidden bg-stone-2">
+            <div data-reveal="photo" className="defile-zoom relative aspect-[4/3] overflow-hidden bg-stone-2">
               <Image
                 src="/confiance/bureau-le-havre.jpg"
                 alt={`Le bureau d'${site.parent}, ${site.address.street} au Havre`}
@@ -118,7 +118,7 @@ export default function ExpressConfiance() {
             </figcaption>
           </figure>
           <figure>
-            <div className="relative aspect-[4/3] overflow-hidden bg-stone-2">
+            <div data-reveal="photo" className="defile-zoom relative aspect-[4/3] overflow-hidden bg-stone-2">
               <Image
                 src="/confiance/voiture-agence.jpg"
                 alt={`La voiture d'${site.parent}`}
@@ -136,17 +136,17 @@ export default function ExpressConfiance() {
         <h3 className="mt-12 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">
           Permis et déclarations obtenus : nos panneaux sur les chantiers
         </h3>
-        <ul className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+        <ul data-stagger className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
           {PANNEAUX.map((p) => (
             <li key={p.photo}>
               <figure>
-                <div className="relative aspect-[3/4] overflow-hidden bg-stone-2">
+                <div className="group relative aspect-[3/4] overflow-hidden bg-stone-2">
                   <Image
                     src={p.photo}
                     alt={`Panneau ${site.parent} : ${p.titre.toLowerCase()}, ${p.lieu}`}
                     fill
                     sizes="(min-width: 1024px) 15vw, (min-width: 768px) 30vw, 46vw"
-                    className="object-cover"
+                    className="object-cover transition-transform duration-700 ease-out motion-safe:group-hover:scale-105"
                   />
                 </div>
                 <figcaption className="mt-2 text-sm leading-snug">
