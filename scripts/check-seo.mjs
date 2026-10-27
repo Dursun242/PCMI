@@ -31,6 +31,7 @@ const EXPECTATIONS = [
   { path: "/contact", types: ["ContactPage", "BreadcrumbList"] },
   { path: "/devis", types: ["ContactPage", "BreadcrumbList"] },
   { path: "/plan-de-masse", types: ["ContactPage", "BreadcrumbList"] },
+  { path: "/calcul-taxe-amenagement", types: ["WebApplication", "FAQPage", "BreadcrumbList"] },
   { path: "/plans-execution", types: ["Service", "FAQPage", "ContactPage", "BreadcrumbList"] },
   { path: "/etude-thermique-re2020", types: ["Service", "FAQPage", "ContactPage", "BreadcrumbList"] },
   { path: "/dossier", types: ["ContactPage", "BreadcrumbList"] },

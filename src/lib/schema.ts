@@ -325,6 +325,24 @@ export function collectionPageSchema(items: { slug: string; title: string }[]) {
   };
 }
 
+/** Outil gratuit utilisable dans le navigateur : /calcul-taxe-amenagement. */
+export function webApplicationSchema(path: string, name: string, description: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "@id": `${site.url}${path}#app`,
+    name,
+    description,
+    url: `${site.url}${path}`,
+    applicationCategory: "FinanceApplication",
+    operatingSystem: "Web",
+    inLanguage: "fr-FR",
+    isAccessibleForFree: true,
+    offers: { "@type": "Offer", price: 0, priceCurrency: "EUR" },
+    provider: ORG_REF,
+  };
+}
+
 /** Pages de mise en relation : /contact, /devis, /dossier. */
 export function contactPageSchema(path: string, name: string) {
   return {

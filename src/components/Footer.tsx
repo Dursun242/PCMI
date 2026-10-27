@@ -98,6 +98,7 @@ export default function Footer() {
               <li><Link href="/etude-thermique-re2020" className="hover:text-brass-2">Étude thermique RE2020</Link></li>
               <li><Link href="/permis-de-construire-maison" className="hover:text-brass-2">Le guide du permis</Link></li>
               <li><Link href={NORMANDIE_PATH} className="hover:text-brass-2">Permis en Normandie</Link></li>
+              <li><Link href="/calcul-taxe-amenagement" className="hover:text-brass-2">Calcul de la taxe d&apos;aménagement</Link></li>
               <li><Link href="/conseils" className="hover:text-brass-2">Conseils</Link></li>
               <li><Link href="/a-propos" className="hover:text-brass-2">À propos</Link></li>
               <li><Link href="/references-chantiers" className="hover:text-brass-2">Nos références chantiers</Link></li>
