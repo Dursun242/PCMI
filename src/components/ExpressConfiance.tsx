@@ -1,18 +1,34 @@
 import Image from "next/image";
 import { site } from "@/config/site";
 
+/** Fiche Google d'ID Maîtrise (lien du site id-maitrise.com). */
+const AVIS_GOOGLE = "https://g.co/kgs/9n829AX";
+
+/** Avis Google, recopiés mot pour mot (repris du site d'ID Maîtrise) ; note et nombre au moment de la reprise. */
+const NOTE = { moyenne: "5,0", nombre: 7 };
+const AVIS = [
+  {
+    texte:
+      "Une expérience exceptionnelle ! Dursun Özkan est une personne d'un grand professionnalisme, toujours à l'écoute et soucieuse de la satisfaction de ses clients. Son travail est impeccable, réalisé avec soin et passion.",
+    auteur: "A. Ö.",
+    coupe: true,
+  },
+  { texte: "Monsieur Ozkan est un professionnel très compétent. Je recommande sans hésitation.", auteur: "Eda G.", coupe: false },
+  { texte: "Mr Ozkan sait se rendre disponible et il est de très bon conseil, je recommande.", auteur: "Antoine O.", coupe: false },
+];
+
 /** Panneaux de chantier ID Maîtrise (noms des bénéficiaires masqués sur les photos d'origine). */
 const PANNEAUX = [
-  { photo: "/confiance/panneau-pc-maison-saint-martin-du-manoir.jpg", titre: "Permis de construire · maison", lieu: "Saint-Martin-du-Manoir" },
-  { photo: "/confiance/panneau-pc-maison-le-havre.jpg", titre: "Permis de construire", lieu: "Le Havre" },
+  { photo: "/confiance/panneau-pc-maison-saint-martin-du-manoir.jpg", titre: "Permis · maison", lieu: "Saint-Martin-du-Manoir, 2022" },
+  { photo: "/confiance/panneau-maison-saint-aubin-routot.jpg", titre: "Permis · maison", lieu: "Saint-Aubin-Routot, 2025" },
+  { photo: "/confiance/panneau-extension-garage-oudalle.jpg", titre: "Extension et garage", lieu: "Oudalle" },
   { photo: "/confiance/panneau-dp-extension-le-havre.jpg", titre: "Déclaration préalable · extension", lieu: "Le Havre" },
-  { photo: "/confiance/panneau-pc-garage.jpg", titre: "Permis de construire · garage", lieu: "Seine-Maritime" },
 ];
 
 /**
- * /permis-express, juste après le formulaire : la preuve qu'il y a un vrai bureau
- * derrière l'offre (bureau, terrain, panneaux de permis obtenus). Les visiteurs
- * lisent rarement plus bas que la vidéo : la confiance doit venir avant.
+ * /permis-express, juste après le formulaire : qui fait le permis (portrait, avis
+ * Google), où (bureau, terrain) et la preuve de permis obtenus (panneaux).
+ * Les visiteurs lisent rarement plus bas que la vidéo : la confiance doit venir avant.
  */
 export default function ExpressConfiance() {
   return (
@@ -20,12 +36,63 @@ export default function ExpressConfiance() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24">
         <span className="rule" aria-hidden="true" />
         <h2 id="confiance" className="h-section mt-6 max-w-[18ch]">Un vrai bureau, de vrais permis</h2>
-        <p className="lead mt-5 max-w-[56ch]">
-          Derrière cette page, {site.parent} : un bureau d&apos;études installé au Havre, {site.address.street}. Nous venons
-          voir votre terrain en Normandie quand c&apos;est utile, et nos panneaux sont sur les chantiers de nos clients.
-        </p>
 
-        <div className="mt-10 grid gap-3 md:grid-cols-[1.35fr_1fr]">
+        <div className="mt-10 grid gap-8 md:grid-cols-[0.75fr_1.25fr] md:items-start">
+          <figure>
+            <div className="relative aspect-[3/4] overflow-hidden bg-stone-2">
+              <Image
+                src="/confiance/dursun-ozkan.jpg"
+                alt={`Dursun Ozkan, fondateur et gérant d'${site.parent}, au bureau du Havre`}
+                fill
+                sizes="(min-width: 768px) 33vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+            <figcaption className="mt-2 text-sm text-ink-2">
+              <strong className="text-ink">Dursun Ozkan</strong>, fondateur et gérant. Il suit personnellement chaque dossier.
+            </figcaption>
+          </figure>
+
+          <div>
+            <p className="lead max-w-[52ch]">
+              {site.parent}, bureau d&apos;études créé en 2022 au Havre, {site.address.street}. Nous venons voir votre
+              terrain en Normandie quand c&apos;est utile, et nos panneaux sont sur les chantiers de nos clients.
+            </p>
+
+            <a
+              href={AVIS_GOOGLE}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 inline-flex items-center gap-3 border-b border-ink pb-2"
+            >
+              <span className="display text-4xl leading-none">{NOTE.moyenne}</span>
+              <span aria-hidden="true" className="text-xl tracking-[0.15em] text-bronze">★★★★★</span>
+              <span className="text-sm text-ink-2 underline decoration-brass underline-offset-4">{NOTE.nombre} avis sur Google</span>
+            </a>
+
+            <ul className="mt-6 grid gap-5">
+              {AVIS.map((a) => (
+                <li key={a.auteur}>
+                  <blockquote className="leading-relaxed">
+                    « {a.texte}
+                    {a.coupe ? " […]" : ""} »
+                  </blockquote>
+                  <p className="mt-1 text-sm text-ink-2">
+                    <strong className="text-ink">{a.auteur}</strong> · avis Google
+                  </p>
+                </li>
+              ))}
+            </ul>
+
+            <ul className="mt-8 grid gap-2 border-t border-stone-2 pt-5 text-sm text-ink-2 sm:grid-cols-3">
+              <li><strong className="block text-ink">Depuis 2022</strong>au Havre</li>
+              <li><strong className="block text-ink">Assurance décennale</strong>attestation jointe au contrat</li>
+              <li><strong className="block text-ink">{site.legal.company}</strong>RCS Le Havre</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-12 grid gap-3 md:grid-cols-[1.35fr_1fr]">
           <figure>
             <div className="relative aspect-[4/3] overflow-hidden bg-stone-2">
               <Image
@@ -37,21 +104,21 @@ export default function ExpressConfiance() {
               />
             </div>
             <figcaption className="mt-2 text-sm text-ink-2">
-              <strong className="text-ink">Notre bureau</strong> · {site.address.street}, {site.address.city}
+              <strong className="text-ink">Le bureau</strong> · {site.address.street}, {site.address.city}
             </figcaption>
           </figure>
           <figure>
             <div className="relative aspect-[4/3] overflow-hidden bg-stone-2">
               <Image
-                src="/confiance/terrain-normandie.jpg"
-                alt={`Voiture ${site.parent} et panneau de chantier devant un terrain à bâtir en Normandie`}
+                src="/confiance/terrain-triquerville.jpg"
+                alt={`Voiture ${site.parent} et panneau de permis devant un terrain à bâtir à Triquerville`}
                 fill
                 sizes="(min-width: 768px) 40vw, 100vw"
                 className="object-cover"
               />
             </div>
             <figcaption className="mt-2 text-sm text-ink-2">
-              <strong className="text-ink">Sur le terrain</strong> · avant de dessiner, en Normandie
+              <strong className="text-ink">Sur le terrain</strong> · maison de 100 m², Triquerville
             </figcaption>
           </figure>
         </div>
