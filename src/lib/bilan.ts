@@ -48,6 +48,7 @@ export type Section = (typeof SECTIONS)[number][0];
 export const ZONES = [
   ["entete", "Menu du site"],
   ["hero", "Haut de page"],
+  ["calcul", "Curseur « éligible ? »"],
   ["relance1", "Encadré après le déroulé"],
   ["relance2", "Encadré après « Compris »"],
   ["bureau", "Adresse du bureau"],

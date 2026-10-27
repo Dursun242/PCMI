@@ -108,6 +108,12 @@ export function eligibleExpress(d: Pick<DemandeExpress, "surface">): boolean {
   return d.surface !== null && d.surface <= express.surfaceMax;
 }
 
+/** Curseur « Votre maison est-elle éligible ? » : bornes, pas et position de départ, en m² de surface de plancher. */
+export const CURSEUR_SURFACE = { min: 60, max: 220, pas: 5, depart: 110 } as const;
+
+/** Événement du navigateur qui porte la surface choisie au curseur jusqu'au formulaire (detail : m²). */
+export const EVENEMENT_SURFACE = "express:surface";
+
 /**
  * Verdict pour l'e-mail : « hors » seulement pour une surface connue au-delà
  * du plafond ; sans surface (le formulaire ne la demande plus), le projet

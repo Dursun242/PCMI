@@ -44,6 +44,8 @@ type Events = {
   etude_thermique_submit: { prestations: string };
   /** Demande transmise depuis la page Express (campagne Google Ads). */
   express_submit: { eligible: string; urgent: string; surface_bucket: SurfaceBucket };
+  /** Surface essayée au curseur d'éligibilité de la page Express (une fois par tranche). */
+  express_calcul: { surface_bucket: SurfaceBucket };
   /** Clic sur un numéro de téléphone. */
   tel_click: { source: string };
   /** Ouverture de la conversation WhatsApp. */

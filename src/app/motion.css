@@ -463,6 +463,23 @@ html[data-defile="bas"]:not(:has(.entete :focus-within, .entete [aria-expanded="
   to { transform: scaleX(1); }
 }
 
+/* Curseur « éligible ? » : la réponse se pose quand elle bascule, la coche se dessine. */
+@media (prefers-reduced-motion: no-preference) {
+  .calcul-reponse {
+    animation: calcul-pose 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .calcul-coche {
+    display: inline-block;
+    animation: calcul-coche 0.5s 0.1s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  }
+}
+@keyframes calcul-pose {
+  from { opacity: 0; transform: translateY(10px); }
+}
+@keyframes calcul-coche {
+  from { opacity: 0; transform: scale(0.3) rotate(-20deg); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .entete,
   .entete-ligne,

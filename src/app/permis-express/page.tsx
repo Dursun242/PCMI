@@ -5,6 +5,7 @@ import ExpressForm from "@/components/ExpressForm";
 import ExpressBarre from "@/components/ExpressBarre";
 import ExpressVideo from "@/components/ExpressVideo";
 import ExpressConfiance, { AVIS_GOOGLE, NOTE_GOOGLE } from "@/components/ExpressConfiance";
+import ExpressEligibilite from "@/components/ExpressEligibilite";
 import ExpressVue from "@/components/ExpressVue";
 import TelLink from "@/components/TelLink";
 import WhatsAppLink from "@/components/WhatsAppLink";
@@ -123,6 +124,8 @@ export default function PermisExpressPage() {
                 Écrire sur WhatsApp
               </WhatsAppLink>
             </div>
+
+            <ExpressEligibilite />
 
             {/* Réalisations dès le haut de page : sur téléphone avant le formulaire, sur ordinateur à côté. */}
             <div data-section="maisons" className="mt-10 sm:mt-12" aria-labelledby="realises">

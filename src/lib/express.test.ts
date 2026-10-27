@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { eligibleExpress, estUrgente, libelle, lireDemande, TYPES_MAISON, verdictExpress } from "./express";
+import { CURSEUR_SURFACE, eligibleExpress, estUrgente, libelle, lireDemande, TYPES_MAISON, verdictExpress } from "./express";
 
 const base = {
   name: "Jean Martin",
@@ -62,6 +62,17 @@ describe("eligibleExpress", () => {
   it("écarte une maison au-delà de 150 m² ou sans surface connue", () => {
     expect(eligibleExpress({ surface: 151 })).toBe(false);
     expect(eligibleExpress({ surface: null })).toBe(false);
+  });
+});
+
+describe("CURSEUR_SURFACE", () => {
+  it("encadre le seuil de 150 m² et part d'une maison éligible", () => {
+    const { min, max, pas, depart } = CURSEUR_SURFACE;
+    expect(min).toBeLessThan(150);
+    expect(max).toBeGreaterThan(150);
+    expect((150 - min) % pas).toBe(0);
+    expect(eligibleExpress({ surface: depart })).toBe(true);
+    expect(eligibleExpress({ surface: 150 + pas })).toBe(false);
   });
 });
 

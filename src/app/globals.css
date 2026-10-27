@@ -232,6 +232,79 @@ body {
   background: rgba(252, 251, 249, 0.08);
 }
 
+/* Curseur de surface (page Express) : piste laiton jusqu'à la valeur, repère au seuil légal. */
+.curseur {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 2.75rem; /* cible tactile */
+  background: transparent;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+.curseur::-webkit-slider-runnable-track {
+  height: 4px;
+  background: linear-gradient(to right, var(--color-brass-2) var(--p), rgba(252, 251, 249, 0.22) var(--p));
+}
+.curseur::-moz-range-track {
+  height: 4px;
+  background: linear-gradient(to right, var(--color-brass-2) var(--p), rgba(252, 251, 249, 0.22) var(--p));
+}
+.curseur::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.6rem;
+  height: 1.6rem;
+  margin-top: calc(2px - 0.8rem);
+  border-radius: 999px;
+  background: var(--color-paper);
+  border: 3px solid var(--color-brass-2);
+  box-shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.5);
+  transition: transform 0.15s ease;
+}
+.curseur::-moz-range-thumb {
+  width: 1.6rem;
+  height: 1.6rem;
+  box-sizing: border-box;
+  border-radius: 999px;
+  background: var(--color-paper);
+  border: 3px solid var(--color-brass-2);
+  box-shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.5);
+  transition: transform 0.15s ease;
+}
+.curseur:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+.curseur:active::-moz-range-thumb {
+  transform: scale(1.15);
+}
+.curseur:focus-visible {
+  outline: 2px solid var(--color-brass-2);
+  outline-offset: 4px;
+}
+.curseur-seuil {
+  position: absolute;
+  top: 2.6rem;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-brass-2);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.curseur-seuil::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -1.65rem;
+  width: 2px;
+  height: 0.95rem;
+  background: var(--color-brass-2);
+  transform: translateX(-50%);
+}
+
 /* Formulaires : champs soulignés, pas de boîtes */
 .field {
   display: grid;

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { surfaceBucket, trackEvent } from "@/lib/analytics";
+import { EVENEMENT_SURFACE, verdictExpress } from "@/lib/express";
 import { noterEnvoi, suivreExpress } from "@/lib/suiviClient";
 
 type Status = "idle" | "sending" | "error";
@@ -19,10 +20,21 @@ export default function ExpressForm() {
   const [errorMsg, setErrorMsg] = useState("");
   const gclid = useRef("");
   const started = useRef(false);
+  /** Surface choisie au curseur d'éligibilité, s'il a été touché (sinon précisée au rappel). */
+  const surface = useRef<number | null>(null);
 
   // Identifiant du clic Google Ads, transmis dans l'e-mail pour l'import des conversions.
   useEffect(() => {
     gclid.current = new URLSearchParams(window.location.search).get("gclid") ?? "";
+  }, []);
+
+  useEffect(() => {
+    const retenir = (e: Event) => {
+      const m2 = (e as CustomEvent<unknown>).detail;
+      if (typeof m2 === "number") surface.current = m2;
+    };
+    window.addEventListener(EVENEMENT_SURFACE, retenir);
+    return () => window.removeEventListener(EVENEMENT_SURFACE, retenir);
   }, []);
 
   function markStarted() {
@@ -35,6 +47,7 @@ export default function ExpressForm() {
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data: Record<string, string> = { gclid: gclid.current };
+    if (surface.current !== null) data.surface = String(surface.current);
     new FormData(e.currentTarget).forEach((v, k) => {
       if (typeof v === "string") data[k] = v;
     });
@@ -48,8 +61,12 @@ export default function ExpressForm() {
       });
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error ?? "Envoi impossible.");
-      // Surface et échéance ne sont plus demandées : elles se précisent au rappel.
-      trackEvent("express_submit", { eligible: "a-verifier", urgent: "false", surface_bucket: surfaceBucket(null) });
+      // Échéance non demandée, surface seulement si le curseur a servi : le reste se précise au rappel.
+      trackEvent("express_submit", {
+        eligible: verdictExpress({ surface: surface.current }),
+        urgent: "false",
+        surface_bucket: surfaceBucket(surface.current),
+      });
       noterEnvoi();
       router.push("/devis/merci/express");
     } catch (err) {
