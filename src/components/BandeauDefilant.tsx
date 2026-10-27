@@ -20,7 +20,7 @@ export default function BandeauDefilant({ className, children }: { className?: s
 
   useEffect(() => {
     const ul = ref.current;
-    if (!ul || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!ul || !ul.children.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const copies = Array.from(ul.children, (n) => {
       const c = n.cloneNode(true) as HTMLElement;
@@ -42,18 +42,24 @@ export default function BandeauDefilant({ className, children }: { className?: s
       ul.style.scrollSnapType = oui ? "" : "none";
     };
 
+    // La boucle ne tourne que pendant que la liste est à l'écran (liste masquée comprise : jamais lancée).
     const pas = (t: number) => {
+      if (!visible) {
+        image = 0;
+        return;
+      }
       image = requestAnimationFrame(pas);
       const ecart = precedent ? Math.min(t - precedent, 100) : 0;
       precedent = t;
-      if (!visible || survol || t < repriseA || document.hidden) {
+      if (survol || t < repriseA || document.hidden) {
         position = ul.scrollLeft;
         return;
       }
       aimanter(false);
       position += (VITESSE * ecart) / 1000;
-      const moitie = ul.scrollWidth / 2;
-      if (position >= moitie) position -= moitie;
+      // Distance exacte entre un élément et sa copie : au-delà, on recule d'autant, sans saut visible.
+      const tour = copies[0].offsetLeft - (ul.firstElementChild as HTMLElement).offsetLeft;
+      if (tour > 0 && position >= tour) position -= tour;
       ul.scrollLeft = position;
     };
 
@@ -69,6 +75,10 @@ export default function BandeauDefilant({ className, children }: { className?: s
     };
     const io = new IntersectionObserver(([e]) => {
       visible = e.isIntersecting;
+      if (visible && !image) {
+        precedent = 0;
+        image = requestAnimationFrame(pas);
+      }
     });
     io.observe(ul);
 
@@ -77,7 +87,6 @@ export default function BandeauDefilant({ className, children }: { className?: s
     ul.addEventListener("focusin", geste);
     ul.addEventListener("mouseenter", entree);
     ul.addEventListener("mouseleave", sortie);
-    image = requestAnimationFrame(pas);
 
     return () => {
       cancelAnimationFrame(image);
