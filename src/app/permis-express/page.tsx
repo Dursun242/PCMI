@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import ExpressForm from "@/components/ExpressForm";
+import BandeauDefilant from "@/components/BandeauDefilant";
 import ExpressBarre from "@/components/ExpressBarre";
 import ExpressVideo from "@/components/ExpressVideo";
 import ExpressConfiance, { AVIS_GOOGLE, NOTE_GOOGLE } from "@/components/ExpressConfiance";
@@ -132,7 +133,7 @@ export default function PermisExpressPage() {
               <p className="mt-2 text-sm leading-relaxed text-paper/80 max-w-[52ch]">
                 Plans, permis et études : notre bureau. Ces maisons ont été construites à partir de nos plans.
               </p>
-              <ul className="mt-5 -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-3 sm:-mx-8 sm:scroll-px-8 sm:px-8 lg:mx-0 lg:scroll-px-0 lg:px-0">
+              <BandeauDefilant className="mt-5 -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-3 sm:-mx-8 sm:scroll-px-8 sm:px-8 lg:mx-0 lg:scroll-px-0 lg:px-0">
                 {maisons.map((c, i) => (
                   <li key={c.photo} className="w-[78%] shrink-0 snap-start sm:w-[45%]">
                     <figure>
@@ -153,7 +154,7 @@ export default function PermisExpressPage() {
                     </figure>
                   </li>
                 ))}
-              </ul>
+              </BandeauDefilant>
               <p className="mt-1 text-xs text-paper/60" aria-hidden="true">Faites glisser pour voir les autres maisons →</p>
             </div>
           </div>
