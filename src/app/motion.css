@@ -463,6 +463,16 @@ html[data-defile="bas"]:not(:has(.entete :focus-within, .entete [aria-expanded="
   to { transform: scaleX(1); }
 }
 
+/* Carte des cookies sur ordinateur (components/GoogleAds.tsx) : elle glisse depuis la gauche. */
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .cookies-carte {
+    animation: cookies-entree 0.7s var(--ease-sortie) 0.4s backwards;
+  }
+}
+@keyframes cookies-entree {
+  from { transform: translateX(calc(-100% - 2rem)); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .entete,
   .entete-ligne,

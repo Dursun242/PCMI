@@ -70,17 +70,18 @@ export default function GoogleAds() {
         <div
           role="dialog"
           aria-label="Cookies"
-          className="fixed inset-x-0 bottom-0 z-[60] border-t border-ink bg-paper/95 px-4 py-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] shadow-lg backdrop-blur sm:px-8 sm:py-3"
+          className="cookies-carte fixed inset-x-0 bottom-0 z-[60] border-t border-ink bg-paper/95 px-4 py-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] shadow-lg backdrop-blur sm:px-8 sm:py-3 md:inset-x-auto md:bottom-6 md:left-6 md:w-[21rem] md:border md:border-stone-2 md:bg-paper md:p-5 md:shadow-[0_24px_50px_-20px_rgba(0,0,0,0.35)]"
         >
-          {/* Compact : le bandeau ne doit pas masquer la page. Refuser reste aussi visible qu'Accepter (CNIL). */}
-          <div className="mx-auto flex max-w-5xl items-center gap-3 text-xs text-ink-2 sm:text-sm">
+          {/* Compact : le bandeau ne doit pas masquer la page (sur ordinateur, une carte en bas à gauche ;
+              la bulle WhatsApp est à droite). Refuser reste aussi visible qu'Accepter (CNIL). */}
+          <div className="mx-auto flex max-w-5xl items-center gap-3 text-xs text-ink-2 sm:text-sm md:flex-col md:items-stretch md:gap-4">
             <p className="leading-snug">
               Cookies : mesure de nos annonces Google.{" "}
               <a href="/confidentialite" className="text-ink underline decoration-brass underline-offset-2">
                 En savoir plus
               </a>
             </p>
-            <div className="flex shrink-0 gap-1.5 sm:gap-2">
+            <div className="flex shrink-0 gap-1.5 sm:gap-2 md:grid md:grid-cols-2">
               <button type="button" onClick={() => choisir(true)} className="btn btn-ink !min-h-9 !px-3 text-xs sm:!px-5 sm:text-sm">
                 Accepter
               </button>
