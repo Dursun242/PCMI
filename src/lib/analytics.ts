@@ -30,6 +30,8 @@ type Events = {
   cta_click: { source: string; formule?: string };
   /** Résultat rendu par le sélecteur « Quelle formule pour mon projet ? ». */
   formula_finder_result: { formule: string; surface_bucket: SurfaceBucket };
+  /** Montant affiché par le calculateur de taxe d'aménagement. */
+  taxe_calcul_result: { surface_bucket: SurfaceBucket; residence: "principale" | "secondaire" };
   /** Première saisie réelle dans le formulaire de devis. */
   devis_start: { formule: string };
   /** Demande de devis transmise avec succès. */

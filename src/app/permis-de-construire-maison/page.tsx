@@ -291,6 +291,11 @@ export default function GuidePage() {
             La construction d&apos;une maison déclenche la{" "}
             <a href="https://www.economie.gouv.fr/particuliers/taxe-amenagement" target="_blank" rel="noopener noreferrer">taxe d&apos;aménagement</a>, calculée sur la surface taxable du projet. Les éléments nécessaires à son calcul doivent être déclarés dans les <strong>90 jours suivant l&apos;achèvement des travaux</strong>, depuis le service « Gérer mes biens immobiliers » de votre espace sur impots.gouv.fr (ou via le formulaire papier n° 6704). Passé ce délai, l&apos;administration peut appliquer une majoration et taxer d&apos;office sur la base des éléments dont elle dispose.
           </p>
+          <p>
+            Pour chiffrer votre cas, utilisez notre{" "}
+            <Link href="/calcul-taxe-amenagement">calculateur de taxe d&apos;aménagement</Link> : valeurs de l&apos;année,
+            abattement de la résidence principale et taux de votre commune.
+          </p>
 
           <h2 id="apres" className="scroll-mt-28">Après l&apos;accord : validité, travaux, achèvement</h2>
           <ul>

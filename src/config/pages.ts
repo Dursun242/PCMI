@@ -53,7 +53,7 @@ export const staticPages: StaticPage[] = [
   },
   {
     path: "/permis-de-construire-maison",
-    lastModified: "2026-10-08",
+    lastModified: "2026-10-27",
     changeFrequency: "monthly",
     priority: 0.9,
     summary:
@@ -96,6 +96,14 @@ export const staticPages: StaticPage[] = [
     priority: 0.8,
     summary:
       "Envoi d'un plan de masse existant (PDF, DWG, DXF) pour chiffrage : ce que la pièce PCMI 2 doit montrer et ce qui manque le plus souvent.",
+  },
+  {
+    path: "/calcul-taxe-amenagement",
+    lastModified: "2026-10-27",
+    changeFrequency: "monthly",
+    priority: 0.8,
+    summary:
+      "Calculateur gratuit de la taxe d'aménagement 2026 d'une maison : valeur forfaitaire de 892 €/m², abattement de 50 % sur 100 m² en résidence principale, taux communal et départemental, piscine, stationnement, taxe d'archéologie préventive et dates de paiement.",
   },
   {
     path: "/plans-execution",
