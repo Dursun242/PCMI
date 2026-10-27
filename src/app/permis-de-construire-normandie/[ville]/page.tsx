@@ -70,6 +70,7 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
   const pole = poleDe(v);
   const couronne = communesAutour(v);
   const memePole = pole ? communesAutour(pole).filter((x) => x.slug !== v.slug) : [];
+  const aspect = v.patrimoine.length > 0 || Boolean(v.architecture);
   const source = `ville_${v.slug}`;
   const chiffres = chiffresLocaux(d);
 
@@ -128,22 +129,25 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
       </section>
 
       <section className="bg-stone border-y border-stone-2">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8 py-20 grid gap-14 lg:grid-cols-2">
+        <div className={`mx-auto max-w-7xl px-5 sm:px-8 py-20 grid gap-14 ${aspect ? "lg:grid-cols-2" : ""}`}>
           <div>
             <span className="rule" aria-hidden="true" />
             <h2 className="h-section mt-6">Ce qu&apos;il faut vérifier sur votre terrain</h2>
-            <div data-stagger className="mt-8 grid gap-6">
+            <div data-stagger className={`mt-8 grid gap-6 ${aspect ? "" : "lg:grid-cols-2"}`}>
               {v.risques.map((f) => <SourcedFact key={f.texte} fait={f} />)}
             </div>
           </div>
-          <div>
-            <span className="rule" aria-hidden="true" />
-            <h2 className="h-section mt-6">Patrimoine et aspect extérieur</h2>
-            <div data-stagger className="mt-8 grid gap-6">
-              {v.patrimoine.map((f) => <SourcedFact key={f.texte} fait={f} />)}
-              {v.architecture && <SourcedFact fait={v.architecture} />}
+          {/* Une commune sans monument ni règle d'aspect particulière n'affiche pas de colonne vide. */}
+          {aspect && (
+            <div>
+              <span className="rule" aria-hidden="true" />
+              <h2 className="h-section mt-6">Patrimoine et aspect extérieur</h2>
+              <div data-stagger className="mt-8 grid gap-6">
+                {v.patrimoine.map((f) => <SourcedFact key={f.texte} fait={f} />)}
+                {v.architecture && <SourcedFact fait={v.architecture} />}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
 

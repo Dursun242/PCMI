@@ -27,7 +27,7 @@ const specificites: { titre: string; texte: string; villes: string[] }[] = [
     titre: "Le sous-sol avant la façade",
     texte:
       "Marnières et anciennes carrières sont nombreuses en Seine-Maritime, dans l'Eure et sous Caen. Autour d'un indice de cavité, un périmètre de risque peut interdire de construire tant qu'une étude n'a pas levé le doute.",
-    villes: ["le-havre", "rouen", "evreux", "caen"],
+    villes: ["le-havre", "rouen", "saint-jacques-sur-darnetal", "isneauville", "evreux", "caen"],
   },
   {
     titre: "L'eau, des fleuves à la mer",

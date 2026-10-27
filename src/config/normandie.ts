@@ -197,6 +197,7 @@ const villesPrincipales: Ville[] = [
   {
     slug: "rouen",
     nom: "Rouen",
+    lastModified: "2026-10-27",
     a: "à Rouen",
     autour: "autour de Rouen",
     departement: "76",
