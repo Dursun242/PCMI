@@ -1,19 +1,7 @@
-/**
- * Communes de la périphérie des agglomérations (Rouen, Caen, Dieppe) : c'est
- * là que se vendent les terrains à bâtir, donc là que se montent les permis.
- *
- * Mêmes règles que src/config/normandie.ts : chaque fait porte sa source, et
- * les tests refusent une page sans contenu propre. Le nombre d'indices de
- * cavités vient de la base nationale du BRGM, relevée sur l'API Géorisques le
- * 27 octobre 2026 ; le lien cité ouvre la fiche des risques de la commune.
- * Les communes voisines sont calculées à partir des contours officiels
- * (geo.api.gouv.fr), les monuments historiques vérifiés dans la base Mérimée.
- */
-import type { Fait, Source, Ville } from "./normandie";
+import type { Fait, Source, Ville } from "../normandie";
+import { REVUE, cavitesRecensees } from "./commun";
 
-const REVUE = "2026-10-27";
-
-// ——— Agglomération de Rouen ———
+/** Agglomération de Rouen : plateaux nord et est. */
 
 const METROPOLE_ROUEN = "la Métropole Rouen Normandie, qui regroupe 71 communes";
 
@@ -34,25 +22,10 @@ const PEB_ROUEN_BOOS: Source = {
   url: "https://piece-jointe-carto.developpement-durable.gouv.fr/NAT003/PEB/PEB_LFOP_17_12_1991.pdf",
 };
 
-function georisques(nom: string, insee: string): Source {
-  return {
-    label: `Géorisques, risques sur la commune de ${nom}`,
-    url: `https://www.georisques.gouv.fr/mes-risques/connaitre-les-risques-pres-de-chez-moi/rapport2?form-commune=true&codeInsee=${insee}&ign=false&CGU-commune=on&commune=${insee}`,
-  };
-}
-
 function pluMetropolitain(nom: string): Fait {
   return {
     texte: `${nom} applique le PLU métropolitain de la Métropole Rouen Normandie, approuvé le 13 février 2020 et commun aux 71 communes. Il a été modifié plusieurs fois depuis, et sa révision générale est en cours.`,
     source: PLU_METROPOLITAIN,
-  };
-}
-
-/** Nombre d'indices recensés, avec le détail quand il éclaire le risque. */
-function cavitesRecensees(nom: string, insee: string, indices: number, detail = ""): Fait {
-  return {
-    texte: `La base nationale des cavités souterraines recense ${indices} indices sur ${nom}${detail}. Avant d'acheter un terrain, vérifiez sur la carte qu'aucun ne se trouve à proximité de la parcelle.`,
-    source: georisques(nom, insee),
   };
 }
 
@@ -75,7 +48,7 @@ const faqMarniere = (nom: string, a: string, indices: number) => ({
   a: `${indices} indices de cavités sont recensés sur ${nom}. Envoyez-nous la référence cadastrale : nous vérifions sur la carte des cavités et dans le PLU si un périmètre de risque touche la parcelle, avant de chiffrer. Si c'est le cas, une étude par un bureau spécialisé peut permettre de lever le doute et de construire.`,
 });
 
-const communesRouen: Ville[] = [
+export const communesRouen: Ville[] = [
   {
     slug: "isneauville",
     nom: "Isneauville",
@@ -417,5 +390,3 @@ const communesRouen: Ville[] = [
     ],
   },
 ];
-
-export const communesPeripherie: Ville[] = [...communesRouen];
