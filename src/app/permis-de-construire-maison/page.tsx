@@ -245,7 +245,7 @@ export default function GuidePage() {
           </ul>
           <p>
             Un dossier complet dès le premier jour, avec des cotes cohérentes entre le plan de masse, les coupes et les façades, est le meilleur moyen de tenir ces{" "}
-            <a href="https://www.service-public.fr/particuliers/vosdroits/F17656" target="_blank" rel="noopener noreferrer">délais d&apos;instruction</a>. C&apos;est la raison d&apos;être de notre contrôle de conformité au PLU avant dépôt. Pour vérifier vous-même les règles de votre terrain, voir{" "}
+            <a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F1986" target="_blank" rel="noopener noreferrer">délais d&apos;instruction</a>. C&apos;est la raison d&apos;être de notre contrôle de conformité au PLU avant dépôt. Pour vérifier vous-même les règles de votre terrain, voir{" "}
             <Link href="/conseils/lire-le-plu-avant-de-dessiner-sa-maison">lire le PLU de sa commune avant de dessiner sa maison</Link>.
           </p>
           <p>
@@ -274,7 +274,7 @@ export default function GuidePage() {
           </p>
           <p>
             Le{" "}
-            <a href="https://www.service-public.fr/particuliers/vosdroits/F17786" target="_blank" rel="noopener noreferrer"><strong>recours des tiers</strong></a>{" "}
+            <a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F1988" target="_blank" rel="noopener noreferrer"><strong>recours des tiers</strong></a>{" "}
             (un voisin, par exemple) est ouvert pendant <strong>2 mois</strong> à compter du premier jour d&apos;affichage continu. L&apos;administration peut de son côté retirer un permis illégal dans les 3 mois qui suivent sa délivrance. Passés ces délais, le permis est « purgé ». Beaucoup de banques et de constructeurs attendent ce moment pour débloquer les fonds ou ouvrir le chantier.
           </p>
 

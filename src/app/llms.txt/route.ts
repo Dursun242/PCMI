@@ -1,5 +1,6 @@
-import { site, plans, options, whatsappUrl, exePlans, exePacks, metiers, thermique } from "@/config/site";
+import { site, plans, options, whatsappUrl, exePlans, exePacks, metiers, thermique, lancement } from "@/config/site";
 import { staticPages } from "@/config/pages";
+import { formatFrDate } from "@/lib/format";
 import { getArticles } from "@/lib/articles";
 import { villes } from "@/config/normandie";
 import { getVille, villePath } from "@/lib/normandie";
@@ -17,6 +18,12 @@ export const dynamic = "force-static";
 
 function euros(n: number) {
   return `${n.toLocaleString("fr-FR")} € TTC`;
+}
+
+/** Prix payé, suivi du prix habituel tant que l'offre saisonnière est active (comme le prix barré de /tarifs). */
+function prixFormule(p: (typeof plans)[number]) {
+  if (!p.regularPriceTTC) return euros(p.priceTTC);
+  return `${euros(p.priceTTC)} (au lieu de ${euros(p.regularPriceTTC)}, ${lancement.nom} jusqu'au ${formatFrDate(lancement.fin)})`;
 }
 
 export function GET() {
@@ -37,7 +44,7 @@ Au-delà de ${SURFACE_ARCHITECTE} m² de surface de plancher, le recours à un a
 ## Formules
 
 ${plans
-  .map((p) => `- **${p.name}** — ${euros(p.priceTTC)}, livré sous ${p.delayWorkingDays}. ${p.promise} ${p.forWho}`)
+  .map((p) => `- **${p.name}** — ${prixFormule(p)}, livré sous ${p.delayWorkingDays}. ${p.promise} ${p.forWho}`)
   .join("\n")}
 
 Au-delà de ${SURFACE_MAX} m² de surface de plancher : sur devis.
