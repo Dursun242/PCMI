@@ -1,4 +1,5 @@
 import Image from "next/image";
+import ChronoPermis from "@/components/ChronoPermis";
 import { site } from "@/config/site";
 
 /** Fiche Google d'ID Maîtrise (lien du site id-maitrise.com). */
@@ -17,18 +18,21 @@ const AVIS = [
   { texte: "Mr Ozkan sait se rendre disponible et il est de très bon conseil, je recommande.", auteur: "Antoine O.", coupe: false },
 ];
 
-/** Panneaux de chantier ID Maîtrise (noms des bénéficiaires masqués sur les photos d'origine). */
+/** Panneaux de chantier ID Maîtrise, maisons d'abord (noms des bénéficiaires masqués sur les photos d'origine). */
 const PANNEAUX = [
-  { photo: "/confiance/panneau-pc-maison-saint-martin-du-manoir.jpg", titre: "Permis · maison", lieu: "Saint-Martin-du-Manoir, 2022" },
+  { photo: "/confiance/panneau-maison-triquerville.jpg", titre: "Permis · maison de 100 m²", lieu: "Triquerville, 2026" },
   { photo: "/confiance/panneau-maison-saint-aubin-routot.jpg", titre: "Permis · maison", lieu: "Saint-Aubin-Routot, 2025" },
+  { photo: "/confiance/panneau-quatre-maisons-le-havre.jpg", titre: "Permis · quatre maisons", lieu: "Le Havre, 2024" },
+  { photo: "/confiance/panneau-pc-maison-saint-martin-du-manoir.jpg", titre: "Permis · maison", lieu: "Saint-Martin-du-Manoir, 2022" },
+  { photo: "/confiance/panneau-pc-le-havre.jpg", titre: "Permis de construire", lieu: "Le Havre" },
   { photo: "/confiance/panneau-extension-garage-oudalle.jpg", titre: "Extension et garage", lieu: "Oudalle" },
-  { photo: "/confiance/panneau-dp-extension-le-havre.jpg", titre: "Déclaration préalable · extension", lieu: "Le Havre" },
 ];
 
 /**
  * /permis-express, juste après le formulaire : qui fait le permis (portrait, avis
- * Google), où (bureau, terrain) et la preuve de permis obtenus (panneaux).
- * Les visiteurs lisent rarement plus bas que la vidéo : la confiance doit venir avant.
+ * Google), comment (chronologie, du PLU à l'accord), où (bureau, voiture) et la
+ * preuve de permis obtenus (panneaux). Les visiteurs lisent rarement plus bas que
+ * la vidéo : la confiance doit venir avant.
  */
 export default function ExpressConfiance() {
   return (
@@ -49,7 +53,8 @@ export default function ExpressConfiance() {
               />
             </div>
             <figcaption className="mt-2 text-sm text-ink-2">
-              <strong className="text-ink">Dursun Ozkan</strong>, fondateur et gérant. Il suit personnellement chaque dossier.
+              <strong className="text-ink">Dursun Ozkan</strong>, fondateur et gérant. Il suit personnellement chaque dossier
+              avec ses dessinateurs, de la lecture du PLU jusqu&apos;à l&apos;accord du permis.
             </figcaption>
           </figure>
 
@@ -92,7 +97,12 @@ export default function ExpressConfiance() {
           </div>
         </div>
 
-        <div className="mt-12 grid gap-3 md:grid-cols-[1.35fr_1fr]">
+        <div className="mt-14 grid gap-8 md:grid-cols-[0.75fr_1.25fr]">
+          <h3 className="display text-3xl leading-tight sm:text-4xl md:sticky md:top-28 md:self-start">Votre permis, du PLU à l&apos;accord</h3>
+          <ChronoPermis />
+        </div>
+
+        <div className="mt-14 grid gap-3 md:grid-cols-[1.35fr_1fr]">
           <figure>
             <div className="relative aspect-[4/3] overflow-hidden bg-stone-2">
               <Image
@@ -110,15 +120,15 @@ export default function ExpressConfiance() {
           <figure>
             <div className="relative aspect-[4/3] overflow-hidden bg-stone-2">
               <Image
-                src="/confiance/terrain-triquerville.jpg"
-                alt={`Voiture ${site.parent} et panneau de permis devant un terrain à bâtir à Triquerville`}
+                src="/confiance/voiture-agence.jpg"
+                alt={`La voiture d'${site.parent}`}
                 fill
                 sizes="(min-width: 768px) 40vw, 100vw"
                 className="object-cover"
               />
             </div>
             <figcaption className="mt-2 text-sm text-ink-2">
-              <strong className="text-ink">Sur le terrain</strong> · maison de 100 m², Triquerville
+              <strong className="text-ink">Sur le terrain</strong> · pour venir voir votre parcelle et vos chantiers
             </figcaption>
           </figure>
         </div>
@@ -126,7 +136,7 @@ export default function ExpressConfiance() {
         <h3 className="mt-12 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">
           Permis et déclarations obtenus : nos panneaux sur les chantiers
         </h3>
-        <ul className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <ul className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
           {PANNEAUX.map((p) => (
             <li key={p.photo}>
               <figure>
@@ -135,7 +145,7 @@ export default function ExpressConfiance() {
                     src={p.photo}
                     alt={`Panneau ${site.parent} : ${p.titre.toLowerCase()}, ${p.lieu}`}
                     fill
-                    sizes="(min-width: 1024px) 22vw, 46vw"
+                    sizes="(min-width: 1024px) 15vw, (min-width: 768px) 30vw, 46vw"
                     className="object-cover"
                   />
                 </div>
