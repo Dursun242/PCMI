@@ -155,7 +155,7 @@ export default function PermisExpressPage() {
                   </li>
                 ))}
               </BandeauDefilant>
-              <p className="mt-1 text-xs text-paper/60" aria-hidden="true">Faites glisser pour voir les autres maisons →</p>
+              <p className="mt-1 text-xs text-paper/60 [@media(pointer:fine)]:hidden" aria-hidden="true">Faites glisser pour voir les autres maisons →</p>
             </div>
           </div>
 
