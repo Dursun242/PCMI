@@ -1,4 +1,5 @@
 import Image from "next/image";
+import BandeauDefilant from "@/components/BandeauDefilant";
 import ChronoPermis from "@/components/ChronoPermis";
 import { site } from "@/config/site";
 
@@ -28,6 +29,31 @@ const PANNEAUX = [
   { photo: "/confiance/panneau-extension-garage-oudalle.jpg", titre: "Extension et garage", lieu: "Oudalle" },
 ];
 
+/** Sur téléphone, les trois photos du bureau défilent en bandeau (sur ordinateur, elles restent posées dans la page). */
+const PHOTOS = [
+  {
+    photo: "/confiance/dursun-ozkan.jpg",
+    alt: `Dursun Ozkan, fondateur et gérant d'${site.parent}, au bureau du Havre`,
+    titre: "Dursun Ozkan",
+    texte: "fondateur et gérant",
+    portrait: true,
+  },
+  {
+    photo: "/confiance/bureau-le-havre.jpg",
+    alt: `Le bureau d'${site.parent}, ${site.address.street} au Havre`,
+    titre: "Le bureau",
+    texte: `${site.address.street}, ${site.address.city}`,
+    portrait: false,
+  },
+  {
+    photo: "/confiance/voiture-agence.jpg",
+    alt: `La voiture d'${site.parent}`,
+    titre: "Sur le terrain",
+    texte: "pour venir voir votre parcelle et vos chantiers",
+    portrait: false,
+  },
+];
+
 /**
  * /permis-express, juste après le formulaire : qui fait le permis (portrait, avis
  * Google), comment (chronologie, du PLU à l'accord), où (bureau, voiture) et la
@@ -41,8 +67,27 @@ export default function ExpressConfiance() {
         <span className="rule" aria-hidden="true" />
         <h2 id="confiance" className="h-section mt-6 max-w-[18ch]">Un vrai bureau, de vrais permis</h2>
 
-        <div className="mt-10 grid gap-8 md:grid-cols-[0.75fr_1.25fr] md:items-start">
-          <figure>
+        <BandeauDefilant className="md:hidden mt-10 -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-3 sm:-mx-8 sm:scroll-px-8 sm:px-8">
+          {PHOTOS.map((p) => (
+            <li key={p.photo} className="shrink-0 snap-start">
+              <figure>
+                <div className={`relative h-72 overflow-hidden bg-stone-2 ${p.portrait ? "w-54" : "w-96 max-w-[calc(100vw-2.5rem)]"}`}>
+                  <Image src={p.photo} alt={p.alt} fill sizes="384px" className="object-cover" />
+                </div>
+                <figcaption className="mt-2 text-sm text-ink-2">
+                  <strong className="text-ink">{p.titre}</strong> · {p.texte}
+                </figcaption>
+              </figure>
+            </li>
+          ))}
+        </BandeauDefilant>
+        <p className="md:hidden mt-3 text-sm text-ink-2">
+          <strong className="text-ink">Dursun Ozkan</strong> suit personnellement chaque dossier avec ses dessinateurs, de la
+          lecture du PLU jusqu&apos;à l&apos;accord du permis.
+        </p>
+
+        <div className="mt-8 md:mt-10 grid gap-8 md:grid-cols-[0.75fr_1.25fr] md:items-start">
+          <figure className="hidden md:block">
             <div data-reveal="photo" className="defile-zoom relative aspect-[3/4] overflow-hidden bg-stone-2">
               <Image
                 src="/confiance/dursun-ozkan.jpg"
@@ -102,7 +147,7 @@ export default function ExpressConfiance() {
           <ChronoPermis />
         </div>
 
-        <div className="mt-14 grid gap-3 md:grid-cols-[1.35fr_1fr]">
+        <div className="mt-14 hidden gap-3 md:grid md:grid-cols-[1.35fr_1fr]">
           <figure>
             <div data-reveal="photo" className="defile-zoom relative aspect-[4/3] overflow-hidden bg-stone-2">
               <Image
