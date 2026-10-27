@@ -158,8 +158,8 @@ export const villes: Ville[] = [
         texte:
           "Près de la zone industrialo-portuaire, le plan de prévention des risques technologiques approuvé en 2016 peut imposer des règles de construction ou rendre certains secteurs inconstructibles.",
         source: {
-          label: "Préfecture de Seine-Maritime, PPRT de la zone industrialo-portuaire",
-          url: "https://www.seine-maritime.gouv.fr/layout/set/print/Actualites/Archives/Archives-2016/PPRT-de-la-zone-industrielle-et-portuaire-du-Havre",
+          label: "Géorisques, PPRT de la zone industrialo-portuaire du Havre",
+          url: "https://www.georisques.gouv.fr/donnee-risques/PPR/Fiche-ppr/pprt/76DDTM20150005",
         },
       },
     ],
@@ -220,16 +220,16 @@ export const villes: Ville[] = [
         texte:
           "En bord de Seine, le plan de prévention des risques d'inondation de la boucle de Rouen (2009, modifié en 2013) fixe des règles de construction dans 18 communes, dont Rouen.",
         source: {
-          label: "Préfecture de Seine-Maritime, PPRN de la boucle de Rouen",
-          url: "https://www.seine-maritime.gouv.fr/Publications/Information-des-acquereurs-et-locataires-sur-les-risques-majeurs/Recherche-par-Plan-de-Prevention-des-Risques-PPR/PPRN-Vallee-de-la-SEINE-Boucle-de-ROUEN",
+          label: "Géorisques, PPRi de la Seine, boucle de Rouen",
+          url: "https://www.georisques.gouv.fr/donnee-risques/PPR/Fiche-ppr/pprn/76DDTM20040008",
         },
       },
       {
         texte:
           "Plus au nord, le plan de prévention des bassins versants du Cailly, de l'Aubette et du Robec, approuvé en 2022, couvre aussi le ruissellement et les remontées de nappe.",
         source: {
-          label: "Préfecture de Seine-Maritime, PPRN Cailly, Aubette et Robec",
-          url: "https://www.seine-maritime.gouv.fr/Publications/Information-des-acquereurs-et-locataires-sur-les-risques-majeurs/Recherche-par-Plan-de-Prevention-des-Risques-PPR/PPRN-Bassin-versant-du-CAILLY-de-l-AUBETTE-et-du-ROBEC",
+          label: "Géorisques, PPRi Cailly, Aubette et Robec",
+          url: "https://www.georisques.gouv.fr/donnee-risques/PPR/Fiche-ppr/pprn/76DDTM20110001",
         },
       },
     ],
@@ -238,8 +238,8 @@ export const villes: Ville[] = [
         texte:
           "Le centre historique, ancien secteur sauvegardé, est un site patrimonial remarquable régi par un plan de sauvegarde et de mise en valeur, et la ville compte de nombreux monuments historiques : avis de l'Architecte des Bâtiments de France et instruction en 3 mois.",
         source: {
-          label: "Ville de Rouen, plan de sauvegarde et de mise en valeur",
-          url: "https://rouen.fr/sites/default/files/download/2019/plan_de_sauvegarde_et_de_mise_en_valeur_de_rouen.pdf",
+          label: "Métropole Rouen Normandie, plan de sauvegarde et de mise en valeur de Rouen",
+          url: "https://metropole-rouen-normandie.fr/sites/default/files/documents/plu_approuve/Ensemble%20des%20documents%20d%27urbanisme%20communaux%20en%20vigueur%20avant%20l%27approbation%20du%20PLU%20m%C3%A9tropolitain/Rouen-76540/760540_PSMV.pdf",
         },
       },
     ],
@@ -767,8 +767,8 @@ export const villes: Ville[] = [
         texte:
           "Le plan de prévention des risques d'inondation des vallées de la Valmont et de la Ganzeville, approuvé en 2012, couvre débordements, ruissellement, remontées de nappe et submersion marine, avec des zones exposées aux projections de galets en front de mer.",
         source: {
-          label: "Préfecture de Seine-Maritime, PPRN des vallées de la Valmont et de la Ganzeville",
-          url: "https://www.seine-maritime.gouv.fr/Publications/Information-des-acquereurs-et-locataires-sur-les-risques-majeurs/Recherche-par-Plan-de-Prevention-des-Risques-PPR/PPRN-Vallees-de-la-VALMONT-et-de-la-GANZEVILLE",
+          label: "Géorisques, PPRi des vallées de la Valmont et de la Ganzeville",
+          url: "https://www.georisques.gouv.fr/donnee-risques/PPR/Fiche-ppr/pprn/76DDTM20020006",
         },
       },
       {
