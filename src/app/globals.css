@@ -232,6 +232,17 @@ body {
   background: rgba(252, 251, 249, 0.08);
 }
 
+/* Bandeaux qui défilent seuls (components/BandeauDefilant.tsx) : pas de barre de
+   défilement (Windows l'affiche en blanc sous les photos), bords en fondu plutôt
+   qu'une photo coupée net. */
+.bandeau {
+  scrollbar-width: none;
+  mask-image: linear-gradient(to right, transparent, #000 1.5rem, #000 calc(100% - 1.5rem), transparent);
+}
+.bandeau::-webkit-scrollbar {
+  display: none;
+}
+
 /* Formulaires : champs soulignés, pas de boîtes */
 .field {
   display: grid;

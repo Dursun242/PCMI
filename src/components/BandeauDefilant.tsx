@@ -102,7 +102,7 @@ export default function BandeauDefilant({ className, children }: { className?: s
   }, []);
 
   return (
-    <ul ref={ref} className={className}>
+    <ul ref={ref} className={`bandeau ${className ?? ""}`}>
       {children}
     </ul>
   );
