@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import ExpressForm from "@/components/ExpressForm";
 import ExpressBarre from "@/components/ExpressBarre";
 import ExpressVideo from "@/components/ExpressVideo";
+import ExpressConfiance from "@/components/ExpressConfiance";
 import ExpressVue from "@/components/ExpressVue";
 import TelLink from "@/components/TelLink";
 import WhatsAppLink from "@/components/WhatsAppLink";
@@ -167,6 +168,8 @@ export default function PermisExpressPage() {
           </div>
         </div>
       </section>
+
+      <ExpressConfiance />
 
       <section data-section="deroule" className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24" aria-labelledby="deroule">
         <span className="rule" aria-hidden="true" />
