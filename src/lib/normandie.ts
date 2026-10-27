@@ -27,7 +27,17 @@ export function villeDescription(v: Ville): string {
   return v.description;
 }
 
-/** Villes d'un département, dans l'ordre de la liste (taille décroissante). */
+/** Villes principales d'un département, dans l'ordre de la liste (taille décroissante). */
 export function villesDu(code: Departement["code"]): Ville[] {
-  return villes.filter((v) => v.departement === code);
+  return villes.filter((v) => v.departement === code && !v.pole);
+}
+
+/** Communes de la périphérie d'une ville-centre (vide pour une commune elle-même périphérique). */
+export function communesAutour(v: Ville): Ville[] {
+  return villes.filter((x) => x.pole === v.slug);
+}
+
+/** Ville-centre d'une commune périphérique. */
+export function poleDe(v: Ville): Ville | undefined {
+  return v.pole ? getVille(v.pole) : undefined;
 }

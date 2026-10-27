@@ -9,7 +9,17 @@ import SourcedFact from "@/components/SourcedFact";
 import TrackedLink from "@/components/TrackedLink";
 import { plans } from "@/config/site";
 import { chiffresNormandie, villes, type Departement, type Source } from "@/config/normandie";
-import { NORMANDIE_PATH, departementDe, getVille, villeDescription, villePath, villeTitle, villesDu } from "@/lib/normandie";
+import {
+  NORMANDIE_PATH,
+  communesAutour,
+  departementDe,
+  getVille,
+  poleDe,
+  villeDescription,
+  villePath,
+  villeTitle,
+  villesDu,
+} from "@/lib/normandie";
 import { breadcrumb, faqPageSchema, localServiceSchema } from "@/lib/schema";
 import { withSeo } from "@/lib/seo";
 import { formatEuro } from "@/lib/format";
@@ -57,6 +67,9 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
   if (!v) notFound();
   const d = departementDe(v);
   const voisines = villesDu(v.departement).filter((x) => x.slug !== v.slug);
+  const pole = poleDe(v);
+  const couronne = communesAutour(v);
+  const memePole = pole ? communesAutour(pole).filter((x) => x.slug !== v.slug) : [];
   const source = `ville_${v.slug}`;
   const chiffres = chiffresLocaux(d);
 
@@ -68,6 +81,7 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
           breadcrumb([
             { name: "Accueil", path: "/" },
             { name: "Normandie", path: NORMANDIE_PATH },
+            ...(pole ? [{ name: pole.nom, path: villePath(pole) }] : []),
             { name: v.nom, path: villePath(v) },
           ]),
           faqPageSchema(v.faq),
@@ -78,7 +92,13 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24">
           <span className="rule" aria-hidden="true" />
           <p className="mt-6 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-bronze">
-            <Link href={NORMANDIE_PATH} className="hover:text-ink">Normandie</Link> · {d.nom} ({d.code})
+            <Link href={NORMANDIE_PATH} className="hover:text-ink">Normandie</Link> ·{" "}
+            {pole && (
+              <>
+                <Link href={villePath(pole)} className="hover:text-ink">Autour de {pole.nom}</Link> ·{" "}
+              </>
+            )}
+            {d.nom} ({d.code})
           </p>
           <h1 className="display mt-4 text-4xl sm:text-5xl lg:text-6xl max-w-[22ch]">
             Le permis de construire de votre maison {v.a}.
@@ -126,6 +146,27 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
           </div>
         </div>
       </section>
+
+      {couronne.length > 0 && (
+        <section className="mx-auto max-w-7xl px-5 sm:px-8 pt-20">
+          <span className="rule" aria-hidden="true" />
+          <h2 className="h-section mt-6">Construire {v.autour}</h2>
+          <p className="mt-6 max-w-[64ch] text-ink-2 leading-relaxed">
+            Votre terrain est dans une commune voisine ? Chacune a son document d&apos;urbanisme et ses propres
+            contraintes : nous les détaillons commune par commune.
+          </p>
+          <ul data-stagger className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {couronne.map((c) => (
+              <li key={c.slug} className="border-t border-stone-2 pt-4">
+                <Link href={villePath(c)} className="display text-2xl hover:text-bronze">
+                  Permis de construire {c.a}
+                </Link>
+                <p className="mt-1.5 text-[0.95rem] leading-relaxed text-ink-2">{c.accroche}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="mx-auto max-w-7xl px-5 sm:px-8 py-20">
         <span className="rule" aria-hidden="true" />
@@ -186,6 +227,17 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
 
         <p className="mt-12 max-w-[64ch] leading-relaxed text-ink-2">
           Nous montons aussi des dossiers {v.autour} : {v.communesVoisines.join(", ")}.
+          {pole && (
+            <>
+              {" "}Autour de {pole.nom} :{" "}
+              {memePole.map((x) => (
+                <span key={x.slug}>
+                  <Link href={villePath(x)} className={lien}>{x.nom}</Link>,{" "}
+                </span>
+              ))}
+              et <Link href={villePath(pole)} className={lien}>{pole.nom}</Link>.
+            </>
+          )}
           {voisines.length > 0 && (
             <>
               {" "}Ailleurs en {d.nom} :{" "}

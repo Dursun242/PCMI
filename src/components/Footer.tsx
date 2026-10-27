@@ -140,7 +140,7 @@ export default function Footer() {
           <Link href={NORMANDIE_PATH} className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-brass-2 hover:text-paper">
             En Normandie
           </Link>
-          {villes.map((v) => (
+          {villes.filter((v) => !v.pole).map((v) => (
             <Link key={v.slug} href={villePath(v)} className="text-paper/80 hover:text-brass-2">
               {v.nom}
             </Link>

@@ -10,6 +10,7 @@
  *
  * À relire une fois par an : les PLUi sont révisés, les PPRI aussi.
  */
+import { communesPeripherie } from "./normandie-communes";
 
 export interface Source {
   label: string;
@@ -52,6 +53,13 @@ export interface Ville {
   architecture?: Fait;
   communesVoisines: string[];
   faq: { q: string; a: string }[];
+  /**
+   * Slug de la ville-centre, pour une commune de sa périphérie (« rouen » pour
+   * Isneauville) : les deux pages se renvoient l'une vers l'autre.
+   */
+  pole?: string;
+  /** Dernière revue du contenu de cette page (YYYY-MM-DD), si plus récente que VILLES_LAST_MODIFIED. */
+  lastModified?: string;
 }
 
 const EPTB_NORMANDIE_2024: Source = {
@@ -118,7 +126,7 @@ const EURE_CAVITES: Source = {
 };
 
 /** Grandes villes par population décroissante, puis villes du littoral et patrimoniales. */
-export const villes: Ville[] = [
+const villesPrincipales: Ville[] = [
   {
     slug: "le-havre",
     nom: "Le Havre",
@@ -1211,6 +1219,12 @@ export const villes: Ville[] = [
     ],
   },
 ];
+
+/**
+ * Toutes les pages villes : les villes principales, puis les communes de leur
+ * périphérie (src/config/normandie-communes.ts), rattachées par `pole`.
+ */
+export const villes: Ville[] = [...villesPrincipales, ...communesPeripherie];
 
 /** Questions de la page Normandie. */
 export const faqNormandie: { q: string; a: string }[] = [

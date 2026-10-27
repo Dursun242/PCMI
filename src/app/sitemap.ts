@@ -32,7 +32,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Pages villes : même date de revue pour toutes, tenue dans src/config/normandie.ts.
     ...villes.map((v) => ({
       url: `${site.url}${villePath(v)}`,
-      lastModified: new Date(VILLES_LAST_MODIFIED),
+      lastModified: new Date(v.lastModified ?? VILLES_LAST_MODIFIED),
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
