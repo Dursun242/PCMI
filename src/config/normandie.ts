@@ -10,7 +10,7 @@
  *
  * À relire une fois par an : les PLUi sont révisés, les PPRI aussi.
  */
-import { communesPeripherie } from "./normandie-communes";
+import { communesPeripherie } from "./communes";
 
 export interface Source {
   label: string;
@@ -456,6 +456,7 @@ const villesPrincipales: Ville[] = [
   {
     slug: "dieppe",
     nom: "Dieppe",
+    lastModified: "2026-10-27",
     a: "à Dieppe",
     autour: "autour de Dieppe",
     departement: "76",
@@ -1223,7 +1224,7 @@ const villesPrincipales: Ville[] = [
 
 /**
  * Toutes les pages villes : les villes principales, puis les communes de leur
- * périphérie (src/config/normandie-communes.ts), rattachées par `pole`.
+ * périphérie (src/config/communes/), rattachées par `pole`.
  */
 export const villes: Ville[] = [...villesPrincipales, ...communesPeripherie];
 
