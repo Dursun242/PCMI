@@ -61,7 +61,7 @@ export const staticPages: StaticPage[] = [
   },
   {
     path: "/permis-de-construire-normandie",
-    lastModified: "2026-10-03",
+    lastModified: "2026-10-27",
     changeFrequency: "monthly",
     priority: 0.9,
     summary:

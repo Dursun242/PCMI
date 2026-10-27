@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { TITLE_MAX } from "../../scripts/seo/limits.mjs";
 import { departements, villes } from "@/config/normandie";
-import { getVille, villeDescription, villePath, villeTitle } from "./normandie";
+import { communesAutour, getVille, poleDe, villeDescription, villePath, villeTitle, villesDu } from "./normandie";
 
 const DESCRIPTION_MAX = 160;
 
@@ -36,6 +36,30 @@ describe("données des villes de Normandie", () => {
     }
     const accroches = villes.map((v) => v.accroche);
     expect(new Set(accroches).size).toBe(accroches.length);
+  });
+});
+
+describe("communes de la périphérie des agglomérations", () => {
+  test("chaque commune est rattachée à une ville principale du même département", () => {
+    for (const v of villes.filter((x) => x.pole)) {
+      const pole = getVille(v.pole as string);
+      expect(pole, `${v.slug} : pôle « ${v.pole} » inconnu`).toBeDefined();
+      expect(pole?.pole, `${v.slug} : le pôle doit être une ville principale`).toBeUndefined();
+      expect(pole?.departement, `${v.slug} : département du pôle`).toBe(v.departement);
+    }
+  });
+
+  test("la ville principale et ses communes se renvoient l'une vers l'autre", () => {
+    for (const v of villes.filter((x) => x.pole)) {
+      const pole = getVille(v.pole as string)!;
+      expect(communesAutour(pole)).toContain(v);
+      expect(poleDe(v)).toBe(pole);
+      expect(villesDu(v.departement)).not.toContain(v);
+    }
+  });
+
+  test("une date de revue propre à la page est au format AAAA-MM-JJ", () => {
+    for (const v of villes) if (v.lastModified) expect(v.lastModified).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 });
 

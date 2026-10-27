@@ -7,7 +7,7 @@ import Garanties from "@/components/Garanties";
 import TrackedLink from "@/components/TrackedLink";
 import { plans, site } from "@/config/site";
 import { chiffresNormandie, delaiAbf, departements, faqNormandie } from "@/config/normandie";
-import { NORMANDIE_PATH, getVille, villePath, villesDu } from "@/lib/normandie";
+import { NORMANDIE_PATH, communesAutour, getVille, villePath, villesDu } from "@/lib/normandie";
 import { breadcrumb, faqPageSchema, localServiceSchema } from "@/lib/schema";
 import { withSeo } from "@/lib/seo";
 import { formatEuro } from "@/lib/format";
@@ -27,7 +27,7 @@ const specificites: { titre: string; texte: string; villes: string[] }[] = [
     titre: "Le sous-sol avant la façade",
     texte:
       "Marnières et anciennes carrières sont nombreuses en Seine-Maritime, dans l'Eure et sous Caen. Autour d'un indice de cavité, un périmètre de risque peut interdire de construire tant qu'une étude n'a pas levé le doute.",
-    villes: ["le-havre", "rouen", "evreux", "caen"],
+    villes: ["le-havre", "rouen", "saint-jacques-sur-darnetal", "isneauville", "evreux", "caen"],
   },
   {
     titre: "L'eau, des fleuves à la mer",
@@ -168,6 +168,18 @@ export default function NormandiePage() {
                         Permis de construire {v.a}
                       </Link>
                       <p className="mt-1.5 text-[0.95rem] leading-relaxed text-ink-2">{v.accroche}</p>
+                      {communesAutour(v).length > 0 && (
+                        <p className="mt-2 text-sm leading-relaxed text-ink-2">
+                          Autour de {v.nom} :{" "}
+                          {communesAutour(v).map((c, i) => (
+                            <span key={c.slug}>
+                              {i > 0 && ", "}
+                              <Link href={villePath(c)} className={lien}>{c.nom}</Link>
+                            </span>
+                          ))}
+                          .
+                        </p>
+                      )}
                     </li>
                   ))}
                 </ul>
