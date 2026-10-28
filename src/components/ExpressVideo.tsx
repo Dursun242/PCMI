@@ -8,7 +8,7 @@ const SOURCE_ORDINATEUR = "/videos/deroule-permis-en-ligne.mp4"; // 1080p, 3,4 M
 const IMAGE = "/videos/deroule-permis-en-ligne.jpg";
 
 /**
- * Vidéo du déroulé (motion design et voix off du gérant, 39 s) sur /permis-express et l'accueil.
+ * Vidéo du déroulé (motion design et voix off du gérant, 39 s) sur l'accueil (retirée de /permis-express : peu regardée).
  * Chargée seulement à l'approche (version légère sur téléphone), lancée sans
  * le son quand elle est à moitié visible, mise en pause quand on s'en éloigne.
  * Les navigateurs interdisent le son automatique : un bouton l'active et

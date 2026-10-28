@@ -206,7 +206,7 @@ export default function HomePage() {
               ))}
             </ol>
           </div>
-          {/* Vidéo du déroulé (même fichier que /permis-express), chargée seulement à l'approche. */}
+          {/* Vidéo du déroulé, chargée seulement à l'approche. */}
           <div className="mt-16 sm:mt-20 grid gap-8 lg:grid-cols-[1fr_1.6fr] lg:items-center">
             <div>
               <h3 className="display text-3xl sm:text-4xl leading-tight">Le déroulé en 40&nbsp;secondes</h3>

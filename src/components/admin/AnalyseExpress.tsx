@@ -112,7 +112,7 @@ export default function AnalyseExpress({ a, s }: { a: Analyse; s: AnalyseSuites 
         l&apos;ordre du téléphone. Sur ordinateur, photos et formulaire sont côte à côte, vus ensemble.
       </Note>
 
-      <h2 className={titre}>Vidéo du déroulé</h2>
+      <h2 className={titre}>Vidéo du déroulé (retirée de la page le 28 octobre 2026)</h2>
       <ul className="mt-3 bg-paper text-sm">
         {ETATS_VIDEO.map(([e, libelle]) => (
           <Ligne key={e} libelle={libelle} n={a.video[e]} total={a.visites} />
