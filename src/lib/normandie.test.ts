@@ -58,6 +58,27 @@ describe("communes de la périphérie des agglomérations", () => {
     }
   });
 
+  test("chaque commune a des faits et des réponses qu'aucune autre page ne reprend", () => {
+    const textes = (v: (typeof villes)[number]) => [
+      v.urbanisme.texte,
+      v.depot.texte,
+      ...v.risques.map((f) => f.texte),
+      ...v.patrimoine.map((f) => f.texte),
+      ...(v.architecture ? [v.architecture.texte] : []),
+    ];
+    // Le nom remplacé par un jeton : « X est couverte par le PPRi… » répété d'une page à l'autre compte comme dupliqué.
+    const gabarit = (v: (typeof villes)[number], t: string) => t.split(v.nom).join("·");
+    const vus = new Map<string, number>();
+    for (const v of villes) for (const t of new Set([...textes(v), ...v.faq.map((f) => f.a)].map((t) => gabarit(v, t)))) vus.set(t, (vus.get(t) ?? 0) + 1);
+    for (const v of villes.filter((x) => x.pole)) {
+      const faits = textes(v).filter((t) => vus.get(gabarit(v, t)) === 1);
+      const reponses = v.faq.filter((f) => vus.get(gabarit(v, f.a)) === 1);
+      expect(faits.length, `${v.slug} : trop peu de faits propres`).toBeGreaterThanOrEqual(4);
+      expect(reponses.length, `${v.slug} : aucune réponse de FAQ propre`).toBeGreaterThanOrEqual(1);
+      expect(v.reperes, `${v.slug} : repères chiffrés manquants`).toBeDefined();
+    }
+  });
+
   test("une date de revue propre à la page est au format AAAA-MM-JJ", () => {
     for (const v of villes) if (v.lastModified) expect(v.lastModified).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });

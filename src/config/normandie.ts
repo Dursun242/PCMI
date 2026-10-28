@@ -60,6 +60,20 @@ export interface Ville {
   pole?: string;
   /** Dernière revue du contenu de cette page (YYYY-MM-DD), si plus récente que VILLES_LAST_MODIFIED. */
   lastModified?: string;
+  /** Chiffres propres à la commune (communes périphériques) : voir src/config/communes/reperes.ts. */
+  reperes?: Reperes;
+}
+
+/** Chiffres officiels d'une commune, relevés sur geo.api.gouv.fr et Géorisques. */
+export interface Reperes {
+  insee: string;
+  population: number;
+  superficieKm2: number;
+  /** À vol d'oiseau, entre le centre de la commune et celui de sa ville-centre. */
+  distancePoleKm: number;
+  cavites: { total: number; carrieres: number; naturelles: number; ouvrages: number; indeterminees: number };
+  /** Arrêtés de catastrophe naturelle publiés au Journal officiel. */
+  catnat: { total: number; depuis: number; inondations: number; dernier: string; dernierRisque: string };
 }
 
 const EPTB_NORMANDIE_2024: Source = {

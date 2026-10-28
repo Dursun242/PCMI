@@ -1,5 +1,6 @@
 import type { Fait, Source, Ville } from "../normandie";
-import { REVUE, cavitesRecensees, georisques } from "./commun";
+import { REVUE, catastrophesNaturelles, cavitesRecensees, georisques } from "./commun";
+import { REPERES } from "./reperes";
 
 /**
  * Agglomération de Caen (communauté urbaine Caen la mer). Le PLUi-HM est
@@ -22,14 +23,15 @@ function pprnOrne(nom: string, risques: string): Fait {
 
 function argiles(nom: string, insee: string, niveau: "faible" | "modéré" | "important"): Fait {
   return {
-    texte: `Géorisques classe ${nom} en exposition « ${niveau} » au retrait-gonflement des argiles : selon la parcelle, une étude de sol peut être exigée pour adapter les fondations.`,
+    texte: `Géorisques classe ${nom} en exposition « ${niveau} » au retrait-gonflement des argiles.`,
     source: georisques(nom, insee),
   };
 }
 
-const faqPluiHm = (nom: string, a: string) => ({
+/** `plu` décrit le document propre à la commune, ex. « révisé en 2020 ». */
+const faqPluiHm = (nom: string, a: string, plu: string) => ({
   q: `Quel règlement s'applique ${a} ?`,
-  a: `Le PLU de ${nom}, tant que le PLUi-HM de Caen la mer n'est pas approuvé : son enquête publique s'est close en octobre 2026 et l'approbation est envisagée début 2027. Selon la date de votre dépôt, nous appliquons l'un ou l'autre règlement.`,
+  a: `Le PLU de ${nom}, ${plu}, jusqu'au PLUi-HM de Caen la mer, attendu début 2027.`,
 });
 
 const GUICHET_CAEN_LA_MER = "le guichet unique en ligne de Caen la mer";
@@ -43,6 +45,7 @@ export const communesCaen: Ville[] = [
     departement: "14",
     intercommunalite: CAEN_LA_MER,
     pole: "caen",
+    reperes: REPERES["14271"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Fleury-sur-Orne : PLU révisé en 2020, anciennes carrières, PPRN de l'Orne, argiles. Dossier PCMI complet à prix fixe.",
@@ -61,9 +64,10 @@ export const communesCaen: Ville[] = [
       source: { label: "Ville de Fleury-sur-Orne, urbanisme", url: "https://fleurysurorne.fr/vivre-a-fleury/cadre-de-vie/urbanisme/" },
     },
     risques: [
-      cavitesRecensees("Fleury-sur-Orne", "14271", 18, ", toutes d'anciennes carrières souterraines"),
+      cavitesRecensees("Fleury-sur-Orne", REPERES["14271"]),
       pprnOrne("Fleury-sur-Orne", "des inondations par débordement de l'Orne et de la submersion marine qui remonte le fleuve"),
       argiles("Fleury-sur-Orne", "14271", "important"),
+      catastrophesNaturelles("Fleury-sur-Orne", REPERES["14271"]),
     ],
     patrimoine: [
       {
@@ -74,7 +78,7 @@ export const communesCaen: Ville[] = [
     ],
     communesVoisines: ["Caen", "Ifs", "Louvigny", "Saint-André-sur-Orne"],
     faq: [
-      faqPluiHm("Fleury-sur-Orne", "à Fleury-sur-Orne"),
+      faqPluiHm("Fleury-sur-Orne", "à Fleury-sur-Orne", "révisé en 2020 et modifié en 2022"),
       {
         q: "Peut-on construire au-dessus des anciennes carrières ?",
         a: "Le périmètre des grandes carrières des Hauts de l'Orne est un parc non constructible. Ailleurs, 18 anciennes carrières sont recensées sur la commune : nous situons votre terrain par rapport à elles avant de chiffrer, et une étude de sol peut être nécessaire.",
@@ -89,6 +93,7 @@ export const communesCaen: Ville[] = [
     departement: "14",
     intercommunalite: CAEN_LA_MER,
     pole: "caen",
+    reperes: REPERES["14341"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Ifs : PLU de 2015, remontées de nappe, argiles, église Saint-André classée. Dossier PCMI complet à prix fixe.",
@@ -112,7 +117,8 @@ export const communesCaen: Ville[] = [
         source: georisques("Ifs", "14341"),
       },
       argiles("Ifs", "14341", "modéré"),
-      cavitesRecensees("Ifs", "14341", 3, " : une ancienne carrière et deux souterrains"),
+      cavitesRecensees("Ifs", REPERES["14341"]),
+      catastrophesNaturelles("Ifs", REPERES["14341"]),
     ],
     patrimoine: [
       {
@@ -123,7 +129,7 @@ export const communesCaen: Ville[] = [
     ],
     communesVoisines: ["Caen", "Fleury-sur-Orne", "Cormelles-le-Royal", "Castine-en-Plaine", "Soliers"],
     faq: [
-      faqPluiHm("Ifs", "à Ifs"),
+      faqPluiHm("Ifs", "à Ifs", "approuvé en 2015 et modifié en 2021"),
       {
         q: "Un sous-sol est-il possible à Ifs ?",
         a: "C'est à étudier parcelle par parcelle : Géorisques signale un risque de remontée de nappe sur la commune. Nous le vérifions à l'adresse du terrain avant de dessiner, et adaptons le projet si besoin (vide sanitaire plutôt que sous-sol).",
@@ -138,6 +144,7 @@ export const communesCaen: Ville[] = [
     departement: "14",
     intercommunalite: CAEN_LA_MER,
     pole: "caen",
+    reperes: REPERES["14101"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Bretteville-sur-Odon : PLU modifié en 2026, PPRN de l'Orne, argiles, ferme de la Baronnerie classée. Dossier à prix fixe.",
@@ -158,7 +165,8 @@ export const communesCaen: Ville[] = [
     risques: [
       pprnOrne("Bretteville-sur-Odon", "du risque d'inondation par débordement de cours d'eau"),
       argiles("Bretteville-sur-Odon", "14101", "important"),
-      cavitesRecensees("Bretteville-sur-Odon", "14101", 8, ", toutes d'anciennes carrières"),
+      cavitesRecensees("Bretteville-sur-Odon", REPERES["14101"]),
+      catastrophesNaturelles("Bretteville-sur-Odon", REPERES["14101"]),
     ],
     patrimoine: [
       {
@@ -169,7 +177,7 @@ export const communesCaen: Ville[] = [
     ],
     communesVoisines: ["Caen", "Carpiquet", "Louvigny", "Verson", "Éterville"],
     faq: [
-      faqPluiHm("Bretteville-sur-Odon", "à Bretteville-sur-Odon"),
+      faqPluiHm("Bretteville-sur-Odon", "à Bretteville-sur-Odon", "modifié encore en septembre 2026"),
       {
         q: "Mon terrain est-il en zone inondable ?",
         a: "Le plan de prévention de la basse vallée de l'Orne ne couvre que certains secteurs de la commune, au titre du débordement de cours d'eau. Nous situons votre parcelle sur sa carte réglementaire avant de chiffrer.",
@@ -184,6 +192,7 @@ export const communesCaen: Ville[] = [
     departement: "14",
     intercommunalite: CAEN_LA_MER,
     pole: "caen",
+    reperes: REPERES["14738"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Verson : PLU des Rives de l'Odon, écoquartier, PPRN de l'Orne, argiles, église classée. Dossier PCMI complet à prix fixe.",
@@ -204,7 +213,8 @@ export const communesCaen: Ville[] = [
     risques: [
       pprnOrne("Verson", "du risque d'inondation par débordement de cours d'eau"),
       argiles("Verson", "14738", "important"),
-      cavitesRecensees("Verson", "14738", 1, ", une cavité naturelle signalée par une doline"),
+      cavitesRecensees("Verson", REPERES["14738"], " signalée par une doline"),
+      catastrophesNaturelles("Verson", REPERES["14738"]),
     ],
     patrimoine: [
       {
@@ -220,7 +230,7 @@ export const communesCaen: Ville[] = [
     },
     communesVoisines: ["Bretteville-sur-Odon", "Carpiquet", "Mouen", "Saint-Manvieu-Norrey", "Fontaine-Étoupefour"],
     faq: [
-      faqPluiHm("Verson", "à Verson"),
+      faqPluiHm("Verson", "à Verson", "c'est-à-dire le PLU intercommunal des Rives de l'Odon de 2008"),
       {
         q: "Vous faites aussi les permis en écoquartier ?",
         a: "Oui. Un lot d'écoquartier ajoute au PLU le règlement et le cahier des prescriptions du lotissement : implantation, matériaux, clôtures. Nous les intégrons au dossier pour qu'il soit accepté du premier coup.",
@@ -235,6 +245,7 @@ export const communesCaen: Ville[] = [
     departement: "14",
     intercommunalite: CAEN_LA_MER,
     pole: "caen",
+    reperes: REPERES["14098"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Thue et Mue : un PLU par commune déléguée, RNU à Sainte-Croix-Grand-Tonne, argiles, carrières. Dossier à prix fixe.",
@@ -255,6 +266,7 @@ export const communesCaen: Ville[] = [
         source: georisques("Thue et Mue", "14098"),
       },
       argiles("Thue et Mue", "14098", "important"),
+      catastrophesNaturelles("Thue et Mue", REPERES["14098"]),
     ],
     patrimoine: [
       {
@@ -283,6 +295,7 @@ export const communesCaen: Ville[] = [
     departement: "14",
     intercommunalite: CAEN_LA_MER,
     pole: "caen",
+    reperes: REPERES["14543"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Rots : PLU de 2022, terrains à bâtir de l'Orée d'Ardennes, argiles, monuments de Lasson. Dossier PCMI complet à prix fixe.",
@@ -299,7 +312,8 @@ export const communesCaen: Ville[] = [
     },
     risques: [
       argiles("Rots", "14543", "important"),
-      cavitesRecensees("Rots", "14543", 2, ", deux anciennes carrières"),
+      cavitesRecensees("Rots", REPERES["14543"]),
+      catastrophesNaturelles("Rots", REPERES["14543"]),
     ],
     patrimoine: [
       {
@@ -315,7 +329,7 @@ export const communesCaen: Ville[] = [
     },
     communesVoisines: ["Thue et Mue", "Rosel", "Carpiquet", "Saint-Manvieu-Norrey", "Authie"],
     faq: [
-      faqPluiHm("Rots", "à Rots"),
+      faqPluiHm("Rots", "à Rots", "approuvé en 2022 pour Rots, Lasson et Secqueville"),
       {
         q: "Vous faites les permis sur les lots de l'Orée d'Ardennes ?",
         a: "Oui. Sur un terrain de ZAC, le dossier respecte à la fois le PLU et le cahier des prescriptions de l'aménageur. Sur 480 m² en moyenne, l'implantation se joue au mètre près : nous la calons dès l'esquisse.",
@@ -330,6 +344,7 @@ export const communesCaen: Ville[] = [
     departement: "14",
     intercommunalite: CAEN_LA_MER,
     pole: "caen",
+    reperes: REPERES["14242"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Épron : PLU modifié en 2025, remontées de nappe, argiles. Dossier PCMI complet à prix fixe par un maître d'œuvre normand.",
@@ -352,14 +367,15 @@ export const communesCaen: Ville[] = [
         source: georisques("Épron", "14242"),
       },
       argiles("Épron", "14242", "faible"),
+      catastrophesNaturelles("Épron", REPERES["14242"]),
     ],
     patrimoine: [],
     communesVoisines: ["Caen", "Hérouville-Saint-Clair", "Biéville-Beuville", "Cambes-en-Plaine", "Saint-Contest"],
     faq: [
-      faqPluiHm("Épron", "à Épron"),
+      faqPluiHm("Épron", "à Épron", "approuvé en 2006 et modifié en 2025"),
       {
-        q: "Quel délai pour un permis de maison à Épron ?",
-        a: "Deux mois à compter du dépôt d'un dossier complet. Aucun monument historique n'est protégé sur la commune ; vérifiez toutefois que votre terrain n'est pas aux abords d'un monument d'une commune voisine, ce qui ajouterait un mois.",
+        q: "Un sous-sol est-il possible à Épron ?",
+        a: "Prudence : Géorisques signale des remontées de nappe jusque dans le bourg. Sur une petite commune de 1,6 km² sans cavité recensée, c'est l'eau qui guide le projet : nous vérifions l'adresse exacte et proposons un vide sanitaire si le sous-sol est risqué.",
       },
     ],
   },
@@ -371,6 +387,7 @@ export const communesCaen: Ville[] = [
     departement: "14",
     intercommunalite: CAEN_LA_MER,
     pole: "caen",
+    reperes: REPERES["14437"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Mondeville : PLU modifié en 2025, PPRN de l'Orne, PPRT du dépôt pétrolier, carrières. Dossier PCMI complet à prix fixe.",
@@ -397,11 +414,12 @@ export const communesCaen: Ville[] = [
           url: "https://www.georisques.gouv.fr/donnee-risques/PPR/Fiche-ppr/pprt/14DDTM20160002/document/00ad84e6-48b1-4021-b058-3a7288a9e2a2",
         },
       },
-      cavitesRecensees("Mondeville", "14437", 6, ", d'anciennes carrières rue des Roches et à la Delle Saint-Martin"),
+      cavitesRecensees("Mondeville", REPERES["14437"], " (rue des Roches, Delle Saint-Martin)"),
       {
         texte: "La ville publie avec son PLU des plans des risques naturels et littoraux au 1/5 000, utiles pour situer un terrain avant de lancer un projet.",
         source: { label: "Ville de Mondeville, plan local d'urbanisme", url: "https://www.mondeville.fr/les-docs/plan-local-durbanisme-plu/" },
       },
+      catastrophesNaturelles("Mondeville", REPERES["14437"]),
     ],
     patrimoine: [
       {
@@ -412,7 +430,7 @@ export const communesCaen: Ville[] = [
     ],
     communesVoisines: ["Caen", "Hérouville-Saint-Clair", "Colombelles", "Giberville", "Cormelles-le-Royal"],
     faq: [
-      faqPluiHm("Mondeville", "à Mondeville"),
+      faqPluiHm("Mondeville", "à Mondeville", "opposable depuis 2016 et modifié en 2025"),
       {
         q: "Mon terrain est-il concerné par le dépôt pétrolier ?",
         a: "Seulement s'il est dans le périmètre du plan de prévention des risques technologiques autour du dépôt, rue Gaston-Lamy. Nous le vérifions sur la carte du plan avant de chiffrer : selon la zone, des règles de construction s'appliquent.",
