@@ -1,4 +1,4 @@
-import { ACTIONS, APPAREILS, CHAMPS, ETATS_VIDEO, SECTIONS, ZONES, ZONES_SORTIE, type Analyse } from "@/lib/bilan";
+import { ACTIONS, APPAREILS, CHAMPS, SECTIONS, ZONES, ZONES_SORTIE, type Analyse } from "@/lib/bilan";
 import { FAQ_EXPRESS } from "@/lib/express";
 import { libellePage, type AnalyseSuites } from "@/lib/suite";
 
@@ -110,18 +110,6 @@ export default function AnalyseExpress({ a, s }: { a: Analyse; s: AnalyseSuites 
       <Note>
         Part des {a.visites} visites détaillées qui ont fait défiler la page jusqu&apos;à chaque partie, dans
         l&apos;ordre du téléphone. Sur ordinateur, photos et formulaire sont côte à côte, vus ensemble.
-      </Note>
-
-      <h2 className={titre}>Vidéo du déroulé (retirée de la page le 28 octobre 2026)</h2>
-      <ul className="mt-3 bg-paper text-sm">
-        {ETATS_VIDEO.map(([e, libelle]) => (
-          <Ligne key={e} libelle={libelle} n={a.video[e]} total={a.visites} />
-        ))}
-      </ul>
-      <Note>
-        Elle se lance seule, sans le son, quand elle arrive à l&apos;écran : la progression dit jusqu&apos;où on l&apos;a
-        vraiment regardée (25 % ≈ fin de l&apos;étape 1, 50 % ≈ étape 3, 75 % ≈ réalisations). « Son activé » et
-        « Relancée à la main » comptent ceux qui ont touché les boutons.
       </Note>
 
       <h2 className={titre}>Questions ouvertes</h2>
