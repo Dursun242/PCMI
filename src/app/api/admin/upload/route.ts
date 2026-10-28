@@ -42,8 +42,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Fichier trop volumineux (4 Mo max)." }, { status: 400 });
   }
 
-  const base = slugifyBase(file.name.replace(/\.[^.]+$/, "")) || "image";
-  const filename = `${Date.now()}-${base}.${ext}`;
+  // Le nom de fichier compte pour Google Images : on part du sujet de l'article
+  // (« panneau-permis-de-construire »), pas du nom de l'appareil (« whatsapp-image-… »).
+  const nom = form.get("nom");
+  const sujet = typeof nom === "string" && nom.trim() ? nom : file.name.replace(/\.[^.]+$/, "");
+  const base = slugifyBase(sujet) || "image";
+  const filename = `${base}-${Date.now().toString(36)}.${ext}`;
   const path = `public/uploads/${filename}`;
 
   const bytes = Buffer.from(await file.arrayBuffer());

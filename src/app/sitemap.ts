@@ -4,6 +4,25 @@ import { sitemapPages } from "@/config/pages";
 import { getArticles } from "@/lib/articles";
 import { villes, VILLES_LAST_MODIFIED } from "@/config/normandie";
 import { villePath } from "@/lib/normandie";
+import { chantiers, vitrine } from "@/config/references";
+
+const absolue = (path: string) => `${site.url}${path}`;
+
+/**
+ * Images de chaque page, pour Google Images : un sitemap qui les liste aide le
+ * moteur à les rattacher à la bonne page, même affichées en carrousel ou en
+ * image optimisée (/_next/image).
+ */
+const IMAGES_PAR_PAGE: Record<string, string[]> = {
+  "/": [...vitrine, "/office/bureau-id-maitrise.jpg"],
+  "/references-chantiers": [...new Set(chantiers.map((c) => c.photo))],
+};
+
+/** Image d'en-tête de l'article, puis les illustrations insérées dans le texte. */
+function imagesArticle(a: { image?: string; content: string }): string[] {
+  const dansLeTexte = [...a.content.matchAll(/!\[[^\]]*\]\((\/[^)\s]+)\)/g)].map((m) => m[1]);
+  return [...new Set([...(a.image ? [a.image] : []), ...dansLeTexte])];
+}
 
 /**
  * Les pages statiques portent la date de leur dernier changement de contenu
@@ -27,6 +46,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         lastModified: new Date(date),
         changeFrequency: p.changeFrequency,
         priority: p.priority,
+        ...(IMAGES_PAR_PAGE[p.path] ? { images: IMAGES_PAR_PAGE[p.path].map(absolue) } : {}),
       };
     }),
     // Pages villes : même date de revue pour toutes, tenue dans src/config/normandie.ts.
@@ -41,6 +61,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(a.updated ?? a.date),
       changeFrequency: "monthly" as const,
       priority: 0.7,
+      images: imagesArticle(a).map(absolue),
     })),
   ];
 }
