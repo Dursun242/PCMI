@@ -287,7 +287,7 @@ export default function CarteChantiers({ points, communes }: Props) {
               style={{ left: Math.min(Math.max(ficheX, 116), taille.w - 116), top: ficheY }}
             >
               <div className="relative aspect-[3/2]">
-                <Image src={fiche.photo} alt={fiche.titre} fill sizes="250px" className="object-cover" />
+                <Image src={fiche.photo} alt={`${fiche.titre}, ${fiche.lieu}`} fill sizes="250px" className="object-cover" />
               </div>
               <div className="px-3.5 pb-3.5 pt-3">
                 <p className="font-bold leading-snug">{fiche.titre}</p>

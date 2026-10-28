@@ -82,6 +82,7 @@ export default function ArticleForm({ article }: { article?: Article }) {
       const prepared = await prepareImage(file);
       const form = new FormData();
       form.append("file", prepared);
+      form.append("nom", slug || title);
       const res = await fetch("/api/admin/upload", { method: "POST", body: form });
       let data: { ok?: boolean; path?: string; error?: string } = {};
       try {
