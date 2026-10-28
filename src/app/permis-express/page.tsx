@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import ExpressForm from "@/components/ExpressForm";
 import BandeauDefilant from "@/components/BandeauDefilant";
 import ExpressBarre from "@/components/ExpressBarre";
-import ExpressVideo from "@/components/ExpressVideo";
 import ExpressConfiance, { AVIS_GOOGLE, NOTE_GOOGLE } from "@/components/ExpressConfiance";
 import ExpressVue from "@/components/ExpressVue";
 import TelLink from "@/components/TelLink";
@@ -30,7 +29,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/permis-express" },
 };
 
-/** Les quatre étapes de la vidéo, écrites dessous pour qui ne la lance pas (et pour les moteurs de recherche). */
+/** Les quatre étapes d'un dossier Express, du premier appel au dépôt (la vidéo, peu regardée ici, reste sur l'accueil). */
 const etapes: [string, string, string][] = [
   ["Jour 0", "Votre parcelle", "Vous nous envoyez le numéro de parcelle et vos documents ; nous vérifions le PLU. Devis sous 4 h ouvrées."],
   [`Sous ${express.premiersPlans}`, "Votre maison", "Une ou deux propositions, en plan et en façade, sur votre terrain."],
@@ -187,10 +186,7 @@ export default function PermisExpressPage() {
       <section data-section="deroule" className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24" aria-labelledby="deroule">
         <span className="rule" aria-hidden="true" />
         <h2 id="deroule" className="h-section mt-6">Du premier appel au dépôt</h2>
-        <div className="mt-10">
-          <ExpressVideo />
-        </div>
-        <ol className="mt-px grid gap-px bg-stone-2 sm:grid-cols-2 lg:grid-cols-4">
+        <ol data-stagger className="mt-10 grid gap-px border border-stone-2 bg-stone-2 sm:grid-cols-2 lg:grid-cols-4">
           {etapes.map(([quand, titre, texte], i) => (
             <li key={titre} className="bg-paper p-5 sm:p-6">
               <span className="numeral text-2xl text-bronze">{String(i + 1).padStart(2, "0")}</span>

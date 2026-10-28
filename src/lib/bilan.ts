@@ -37,7 +37,7 @@ export const SECTIONS = [
   ["maisons", "Nos réalisations (photos)"],
   ["formulaire", "Formulaire de devis"],
   ["confiance", "Bureau et panneaux de chantier"],
-  ["deroule", "Vidéo du déroulé"],
+  ["deroule", "Étapes, du premier appel au dépôt"],
   ["compris", "Ce qui est compris"],
   ["questions", "Questions"],
   ["fin", "Bas de page"],
