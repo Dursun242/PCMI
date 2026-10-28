@@ -1,5 +1,6 @@
 import type { Fait, Source, Ville } from "../normandie";
-import { REVUE, cavitesRecensees } from "./commun";
+import { REVUE, catastrophesNaturelles, cavitesRecensees } from "./commun";
+import { REPERES } from "./reperes";
 
 /** Agglomération de Dieppe. */
 // Pas de PLUi à Dieppe-Maritime : chaque commune garde son PLU communal.
@@ -18,21 +19,22 @@ const GNAU_TERROIR_DE_CAUX = "guichet numérique des autorisations d'urbanisme (
 
 function pprliScie(nom: string): Fait {
   return {
-    texte: `${nom} est soumise au plan de prévention des risques littoraux et d'inondation du bassin versant de la Scie, approuvé le 29 mai 2020 : débordement, ruissellement et coulées de boue, remontées de nappe et submersion marine.`,
+    texte: `${nom} est soumise au plan de prévention des risques littoraux et d'inondation de la Scie, approuvé le 29 mai 2020.`,
     source: PPRLI_SCIE,
   };
 }
 
 function pprliArques(nom: string): Fait {
   return {
-    texte: `${nom} est soumise au plan de prévention des risques littoraux et d'inondation de la vallée de l'Arques, approuvé le 28 juin 2022 avec Dieppe et les communes voisines : débordement, ruissellement, remontées de nappe et submersion marine.`,
+    texte: `${nom} est soumise au plan de prévention des risques littoraux et d'inondation de la vallée de l'Arques, approuvé le 28 juin 2022.`,
     source: PPRLI_ARQUES,
   };
 }
 
-const faqPluCommunal = (nom: string, a: string) => ({
+/** `plu` décrit le document propre à la commune, ex. « approuvé en 2024 ». */
+const faqPluCommunal = (nom: string, a: string, plu: string) => ({
   q: `Quel règlement s'applique ${a} ?`,
-  a: `Le PLU de ${nom}. Il n'y a pas de PLU intercommunal à Dieppe-Maritime : chaque commune a ses propres règles d'implantation, de hauteur et d'aspect. Nous lisons le règlement de la zone de votre terrain avant de chiffrer.`,
+  a: `Le PLU de ${nom}, ${plu} : Dieppe-Maritime n'a pas de PLU intercommunal. Nous lisons le règlement de la zone de votre terrain avant de chiffrer.`,
 });
 
 export const communesDieppe: Ville[] = [
@@ -44,6 +46,7 @@ export const communesDieppe: Ville[] = [
     departement: "76",
     intercommunalite: DIEPPE_MARITIME,
     pole: "dieppe",
+    reperes: REPERES["76482"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Offranville : PLU en révision sur les cavités, PPRLI de la Scie, site classé de l'église. Dossier complet à prix fixe.",
@@ -59,13 +62,14 @@ export const communesDieppe: Ville[] = [
       source: { label: "Ville d'Offranville, urbanisme", url: "https://www.offranville.fr/etre-citoyen/urbanisme" },
     },
     risques: [
-      cavitesRecensees("Offranville", "76482", 21),
+      cavitesRecensees("Offranville", REPERES["76482"]),
       {
         texte:
           "Dans les secteurs de présomption de cavités délimités par le PLU, seules sont admises notamment l'extension mesurée des constructions existantes, sans nouveau logement, et la reconstruction après un sinistre qui n'est pas dû à un effondrement.",
         source: { label: "Ville d'Offranville, règlement du PLU", url: "https://www.offranville.fr/images/Rglement%20PLU%20Offranville.pdf" },
       },
       pprliScie("Offranville"),
+      catastrophesNaturelles("Offranville", REPERES["76482"]),
     ],
     patrimoine: [
       {
@@ -83,7 +87,7 @@ export const communesDieppe: Ville[] = [
     },
     communesVoisines: ["Hautot-sur-Mer", "Saint-Aubin-sur-Scie", "Ouville-la-Rivière", "Sauqueville", "Ambrumesnil"],
     faq: [
-      faqPluCommunal("Offranville", "à Offranville"),
+      faqPluCommunal("Offranville", "à Offranville", "approuvé en 2014 et en cours de révision allégée"),
       {
         q: "La révision du PLU change-t-elle les zones de cavités ?",
         a: "C'est son objet : elle met à jour le recensement des indices et les périmètres de sécurité. Selon la date de votre dépôt, c'est l'ancien ou le nouveau règlement qui s'applique ; nous vérifions la version en vigueur et les cartes publiées par la commune.",
@@ -98,6 +102,7 @@ export const communesDieppe: Ville[] = [
     departement: "76",
     intercommunalite: DIEPPE_MARITIME,
     pole: "dieppe",
+    reperes: REPERES["76349"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Hautot-sur-Mer : PLU de 2024, loi Littoral, recul de la falaise, submersion à Pourville. Dossier complet à prix fixe.",
@@ -131,7 +136,8 @@ export const communesDieppe: Ville[] = [
           url: "https://www.georisques.gouv.fr/donnee-risques/PPR/Fiche-ppr/pprn/76DDTM20120001/document/a8dd42b3-da01-49f1-8718-d7bb6cfda6d9",
         },
       },
-      cavitesRecensees("Hautot-sur-Mer", "76349", 78),
+      cavitesRecensees("Hautot-sur-Mer", REPERES["76349"]),
+      catastrophesNaturelles("Hautot-sur-Mer", REPERES["76349"]),
     ],
     patrimoine: [
       {
@@ -161,7 +167,7 @@ export const communesDieppe: Ville[] = [
         q: "Peut-on construire près de la falaise ?",
         a: "Non pour une maison neuve dans les espaces exposés au recul du trait de côte reportés au PLU : seules de petites extensions qui s'éloignent du bord y sont admises. Nous situons votre parcelle par rapport à ces aléas avant toute étude.",
       },
-      faqPluCommunal("Hautot-sur-Mer", "à Hautot-sur-Mer"),
+      faqPluCommunal("Hautot-sur-Mer", "à Hautot-sur-Mer", "tout récent puisqu'approuvé en février 2024"),
     ],
   },
   {
@@ -172,6 +178,7 @@ export const communesDieppe: Ville[] = [
     departement: "76",
     intercommunalite: DIEPPE_MARITIME,
     pole: "dieppe",
+    reperes: REPERES["76026"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Arques-la-Bataille : 160 indices de cavités, ZPPAUP, château classé, PPRLI de l'Arques. Dossier complet à prix fixe.",
@@ -191,7 +198,7 @@ export const communesDieppe: Ville[] = [
       },
     },
     risques: [
-      cavitesRecensees("Arques-la-Bataille", "76026", 160),
+      cavitesRecensees("Arques-la-Bataille", REPERES["76026"]),
       {
         texte:
           "Dans les aires affectées par un risque d'effondrement de cavité ou d'éboulement de falaise, le PLU n'autorise notamment que l'agrandissement mesuré des constructions existantes, sans nouveau logement.",
@@ -201,6 +208,7 @@ export const communesDieppe: Ville[] = [
         },
       },
       pprliArques("Arques-la-Bataille"),
+      catastrophesNaturelles("Arques-la-Bataille", REPERES["76026"]),
     ],
     patrimoine: [
       {
@@ -220,7 +228,7 @@ export const communesDieppe: Ville[] = [
         q: "Mon terrain est-il dans la zone de protection du patrimoine ?",
         a: "Une large partie de la commune l'est. Dans ce périmètre, l'Architecte des Bâtiments de France examine le projet et peut imposer des matériaux, des teintes ou des ouvertures : nous dessinons la maison en tenant compte du règlement dès l'esquisse.",
       },
-      faqPluCommunal("Arques-la-Bataille", "à Arques-la-Bataille"),
+      faqPluCommunal("Arques-la-Bataille", "à Arques-la-Bataille", "approuvé en 2017, avec la ZPPAUP en plus"),
     ],
   },
   {
@@ -231,6 +239,7 @@ export const communesDieppe: Ville[] = [
     departement: "76",
     intercommunalite: DIEPPE_MARITIME,
     pole: "dieppe",
+    reperes: REPERES["76565"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Saint-Aubin-sur-Scie : PLU de 2021, 85 indices de cavités, PPRLI de la Scie, dépôt sur GéoPermis. Dossier à prix fixe.",
@@ -249,7 +258,7 @@ export const communesDieppe: Ville[] = [
       source: { label: "Commune de Saint-Aubin-sur-Scie, demande d'autorisation d'urbanisme", url: "https://www.saint-aubin-sur-scie.fr/demande-dautorisation-durbanisme/" },
     },
     risques: [
-      cavitesRecensees("Saint-Aubin-sur-Scie", "76565", 85),
+      cavitesRecensees("Saint-Aubin-sur-Scie", REPERES["76565"]),
       {
         texte:
           "Dans les secteurs de risque de cavités reportés au PLU, toute nouvelle construction principale est interdite, sauf si une étude géotechnique montre l'absence de danger.",
@@ -259,6 +268,7 @@ export const communesDieppe: Ville[] = [
         },
       },
       pprliScie("Saint-Aubin-sur-Scie"),
+      catastrophesNaturelles("Saint-Aubin-sur-Scie", REPERES["76565"]),
     ],
     patrimoine: [
       {
@@ -280,7 +290,7 @@ export const communesDieppe: Ville[] = [
         q: "Un indice de cavité empêche-t-il de construire ?",
         a: "Dans le secteur de risque reporté au PLU, une maison neuve est interdite sauf si une étude géotechnique montre l'absence de danger. Nous vérifions le plan de zonage avant de chiffrer et vous orientons vers un bureau spécialisé si une étude est nécessaire.",
       },
-      faqPluCommunal("Saint-Aubin-sur-Scie", "à Saint-Aubin-sur-Scie"),
+      faqPluCommunal("Saint-Aubin-sur-Scie", "à Saint-Aubin-sur-Scie", "approuvé en décembre 2021"),
     ],
   },
   {
@@ -291,6 +301,7 @@ export const communesDieppe: Ville[] = [
     departement: "76",
     intercommunalite: DIEPPE_MARITIME,
     pole: "dieppe",
+    reperes: REPERES["76414"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Martin-Église : PLU communal, site inscrit de la vallée de l'Eaulne, PPRLI de l'Arques. Dossier PCMI complet à prix fixe.",
@@ -308,11 +319,12 @@ export const communesDieppe: Ville[] = [
     },
     risques: [
       pprliArques("Martin-Église"),
-      cavitesRecensees("Martin-Église", "76414", 20),
+      cavitesRecensees("Martin-Église", REPERES["76414"]),
       {
         texte: "Le règlement du PLU délimite des zones de risque autour des indices de cavités, où seules des extensions mesurées sont admises sous conditions.",
         source: { label: "Commune de Martin-Église, PLU", url: "https://www.martineglise.fr/plan-local-durbanisme/" },
       },
+      catastrophesNaturelles("Martin-Église", REPERES["76414"]),
     ],
     patrimoine: [
       {
@@ -333,7 +345,7 @@ export const communesDieppe: Ville[] = [
         q: "Mon terrain est-il dans le site de la vallée de l'Eaulne ?",
         a: "Une partie seulement de la commune l'est. Nous vérifions le périmètre sur les servitudes du Géoportail de l'urbanisme : s'il couvre votre parcelle, l'Architecte des Bâtiments de France est consulté et nous soignons l'insertion paysagère du projet.",
       },
-      faqPluCommunal("Martin-Église", "à Martin-Église"),
+      faqPluCommunal("Martin-Église", "à Martin-Église", "approuvé en 2008 et révisé en 2018"),
     ],
   },
   {
@@ -344,6 +356,7 @@ export const communesDieppe: Ville[] = [
     departement: "76",
     intercommunalite: DIEPPE_MARITIME,
     pole: "dieppe",
+    reperes: REPERES["76545"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Rouxmesnil-Bouteilles : PLU de 2018, 43 indices de cavités, PPRLI de l'Arques, isolation près de la RD 927. Prix fixe.",
@@ -363,7 +376,7 @@ export const communesDieppe: Ville[] = [
       source: { label: "Commune de Rouxmesnil-Bouteilles, plan local d'urbanisme", url: "https://www.rouxmesnil-bouteilles.fr/plan-local-durbanisme/" },
     },
     risques: [
-      cavitesRecensees("Rouxmesnil-Bouteilles", "76545", 43),
+      cavitesRecensees("Rouxmesnil-Bouteilles", REPERES["76545"]),
       {
         texte:
           "Le PLU impose un inventaire complémentaire pour urbaniser dans un rayon de 60 mètres autour d'une suspicion de cavité, et interdit toute nouvelle construction dans ce périmètre si la cavité est avérée.",
@@ -380,11 +393,12 @@ export const communesDieppe: Ville[] = [
           url: "https://data.geopf.fr/annexes/gpu/documents/DU_76545/fd3f5d6764b6ed5ee914fc049ef3bd58/76545_reglement_20181008.pdf",
         },
       },
+      catastrophesNaturelles("Rouxmesnil-Bouteilles", REPERES["76545"]),
     ],
     patrimoine: [],
     communesVoisines: ["Martin-Église", "Arques-la-Bataille", "Dieppe", "Saint-Aubin-sur-Scie"],
     faq: [
-      faqPluCommunal("Rouxmesnil-Bouteilles", "à Rouxmesnil-Bouteilles"),
+      faqPluCommunal("Rouxmesnil-Bouteilles", "à Rouxmesnil-Bouteilles", "approuvé en 2018 avec son règlement local de publicité"),
       {
         q: "Mon terrain est-il proche de la RD 927 ?",
         a: "À moins de 250 mètres de l'avenue de Breauté, le PLU impose les normes d'isolation acoustique. Nous le signalons dans le dossier et votre constructeur en tient compte dans le choix des menuiseries et des parois.",

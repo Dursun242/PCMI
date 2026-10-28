@@ -1,5 +1,6 @@
-import type { Fait, Source, Ville } from "../normandie";
-import { REVUE, cavitesRecensees } from "./commun";
+import type { Fait, Reperes, Source, Ville } from "../normandie";
+import { REVUE, catastrophesNaturelles, cavitesRecensees } from "./commun";
+import { REPERES } from "./reperes";
 
 /** Agglomération de Rouen : plateaux nord et est. */
 
@@ -8,10 +9,6 @@ const METROPOLE_ROUEN = "la Métropole Rouen Normandie, qui regroupe 71 communes
 const PLU_METROPOLITAIN: Source = {
   label: "Métropole Rouen Normandie, PLU métropolitain",
   url: "https://www.metropole-rouen-normandie.fr/urbanisme/consulter-le-plan-local-durbanisme-metropolitain",
-};
-const CAVITES_METROPOLE: Source = {
-  label: "Métropole Rouen Normandie, cavités souterraines",
-  url: "https://www.metropole-rouen-normandie.fr/risques-naturels/cavites-souterraines",
 };
 const PPRI_CAILLY: Source = {
   label: "Géorisques, PPRi Cailly, Aubette et Robec",
@@ -24,28 +21,22 @@ const PEB_ROUEN_BOOS: Source = {
 
 function pluMetropolitain(nom: string): Fait {
   return {
-    texte: `${nom} applique le PLU métropolitain de la Métropole Rouen Normandie, approuvé le 13 février 2020 et commun aux 71 communes. Il a été modifié plusieurs fois depuis, et sa révision générale est en cours.`,
+    texte: `${nom} applique le PLU métropolitain, approuvé le 13 février 2020 et en cours de révision générale.`,
     source: PLU_METROPOLITAIN,
-  };
-}
-
-function perimetresCavites(nom: string): Fait {
-  return {
-    texte: `Dans le PLU métropolitain, un périmètre de risque entoure chaque indice (60 m pour une marnière, 35 m pour une sablière ou une bétoire) : à ${nom} comme ailleurs dans la Métropole, les constructions nouvelles y sont interdites tant qu'une étude n'a pas levé le doute.`,
-    source: CAVITES_METROPOLE,
   };
 }
 
 function ppriCailly(nom: string): Fait {
   return {
-    texte: `${nom} est dans le périmètre du plan de prévention des risques d'inondation des bassins versants du Cailly, de l'Aubette et du Robec, approuvé en 2022, qui encadre aussi le ruissellement et les remontées de nappe.`,
+    texte: `${nom} est couverte par le PPRi des bassins versants du Cailly, de l'Aubette et du Robec (2022), qui réglemente aussi le ruissellement.`,
     source: PPRI_CAILLY,
   };
 }
 
-const faqMarniere = (nom: string, a: string, indices: number) => ({
+/** Réponse chiffrée : la part d'indices d'origine indéterminée est ce qui bloque le plus de permis. */
+const faqMarniere = (a: string, r: Reperes) => ({
   q: `Mon terrain ${a} est-il concerné par une marnière ?`,
-  a: `${indices} indices de cavités sont recensés sur ${nom}. Envoyez-nous la référence cadastrale : nous vérifions sur la carte des cavités et dans le PLU si un périmètre de risque touche la parcelle, avant de chiffrer. Si c'est le cas, une étude par un bureau spécialisé peut permettre de lever le doute et de construire.`,
+  a: `Sur les ${r.cavites.total} indices recensés ${a}, ${r.cavites.indeterminees} sont d'origine indéterminée et ${r.cavites.carrieres} sont d'anciennes carrières. Une marnière rend inconstructible un rayon de 60 m : à vérifier avant d'acheter.`,
 });
 
 export const communesRouen: Ville[] = [
@@ -57,6 +48,7 @@ export const communesRouen: Ville[] = [
     departement: "76",
     intercommunalite: METROPOLE_ROUEN,
     pole: "rouen",
+    reperes: REPERES["76377"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Isneauville : PLU métropolitain, 191 indices de cavités, PPRi du Cailly. Dossier complet à prix fixe, maître d'œuvre normand.",
@@ -68,7 +60,7 @@ export const communesRouen: Ville[] = [
         "Dépôt en ligne sur le guichet numérique des autorisations d'urbanisme de la Métropole, auquel renvoie le site de la commune, ou sur papier en mairie. L'instruction est menée par les services de la Métropole.",
       source: { label: "Ville d'Isneauville, guichet numérique des autorisations d'urbanisme", url: "https://www.isneauville.fr/guichet-numerique-des-autorisations-durbanisme-gnau/" },
     },
-    risques: [cavitesRecensees("Isneauville", "76377", 191), perimetresCavites("Isneauville"), ppriCailly("Isneauville")],
+    risques: [cavitesRecensees("Isneauville", REPERES["76377"]), ppriCailly("Isneauville"), catastrophesNaturelles("Isneauville", REPERES["76377"])],
     patrimoine: [],
     architecture: {
       texte:
@@ -77,7 +69,7 @@ export const communesRouen: Ville[] = [
     },
     communesVoisines: ["Quincampoix", "Houppeville", "Fontaine-sous-Préaux", "Bois-Guillaume", "Saint-Martin-du-Vivier"],
     faq: [
-      faqMarniere("Isneauville", "à Isneauville", 191),
+      faqMarniere("à Isneauville", REPERES["76377"]),
       {
         q: "Où déposer mon permis à Isneauville ?",
         a: "En ligne sur le guichet numérique de la Métropole Rouen Normandie, ou sur papier en mairie. Avec nos formules Complet et Premium, nous nous chargeons du dépôt et des échanges avec le service instructeur.",
@@ -96,6 +88,7 @@ export const communesRouen: Ville[] = [
     departement: "76",
     intercommunalite: METROPOLE_ROUEN,
     pole: "rouen",
+    reperes: REPERES["76108"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Bois-Guillaume : PLU métropolitain, 142 indices de cavités, ferme du Colombier protégée. Dossier PCMI complet à prix fixe.",
@@ -107,13 +100,14 @@ export const communesRouen: Ville[] = [
         "Les demandes peuvent se faire en ligne depuis la page urbanisme de la ville ; au service urbanisme de la mairie, place de la Libération, les dépôts se font uniquement sur rendez-vous.",
       source: { label: "Ville de Bois-Guillaume, autorisations d'urbanisme", url: "https://www.ville-bois-guillaume.fr/habiter/autorisations-durbanisme/" },
     },
-    risques: [cavitesRecensees("Bois-Guillaume", "76108", 142), perimetresCavites("Bois-Guillaume"), ppriCailly("Bois-Guillaume")],
+    risques: [cavitesRecensees("Bois-Guillaume", REPERES["76108"]), ppriCailly("Bois-Guillaume")],
     patrimoine: [
       {
         texte:
           "Les façades et toitures de la maison d'habitation de la ferme du Colombier, et deux cheminées, sont inscrites aux monuments historiques depuis 1978 : à ses abords, l'Architecte des Bâtiments de France donne son avis et l'instruction prend 3 mois.",
         source: { label: "Base Mérimée, ferme du Colombier (PA00100563)", url: "https://pop.culture.gouv.fr/notice/merimee/PA00100563" },
       },
+      catastrophesNaturelles("Bois-Guillaume", REPERES["76108"]),
     ],
     architecture: {
       texte:
@@ -122,7 +116,7 @@ export const communesRouen: Ville[] = [
     },
     communesVoisines: ["Rouen", "Bihorel", "Mont-Saint-Aignan", "Houppeville", "Isneauville", "Saint-Martin-du-Vivier"],
     faq: [
-      faqMarniere("Bois-Guillaume", "à Bois-Guillaume", 142),
+      faqMarniere("à Bois-Guillaume", REPERES["76108"]),
       {
         q: "Faut-il prendre rendez-vous pour déposer en mairie ?",
         a: "Oui : à Bois-Guillaume, le service urbanisme ne reçoit les dépôts que sur rendez-vous. Avec nos formules Complet et Premium, nous préparons le dossier et nous chargeons du dépôt et du suivi.",
@@ -141,6 +135,7 @@ export const communesRouen: Ville[] = [
     departement: "76",
     intercommunalite: "la communauté de communes Inter Caux Vexin, et non de la Métropole de Rouen",
     pole: "rouen",
+    reperes: REPERES["76517"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Quincampoix : PLU communal révisé en 2022, assainissement, PPRi du Cailly. Dossier complet à prix fixe, maître d'œuvre normand.",
@@ -169,6 +164,7 @@ export const communesRouen: Ville[] = [
           url: "https://data.geopf.fr/annexes/gpu/documents/DU_76517/c90449084ccfb56a27a00ac7d7e31cd1/76517_notice_20220328.pdf",
         },
       },
+      catastrophesNaturelles("Quincampoix", REPERES["76517"]),
     ],
     patrimoine: [],
     communesVoisines: ["Isneauville", "Saint-Georges-sur-Fontaine", "Préaux", "Saint-André-sur-Cailly", "Bosc-Guérard-Saint-Adrien"],
@@ -191,6 +187,7 @@ export const communesRouen: Ville[] = [
     departement: "76",
     intercommunalite: METROPOLE_ROUEN,
     pole: "rouen",
+    reperes: REPERES["76367"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Houppeville : PLU métropolitain, 97 indices de cavités, église classée. Dossier complet à prix fixe, maître d'œuvre normand.",
@@ -203,9 +200,9 @@ export const communesRouen: Ville[] = [
       source: { label: "Ville d'Houppeville, urbanisme", url: "https://www.houppeville.fr/vie-locale/urbanisme" },
     },
     risques: [
-      cavitesRecensees("Houppeville", "76367", 97, ", dont 15 anciennes carrières"),
-      perimetresCavites("Houppeville"),
+      cavitesRecensees("Houppeville", REPERES["76367"]),
       ppriCailly("Houppeville"),
+      catastrophesNaturelles("Houppeville", REPERES["76367"]),
     ],
     patrimoine: [
       {
@@ -216,7 +213,7 @@ export const communesRouen: Ville[] = [
     ],
     communesVoisines: ["Notre-Dame-de-Bondeville", "Malaunay", "Le Houlme", "Bois-Guillaume", "Isneauville"],
     faq: [
-      faqMarniere("Houppeville", "à Houppeville", 97),
+      faqMarniere("à Houppeville", REPERES["76367"]),
       {
         q: "Mon terrain est-il aux abords de l'église ?",
         a: "Si votre terrain est dans le périmètre d'abords de l'église Notre-Dame-de-l'Assomption, l'Architecte des Bâtiments de France donne son avis et l'instruction prend 3 mois. Nous le vérifions sur l'atlas des patrimoines avant de dessiner.",
@@ -231,6 +228,7 @@ export const communesRouen: Ville[] = [
     departement: "76",
     intercommunalite: METROPOLE_ROUEN,
     pole: "rouen",
+    reperes: REPERES["76475"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Franqueville-Saint-Pierre : PLU métropolitain, 99 indices de cavités, bruit de l'aéroport. Dossier complet à prix fixe.",
@@ -243,19 +241,19 @@ export const communesRouen: Ville[] = [
       source: { label: "Ville de Franqueville-Saint-Pierre, urbanisme", url: "https://www.franquevillesaintpierre.com/urbanisme" },
     },
     risques: [
-      cavitesRecensees("Franqueville-Saint-Pierre", "76475", 99, ", dont 37 anciennes carrières"),
-      perimetresCavites("Franqueville-Saint-Pierre"),
+      cavitesRecensees("Franqueville-Saint-Pierre", REPERES["76475"]),
       {
         texte:
           "La commune fait partie des cinq communes concernées par le plan d'exposition au bruit de l'aéroport de Rouen-Boos, approuvé en 1991 : selon la zone où se trouve le terrain, la construction de logements peut y être limitée.",
         source: PEB_ROUEN_BOOS,
       },
       ppriCailly("Franqueville-Saint-Pierre"),
+      catastrophesNaturelles("Franqueville-Saint-Pierre", REPERES["76475"]),
     ],
     patrimoine: [],
     communesVoisines: ["Le Mesnil-Esnard", "Boos", "Saint-Aubin-Épinay", "Belbeuf", "Saint-Aubin-Celloville"],
     faq: [
-      faqMarniere("Franqueville-Saint-Pierre", "à Franqueville-Saint-Pierre", 99),
+      faqMarniere("à Franqueville-Saint-Pierre", REPERES["76475"]),
       {
         q: "Le bruit de l'aéroport empêche-t-il de construire ?",
         a: "Pas sur toute la commune. Le plan d'exposition au bruit découpe des zones, et seules certaines restreignent les logements. Nous situons votre parcelle sur ce plan avant de chiffrer.",
@@ -270,6 +268,7 @@ export const communesRouen: Ville[] = [
     departement: "76",
     intercommunalite: METROPOLE_ROUEN,
     pole: "rouen",
+    reperes: REPERES["76116"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Boos : PLU métropolitain, 159 indices de cavités, bruit de l'aéroport, colombier classé. Dossier PCMI complet à prix fixe.",
@@ -282,14 +281,14 @@ export const communesRouen: Ville[] = [
       source: { label: "Mairie de Boos, guichet numérique des autorisations d'urbanisme", url: "https://www.mairie-boos.com/urbanisme/guichet-numerique-des-autorisations-durbanisme-gnau/" },
     },
     risques: [
-      cavitesRecensees("Boos", "76116", 159),
-      perimetresCavites("Boos"),
+      cavitesRecensees("Boos", REPERES["76116"]),
       {
         texte:
           "Boos est couverte par le plan d'exposition au bruit de l'aéroport de Rouen-Boos, approuvé par arrêté préfectoral du 17 décembre 1991 : la zone de bruit dans laquelle se trouve le terrain conditionne le projet.",
         source: PEB_ROUEN_BOOS,
       },
       ppriCailly("Boos"),
+      catastrophesNaturelles("Boos", REPERES["76116"]),
     ],
     patrimoine: [
       {
@@ -300,7 +299,7 @@ export const communesRouen: Ville[] = [
     ],
     communesVoisines: ["Franqueville-Saint-Pierre", "La Neuville-Chant-d'Oisel", "Quévreville-la-Poterie", "Saint-Aubin-Celloville", "Montmain"],
     faq: [
-      faqMarniere("Boos", "à Boos", 159),
+      faqMarniere("à Boos", REPERES["76116"]),
       {
         q: "Peut-on construire près de l'aéroport ?",
         a: "Cela dépend de la zone du plan d'exposition au bruit où se trouve le terrain : certaines zones restreignent fortement les logements, d'autres imposent surtout une isolation acoustique. Nous vérifions la zone de votre parcelle avant de chiffrer.",
@@ -319,6 +318,7 @@ export const communesRouen: Ville[] = [
     departement: "76",
     intercommunalite: METROPOLE_ROUEN,
     pole: "rouen",
+    reperes: REPERES["76429"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison au Mesnil-Esnard : PLU métropolitain, 65 indices de cavités, guichet numérique communal. Dossier PCMI complet à prix fixe.",
@@ -331,9 +331,9 @@ export const communesRouen: Ville[] = [
       source: { label: "Ville du Mesnil-Esnard, autorisations d'urbanisme", url: "https://www.le-mesnil-esnard.fr/autorisations-durbanisme/" },
     },
     risques: [
-      cavitesRecensees("Le Mesnil-Esnard", "76429", 65, ", dont 26 anciennes carrières"),
-      perimetresCavites("Le Mesnil-Esnard"),
+      cavitesRecensees("Le Mesnil-Esnard", REPERES["76429"]),
       ppriCailly("Le Mesnil-Esnard"),
+      catastrophesNaturelles("Le Mesnil-Esnard", REPERES["76429"]),
     ],
     patrimoine: [],
     architecture: {
@@ -343,7 +343,7 @@ export const communesRouen: Ville[] = [
     },
     communesVoisines: ["Bonsecours", "Amfreville-la-Mi-Voie", "Franqueville-Saint-Pierre", "Belbeuf", "Saint-Léger-du-Bourg-Denis"],
     faq: [
-      faqMarniere("Le Mesnil-Esnard", "au Mesnil-Esnard", 65),
+      faqMarniere("au Mesnil-Esnard", REPERES["76429"]),
       {
         q: "Faut-il un permis de démolir pour une vieille construction sur le terrain ?",
         a: "Oui : au Mesnil-Esnard, toute démolition, même partielle, demande un permis de démolir. Il peut être déposé avec le permis de construire, dans le même dossier ; nous l'intégrons si votre terrain est concerné.",
@@ -358,6 +358,7 @@ export const communesRouen: Ville[] = [
     departement: "76",
     intercommunalite: METROPOLE_ROUEN,
     pole: "rouen",
+    reperes: REPERES["76591"],
     lastModified: REVUE,
     description:
       "Permis de construire de maison à Saint-Jacques-sur-Darnétal : 239 indices de cavités, PLU métropolitain, PPRi. Dossier PCMI complet à prix fixe.",
@@ -370,9 +371,9 @@ export const communesRouen: Ville[] = [
       source: { label: "Mairie de Saint-Jacques-sur-Darnétal, guichet numérique", url: "https://www.mairie-st-jacques.fr/urbanisme/gnau" },
     },
     risques: [
-      cavitesRecensees("Saint-Jacques-sur-Darnétal", "76591", 239),
-      perimetresCavites("Saint-Jacques-sur-Darnétal"),
+      cavitesRecensees("Saint-Jacques-sur-Darnétal", REPERES["76591"]),
       ppriCailly("Saint-Jacques-sur-Darnétal"),
+      catastrophesNaturelles("Saint-Jacques-sur-Darnétal", REPERES["76591"]),
     ],
     patrimoine: [],
     architecture: {
@@ -382,7 +383,7 @@ export const communesRouen: Ville[] = [
     },
     communesVoisines: ["Darnétal", "Saint-Aubin-Épinay", "Roncherolles-sur-le-Vivier", "Bois-l'Évêque", "Préaux"],
     faq: [
-      faqMarniere("Saint-Jacques-sur-Darnétal", "à Saint-Jacques-sur-Darnétal", 239),
+      faqMarniere("à Saint-Jacques-sur-Darnétal", REPERES["76591"]),
       {
         q: "Mon terrain est-il le long de la N31 ?",
         a: "Le long des grands axes routiers, un recul des constructions peut s'imposer, sauf dans les secteurs qui y dérogent. La commune publie ces dispositions avec ses plans de zonage : nous les appliquons à votre parcelle.",

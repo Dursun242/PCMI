@@ -71,6 +71,8 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
   const couronne = communesAutour(v);
   const memePole = pole ? communesAutour(pole).filter((x) => x.slug !== v.slug) : [];
   const aspect = v.patrimoine.length > 0 || Boolean(v.architecture);
+  // Commune périphérique : ses propres chiffres remplacent les blocs communs à toutes les pages du département.
+  const r = v.reperes;
   const source = `ville_${v.slug}`;
   const chiffres = chiffresLocaux(d);
 
@@ -116,11 +118,19 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
         <div>
           <span className="rule" aria-hidden="true" />
           <h2 className="h-section mt-6">Les règles qui s&apos;appliquent {v.a}</h2>
-          <p className="mt-6 text-ink-2 leading-relaxed">
-            {v.nom} fait partie de {v.intercommunalite}. C&apos;est le document d&apos;urbanisme local, et non une règle
-            nationale, qui fixe ce que vous pouvez construire sur votre parcelle : implantation, hauteur, emprise au sol,
-            aspect des façades.
-          </p>
+          {r && pole ? (
+            <p className="mt-6 text-ink-2 leading-relaxed">
+              {v.nom} compte {r.population.toLocaleString("fr-FR")} habitants sur{" "}
+              {r.superficieKm2.toLocaleString("fr-FR")} km², à {r.distancePoleKm.toLocaleString("fr-FR")} km du centre de{" "}
+              {pole.nom}, et fait partie de {v.intercommunalite}.
+            </p>
+          ) : (
+            <p className="mt-6 text-ink-2 leading-relaxed">
+              {v.nom} fait partie de {v.intercommunalite}. C&apos;est le document d&apos;urbanisme local, et non une règle
+              nationale, qui fixe ce que vous pouvez construire sur votre parcelle : implantation, hauteur, emprise au sol,
+              aspect des façades.
+            </p>
+          )}
         </div>
         <div data-stagger className="grid gap-6">
           <SourcedFact titre="Le document d'urbanisme" fait={v.urbanisme} />
@@ -172,6 +182,34 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
         </section>
       )}
 
+      {r && pole ? (
+        <section className="mx-auto max-w-7xl px-5 sm:px-8 py-20">
+          <span className="rule" aria-hidden="true" />
+          <h2 className="h-section mt-6">{v.nom} en chiffres</h2>
+          <dl data-stagger className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {(
+              [
+                [r.population.toLocaleString("fr-FR"), "habitants (population légale)"],
+                [`${r.distancePoleKm.toLocaleString("fr-FR")} km`, `du centre de ${pole.nom}, à vol d'oiseau`],
+                [String(r.cavites.total), r.cavites.total > 1 ? "indices de cavités souterraines recensés" : "indice de cavité souterraine recensé"],
+                [String(r.catnat.total), `arrêtés de catastrophe naturelle depuis ${r.catnat.depuis}`],
+              ] as [string, string][]
+            ).map(([chiffre, legende]) => (
+              <div key={legende} className="border-t border-ink pt-5">
+                <dt className="numeral text-4xl">{chiffre}</dt>
+                <dd className="mt-2 text-ink-2 leading-relaxed">{legende}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-8 text-sm text-ink-2">
+            Sources :{" "}
+            <a href={`https://geo.api.gouv.fr/communes/${r.insee}?fields=nom,population,surface`} target="_blank" rel="noopener noreferrer" className={lien}>INSEE et IGN</a>
+            ,{" "}
+            <a href={`https://www.georisques.gouv.fr/mes-risques/connaitre-les-risques-pres-de-chez-moi/rapport2?form-commune=true&codeInsee=${r.insee}&ign=false&CGU-commune=on&commune=${r.insee}`} target="_blank" rel="noopener noreferrer" className={lien}>Géorisques</a>
+            .
+          </p>
+        </section>
+      ) : (
       <section className="mx-auto max-w-7xl px-5 sm:px-8 py-20">
         <span className="rule" aria-hidden="true" />
         <h2 className="h-section mt-6">Construire en {d.terrain ? d.nom : "Normandie"}, en chiffres</h2>
@@ -192,7 +230,24 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
           particuliers ; nous prenons ensuite le relais pour le dossier.
         </p>
       </section>
+      )}
 
+      {pole ? (
+        <section className="bg-stone border-y border-stone-2">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16">
+            <h2 className="h-section">Votre dossier {v.a}, à prix fixe</h2>
+            <p className="mt-6 max-w-[64ch] text-ink-2 leading-relaxed">
+              {plans.map((p, i) => (
+                <span key={p.id}>
+                  {i > 0 && (i === plans.length - 1 ? " ou " : ", ")}
+                  <Link href={`/tarifs#${p.id}`} className={lien}>{p.name}</Link> à {formatEuro(p.priceTTC)}
+                </span>
+              ))}{" "}
+              TTC, annoncé avant de commencer.
+            </p>
+          </div>
+        </section>
+      ) : (
       <section className="bg-stone border-y border-stone-2">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-20 grid gap-14 lg:grid-cols-[1fr_1.4fr]">
           <div>
@@ -221,6 +276,7 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
           </ul>
         </div>
       </section>
+      )}
 
       <section className="mx-auto max-w-7xl px-5 sm:px-8 py-20">
         <span className="rule" aria-hidden="true" />
@@ -242,7 +298,8 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
               et <Link href={villePath(pole)} className={lien}>{pole.nom}</Link>.
             </>
           )}
-          {voisines.length > 0 && (
+          {/* Une commune renvoie vers sa ville-centre et ses voisines ; la liste du département reste sur les villes principales. */}
+          {!pole && voisines.length > 0 && (
             <>
               {" "}Ailleurs en {d.nom} :{" "}
               {voisines.map((x, i) => (
@@ -254,19 +311,27 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
               .
             </>
           )}{" "}
-          Toutes les villes : <Link href={NORMANDIE_PATH} className={lien}>le permis de construire en Normandie</Link>. Les
-          règles générales sont dans notre{" "}
-          <Link href="/permis-de-construire-maison" className={lien}>guide du permis de construire</Link>.
+          {!pole && (
+            <>
+              Toutes les villes : <Link href={NORMANDIE_PATH} className={lien}>le permis de construire en Normandie</Link>. Les
+              règles générales sont dans notre{" "}
+              <Link href="/permis-de-construire-maison" className={lien}>guide du permis de construire</Link>.
+            </>
+          )}
         </p>
 
         <Cta
           title={`Un terrain ${v.a} ?`}
-          text="Envoyez l'adresse ou la référence cadastrale : nous lisons le règlement applicable et vous répondons sous 4 h ouvrées avec un prix fixe."
+          text={
+            pole
+              ? `L'adresse ou la référence cadastrale de votre parcelle à ${v.nom} suffit : réponse sous 4 h ouvrées, prix fixe compris.`
+              : "Envoyez l'adresse ou la référence cadastrale : nous lisons le règlement applicable et vous répondons sous 4 h ouvrées avec un prix fixe."
+          }
           source={`${source}_bas`}
           secondaryHref="/plan-de-masse"
           secondaryLabel="J'ai déjà un plan"
         />
-        <Garanties className="mt-4" />
+        {!pole && <Garanties className="mt-4" />}
       </section>
     </>
   );
