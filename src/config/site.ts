@@ -150,7 +150,7 @@ export const lancement = {
 
 /**
  * Formule Express : page /permis-express, destination de la campagne Google
- * Ads (Seine-Maritime, Eure, Calvados). Toute maison individuelle jusqu'à
+ * Ads (départements dans `departements`, à aligner sur le ciblage de la campagne). Toute maison individuelle jusqu'à
  * 150 m² de surface de plancher, plain-pied ou à étage : au-delà, la loi
  * impose un architecte (code de l'urbanisme, art. R. 431-2).
  *
@@ -172,7 +172,8 @@ export const express = {
   premiersPlans: "72 h",
   places: 10,
   fin: "2026-12-31",
-  departements: ["Seine-Maritime (76)", "Eure (27)", "Calvados (14)"],
+  /** Départements ciblés par la campagne : affichés en haut de page, dans la description et le texte. */
+  departements: ["Seine-Maritime", "Eure", "Calvados", "Manche", "Orne", "Somme"],
   inclus: [
     "Pièces PCMI 1 à 8 complètes, à l'échelle",
     "CERFA 13406 rempli et vérifié",

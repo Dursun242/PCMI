@@ -106,7 +106,7 @@ export default function ExpressConfiance() {
           <div>
             <p className="lead max-w-[52ch]">
               {site.parent}, bureau d&apos;études créé en 2022 au Havre, {site.address.street}. Nous venons voir votre
-              terrain en Normandie quand c&apos;est utile, et nos panneaux sont sur les chantiers de nos clients.
+              terrain en Normandie et dans la Somme quand c&apos;est utile, et nos panneaux sont sur les chantiers de nos clients.
             </p>
 
             <a

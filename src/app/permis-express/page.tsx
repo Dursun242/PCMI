@@ -16,15 +16,19 @@ import type { ReferenceVitrine } from "@/lib/vitrine";
 
 /**
  * Page d'atterrissage de la campagne Google Ads « permis express »
- * (Seine-Maritime, Eure, Calvados). Une seule offre, une seule action :
+ * (départements : `express.departements`). Une seule offre, une seule action :
  * appeler ou laisser ses coordonnées. Pas d'indexation : la page sert la
  * publicité et ne doit pas concurrencer les pages du référencement naturel.
  *
  * Contenu commercial (prix, délais, ce qui est compris) : `express` dans src/config/site.ts.
  */
+/** « Seine-Maritime, Eure… ou Somme » : la liste des départements de la campagne, en français. */
+const zone = (mot: "et" | "ou") =>
+  `${express.departements.slice(0, -1).join(", ")} ${mot} ${express.departements[express.departements.length - 1]}`;
+
 export const metadata: Metadata = {
   title: `Permis de construire express dès ${formatEuro(express.prixTTC)}`,
-  description: `Maison jusqu'à ${express.surfaceMax} m², plain-pied ou à étage, en Seine-Maritime, Eure ou Calvados : devis sous 4 h ouvrées, premiers plans sous ${express.premiersPlans}, dossier PCMI prêt en ${express.delai}.`,
+  description: `Maison jusqu'à ${express.surfaceMax} m², plain-pied ou à étage, en ${zone("ou")} : devis sous 4 h ouvrées, premiers plans sous ${express.premiersPlans}, dossier PCMI prêt en ${express.delai}.`,
   robots: { index: false, follow: false },
   alternates: { canonical: "/permis-express" },
 };
@@ -82,7 +86,7 @@ export default function PermisExpressPage() {
             <div className="flex items-center gap-3">
               <span className="rule" aria-hidden="true" />
               <span className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">
-                Seine-Maritime · Eure · Calvados
+                {express.departements.join(" · ")}
               </span>
             </div>
             <h1 className="display mt-5 sm:mt-6 text-[2.6rem] leading-[1.05] sm:text-6xl lg:text-[4.25rem] max-w-[16ch]">
@@ -224,7 +228,7 @@ export default function PermisExpressPage() {
           <h2 className="h-section mt-6">Un maître d&apos;œuvre, pas une plateforme</h2>
           <p className="mt-6 text-ink-2 leading-relaxed max-w-[48ch]">
             {site.legal.company}, bureau d&apos;études installé au Havre. Un seul interlocuteur, joignable directement,
-            qui connaît les règlements d&apos;urbanisme de la Seine-Maritime, de l&apos;Eure et du Calvados.
+            qui connaît les règlements d&apos;urbanisme de vos départements : {zone("et")}.
           </p>
           <address data-zone="bureau" className="mt-6 not-italic text-sm leading-relaxed">
             <strong>{site.parent}</strong>
