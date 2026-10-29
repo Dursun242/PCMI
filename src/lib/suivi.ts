@@ -155,9 +155,13 @@ export function compter(evenements: Evenement[], depuis?: string): Compteurs {
   return evenements.filter((e) => !depuis || e.jour >= depuis).reduce(ajouter, COMPTEURS_VIDES);
 }
 
-/** Contacts obtenus : demandes envoyées, clics sur Appeler et sur WhatsApp. */
+/**
+ * Contacts obtenus : demandes envoyées et clics sur Appeler. WhatsApp ouvert n'en
+ * est pas un : le visiteur doit encore envoyer le message (et, sur ordinateur,
+ * avoir WhatsApp connecté) ; il est compté à part.
+ */
 export function contacts(c: Compteurs): number {
-  return c.demandes + c.appels + c.whatsapp;
+  return c.demandes + c.appels;
 }
 
 /** Part des visites qui aboutissent à un contact, en pourcentage arrondi ; null sans visite. */

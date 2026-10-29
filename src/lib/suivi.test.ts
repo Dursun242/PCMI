@@ -56,10 +56,10 @@ describe("compter", () => {
     expect(compter(evenements, "2026-10-22").visites).toBe(2);
   });
 
-  it("calcule les contacts et le taux de contact", () => {
+  it("calcule les contacts et le taux de contact, sans compter WhatsApp ouvert (message pas forcément envoyé)", () => {
     const c = compter(evenements);
-    expect(contacts(c)).toBe(4);
-    expect(tauxContact(c)).toBe(133.3);
+    expect(contacts(c)).toBe(3);
+    expect(tauxContact(c)).toBe(100);
     expect(tauxContact(compter([]))).toBeNull();
   });
 
