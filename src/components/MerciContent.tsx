@@ -46,7 +46,7 @@ export default function MerciContent({ type }: { type?: MerciType }) {
         indésirables.{viaPlanDeMasse ? " Votre plan nous est bien parvenu." : ""}
         {viaExe ? " Votre demande porte sur des plans d'exécution : le devis détaille un prix fixe par lot." : ""}
         {viaThermique ? " Votre demande porte sur une étude thermique RE2020 : notre thermicien vous répond avec un prix fixe par prestation." : ""}
-        {viaExpress ? ` Nous vous rappelons sous 4 h ouvrées pour la formule ${express.nom} (${formatEuro(express.prixTTC)} TTC, dossier prêt en ${express.delai}) ou la formule adaptée à votre projet.` : ""}
+        {viaExpress ? ` Nous vous rappelons ${express.rappel.delai} (${express.rappel.horaires} ; ${express.rappel.sinon}) pour la formule ${express.nom} (${formatEuro(express.prixTTC)} TTC, dossier prêt en ${express.delai}) ou la formule adaptée à votre projet.` : ""}
         {plan ? ` Votre demande porte sur la formule ${plan.name} (${formatEuro(plan.priceTTC)} TTC, livrée sous ${plan.delayWorkingDays}).` : ""}
       </p>
 
@@ -56,7 +56,9 @@ export default function MerciContent({ type }: { type?: MerciType }) {
         <ol className="mt-8 grid gap-7 border-t border-ink pt-8">
           {[
             ["Nous lisons le PLU de votre commune", "Zone, emprise au sol, hauteurs, implantation, aspect des façades, gestion des eaux pluviales, périmètre ABF. C'est ce qui prend le plus de temps, et c'est ce qui rend le prix fiable."],
-            ["Vous recevez un devis chiffré sous 4 h ouvrées", "Formule conseillée, prix fixe, délai de livraison et liste exacte des documents à nous transmettre."],
+            viaExpress
+              ? [`Nous vous rappelons ${express.rappel.delai}`, `${express.rappel.horaires[0].toUpperCase()}${express.rappel.horaires.slice(1)} ; ${express.rappel.sinon}. Au téléphone : prix fixe, délai et liste exacte des documents à nous transmettre.`]
+              : ["Vous recevez un devis chiffré sous 4 h ouvrées", "Formule conseillée, prix fixe, délai de livraison et liste exacte des documents à nous transmettre."],
             ["Nous en parlons de vive voix si vous le souhaitez", "Un appel ou une visio pour valider le programme avant de dessiner. Sans engagement."],
           ].map(([t, d], i) => (
             <li key={t} className="flex gap-5">

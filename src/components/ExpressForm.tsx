@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { express } from "@/config/site";
 import { surfaceBucket, trackEvent } from "@/lib/analytics";
 import { noterEnvoi, suivreExpress } from "@/lib/suiviClient";
 
@@ -89,7 +90,7 @@ export default function ExpressForm() {
         {status === "sending" ? "Envoi en cours…" : "Recevoir mon devis gratuit"}
       </button>
       <ul className="grid gap-1.5 text-sm">
-        {["Rappel sous 4 h ouvrées", "Prix fixe annoncé avant tout engagement", "Gratuit, sans engagement, aucune revente de vos données"].map((t) => (
+        {[`Rappel ${express.rappel.delai}, ${express.rappel.horaires}`, "Prix fixe annoncé avant tout engagement", "Gratuit, sans engagement, aucune revente de vos données"].map((t) => (
           <li key={t} className="flex gap-2">
             <span aria-hidden="true" className="text-bronze">✓</span>
             {t}
