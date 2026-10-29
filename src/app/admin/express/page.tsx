@@ -20,8 +20,8 @@ const LIGNES: { titre: string; valeur: (c: Compteurs) => string; aide?: string }
   { titre: "Demandes envoyées", valeur: (c) => String(c.demandes) },
   { titre: "dont urgentes", valeur: (c) => String(c.demandesUrgentes), aide: "Compromis signé ou dépôt sous un mois." },
   { titre: "Clics « Appeler »", valeur: (c) => String(c.appels) },
-  { titre: "Clics WhatsApp", valeur: (c) => String(c.whatsapp) },
-  { titre: "Taux de contact", valeur: (c) => (tauxContact(c) === null ? "—" : `${tauxContact(c)} %`), aide: "Demandes + appels + WhatsApp, rapportés aux visites." },
+  { titre: "WhatsApp ouvert", valeur: (c) => String(c.whatsapp), aide: "Message pré-rempli ouvert, pas forcément envoyé : non compté dans les contacts." },
+  { titre: "Taux de contact", valeur: (c) => (tauxContact(c) === null ? "—" : `${tauxContact(c)} %`), aide: "Demandes + appels, rapportés aux visites." },
 ];
 
 /** Répartition des visites par temps passé, avec la part venue des annonces. */
@@ -128,7 +128,7 @@ export default async function CompteurExpress() {
       <h2 className="mt-8 sm:mt-10 text-sm font-bold uppercase tracking-[0.18em] text-ink-2">30 derniers jours</h2>
       <div className="mt-3 grid gap-px bg-stone-2 grid-cols-2 lg:grid-cols-4">
         <Chiffre label="Visites" valeur={mois.visites} sous={`${mois.visitesAds} via Google Ads`} />
-        <Chiffre label="Contacts" valeur={contacts(mois)} sous={`${mois.demandes} demandes · ${mois.appels} appels · ${mois.whatsapp} WhatsApp`} />
+        <Chiffre label="Contacts" valeur={contacts(mois)} sous={`${mois.demandes} demandes · ${mois.appels} appels${mois.whatsapp ? ` (+ ${mois.whatsapp} WhatsApp ouvert${mois.whatsapp > 1 ? "s" : ""}, non compté${mois.whatsapp > 1 ? "s" : ""})` : ""}`} />
         <Chiffre label="Demandes urgentes" valeur={mois.demandesUrgentes} sous="À rappeler en premier" />
         <Chiffre label="Taux de contact" valeur={tauxContact(mois) === null ? "—" : `${tauxContact(mois)} %`} sous="Contacts / visites" />
       </div>
@@ -176,11 +176,11 @@ export default async function CompteurExpress() {
       {/* Téléphone : une ligne par jour, visites à gauche, contacts à droite. */}
       <ul className="mt-3 bg-paper text-sm sm:hidden">
         {jours.map(({ jour, compteurs: c }) => {
-          const vide = c.visites === 0 && contacts(c) === 0;
+          const vide = c.visites === 0 && contacts(c) === 0 && c.whatsapp === 0;
           const detail = [
             c.demandes > 0 && `${c.demandes} demande${c.demandes > 1 ? "s" : ""}`,
             c.appels > 0 && `${c.appels} appel${c.appels > 1 ? "s" : ""}`,
-            c.whatsapp > 0 && `${c.whatsapp} WhatsApp`,
+            c.whatsapp > 0 && `${c.whatsapp} WhatsApp ouvert${c.whatsapp > 1 ? "s" : ""}`,
           ].filter(Boolean);
           return (
             <li key={jour} className={`flex items-baseline justify-between gap-3 border-b border-stone-2 px-3 py-2.5 ${vide ? "text-ink-3" : ""}`}>
@@ -207,14 +207,14 @@ export default async function CompteurExpress() {
         <table className="w-full border-collapse bg-paper text-sm">
           <thead>
             <tr className="border-b border-ink text-left">
-              {["Jour", "Visites", "dont Ads", "Formulaires", "Demandes", "Appels", "WhatsApp"].map((h) => (
+              {["Jour", "Visites", "dont Ads", "Formulaires", "Demandes", "Appels", "WhatsApp ouvert"].map((h) => (
                 <th key={h} className="p-3 font-bold first:text-left text-right">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {jours.map(({ jour, compteurs: c }) => (
-              <tr key={jour} className={`border-b border-stone-2 ${c.visites === 0 && contacts(c) === 0 ? "text-ink-3" : ""}`}>
+              <tr key={jour} className={`border-b border-stone-2 ${c.visites === 0 && contacts(c) === 0 && c.whatsapp === 0 ? "text-ink-3" : ""}`}>
                 <td className="p-3">{libelleJour(jour)}</td>
                 {[c.visites, c.visitesAds, c.formulaires, c.demandes, c.appels, c.whatsapp].map((v, i) => (
                   <td key={i} className="p-3 text-right tabular-nums">{v}</td>
@@ -226,8 +226,8 @@ export default async function CompteurExpress() {
       </div>
 
       <p className="mt-8 text-xs leading-relaxed text-ink-2">
-        Un clic sur « Appeler » ou WhatsApp n&apos;est pas forcément un appel abouti : comparez avec votre journal
-        d&apos;appels. Les robots (dont celui de Google qui vérifie les annonces) ne sont pas comptés. Aucune donnée
+        Un clic sur « Appeler » n&apos;est pas forcément un appel abouti : comparez avec votre journal d&apos;appels.
+        « WhatsApp ouvert » veut dire que le message pré-rempli s&apos;est ouvert, pas qu&apos;il a été envoyé. Les robots (dont celui de Google qui vérifie les annonces) ne sont pas comptés. Aucune donnée
         personnelle n&apos;est enregistrée ici ; le détail de chaque demande arrive par e-mail.
       </p>
     </AdminShell>

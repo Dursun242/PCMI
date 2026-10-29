@@ -48,17 +48,18 @@ export type Section = (typeof SECTIONS)[number][0];
 export const ZONES = [
   ["entete", "Menu du site"],
   ["hero", "Haut de page"],
-  ["relance1", "Encadré après le déroulé"],
+  ["relance1", "Encadré après les étapes"],
   ["relance2", "Encadré après « Compris »"],
   ["bureau", "Adresse du bureau"],
   ["bas", "Bas de page"],
   ["pied", "Pied de page du site"],
   ["barre", "Barre en bas du téléphone"],
+  ["bulle", "Bulle WhatsApp (ordinateur)"],
 ] as const;
 export const ACTIONS = [
   ["appel", "Appeler"],
   ["devis", "Mon devis"],
-  ["whatsapp", "WhatsApp"],
+  ["whatsapp", "WhatsApp ouvert"],
 ] as const;
 export type Clic = `${(typeof ZONES)[number][0]}-${(typeof ACTIONS)[number][0]}`;
 const CLICS = ZONES.flatMap(([z]) => ACTIONS.map(([a]) => `${z}-${a}`)) as Clic[];

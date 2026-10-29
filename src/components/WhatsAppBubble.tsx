@@ -37,6 +37,7 @@ export default function WhatsAppBubble() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Écrire ou appeler sur WhatsApp"
+      data-zone="bulle"
       // Masquée (avant défilement) : hors de l'ordre de tabulation et des lecteurs d'écran.
       tabIndex={visible ? undefined : -1}
       aria-hidden={visible ? undefined : true}

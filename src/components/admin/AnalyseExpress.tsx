@@ -69,7 +69,7 @@ function Suite({ a, s }: { a: Analyse; s: AnalyseSuites }) {
           </ul>
           <p className="mt-px bg-paper p-4 text-sm">
             Contacts pris ailleurs sur le site : <strong>{s.appels}</strong> appel{s.appels > 1 ? "s" : ""},{" "}
-            <strong>{s.whatsapp}</strong> WhatsApp
+            <strong>{s.whatsapp}</strong> WhatsApp ouvert
             {s.demandes.map(([f, n]) => (
               <span key={f}>
                 , <strong>{n}</strong> demande{n > 1 ? "s" : ""} « {libellePage(f === "devis" || f === "contact" || f === "dossier" ? f : `devis--${f}`)} »
