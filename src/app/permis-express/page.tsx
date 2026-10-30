@@ -28,14 +28,14 @@ const zone = (mot: "et" | "ou") =>
 
 export const metadata: Metadata = {
   title: `Permis de construire express dès ${formatEuro(express.prixTTC)}`,
-  description: `Maison jusqu'à ${express.surfaceMax} m², plain-pied ou à étage, en ${zone("ou")} : devis sous 4 h ouvrées, premiers plans sous ${express.premiersPlans}, dossier PCMI prêt en ${express.delai}.`,
+  description: `Maison jusqu'à ${express.surfaceMax} m², plain-pied ou à étage, en ${zone("ou")} : rappel ${express.rappel.delai}, premiers plans sous ${express.premiersPlans}, dossier PCMI prêt en ${express.delai}.`,
   robots: { index: false, follow: false },
   alternates: { canonical: "/permis-express" },
 };
 
 /** Les quatre étapes d'un dossier Express, du premier appel au dépôt (la vidéo, peu regardée ici, reste sur l'accueil). */
 const etapes: [string, string, string][] = [
-  ["Jour 0", "Votre parcelle", "Vous nous envoyez le numéro de parcelle et vos documents ; nous vérifions le PLU. Devis sous 4 h ouvrées."],
+  ["Jour 0", "Votre parcelle", `Vous nous envoyez le numéro de parcelle et vos documents ; nous vérifions le PLU. Rappel ${express.rappel.delai}, devis au téléphone.`],
   [`Sous ${express.premiersPlans}`, "Votre maison", "Une ou deux propositions, en plan et en façade, sur votre terrain."],
   ["À votre rythme", "Votre accord", "Vous validez, ou nous modifions. Rien n’est déposé sans votre accord."],
   [`En ${express.delai}`, "Le dépôt", "Pièces PCMI 1 à 8 et CERFA déposées en ligne ; vous recevez le récépissé pour votre notaire."],
@@ -60,7 +60,7 @@ function RelanceDevis({ titre, zone }: { titre: string; zone: "relance1" | "rela
         <div>
           <p className="display text-3xl leading-tight">{titre}</p>
           <p className="mt-2 text-ink-2">
-            Devis gratuit sous 4 h ouvrées, prix fixe de {formatEuro(express.prixTTC)} TTC. Sans engagement.
+            Rappel {express.rappel.delai} ({express.rappel.horaires}), prix fixe de {formatEuro(express.prixTTC)} TTC. Sans engagement.
           </p>
         </div>
         <div className="grid shrink-0 grid-cols-[3fr_2fr] gap-3 md:flex">
@@ -164,8 +164,11 @@ export default function PermisExpressPage() {
 
           <div id="devis" data-section="formulaire" className="scroll-mt-24 bg-paper text-ink px-6 py-8 sm:px-9 sm:py-10 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)]">
             <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">Gratuit · sans engagement</p>
-            <h2 className="display mt-3 text-4xl leading-tight">Recevez votre devis sous 4 h ouvrées</h2>
-            <p className="mt-3 text-sm text-ink-2">Quatre champs, une minute. Nous vous rappelons avec un prix fixe.</p>
+            <h2 className="display mt-3 text-4xl leading-tight">Rappelé {express.rappel.delai}, devis gratuit</h2>
+            <p className="mt-3 text-sm text-ink-2">
+              Quatre champs, une minute. Nous vous rappelons {express.rappel.delai} avec un prix fixe, {express.rappel.horaires} ;{" "}
+              {express.rappel.sinon}.
+            </p>
             {/* La preuve au moment d'hésiter : qui rappelle, et ce qu'en disent les clients. */}
             <a href={AVIS_GOOGLE} target="_blank" rel="noopener noreferrer" className="mt-5 flex items-center gap-3 border-y border-stone-2 py-3">
               <Image src="/confiance/dursun-ozkan-medaillon.jpg" alt="" width={48} height={48} className="h-12 w-12 shrink-0 rounded-full object-cover" />
@@ -258,7 +261,7 @@ export default function PermisExpressPage() {
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-14 sm:py-20 flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="display text-4xl sm:text-5xl max-w-[20ch]">Votre date butoir approche ?</p>
-            <p className="mt-3 text-paper/75">Devis sous 4 h ouvrées. Dossier prêt en {express.delai}.</p>
+            <p className="mt-3 text-paper/75">Rappel {express.rappel.delai}, {express.rappel.horaires}. Dossier prêt en {express.delai}.</p>
           </div>
           <div className="flex flex-wrap gap-3">
             <a href="#devis" className="btn btn-paper">Mon devis gratuit</a>

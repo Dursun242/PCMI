@@ -68,7 +68,7 @@ function mailClient(d: DemandeExpress) {
     <div style="font-family:Lato,Arial,sans-serif;font-size:16px;line-height:1.6;color:#10233f;max-width:560px">
       <p>Bonjour ${esc(d.name.split(" ")[0])},</p>
       <p>Votre demande de permis de construire à <strong>${esc(d.city)}</strong> est bien reçue.</p>
-      <p>Nous lisons le règlement d'urbanisme de votre commune et vous rappelons sous <strong>4 h ouvrées</strong> au ${esc(d.phone)} avec un prix fixe.${bureau ? " Nous conviendrons ensemble d'un rendez-vous au bureau." : ""}</p>
+      <p>Nous lisons le règlement d'urbanisme de votre commune et vous rappelons <strong>${express.rappel.delai}</strong> (${express.rappel.horaires} ; ${express.rappel.sinon}) au ${esc(d.phone)} avec un prix fixe.${bureau ? " Nous conviendrons ensemble d'un rendez-vous au bureau." : ""}</p>
       <p>Pour gagner du temps, répondez à cet e-mail en joignant ce que vous avez déjà : plan du terrain ou de bornage, croquis ou plan de la maison, photos du terrain.</p>
       <p>À très vite,<br><strong>${esc(site.legal.director)}</strong><br>${esc(site.parent)} — maître d'œuvre<br>${esc(site.address.street)}, ${esc(site.address.zip)} ${esc(site.address.city)}<br>${esc(site.phone)}</p>
     </div>

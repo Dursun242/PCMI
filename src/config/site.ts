@@ -169,6 +169,12 @@ export const express = {
   prixTTC: 890,
   surfaceMax: 150,
   delai: "5 jours ouvrés",
+  /** Rappel après une demande : promesse affichée sur la page, le formulaire, la confirmation et l'e-mail. */
+  rappel: {
+    delai: "dans l'heure",
+    horaires: "du lundi au samedi, de 9 h à 19 h",
+    sinon: "en dehors de ces heures, le jour suivant dès 9 h",
+  },
   premiersPlans: "72 h",
   places: 10,
   fin: "2026-12-31",
