@@ -1,5 +1,5 @@
 import { site } from "@/config/site";
-import { DELAI_RETRACTATION_JOURS, ficheFactureRecurrente, mentionFacturation, SIGNATURE, type Commande } from "@/lib/commande";
+import { DELAI_RETRACTATION_JOURS, ficheFacturation, mentionFacturation, SIGNATURE, type Commande } from "@/lib/commande";
 import { clientWrap, esc, section, table } from "@/lib/mailer";
 
 /**
@@ -85,7 +85,7 @@ export function emailNouvelleCommande(
         ["Référence cadastrale", c.referenceCadastrale],
         ["Surface de plancher", `${c.surface} m²`],
       ]))}
-      ${section("À lancer dans Qonto après validation du terrain", table(ficheFactureRecurrente(commande, jourSignature, devis.numero)))}
+      ${section("À lancer dans Qonto après validation du terrain", table(ficheFacturation(commande, jourSignature, devis.numero)))}
       ${section("Client", table([
         ["Nom", `${c.prenom} ${c.nom}`],
         ["E-mail", c.email],

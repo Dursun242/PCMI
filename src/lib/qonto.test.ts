@@ -7,6 +7,7 @@ import {
   corpsMandat,
   creerCommandeQonto,
   ErreurQonto,
+  lireDevis,
   lireMandat,
   masquerIban,
   type ConfigQonto,
@@ -102,7 +103,7 @@ describe("corpsDevis", () => {
 
   it("indique la facturation et les CGV", () => {
     const corps = corpsDevis("client-1", commande(), "2026-11-01");
-    expect(corps.footer).toMatch(/4 factures mensuelles/);
+    expect(corps.footer).toMatch(/une facture de .+, réglée en 4 prélèvements SEPA mensuels/);
     expect(corps.terms_and_conditions).toMatch(/\/cgv/);
     expect(corps.terms_and_conditions.length).toBeLessThanOrEqual(3000);
   });
@@ -178,5 +179,51 @@ describe("lireMandat", () => {
       [],
     );
     expect(await lireMandat(CONFIG, "mandat-1", f)).toEqual({ signe: true, iban: "•••• 0189", reference: "RUM-1", urlSignature: undefined });
+  });
+});
+
+describe("lireDevis", () => {
+  it("restitue le devis tel que Qonto l'a établi : dates, lignes, totaux, émetteur et client", async () => {
+    const quote = {
+      number: "D-2026-058",
+      quote_url: "https://portal.qonto.com/quotes/1",
+      issue_date: "2026-10-31",
+      expiry_date: "2026-11-07",
+      footer: "Prix facturé en une facture de 890 € TTC.",
+      terms_and_conditions: "Conditions.",
+      total_amount: { value: "890.00", currency: "EUR" },
+      vat_amount: { value: "148.33", currency: "EUR" },
+      items: [
+        {
+          title: "Permis de construire Express",
+          description: "Terrain : 64 rue Henri Dunant",
+          quantity: "1",
+          unit_price: { value: "741.67" },
+          vat_rate: "0.2",
+          subtotal: { value: "741.67" },
+          total_vat: { value: "148.33" },
+          total_amount: { value: "890.00" },
+        },
+      ],
+      client: { name: "Dursun OZKAN", address: "64 RUE HENRI DUNANT", zip_code: "76620", city: "LE HAVRE", email: "d@example.fr" },
+      organization: { legal_name: "ID MAITRISE", address_line_1: "9 RUE HENRY GENESTAL", address_zipcode: "76600", address_city: "LE HAVRE", legal_number: "92153618100024" },
+    };
+    const f = fauxFetch({ "GET /v2/quotes/devis-1": { quote } }, []);
+    const d = await lireDevis(CONFIG, "devis-1", f);
+    expect(d).toMatchObject({
+      numero: "D-2026-058",
+      url: "https://portal.qonto.com/quotes/1",
+      dateEmission: "2026-10-31",
+      dateExpiration: "2026-11-07",
+      totalHT: 741.67,
+      totalTVA: 148.33,
+      totalTTC: 890,
+      pied: "Prix facturé en une facture de 890 € TTC.",
+      client: { nom: "Dursun OZKAN", adresse: "64 RUE HENRI DUNANT", ville: "76620 LE HAVRE", email: "d@example.fr" },
+      emetteur: { nom: "ID MAITRISE", adresse: "9 RUE HENRY GENESTAL", ville: "76600 LE HAVRE", siret: "92153618100024" },
+    });
+    expect(d.lignes).toEqual([
+      { titre: "Permis de construire Express", description: "Terrain : 64 rue Henri Dunant", quantite: 1, prixUnitaireHT: 741.67, tauxTVA: 0.2, totalHT: 741.67 },
+    ]);
   });
 });
