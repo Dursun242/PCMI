@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { DevisVisuel, EcheancierTable } from "@/components/commande/DevisVisuel";
 import SignatureCommande from "@/components/commande/SignatureCommande";
-import { formatCentimes, mentionFacturation } from "@/lib/commande";
+import { echeancierPrevisionnel } from "@/lib/commande";
 import { commandeDuJeton } from "@/lib/commandeServeur";
-import { formatEuro } from "@/lib/format";
 import { lireDevis, lireMandat } from "@/lib/qonto";
 import { ouvrirQonto } from "@/lib/qontoConnexion";
+import { jourParis } from "@/lib/suivi";
 
 /**
  * Page ouverte depuis l'e-mail « Confirmez votre commande » : le client relit
@@ -70,7 +71,7 @@ export default async function SignerPage({ searchParams }: { searchParams: Promi
   }
 
   const { commande } = signable;
-  const { coordonnees: c, echeancier, panier } = commande;
+  const { coordonnees: c, echeancier } = commande;
 
   return (
     <div className="mx-auto max-w-3xl px-5 sm:px-8 py-16 sm:py-24">
@@ -88,31 +89,20 @@ export default async function SignerPage({ searchParams }: { searchParams: Promi
         terrain permet le dépôt du permis.
       </p>
 
-      <section className="mt-10 border border-ink bg-paper p-6" aria-label="Votre commande">
-        <p className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-bronze">Devis n° {devis.numero}</p>
-        <ul className="mt-4 grid gap-2 text-sm">
-          {panier.lignes.map((l) => (
-            <li key={l.libelle} className="flex justify-between gap-4">
-              <span>{l.quantite > 1 ? `${l.quantite} × ${l.libelle}` : l.libelle}</span>
-              <span className="numeral">{formatEuro(l.totalTTC)}</span>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-4 flex justify-between border-t border-stone-2 pt-4 font-bold">
-          <span>Total TTC</span>
-          <span className="numeral text-xl">{formatCentimes(panier.totalTTC * 100)}</span>
-        </div>
-        <p className="mt-4 border-l-2 border-brass pl-4 text-sm">{mentionFacturation(echeancier)}</p>
-        <dl className="mt-6 grid gap-2 text-sm sm:grid-cols-[auto_1fr] sm:gap-x-6">
-          <dt className="font-bold">Terrain</dt>
-          <dd>{c.terrainAdresse}, {c.terrainCodePostal} {c.terrainCommune}</dd>
+      <section className="mt-10" aria-label="Votre devis">
+        <DevisVisuel devis={devis} />
+        <p className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+          <a href={devis.url} target="_blank" rel="noopener noreferrer" className="underline decoration-brass underline-offset-2">Ouvrir le devis officiel (PDF)</a>
+          <Link href="/cgv" target="_blank" className="underline decoration-brass underline-offset-2">Lire les conditions générales de vente</Link>
+        </p>
+      </section>
+
+      <section className="mt-12 grid gap-6" aria-label="Facturation et prélèvements">
+        <EcheancierTable prelevements={echeancierPrevisionnel(echeancier, jourParis(new Date()))} />
+        <dl className="grid gap-2 text-sm sm:grid-cols-[auto_1fr] sm:gap-x-6">
           <dt className="font-bold">Mandat SEPA</dt>
           <dd>Réf. {mandat.reference} · IBAN {mandat.iban}</dd>
         </dl>
-        <p className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-          <a href={devis.url} target="_blank" rel="noopener noreferrer" className="underline decoration-brass underline-offset-2">Voir le devis complet (PDF)</a>
-          <Link href="/cgv" target="_blank" className="underline decoration-brass underline-offset-2">Lire les conditions générales de vente</Link>
-        </p>
       </section>
 
       <div className="mt-10">

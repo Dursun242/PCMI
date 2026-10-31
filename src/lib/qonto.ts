@@ -195,13 +195,92 @@ export async function lireMandat(cfg: ConfigQonto, mandatId: string, f: typeof f
   return { signe: m.status === "approved", iban: masquerIban(m.iban), reference: m.unique_mandate_reference, urlSignature: m.sign_url };
 }
 
+export interface LigneDevis {
+  titre: string;
+  description?: string;
+  quantite: number;
+  prixUnitaireHT: number;
+  /** Taux de TVA en décimal (0,2 pour 20 %). */
+  tauxTVA: number;
+  totalHT: number;
+}
+
+export interface PartieDevis {
+  nom: string;
+  adresse: string;
+  /** Code postal et ville. */
+  ville: string;
+}
+
 export interface Devis {
   numero: string;
   /** Page publique Qonto du devis (consultation et PDF). */
   url: string;
+  dateEmission: string;
+  dateExpiration: string;
+  lignes: LigneDevis[];
+  totalHT: number;
+  totalTVA: number;
+  totalTTC: number;
+  /** Pied du devis : la mention de facturation. */
+  pied: string;
+  conditions: string;
+  emetteur: PartieDevis & { siret: string };
+  client: PartieDevis & { email: string };
 }
 
+type Montant = { value: string } | undefined;
+interface DevisQonto {
+  number: string;
+  quote_url: string;
+  issue_date: string;
+  expiry_date: string;
+  footer?: string;
+  terms_and_conditions?: string;
+  total_amount: Montant;
+  vat_amount: Montant;
+  items?: { title: string; description?: string; quantity: string; unit_price: Montant; vat_rate: string; subtotal: Montant }[];
+  client?: { name?: string; address?: string; zip_code?: string; city?: string; email?: string };
+  organization?: { legal_name?: string; address_line_1?: string; address_zipcode?: string; address_city?: string; legal_number?: string };
+}
+
+const nombre = (m: Montant | string | undefined) => Number(typeof m === "string" ? m : (m?.value ?? 0));
+const ville = (codePostal?: string, nom?: string) => [codePostal, nom].filter(Boolean).join(" ");
+
+/** Le devis tel que Qonto l'a établi : de quoi en montrer un fidèle aperçu au client avant la signature. */
 export async function lireDevis(cfg: ConfigQonto, devisId: string, f: typeof fetch = fetch): Promise<Devis> {
-  const { quote } = await appel<{ quote: { number: string; quote_url: string } }>(cfg, "GET", `/v2/quotes/${encodeURIComponent(devisId)}`, undefined, f);
-  return { numero: quote.number, url: quote.quote_url };
+  const { quote: q } = await appel<{ quote: DevisQonto }>(cfg, "GET", `/v2/quotes/${encodeURIComponent(devisId)}`, undefined, f);
+  const totalTTC = nombre(q.total_amount);
+  const totalTVA = nombre(q.vat_amount);
+  return {
+    numero: q.number,
+    url: q.quote_url,
+    dateEmission: q.issue_date,
+    dateExpiration: q.expiry_date,
+    lignes: (q.items ?? []).map((i) => ({
+      titre: i.title,
+      ...(i.description ? { description: i.description } : {}),
+      quantite: nombre(i.quantity),
+      prixUnitaireHT: nombre(i.unit_price),
+      tauxTVA: nombre(i.vat_rate),
+      totalHT: nombre(i.subtotal),
+    })),
+    totalHT: Math.round((totalTTC - totalTVA) * 100) / 100,
+    totalTVA,
+    totalTTC,
+    pied: q.footer ?? "",
+    conditions: q.terms_and_conditions ?? "",
+    emetteur: {
+      nom: q.organization?.legal_name ?? "",
+      adresse: q.organization?.address_line_1 ?? "",
+      ville: ville(q.organization?.address_zipcode, q.organization?.address_city),
+      siret: q.organization?.legal_number ?? "",
+    },
+    client: {
+      nom: q.client?.name ?? "",
+      adresse: q.client?.address ?? "",
+      ville: ville(q.client?.zip_code, q.client?.city),
+      email: q.client?.email ?? "",
+    },
+  };
 }

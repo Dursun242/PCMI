@@ -5,9 +5,10 @@ import {
   echeancier,
   echeanciersPossibles,
   estTunnelCommande,
-  ficheFactureRecurrente,
+  echeancierPrevisionnel,
+  ficheFacturation,
   mentionFacturation,
-  premiereFactureAuPlusTot,
+  premierPrelevementAuPlusTot,
   formatCentimes,
   formulesCommande,
   CODES_DEPARTEMENTS_EXPRESS,
@@ -209,30 +210,46 @@ describe("estTunnelCommande", () => {
 });
 
 describe("mentionFacturation", () => {
-  it("décrit une facture unique", () => {
+  it("décrit une facture réglée en un prélèvement", () => {
     const m = mentionFacturation({ nombre: 1, montantCentimes: 199000 }).replace(/\s/g, " ");
-    expect(m).toMatch(/^Prix facturé en une facture de 1 990 € TTC, réglée par prélèvement SEPA/);
+    expect(m).toMatch(/^Prix facturé en une facture de 1 990 € TTC, réglée par un prélèvement SEPA\./);
   });
 
-  it("décrit des factures mensuelles et leur montant", () => {
+  it("décrit une facture réglée par un échéancier de prélèvements mensuels", () => {
     const m = mentionFacturation({ nombre: 4, montantCentimes: 49750 }).replace(/\s/g, " ");
-    expect(m).toMatch(/^Prix facturé en 4 factures mensuelles de 497,50 € TTC, réglées par prélèvement SEPA/);
-    expect(m).toMatch(/délai de rétractation de 14 jours/);
+    expect(m).toMatch(/^Prix facturé en une facture de 1 990 € TTC, réglée en 4 prélèvements SEPA mensuels de 497,50 €\./);
+    expect(m).toMatch(/La facture est émise après validation de votre projet et la fin du délai de rétractation de 14 jours/);
   });
 });
 
-describe("premiereFactureAuPlusTot", () => {
+describe("premierPrelevementAuPlusTot", () => {
   it("tombe le lendemain du 14e jour suivant la signature", () => {
-    expect(premiereFactureAuPlusTot("2026-11-01")).toBe("2026-11-16");
+    expect(premierPrelevementAuPlusTot("2026-11-01")).toBe("2026-11-16");
   });
 
   it("passe les fins de mois et d'année", () => {
-    expect(premiereFactureAuPlusTot("2026-12-20")).toBe("2027-01-04");
-    expect(premiereFactureAuPlusTot("2027-02-20")).toBe("2027-03-07");
+    expect(premierPrelevementAuPlusTot("2026-12-20")).toBe("2027-01-04");
+    expect(premierPrelevementAuPlusTot("2027-02-20")).toBe("2027-03-07");
   });
 });
 
-describe("ficheFactureRecurrente", () => {
+describe("echeancierPrevisionnel", () => {
+  it("liste les prélèvements mensuels à partir du premier possible", () => {
+    expect(echeancierPrevisionnel({ nombre: 4, montantCentimes: 22250 }, "2026-11-01")).toEqual([
+      { numero: 1, jour: "2026-11-16", montantCentimes: 22250 },
+      { numero: 2, jour: "2026-12-16", montantCentimes: 22250 },
+      { numero: 3, jour: "2027-01-16", montantCentimes: 22250 },
+      { numero: 4, jour: "2027-02-16", montantCentimes: 22250 },
+    ]);
+  });
+
+  it("garde un jour valide quand le mois est plus court", () => {
+    const jours = echeancierPrevisionnel({ nombre: 4, montantCentimes: 100 }, "2027-01-16").map((e) => e.jour);
+    expect(jours).toEqual(["2027-01-31", "2027-02-28", "2027-03-31", "2027-04-30"]);
+  });
+});
+
+describe("ficheFacturation", () => {
   const commande = (echeances: number) => {
     const r = validerCommande({ panier: { formule: "complet", options: {} }, coordonnees: coordonneesValides, echeances });
     if (!r.ok) throw new Error(r.erreur);
@@ -240,26 +257,26 @@ describe("ficheFactureRecurrente", () => {
   };
   const valeur = (fiche: [string, string][], cle: string) => fiche.find(([k]) => k === cle)?.[1].replace(/\s/g, " ");
 
-  it("prépare une récurrence mensuelle pour un paiement en plusieurs fois", () => {
-    const fiche = ficheFactureRecurrente(commande(4), "2026-11-01", "D-2026-012");
+  it("prépare une facture unique et un échéancier de prélèvements mensuels", () => {
+    const fiche = ficheFacturation(commande(4), "2026-11-01", "D-2026-012");
     expect(valeur(fiche, "Client")).toBe("Marie Martin");
-    expect(valeur(fiche, "Facturation")).toBe("Récurrente, mensuelle, 4 factures");
-    expect(valeur(fiche, "Montant de chaque facture")).toMatch(/TTC$/);
-    expect(valeur(fiche, "1re facture au plus tôt")).toBe("16/11/2026");
+    expect(valeur(fiche, "Facture")).toMatch(/^Facture unique de .+ TTC$/);
+    expect(valeur(fiche, "Échéancier")).toMatch(/^4 prélèvements mensuels de .+ TTC$/);
+    expect(valeur(fiche, "1er prélèvement au plus tôt")).toBe("16/11/2026");
     expect(valeur(fiche, "Libellé")).toBe("Permis de construire, formule Complet, devis D-2026-012");
   });
 
   it("cite les options dans le libellé", () => {
     const r = validerCommande({ panier: { formule: "complet", options: { "rendu-3d": 2 } }, coordonnees: coordonneesValides, echeances: 10 });
     if (!r.ok) throw new Error(r.erreur);
-    expect(valeur(ficheFactureRecurrente(r.commande, "2026-11-01"), "Libellé")).toBe(
+    expect(valeur(ficheFacturation(r.commande, "2026-11-01"), "Libellé")).toBe(
       "Permis de construire, formule Complet + 2 × Rendu 3D supplémentaire",
     );
   });
 
-  it("prépare une facture unique pour un paiement en une fois", () => {
-    const fiche = ficheFactureRecurrente(commande(1), "2026-11-01");
-    expect(valeur(fiche, "Facturation")).toBe("Facture unique");
+  it("prévoit un seul prélèvement pour un paiement en une fois", () => {
+    const fiche = ficheFacturation(commande(1), "2026-11-01");
+    expect(valeur(fiche, "Échéancier")).toMatch(/^1 prélèvement de .+ TTC$/);
     expect(valeur(fiche, "Libellé")).toBe("Permis de construire, formule Complet");
   });
 });
@@ -303,6 +320,6 @@ describe("formule Express dans le panier", () => {
   it("nomme la formule Express dans le libellé de facturation", () => {
     const r = validerCommande({ panier: { formule: "express", options: {} }, coordonnees: express76, echeances: 4 });
     if (!r.ok) throw new Error(r.erreur);
-    expect(ficheFactureRecurrente(r.commande, "2026-11-01").find(([k]) => k === "Libellé")?.[1]).toBe("Permis de construire, formule Express");
+    expect(ficheFacturation(r.commande, "2026-11-01").find(([k]) => k === "Libellé")?.[1]).toBe("Permis de construire, formule Express");
   });
 });

@@ -48,7 +48,8 @@ describe("e-mails de la commande", () => {
       "2026-11-01",
     );
     expect(e.subject).toMatch(/Commande signée — Marie Martin — Montivilliers/);
-    expect(e.html).toMatch(/Récurrente, mensuelle, 4 factures/);
+    expect(e.html).toMatch(/Facture unique de/);
+    expect(e.html).toMatch(/4 prélèvements mensuels de/);
     expect(e.html).toMatch(/16\/11\/2026/);
     expect(e.html).toContain("RUM-1");
     expect(e.html).toContain("1.2.3.4");
