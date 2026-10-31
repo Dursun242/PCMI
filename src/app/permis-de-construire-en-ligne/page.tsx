@@ -5,6 +5,7 @@ import Cta from "@/components/Cta";
 import TrackedLink from "@/components/TrackedLink";
 import { breadcrumb, faqPageSchema, serviceSchema } from "@/lib/schema";
 import { options, plans } from "@/config/site";
+import { formatCentimes, mensualites } from "@/lib/commande";
 import { formatEuro } from "@/lib/format";
 import { withSeo } from "@/lib/seo";
 
@@ -15,8 +16,8 @@ import { withSeo } from "@/lib/seo";
  * les délais de préparation viennent de src/config/site.ts.
  */
 export const metadata: Metadata = withSeo("/permis-de-construire-en-ligne", {
-  title: "Permis de construire en ligne : délai, démarches et prix",
-  description: `Permis de construire de maison en ligne : commande en 1, 4 ou 10 fois, dossier PCMI en ${plans[0].delayWorkingDays.replace(" jours ouvrés", "")} à ${plans[plans.length - 1].delayWorkingDays}, dépôt dématérialisé, prix fixe dès ${formatEuro(plans[0].priceTTC)} TTC.`,
+  title: "Permis de construire en ligne : prix fixe, payable en 10 fois",
+  description: `Permis de construire en ligne, payable en 1, 4 ou 10 fois sans frais : dossier PCMI en ${plans[0].delayWorkingDays.replace(" jours ouvrés", "")} à ${plans[plans.length - 1].delayWorkingDays}, dépôt dématérialisé, prix fixe dès ${formatEuro(plans[0].priceTTC)} TTC.`,
 });
 
 const optionDp = options.find((o) => o.name.startsWith("Déclaration préalable"));
@@ -61,6 +62,12 @@ const faqEnLigne = [
   {
     q: "Combien coûte un permis de construire fait en ligne ?",
     a: `L'instruction par la mairie est gratuite. Le montage du dossier par notre bureau d'études coûte ${plans.map((p) => `${formatEuro(p.priceTTC)} TTC (${p.name})`).join(", ")}, à prix fixe, quelle que soit la surface jusqu'à 149 m². La taxe d'aménagement, due après les travaux, s'ajoute pour toute construction.`,
+  },
+  {
+    q: "Peut-on payer son permis de construire en plusieurs fois ?",
+    a: `Oui, en 1, 4 ou 10 fois sans frais, par prélèvement SEPA mensuel : ${plans
+      .map((p) => `${p.name} ${formatEuro(p.priceTTC)} TTC, soit ${mensualites(p.priceTTC).map((e) => `${e.nombre} × ${formatCentimes(e.montantCentimes)}`).join(" ou ")}`)
+      .join(" ; ")}. Rien n'est prélevé avant que nous ayons vérifié que votre terrain permet le permis et que le délai de rétractation de 14 jours soit écoulé.`,
   },
   {
     q: "Quels documents dois-je fournir pour démarrer ?",
