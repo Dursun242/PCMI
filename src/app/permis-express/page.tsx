@@ -113,8 +113,7 @@ export default function PermisExpressPage() {
               <PaiementFractionne sombre prixTTC={express.prixTTC} className="mt-2" />
               <p className="mt-1 sm:mt-2 text-sm text-paper/70 max-w-[46ch]">
                 Maison jusqu&apos;à {express.surfaceMax} m² de surface de plancher, plain-pied ou à étage, dépôt en ligne
-                inclus. Réservée aux{" "}
-                {express.places} premiers dossiers, commandés avant le {formatFrDate(express.fin)}.
+                inclus. Offre valable pour toute commande passée avant le {formatFrDate(express.fin)}.
               </p>
             </div>
 
