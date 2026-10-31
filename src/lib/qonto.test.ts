@@ -93,10 +93,20 @@ describe("corpsDevis", () => {
     expect(corps).toMatchObject({ client_id: "client-1", issue_date: "2026-11-01", expiry_date: "2026-11-08", currency: "EUR" });
   });
 
-  it("indique le terrain, la facturation et les CGV", () => {
+  it("nomme la prestation « Permis de construire » et détaille le terrain sur sa ligne", () => {
+    const corps = corpsDevis("client-1", commande({ "rendu-3d": 1 }), "2026-11-01");
+    const [permis, option] = corps.items;
+    expect(permis.title).toBe("Permis de construire Complet");
+    expect(permis.description).toMatch(/Chemin du Bois, 76290 Montivilliers/);
+    expect(permis.description).toMatch(/AB 123/);
+    expect(permis.description).toMatch(/120 m²/);
+    expect(option.title).toBe("Rendu 3D supplémentaire");
+    expect(option.description).toBeUndefined();
+    expect(corps).not.toHaveProperty("header");
+  });
+
+  it("indique la facturation et les CGV", () => {
     const corps = corpsDevis("client-1", commande(), "2026-11-01");
-    expect(corps.header).toMatch(/Chemin du Bois, 76290 Montivilliers/);
-    expect(corps.header).toMatch(/AB 123/);
     expect(corps.footer).toMatch(/4 factures mensuelles/);
     expect(corps.terms_and_conditions).toMatch(/\/cgv/);
     expect(corps.terms_and_conditions.length).toBeLessThanOrEqual(3000);

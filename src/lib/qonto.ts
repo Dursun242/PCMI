@@ -1,5 +1,5 @@
 import { site } from "@/config/site";
-import { DELAI_RETRACTATION_JOURS, mentionFacturation, SIGNATURE, type Commande, type Coordonnees } from "@/lib/commande";
+import { DELAI_RETRACTATION_JOURS, formulesCommande, mentionFacturation, SIGNATURE, type Commande, type Coordonnees } from "@/lib/commande";
 
 /**
  * Appels à l'API Qonto pour la commande en ligne : création du client, du
@@ -98,20 +98,32 @@ function conditionsDevis(): string {
   ].join("\n");
 }
 
+/** Détail de la ligne du permis : le terrain et la surface, une information par ligne. */
+function detailTerrain(c: Coordonnees): string {
+  return [
+    `Terrain : ${c.terrainAdresse}, ${c.terrainCodePostal} ${c.terrainCommune}`,
+    c.referenceCadastrale ? `Référence cadastrale : ${c.referenceCadastrale}` : "",
+    `Surface de plancher prévue : ${c.surface} m²`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
 export function corpsDevis(clientId: string, commande: Commande, aujourdhui: string) {
   const { coordonnees: c, echeancier, panier } = commande;
-  const reference = c.referenceCadastrale ? `, référence cadastrale ${c.referenceCadastrale}` : "";
+  const formule = formulesCommande.find((f) => f.id === panier.formule)?.name ?? panier.formule;
   return {
     client_id: clientId,
     issue_date: aujourdhui,
     expiry_date: ajouterJours(aujourdhui, SIGNATURE.validiteJours),
     currency: "EUR",
-    header: `Permis de construire. Terrain : ${c.terrainAdresse}, ${c.terrainCodePostal} ${c.terrainCommune}${reference}. Surface de plancher prévue : ${c.surface} m².`,
     footer: mentionFacturation(echeancier),
     terms_and_conditions: conditionsDevis(),
     // Une ligne par prestation, quantité 1 au total de la ligne : le TTC de chaque ligne retombe ainsi au centime près.
-    items: panier.lignes.map((l) => ({
-      title: l.quantite > 1 ? `${l.quantite} × ${l.libelle}` : l.libelle,
+    // La première est le permis lui-même, avec le terrain en détail ; les suivantes, les options.
+    items: panier.lignes.map((l, i) => ({
+      title: i === 0 ? `Permis de construire ${formule}` : l.quantite > 1 ? `${l.quantite} × ${l.libelle}` : l.libelle,
+      ...(i === 0 ? { description: detailTerrain(c) } : {}),
       quantity: "1",
       unit_price: { value: ht(l.totalTTC), currency: "EUR" },
       vat_rate: String(TVA),
