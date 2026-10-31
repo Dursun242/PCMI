@@ -10,8 +10,8 @@ import Logo from "@/components/Logo";
 /**
  * Cadre réduit du tunnel de commande : un client qui s'engage n'a pas besoin
  * du menu, du bandeau promotionnel ni des dizaines de liens du pied de page,
- * qui sont autant de sorties. Restent le logo (retour à l'accueil), le
- * téléphone et les liens légaux obligatoires.
+ * qui sont autant de sorties. Restent le logo (retour à l'accueil), une
+ * phrase rassurante et les liens légaux obligatoires.
  */
 export function SelonTunnel({ tunnel, ailleurs }: { tunnel: ReactNode; ailleurs: ReactNode }) {
   return <>{estTunnelCommande(usePathname()) ? tunnel : ailleurs}</>;
@@ -24,19 +24,14 @@ export function EnTeteCommande() {
         <Link href="/" aria-label={`${site.name}, retour à l'accueil`}>
           <Logo priority compact />
         </Link>
-        {site.phone && (
-          <a
-            href={`tel:${site.phone.replace(/\s/g, "")}`}
-            aria-label={`Une question ? Appelez le ${site.phone}`}
-            className="shrink-0 text-right text-sm leading-tight text-ink-2"
-          >
-            {/* Sur téléphone, « Permis en ligne » occupe la place : un lien court suffit. */}
-            <strong className="text-ink underline decoration-brass underline-offset-2 sm:hidden">Appeler</strong>
-            <span className="hidden sm:inline">
-              Une question ? <strong className="numeral whitespace-nowrap text-ink">{site.phone}</strong>
-            </span>
-          </a>
-        )}
+        {/*
+         * Pas de téléphone ici : un appel interrompt la commande. On rassure
+         * plutôt sur ce qui fait hésiter. Masqué sur téléphone, où « Permis en
+         * ligne » occupe déjà la largeur.
+         */}
+        <p className="hidden shrink-0 text-right text-sm text-ink-2 sm:block">
+          <strong className="text-ink">Rien n&apos;est prélevé aujourd&apos;hui</strong>
+        </p>
       </div>
     </header>
   );
