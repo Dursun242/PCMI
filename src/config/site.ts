@@ -133,9 +133,9 @@ export const ATTESTATION_RE2020 = { name: "Attestation RE2020 au dépôt du perm
 const euros = (n: number) => `${n.toLocaleString("fr-FR")} € TTC`;
 
 /**
- * Offre saisonnière (variable `lancement`, nom affiché : `nom`) : prix réduits pour les
- * `places` premiers dossiers dont le devis est demandé au plus tard le `fin`.
- * - Mettre `actif: false` dès que les places sont prises ou la date passée :
+ * Offre saisonnière (variable `lancement`, nom affiché : `nom`) : prix réduits pour
+ * toute commande passée au plus tard le `fin`.
+ * - Mettre `actif: false` dès que la date est passée :
  *   les prix habituels reviennent seuls.
  * - Le prix barré est le prix habituel, pratiqué depuis l'ouverture du site
  *   (code de la consommation, art. L112-1-1 : prix de référence des 30 jours précédents).
@@ -143,7 +143,6 @@ const euros = (n: number) => `${n.toLocaleString("fr-FR")} € TTC`;
 export const lancement = {
   actif: true,
   nom: "Offre d'automne",
-  places: 10,
   fin: "2026-11-30",
   prix: { essentiel: 990, complet: 1490, premium: 2490 } as Record<PlanId, number>,
 };
@@ -176,7 +175,6 @@ export const express = {
     sinon: "en dehors de ces heures, le jour suivant dès 9 h",
   },
   premiersPlans: "72 h",
-  places: 10,
   fin: "2026-12-31",
   /** Départements ciblés par la campagne : affichés en haut de page, dans la description et le texte. */
   departements: ["Seine-Maritime", "Eure", "Calvados", "Manche", "Orne", "Somme"],

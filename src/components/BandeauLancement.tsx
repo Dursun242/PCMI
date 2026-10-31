@@ -18,11 +18,11 @@ export default function BandeauLancement() {
         {" · "}
         {/* Sur téléphone, la version courte tient sur deux lignes. */}
         <span className="sm:hidden">
-          {remiseUnique ? `−${formatEuro(remiseUnique)} par formule` : "prix réduits"}, devis avant le {jourMois}.{" "}
+          {remiseUnique ? `−${formatEuro(remiseUnique)} par formule` : "prix réduits"}, jusqu&apos;au {jourMois}.{" "}
         </span>
         <span className="hidden sm:inline">
-          {remiseUnique ? `${formatEuro(remiseUnique)} de moins sur chaque formule` : "prix réduits sur chaque formule"}, pour les{" "}
-          {lancement.places} premiers dossiers, devis demandé au plus tard le {formatFrDate(lancement.fin)}.{" "}
+          {remiseUnique ? `${formatEuro(remiseUnique)} de moins sur chaque formule` : "prix réduits sur chaque formule"}, pour toute commande passée au plus tard le{" "}
+          {formatFrDate(lancement.fin)}.{" "}
         </span>
         <Link href="/tarifs" className="underline decoration-brass-2 underline-offset-4 hover:text-brass-2">
           Voir les prix
