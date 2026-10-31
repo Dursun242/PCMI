@@ -129,29 +129,36 @@ function fauxFetch(reponses: Record<string, unknown>, appels: Appel[]): typeof f
 }
 
 describe("creerCommandeQonto", () => {
-  it("crée le client, le devis puis le mandat et renvoie la page de saisie de l'IBAN", async () => {
+  const LISTE = "GET /v2/clients?filter%5Bemail%5D=marie%40example.fr";
+  const reponsesCreation = {
+    "POST /v2/clients": { client: { id: "client-1" } },
+    "POST /v2/quotes": { quote: { id: "devis-1", number: "D-2026-012" } },
+    "POST /v2/sepa/direct_debit_mandates": { direct_debit_mandate: { id: "mandat-1", sign_url: "https://pay.qonto.com/mandates/1" } },
+  };
+  const trace = (appels: Appel[]) => appels.map((a) => `${a.method} ${a.url.replace(CONFIG.base, "")}`);
+
+  it("crée le client, le mandat puis le devis et renvoie la page de saisie de l'IBAN", async () => {
     const appels: Appel[] = [];
-    const f = fauxFetch(
-      {
-        "POST /v2/clients": { client: { id: "client-1" } },
-        "POST /v2/quotes": { quote: { id: "devis-1", number: "D-2026-012" } },
-        "POST /v2/sepa/direct_debit_mandates": { direct_debit_mandate: { id: "mandat-1", sign_url: "https://pay.qonto.com/mandates/1" } },
-      },
-      appels,
-    );
+    const f = fauxFetch({ [LISTE]: { clients: [] }, ...reponsesCreation }, appels);
     const r = await creerCommandeQonto(CONFIG, commande(), "2026-11-01", f);
     expect(r).toEqual({ clientId: "client-1", devisId: "devis-1", mandatId: "mandat-1", urlMandat: "https://pay.qonto.com/mandates/1" });
-    expect(appels.map((a) => `${a.method} ${a.url.replace(CONFIG.base, "")}`)).toEqual([
-      "POST /v2/clients",
-      "POST /v2/quotes",
-      "POST /v2/sepa/direct_debit_mandates",
-    ]);
-    expect((appels[1].body as { client_id: string }).client_id).toBe("client-1");
+    expect(trace(appels)).toEqual([LISTE, "POST /v2/clients", "POST /v2/sepa/direct_debit_mandates", "POST /v2/quotes"]);
+    expect((appels[3].body as { client_id: string }).client_id).toBe("client-1");
   });
 
-  it("signale l'étape qui échoue sans divulguer la réponse de Qonto", async () => {
-    const f = fauxFetch({ "POST /v2/clients": { client: { id: "client-1" } } }, []);
+  it("reprend le client qui existe déjà pour cet e-mail", async () => {
+    const appels: Appel[] = [];
+    const f = fauxFetch({ [LISTE]: { clients: [{ id: "client-existant", email: "Marie@Example.fr" }] }, ...reponsesCreation }, appels);
+    const r = await creerCommandeQonto(CONFIG, commande(), "2026-11-01", f);
+    expect(r.clientId).toBe("client-existant");
+    expect(trace(appels)).not.toContain("POST /v2/clients");
+  });
+
+  it("ne crée pas de devis si le mandat est refusé", async () => {
+    const appels: Appel[] = [];
+    const f = fauxFetch({ [LISTE]: { clients: [] }, "POST /v2/clients": { client: { id: "client-1" } } }, appels);
     await expect(creerCommandeQonto(CONFIG, commande(), "2026-11-01", f)).rejects.toThrow(ErreurQonto);
+    expect(trace(appels)).not.toContain("POST /v2/quotes");
   });
 });
 

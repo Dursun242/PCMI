@@ -132,19 +132,37 @@ export interface CommandeQonto {
   urlMandat: string;
 }
 
-/** Crée chez Qonto le client, son devis et son mandat SEPA (non signé). */
+/** Client existant pour cet e-mail (nouvel essai, deuxième commande) : réutilisé plutôt que dupliqué. */
+async function clientExistant(cfg: ConfigQonto, email: string, f: typeof fetch): Promise<string | null> {
+  const { clients } = await appel<{ clients: { id: string; email?: string }[] }>(
+    cfg,
+    "GET",
+    `/v2/clients?${new URLSearchParams({ "filter[email]": email })}`,
+    undefined,
+    f,
+  );
+  return clients.find((c) => c.email?.toLowerCase() === email.toLowerCase())?.id ?? null;
+}
+
+/**
+ * Crée chez Qonto le client (ou reprend celui qui existe), son mandat SEPA
+ * (non signé) puis son devis. Le devis vient en dernier : si le mandat est
+ * refusé, aucun numéro de devis n'est consommé.
+ */
 export async function creerCommandeQonto(cfg: ConfigQonto, commande: Commande, aujourdhui: string, f: typeof fetch = fetch): Promise<CommandeQonto> {
-  const { client } = await appel<{ client: { id: string } }>(cfg, "POST", "/v2/clients", corpsClient(commande.coordonnees), f);
-  const { quote } = await appel<{ quote: { id: string } }>(cfg, "POST", "/v2/quotes", corpsDevis(client.id, commande, aujourdhui), f);
+  const clientId =
+    (await clientExistant(cfg, commande.coordonnees.email, f)) ??
+    (await appel<{ client: { id: string } }>(cfg, "POST", "/v2/clients", corpsClient(commande.coordonnees), f)).client.id;
   const { direct_debit_mandate: mandat } = await appel<{ direct_debit_mandate: { id: string; sign_url?: string } }>(
     cfg,
     "POST",
     "/v2/sepa/direct_debit_mandates",
-    corpsMandat(client.id),
+    corpsMandat(clientId),
     f,
   );
   if (!mandat.sign_url) throw new ErreurQonto("Qonto : mandat créé sans page de signature", 502, "");
-  return { clientId: client.id, devisId: quote.id, mandatId: mandat.id, urlMandat: mandat.sign_url };
+  const { quote } = await appel<{ quote: { id: string } }>(cfg, "POST", "/v2/quotes", corpsDevis(clientId, commande, aujourdhui), f);
+  return { clientId, devisId: quote.id, mandatId: mandat.id, urlMandat: mandat.sign_url };
 }
 
 /** IBAN réduit à ses quatre derniers caractères : le seul affichage autorisé côté site. */
