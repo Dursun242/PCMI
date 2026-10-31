@@ -7,6 +7,7 @@ import { plans, type PlanId } from "@/config/site";
 import DevisRecap from "@/components/DevisRecap";
 import { SURFACE_MAX } from "@/lib/formulaFinder";
 import { surfaceBucket, trackEvent } from "@/lib/analytics";
+import { formuleDevisImmediat, PROJET_DEVIS_IMMEDIAT } from "@/lib/devisImmediat";
 import FileField, { appendFiles, filesReady, type PickedFile } from "@/components/FileField";
 
 type Status = "idle" | "sending" | "error";
@@ -40,10 +41,13 @@ export default function DevisForm({ presetFormule, presetSurface }: { presetForm
 
   const [plan, setPlan] = useState<PlanChoice>(initialPlan);
   const [surface, setSurface] = useState(initialSurface);
+  const [projet, setProjet] = useState(PROJET_DEVIS_IMMEDIAT);
   const [files, setFiles] = useState<PickedFile[]>([]);
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const started = useRef(false);
+  /* Maison neuve jusqu'à 149 m² avec une formule choisie : le prix fixe s'affiche dès l'envoi. */
+  const immediat = formuleDevisImmediat({ plan, surface, projet });
 
   /** Première saisie réelle : mesure l'entrée dans le formulaire, une seule fois. */
   function markStarted() {
@@ -83,9 +87,10 @@ export default function DevisForm({ presetFormule, presetSurface }: { presetForm
        * La confirmation vit sur sa propre URL, et la formule est dans le
        * CHEMIN : c'est ce qui rend la répartition des demandes lisible dans
        * Vercel Web Analytics, qui ne compte que des pages sur les plans
-       * gratuits.
+       * gratuits. Surface et type de projet suivent en paramètres pour que la
+       * confirmation affiche le devis immédiat (elle refait le contrôle).
        */
-      router.push(`/devis/merci/${plan}`);
+      router.push(immediat ? `/devis/merci/${plan}?${new URLSearchParams({ surface, projet })}` : `/devis/merci/${plan}`);
     } catch (err) {
       setStatus("error");
       setErrorMsg(err instanceof Error ? err.message : "Envoi impossible.");
@@ -159,7 +164,7 @@ export default function DevisForm({ presetFormule, presetSurface }: { presetForm
         <div className="grid gap-6 sm:grid-cols-2">
           <div className="field">
             <label htmlFor="projectType">Type de projet</label>
-            <select id="projectType" name="projectType" required defaultValue="maison-neuve">
+            <select id="projectType" name="projectType" required value={projet} onChange={(e) => setProjet(e.target.value)}>
               {projectTypes.map(([v, l]) => (
                 <option key={v} value={v}>{l}</option>
               ))}
@@ -242,7 +247,7 @@ export default function DevisForm({ presetFormule, presetSurface }: { presetForm
         )}
 
         <button type="submit" className="btn btn-ink" disabled={status === "sending"}>
-          {status === "sending" ? "Envoi en cours…" : "Recevoir mon devis sous 4 h ouvrées"}
+          {status === "sending" ? "Envoi en cours…" : immediat ? "Voir mon devis immédiat" : "Recevoir mon devis sous 4 h ouvrées"}
         </button>
         <p className="text-xs text-ink-2">Aucun engagement. Aucune revente de vos données.</p>
       </form>

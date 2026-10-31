@@ -24,7 +24,7 @@ const report = readJson("seo/report.json", { opportunities: [] });
 const existing = listArticles();
 const internalLinks = [
   "/tarifs (les trois formules à prix fixe)",
-  "/devis (demander un devis sous 48 h)",
+  "/devis (devis immédiat à prix fixe pour une maison neuve jusqu'à 149 m²)",
   "/permis-de-construire-maison (le guide complet du permis)",
   ...existing.map((a) => `${a.path} (${a.title})`),
 ].join("\n");

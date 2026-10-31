@@ -9,7 +9,7 @@ import { withSeo } from "@/lib/seo";
 export const metadata: Metadata = withSeo("/devis", {
   title: "Demander un devis de permis de construire",
   description:
-    "Décrivez votre projet de maison en 3 minutes et recevez sous 4 h ouvrées un devis chiffré à prix fixe pour votre permis de construire, partout en France.",
+    "Décrivez votre projet de maison en 3 minutes : le devis à prix fixe de votre permis de construire s'affiche immédiatement, partout en France.",
   robots: { index: true, follow: true },
 });
 
@@ -36,15 +36,15 @@ export default async function DevisPage({
       <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24 grid gap-16 lg:grid-cols-[1fr_1.35fr]">
         <div>
           <span className="rule" aria-hidden="true" />
-          <h1 className="display mt-7 text-5xl sm:text-6xl">Votre devis sous 4 h ouvrées.</h1>
+          <h1 className="display mt-7 text-5xl sm:text-6xl">Votre devis immédiat.</h1>
           <p className="lead mt-7 max-w-[42ch]">
-            Trois minutes suffisent. Nous consultons le règlement d&apos;urbanisme de votre commune avant de vous répondre, pour que le prix annoncé soit le bon.
+            Trois minutes suffisent : pour une maison neuve jusqu&apos;à 149&nbsp;m², le prix fixe de votre formule s&apos;affiche dès l&apos;envoi. Nous lisons ensuite le règlement d&apos;urbanisme de votre commune avant de lancer le dossier.
           </p>
           <ol className="mt-12 grid gap-7 border-t border-ink pt-8">
             {[
               ["Vous décrivez le projet", "Terrain, surface, stade d'avancement. Pas besoin de plans définitifs."],
-              ["Nous vérifions le PLU", "Zone, hauteurs, implantation, aspect, eaux pluviales, ABF."],
-              ["Vous recevez le devis", "Formule conseillée, prix fixe, délai de livraison et liste des documents à nous transmettre."],
+              ["Vous recevez le devis", "Immédiatement, à l'écran et par e-mail : formule, prix fixe, délai de livraison, règlement en 1, 4 ou 10 fois. Au-delà de 149 m², ou si vous nous laissez choisir la formule, sous 4 h ouvrées."],
+              ["Nous vérifions le PLU", "Zone, hauteurs, implantation, aspect, eaux pluviales, ABF, avant de lancer le dossier. S'il ne permet pas le permis, rien n'est facturé."],
             ].map(([t, d], i) => (
               <li key={t} className="flex gap-5">
                 <span className="numeral text-3xl text-bronze w-8 shrink-0">{String(i + 1).padStart(2, "0")}</span>

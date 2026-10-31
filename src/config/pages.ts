@@ -123,10 +123,10 @@ export const staticPages: StaticPage[] = [
   },
   {
     path: "/devis",
-    lastModified: "2026-09-19",
+    lastModified: "2026-10-31",
     changeFrequency: "monthly",
     priority: 0.8,
-    summary: "Formulaire de demande de devis : réponse chiffrée sous 4 h ouvrées après lecture du PLU de la commune.",
+    summary: "Formulaire de demande de devis : prix fixe affiché immédiatement pour une maison neuve jusqu'à 149 m² ; devis sur mesure sous 4 h ouvrées au-delà.",
   },
   {
     path: "/dossier",
