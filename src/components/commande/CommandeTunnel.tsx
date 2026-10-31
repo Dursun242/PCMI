@@ -162,7 +162,8 @@ export default function CommandeTunnel({ presetFormule, presetSurface }: { prese
 
   return (
     <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr]">
-      <div>
+      {/* min-w-0 : sans lui, un contenu large (le devis) élargirait la colonne au-delà de l'écran. */}
+      <div className="min-w-0">
         <ol className="flex flex-wrap gap-x-6 gap-y-2 border-b border-stone-2 pb-4 text-sm" aria-label="Étapes de la commande">
           {ETAPES.map((nom, i) => (
             <li
@@ -227,7 +228,7 @@ export default function CommandeTunnel({ presetFormule, presetSurface }: { prese
         </div>
       </div>
 
-      <div className="grid h-fit gap-6 lg:sticky lg:top-24">
+      <div className="grid h-fit min-w-0 gap-6 lg:sticky lg:top-24">
         {!reprise && <RecapPanier lignes={panier?.lignes ?? []} totalTTC={panier?.totalTTC ?? 0} echeance={choixEcheancier} afficherEcheance={etape >= 2} />}
         <AideCommande />
       </div>

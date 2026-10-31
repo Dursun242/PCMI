@@ -14,7 +14,7 @@ const pourcent = (taux: number) => `${Math.round(taux * 100)} %`;
  */
 export function DevisVisuel({ devis }: { devis: Devis }) {
   return (
-    <article className="border border-stone-2 bg-white p-6 text-[0.9rem] text-ink shadow-[0_20px_50px_-30px_rgba(0,0,0,0.35)] sm:p-10" aria-label={`Devis n° ${devis.numero}`}>
+    <article className="border border-stone-2 bg-white p-5 text-[0.9rem] text-ink shadow-[0_20px_50px_-30px_rgba(0,0,0,0.35)] sm:p-10" aria-label={`Devis n° ${devis.numero}`}>
       <header className="flex flex-wrap items-start justify-between gap-6">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Devis</h2>
@@ -27,7 +27,7 @@ export function DevisVisuel({ devis }: { devis: Devis }) {
             <dd>{formatFrDate(devis.dateExpiration)}</dd>
           </dl>
         </div>
-        <Image src="/brand/logo-black.png" alt="ID Maîtrise" width={2374} height={591} className="h-10 w-auto" />
+        <Image src="/brand/logo-black.png" alt="ID Maîtrise" width={2374} height={591} className="h-8 w-auto sm:h-10" />
       </header>
 
       <div className="mt-8 grid gap-6 text-xs sm:grid-cols-2">
@@ -53,14 +53,15 @@ export function DevisVisuel({ devis }: { devis: Devis }) {
         </address>
       </div>
 
-      <div className="mt-8 overflow-x-auto">
-        <table className="w-full min-w-[30rem] border-collapse text-xs">
+      {/* Sur téléphone, quantité, prix unitaire et TVA passent sous le libellé : le tableau tient dans l'écran. */}
+      <div className="mt-8">
+        <table className="w-full border-collapse text-xs">
           <thead>
             <tr className="bg-ink text-paper">
               <th scope="col" className="px-3 py-2 text-left">Description</th>
-              <th scope="col" className="px-3 py-2 text-right">Qté</th>
-              <th scope="col" className="px-3 py-2 text-right">Prix unitaire HT</th>
-              <th scope="col" className="px-3 py-2 text-right">TVA</th>
+              <th scope="col" className="hidden px-3 py-2 text-right sm:table-cell">Qté</th>
+              <th scope="col" className="hidden px-3 py-2 text-right sm:table-cell">Prix unitaire HT</th>
+              <th scope="col" className="hidden px-3 py-2 text-right sm:table-cell">TVA</th>
               <th scope="col" className="px-3 py-2 text-right">Total HT</th>
             </tr>
           </thead>
@@ -70,10 +71,13 @@ export function DevisVisuel({ devis }: { devis: Devis }) {
                 <td className="px-3 py-3">
                   <span className="font-bold">{l.titre}</span>
                   {l.description && <span className="mt-1 block whitespace-pre-line text-ink-2">{l.description}</span>}
+                  <span className="mt-1 block text-ink-2 sm:hidden">
+                    {l.quantite} × {euros(l.prixUnitaireHT)} HT · TVA {pourcent(l.tauxTVA)}
+                  </span>
                 </td>
-                <td className="px-3 py-3 text-right">{l.quantite}</td>
-                <td className="px-3 py-3 text-right whitespace-nowrap">{euros(l.prixUnitaireHT)}</td>
-                <td className="px-3 py-3 text-right">{pourcent(l.tauxTVA)}</td>
+                <td className="hidden px-3 py-3 text-right sm:table-cell">{l.quantite}</td>
+                <td className="hidden px-3 py-3 text-right whitespace-nowrap sm:table-cell">{euros(l.prixUnitaireHT)}</td>
+                <td className="hidden px-3 py-3 text-right sm:table-cell">{pourcent(l.tauxTVA)}</td>
                 <td className="px-3 py-3 text-right whitespace-nowrap">{euros(l.totalHT)}</td>
               </tr>
             ))}
