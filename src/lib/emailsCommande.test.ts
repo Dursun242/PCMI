@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { validerCommande } from "./commande";
-import { emailConfirmationClient, emailNouvelleCommande } from "./emailsCommande";
+import { emailConfirmationClient, emailIbanEnAttente, emailNouvelleCommande, emailReprise } from "./emailsCommande";
 
 const r = validerCommande({
   panier: { formule: "complet", options: {} },
@@ -52,5 +52,20 @@ describe("e-mails de la commande", () => {
     expect(e.html).toMatch(/16\/11\/2026/);
     expect(e.html).toContain("RUM-1");
     expect(e.html).toContain("1.2.3.4");
+  });
+
+  it("l'e-mail de reprise ramène à l'étape IBAN, sans rien prélever", () => {
+    const e = emailReprise(commande, "https://site.test/commander/reprendre?jeton=abc");
+    expect(e.subject).toMatch(/il ne manque que votre IBAN/);
+    expect(e.html).toContain('href="https://site.test/commander/reprendre?jeton=abc"');
+    expect(e.html).toMatch(/7 jours/);
+    expect(e.html).toMatch(/Rien n'est prélevé/);
+  });
+
+  it("l'alerte interne donne de quoi rappeler le client", () => {
+    const e = emailIbanEnAttente(commande);
+    expect(e.subject).toMatch(/Devis accepté, IBAN en attente — Marie Martin/);
+    expect(e.html).toContain("0612345678");
+    expect(e.html).toContain("Montivilliers");
   });
 });

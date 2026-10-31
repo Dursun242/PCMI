@@ -1,5 +1,6 @@
 import "server-only";
 import { validerCommande, type Commande } from "@/lib/commande";
+import { dejaFinalisee, marquerFinalisee } from "@/lib/commandesFinalisees";
 import { emailConfirmationClient, emailNouvelleCommande } from "@/lib/emailsCommande";
 import { signerJeton, verifierJeton, type DonneesCommande, type PreuveAcceptation } from "@/lib/jetonCommande";
 import { sendPair } from "@/lib/mailer";
@@ -57,6 +58,9 @@ export async function finaliserCommande(signable: CommandeSignable, cfg: ConfigQ
   if (!donnees.acceptation) return { ok: false, raison: "devis-non-accepte" };
   const [devis, mandat] = await Promise.all([lireDevis(cfg, donnees.devisId), lireMandat(cfg, donnees.mandatId)]);
   if (!mandat.signe) return { ok: false, raison: "mandat-non-signe" };
+  // Déjà confirmée (autre onglet, double clic) : rien à renvoyer.
+  if (await dejaFinalisee(donnees.mandatId)) return { ok: true };
+  const oterMarque = await marquerFinalisee(donnees.mandatId);
 
   // Le devis signé en PDF, joint aux deux e-mails ; à défaut, ils portent le lien vers le devis.
   const pdf = await pdfDevis(cfg, devis.pieceJointeId);
@@ -64,15 +68,21 @@ export async function finaliserCommande(signable: CommandeSignable, cfg: ConfigQ
   const jourSignature = jourParis(new Date(donnees.acceptation.instant));
   const interne = emailNouvelleCommande(commande, devis, mandat, donnees.acceptation, jourSignature, Boolean(pdf));
   const client = emailConfirmationClient(commande, devis, Boolean(pdf));
-  await sendPair({
-    subject: interne.subject,
-    internalHtml: interne.html,
-    replyTo: commande.coordonnees.email,
-    clientSubject: client.subject,
-    clientHtml: client.html,
-    attachments: pieces,
-    clientAttachments: pieces,
-  });
+  try {
+    await sendPair({
+      subject: interne.subject,
+      internalHtml: interne.html,
+      replyTo: commande.coordonnees.email,
+      clientSubject: client.subject,
+      clientHtml: client.html,
+      attachments: pieces,
+      clientAttachments: pieces,
+    });
+  } catch (err) {
+    // E-mails non partis : la commande doit pouvoir être confirmée au prochain essai.
+    await oterMarque().catch((e) => console.error("[commande] marque de finalisation non ôtée", e));
+    throw err;
+  }
   return { ok: true };
 }
 

@@ -19,6 +19,7 @@ import {
 import EtapeCoordonnees, { type ChampsCoordonnees } from "./EtapeCoordonnees";
 import EtapeDevis from "./EtapeDevis";
 import EtapeIban from "./EtapeIban";
+import { ecrireCommandeEnCours, lireCommandeEnCours, type CommandeEnCours } from "./commandeEnCours";
 
 /**
  * Le parcours complet, affiché dès le départ, comme sur un site marchand :
@@ -30,38 +31,10 @@ type Etape = 0 | 1 | 2 | 3 | 4;
 const INTRO_ETAPE: Record<Etape, string> = {
   0: "Choisissez votre formule et, si besoin, des options. Le total se met à jour au fur et à mesure.",
   1: "Ces informations rempliront votre devis et votre mandat de prélèvement : vous n'aurez pas à les saisir deux fois.",
-  2: "Choisissez en combien de fois vous réglez. Aucun prélèvement aujourd'hui : vous relirez ensuite votre devis, puis saisirez votre IBAN.",
+  2: "Choisissez en combien de fois vous réglez. Aucun prélèvement aujourd'hui. Préparez votre RIB : votre IBAN vous sera demandé à la dernière étape.",
   3: "Relisez votre devis et votre échéancier, puis signez-le en un clic.",
   4: "Dernière étape : votre IBAN, sur la page sécurisée de notre banque.",
 };
-
-/** Commande créée chez Qonto, pas encore confirmée : gardée le temps de l'onglet pour survivre à un rechargement. */
-interface CommandeEnCours {
-  jeton: string;
-  urlMandat: string;
-  /** Devis accepté : on reprend alors à l'IBAN, sinon au devis. */
-  accepte?: boolean;
-}
-const CLE_COMMANDE_EN_COURS = "pmi-commande-en-cours";
-
-function lireCommandeEnCours(): CommandeEnCours | null {
-  try {
-    const brut = sessionStorage.getItem(CLE_COMMANDE_EN_COURS);
-    const c = brut ? JSON.parse(brut) : null;
-    return c && typeof c.jeton === "string" && typeof c.urlMandat === "string" ? c : null;
-  } catch {
-    return null;
-  }
-}
-
-function ecrireCommandeEnCours(c: CommandeEnCours | null) {
-  try {
-    if (c) sessionStorage.setItem(CLE_COMMANDE_EN_COURS, JSON.stringify(c));
-    else sessionStorage.removeItem(CLE_COMMANDE_EN_COURS);
-  } catch {
-    /* stockage indisponible (navigation privée) : la commande reste suivie tant que la page est ouverte */
-  }
-}
 
 type Envoi = { etat: "repos" } | { etat: "envoi" } | { etat: "erreur"; message: string };
 
