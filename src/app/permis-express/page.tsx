@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import ExpressForm from "@/components/ExpressForm";
 import BandeauDefilant from "@/components/BandeauDefilant";
@@ -16,12 +17,16 @@ import type { ReferenceVitrine } from "@/lib/vitrine";
 
 /**
  * Page d'atterrissage de la campagne Google Ads « permis express »
- * (départements : `express.departements`). Une seule offre, une seule action :
- * appeler ou laisser ses coordonnées. Pas d'indexation : la page sert la
+ * (départements : `express.departements`). Une seule offre, une action
+ * principale : commander en ligne ; pour qui préfère en parler d'abord, le
+ * rappel dans l'heure et le téléphone restent. Pas d'indexation : la page sert la
  * publicité et ne doit pas concurrencer les pages du référencement naturel.
  *
  * Contenu commercial (prix, délais, ce qui est compris) : `express` dans src/config/site.ts.
  */
+/** Le panier, formule Express déjà choisie. */
+const COMMANDER_EXPRESS = "/commander?formule=express";
+
 /** « Seine-Maritime, Eure… ou Somme » : la liste des départements de la campagne, en français. */
 const zone = (mot: "et" | "ou") =>
   `${express.departements.slice(0, -1).join(", ")} ${mot} ${express.departements[express.departements.length - 1]}`;
@@ -35,7 +40,7 @@ export const metadata: Metadata = {
 
 /** Les quatre étapes d'un dossier Express, du premier appel au dépôt (la vidéo, peu regardée ici, reste sur l'accueil). */
 const etapes: [string, string, string][] = [
-  ["Jour 0", "Votre parcelle", `Vous nous envoyez le numéro de parcelle et vos documents ; nous vérifions le PLU. Rappel ${express.rappel.delai}, devis au téléphone.`],
+  ["Jour 0", "Votre commande", "Vous commandez en ligne, en 1, 4 ou 10 fois ; nous vérifions le PLU de votre parcelle avant de lancer le dossier. Rien n’est prélevé avant."],
   [`Sous ${express.premiersPlans}`, "Votre maison", "Une ou deux propositions, en plan et en façade, sur votre terrain."],
   ["À votre rythme", "Votre accord", "Vous validez, ou nous modifions. Rien n’est déposé sans votre accord."],
   [`En ${express.delai}`, "Le dépôt", "Pièces PCMI 1 à 8 et CERFA déposées en ligne ; vous recevez le récépissé pour votre notaire."],
@@ -60,11 +65,11 @@ function RelanceDevis({ titre, zone }: { titre: string; zone: "relance1" | "rela
         <div>
           <p className="display text-3xl leading-tight">{titre}</p>
           <p className="mt-2 text-ink-2">
-            Rappel {express.rappel.delai} ({express.rappel.horaires}), prix fixe de {formatEuro(express.prixTTC)} TTC. Sans engagement.
+            Prix fixe de {formatEuro(express.prixTTC)} TTC, en 1, 4 ou 10 fois sans frais. Rien n&apos;est prélevé avant la vérification de votre terrain.
           </p>
         </div>
         <div className="grid shrink-0 grid-cols-[3fr_2fr] gap-3 md:flex">
-          <a href="#devis" className="btn btn-ink whitespace-nowrap !px-3 sm:!px-7">Mon devis gratuit</a>
+          <Link href={COMMANDER_EXPRESS} className="btn btn-ink whitespace-nowrap !px-3 sm:!px-7">Commander l&apos;Express</Link>
           <TelLink source="express_relance" className="btn btn-line !px-3 sm:!px-7">
             Appeler
           </TelLink>
@@ -107,14 +112,14 @@ export default function PermisExpressPage() {
               <p className="mt-1 sm:mt-2 text-sm text-paper/70 max-w-[46ch]">
                 Maison jusqu&apos;à {express.surfaceMax} m² de surface de plancher, plain-pied ou à étage, dépôt en ligne
                 inclus. Réservée aux{" "}
-                {express.places} premiers dossiers, devis demandé avant le {formatFrDate(express.fin)}.
+                {express.places} premiers dossiers, commandés avant le {formatFrDate(express.fin)}.
               </p>
             </div>
 
             <div className="mt-6 sm:mt-10 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-4">
-              <a href="#devis" className="btn btn-paper !px-3 sm:!px-7 lg:!hidden">
-                Mon devis gratuit
-              </a>
+              <Link href={COMMANDER_EXPRESS} className="btn btn-paper !px-3 sm:!px-7">
+                Commander l&apos;Express
+              </Link>
               <TelLink source="express_hero" className="btn btn-line-light !px-3 sm:!px-7 lg:!border-transparent lg:!bg-paper lg:!text-ink lg:hover:!bg-brass-2">
                 <span className="sm:hidden">Appeler</span>
                 <span className="hidden sm:inline">Appeler le {site.phone}</span>
@@ -163,11 +168,18 @@ export default function PermisExpressPage() {
           </div>
 
           <div id="devis" data-section="formulaire" className="scroll-mt-24 bg-paper text-ink px-6 py-8 sm:px-9 sm:py-10 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)]">
-            <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">Gratuit · sans engagement</p>
-            <h2 className="display mt-3 text-4xl leading-tight">Rappelé {express.rappel.delai}, devis gratuit</h2>
+            <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">Commande en ligne</p>
+            <h2 className="display mt-3 text-4xl leading-tight">Votre permis Express, {formatEuro(express.prixTTC)} TTC</h2>
             <p className="mt-3 text-sm text-ink-2">
-              Quatre champs, une minute. Nous vous rappelons {express.rappel.delai} avec un prix fixe, {express.rappel.horaires} ;{" "}
-              {express.rappel.sinon}.
+              En 1, 4 ou 10 fois sans frais, par prélèvement. Rien n&apos;est prélevé avant que nous ayons vérifié que votre
+              terrain permet le permis.
+            </p>
+            <Link href={COMMANDER_EXPRESS} className="btn btn-ink mt-5 w-full">
+              Commander l&apos;Express
+            </Link>
+            <p className="mt-8 border-t border-stone-2 pt-6 display text-2xl leading-tight">Vous préférez en parler d&apos;abord ?</p>
+            <p className="mt-2 text-sm text-ink-2">
+              Laissez votre numéro : nous vous rappelons {express.rappel.delai}, {express.rappel.horaires} ; {express.rappel.sinon}.
             </p>
             {/* La preuve au moment d'hésiter : qui rappelle, et ce qu'en disent les clients. */}
             <a href={AVIS_GOOGLE} target="_blank" rel="noopener noreferrer" className="mt-5 flex items-center gap-3 border-y border-stone-2 py-3">
@@ -261,10 +273,10 @@ export default function PermisExpressPage() {
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-14 sm:py-20 flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="display text-4xl sm:text-5xl max-w-[20ch]">Votre date butoir approche ?</p>
-            <p className="mt-3 text-paper/75">Rappel {express.rappel.delai}, {express.rappel.horaires}. Dossier prêt en {express.delai}.</p>
+            <p className="mt-3 text-paper/75">Commande en ligne, en 1, 4 ou 10 fois. Dossier prêt en {express.delai}.</p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <a href="#devis" className="btn btn-paper">Mon devis gratuit</a>
+            <Link href={COMMANDER_EXPRESS} className="btn btn-paper">Commander l&apos;Express</Link>
             <TelLink source="express_bas" className="btn btn-line-light">
               {site.phone}
             </TelLink>

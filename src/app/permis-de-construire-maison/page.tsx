@@ -117,8 +117,8 @@ export default function GuidePage() {
           </ol>
           <div className="mt-10 border-t border-ink pt-5">
             <p className="display text-2xl">Vous voulez déléguer ?</p>
-            <p className="mt-1 text-sm text-ink-2">Devis chiffré sous 4 h ouvrées, prix fixe.</p>
-            <Link href="/devis" className="btn btn-ink mt-5 w-full !min-h-11">Demander un devis</Link>
+            <p className="mt-1 text-sm text-ink-2">Prix fixe, commande en ligne en 1, 4 ou 10 fois.</p>
+            <Link href="/commander" className="btn btn-ink mt-5 w-full !min-h-11">Commander mon permis</Link>
           </div>
         </aside>
 
@@ -203,8 +203,8 @@ export default function GuidePage() {
           <Cta
             title="Un dossier complet, sans oubli."
             text="Nous contrôlons chaque pièce PCMI contre le règlement de votre commune avant dépôt."
-            href="/devis"
-            label="Demander un devis"
+            href="/commander"
+            label="Commander mon permis"
             secondaryHref="/permis-de-construire-maison#pieces-complementaires"
             secondaryLabel="Voir les pièces complémentaires"
           />
@@ -259,10 +259,10 @@ export default function GuidePage() {
           </p>
 
           <Cta
-            title="Un devis avant de vous lancer."
-            text="Nous lisons le règlement de votre commune et vous répondons sous 4 h ouvrées, avec un prix fixe."
-            href="/devis"
-            label="Demander un devis"
+            title="Un prix fixe avant de vous lancer."
+            text="Commandez en ligne : nous lisons le règlement de votre commune avant de lancer le dossier, et rien n'est prélevé s'il ne permet pas le permis."
+            href="/commander"
+            label="Commander mon permis"
             secondaryHref="/tarifs"
             secondaryLabel="Voir les formules"
           />
@@ -355,8 +355,8 @@ export default function GuidePage() {
           <Cta
             title="Vous préférez qu'on s'en occupe ?"
             text="Dossier complet, dépôt et suivi jusqu'à l'accord, à prix fixe, partout en France."
-            href="/devis"
-            label="Demander un devis"
+            href="/commander"
+            label="Commander mon permis"
             secondaryHref="/tarifs"
             secondaryLabel="Voir les formules"
           />

@@ -178,11 +178,11 @@ export default function CalculateurTaxe() {
             )}
 
             <Link
-              href={`/devis?surface=${Math.round(saisie.surfaceTaxable)}`}
+              href={`/commander?surface=${Math.round(saisie.surfaceTaxable)}`}
               className="btn btn-ink mt-8 w-full sm:w-auto"
               onClick={() => trackEvent("cta_click", { source: "calculateur_taxe" })}
             >
-              Obtenir le prix de mon permis
+              Commander mon permis
             </Link>
             <p className="mt-4 text-sm text-ink-2">
               Estimation indicative : le montant définitif est calculé par l&apos;administration fiscale à partir de votre

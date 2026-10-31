@@ -88,7 +88,7 @@ export default function NormandiePage() {
             à notre bureau du Havre ou en visio, déplacement possible dans toute la région.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
-            <TrackedLink href="/devis" source="normandie" className="btn btn-ink">Demander un devis</TrackedLink>
+            <TrackedLink href="/commander" source="normandie" className="btn btn-ink">Commander mon permis</TrackedLink>
             <Link href="/tarifs" className="btn btn-line">Voir les formules</Link>
           </div>
         </div>
@@ -211,7 +211,7 @@ export default function NormandiePage() {
       <section className="mx-auto max-w-7xl px-5 sm:px-8 pb-8">
         <Cta
           title="Un terrain en Normandie ?"
-          text="Envoyez l'adresse ou la référence cadastrale : nous lisons le règlement applicable et vous répondons sous 4 h ouvrées avec un prix fixe."
+          text="Commandez en ligne à prix fixe, en 1, 4 ou 10 fois : nous lisons le règlement applicable à votre terrain avant de lancer le dossier."
           source="normandie_bas"
           secondaryHref="/plan-de-masse"
           secondaryLabel="J'ai déjà un plan"

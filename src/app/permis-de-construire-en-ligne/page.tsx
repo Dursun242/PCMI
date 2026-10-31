@@ -16,7 +16,7 @@ import { withSeo } from "@/lib/seo";
  */
 export const metadata: Metadata = withSeo("/permis-de-construire-en-ligne", {
   title: "Permis de construire en ligne : délai, démarches et prix",
-  description: `Permis de construire de maison en ligne : devis sous 4 h ouvrées, dossier PCMI en ${plans[0].delayWorkingDays.replace(" jours ouvrés", "")} à ${plans[plans.length - 1].delayWorkingDays}, dépôt dématérialisé, prix fixe dès ${formatEuro(plans[0].priceTTC)} TTC.`,
+  description: `Permis de construire de maison en ligne : commande en 1, 4 ou 10 fois, dossier PCMI en ${plans[0].delayWorkingDays.replace(" jours ouvrés", "")} à ${plans[plans.length - 1].delayWorkingDays}, dépôt dématérialisé, prix fixe dès ${formatEuro(plans[0].priceTTC)} TTC.`,
 });
 
 const optionDp = options.find((o) => o.name.startsWith("Déclaration préalable"));
@@ -24,9 +24,9 @@ const complet = plans.find((p) => p.id === "complet") ?? plans[1];
 
 const etapes = [
   {
-    titre: "Vous décrivez votre projet",
+    titre: "Vous commandez en ligne",
     texte:
-      "Adresse du terrain, surface envisagée, plan du constructeur, croquis ou simples photos : le formulaire prend 3 minutes. Vous recevez un devis à prix fixe sous 4 h ouvrées.",
+      "Formule, adresse du terrain et surface envisagée : la commande prend quelques minutes, avec un règlement en 1, 4 ou 10 fois par prélèvement. Rien n'est prélevé avant notre vérification du terrain.",
   },
   {
     titre: "Nous vérifions le PLU",
@@ -69,8 +69,8 @@ const faqEnLigne = [
   {
     q: "Mon projet est une extension ou un garage : est-ce un permis ?",
     a: optionDp
-      ? `Pas forcément : en dessous de certains seuils, une déclaration préalable suffit. Nous vous le disons au devis et proposons la déclaration préalable à ${formatEuro(optionDp.priceTTC)} TTC à la place du permis.`
-      : "Pas forcément : en dessous de certains seuils, une déclaration préalable suffit. Nous vous le disons au devis.",
+      ? `Pas forcément : en dessous de certains seuils, une déclaration préalable suffit. Nous vous le disons en vérifiant votre terrain et proposons la déclaration préalable à ${formatEuro(optionDp.priceTTC)} TTC à la place du permis.`
+      : "Pas forcément : en dessous de certains seuils, une déclaration préalable suffit. Nous vous le disons en vérifiant votre terrain.",
   },
   {
     q: "Ma maison dépasse 150 m² : pouvez-vous quand même faire le permis ?",
@@ -126,13 +126,13 @@ export default function PermisEnLignePage() {
               <dt className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">Démarche</dt>
               <dd className="mt-3">
                 <span className="display text-3xl">5 étapes</span>
-                <span className="mt-2 block text-sm text-paper/70">du devis sous 4 h ouvrées à l&apos;arrêté de permis.</span>
+                <span className="mt-2 block text-sm text-paper/70">de la commande en ligne à l&apos;arrêté de permis.</span>
               </dd>
             </div>
           </dl>
 
           <div className="mt-10 flex flex-wrap gap-3">
-            <TrackedLink href="/devis" source="en_ligne_hero" className="btn btn-paper">Demander un devis</TrackedLink>
+            <TrackedLink href="/commander" source="en_ligne_hero" className="btn btn-paper">Commander mon permis</TrackedLink>
             <Link href="/tarifs" className="btn btn-line-light">Voir les formules</Link>
           </div>
         </div>
@@ -210,10 +210,10 @@ export default function PermisEnLignePage() {
         </p>
 
         <Cta
-          title="Votre prix exact sous 4 h ouvrées."
-          text="Décrivez votre projet en 3 minutes : nous lisons le règlement de votre commune et vous répondons avec un prix fixe."
-          href="/devis"
-          label="Demander un devis"
+          title="Un prix fixe, réglé en 1, 4 ou 10 fois."
+          text="Choisissez votre formule et commandez en ligne : nous lisons le règlement de votre commune avant de lancer le dossier."
+          href="/commander"
+          label="Commander mon permis"
           secondaryHref="/tarifs"
           secondaryLabel="Comparer les formules"
           source="en_ligne_prix"
@@ -248,9 +248,9 @@ export default function PermisEnLignePage() {
 
         <Cta
           title="Prêt à lancer votre permis ?"
-          text="Devis à prix fixe sous 4 h ouvrées, dossier monté et déposé en ligne, partout en France."
-          href="/devis"
-          label="Demander un devis"
+          text="Commande en ligne à prix fixe, en 1, 4 ou 10 fois sans frais, dossier monté et déposé en ligne, partout en France."
+          href="/commander"
+          label="Commander mon permis"
           source="en_ligne_bas"
         />
       </article>

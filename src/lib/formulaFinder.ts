@@ -44,12 +44,14 @@ function planName(id: PlanId) {
   return plans.find((p) => p.id === id)?.name ?? id;
 }
 
+/** Une formule recommandée se commande en ligne ; le sur-mesure passe par le devis. */
 function devisHref(planId: PlanId | null, surface: number | null) {
   const params = new URLSearchParams();
   if (planId) params.set("formule", planId);
   if (surface !== null) params.set("surface", String(surface));
   const qs = params.toString();
-  return qs ? `/devis?${qs}` : "/devis";
+  const chemin = planId ? "/commander" : "/devis";
+  return qs ? `${chemin}?${qs}` : chemin;
 }
 
 /**

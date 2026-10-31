@@ -14,7 +14,7 @@ describe("recommend", () => {
   it("recommande Essentiel sur un terrain simple sans besoin de rendus", () => {
     const r = recommend(base);
     expect(r?.planId).toBe("essentiel");
-    expect(r?.href).toBe("/devis?formule=essentiel&surface=110");
+    expect(r?.href).toBe("/commander?formule=essentiel&surface=110");
     expect(r?.rationale).toHaveLength(2);
   });
 
@@ -33,7 +33,7 @@ describe("recommend", () => {
   it("recommande Premium quand le terrain est contraint et les rendus nécessaires", () => {
     const r = recommend(a({ contraintes: "oui", rendus3dEtRe2020: true }));
     expect(r?.planId).toBe("premium");
-    expect(r?.href).toBe("/devis?formule=premium&surface=110");
+    expect(r?.href).toBe("/commander?formule=premium&surface=110");
   });
 
   it("bascule sur devis au-delà de la limite des formules", () => {

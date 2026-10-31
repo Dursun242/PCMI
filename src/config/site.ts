@@ -252,13 +252,14 @@ export const plans: Plan[] = plansHabituels.map((p) =>
   lancement.actif ? { ...p, priceTTC: lancement.prix[p.id], regularPriceTTC: p.priceTTC } : p,
 );
 
+/** `id` : identifiant stable lu par la commande en ligne (src/lib/commande.ts), à ne pas renommer. */
 export const options = [
-  { name: "Permis modificatif", priceTTC: 830, note: "Si le projet évolue après l'accord." },
-  { name: "Déclaration préalable (DP) à la place du PC", priceTTC: 1070, note: "Extension, garage, abri, clôture, piscine." },
-  { name: "Rendu 3D supplémentaire", priceTTC: 230, note: "Par vue." },
-  { name: ATTESTATION_RE2020.name, priceTTC: ATTESTATION_RE2020.priceTTC, note: "En option de la formule Essentiel, ou seule si vous avez déjà votre dossier." },
-  { name: "Étude eaux pluviales", priceTTC: 710, note: "Dimensionnement d'infiltration / rétention." },
-];
+  { id: "permis-modificatif", name: "Permis modificatif", priceTTC: 830, note: "Si le projet évolue après l'accord." },
+  { id: "declaration-prealable", name: "Déclaration préalable (DP) à la place du PC", priceTTC: 1070, note: "Extension, garage, abri, clôture, piscine." },
+  { id: "rendu-3d", name: "Rendu 3D supplémentaire", priceTTC: 230, note: "Par vue." },
+  { id: "attestation-re2020", name: ATTESTATION_RE2020.name, priceTTC: ATTESTATION_RE2020.priceTTC, note: "En option de la formule Essentiel, ou seule si vous avez déjà votre dossier." },
+  { id: "eaux-pluviales", name: "Étude eaux pluviales", priceTTC: 710, note: "Dimensionnement d'infiltration / rétention." },
+] as const;
 
 /**
  * Plans d'exécution (phase EXE) : la suite naturelle du permis.

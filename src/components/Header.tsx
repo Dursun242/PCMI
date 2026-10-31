@@ -71,8 +71,8 @@ export default function Header() {
   }, []);
 
   const fermer = () => setOpen(false);
-  // Sur la page de campagne, « Demander un devis » mène à son formulaire Express plutôt qu'au devis général.
-  const lienDevis = usePathname() === "/permis-express" ? "#devis" : "/devis";
+  // Sur la page de campagne, « Commander » ouvre le panier avec la formule Express déjà choisie.
+  const lienCommande = usePathname() === "/permis-express" ? "/commander?formule=express" : "/commander";
 
   return (
     <>
@@ -88,9 +88,9 @@ export default function Header() {
                 {n.label}
               </Link>
             ))}
-            <TrackedLink href={lienDevis} source="header" className="btn btn-ink !min-h-11 whitespace-nowrap">
-              <span className="xl:hidden">Devis</span>
-              <span className="hidden xl:inline">Demander un devis</span>
+            <TrackedLink href={lienCommande} source="header" className="btn btn-ink !min-h-11 whitespace-nowrap">
+              <span className="xl:hidden">Commander</span>
+              <span className="hidden xl:inline">Commander mon permis</span>
             </TrackedLink>
           </nav>
 
@@ -130,13 +130,13 @@ export default function Header() {
             </Link>
           ))}
           <TrackedLink
-            href={lienDevis}
+            href={lienCommande}
             source="menu_mobile"
             onClickCapture={fermer}
             className="menu-item btn btn-ink mt-3"
             style={{ "--i": nav.length } as React.CSSProperties}
           >
-            Demander un devis
+            Commander mon permis
           </TrackedLink>
         </nav>
       </header>

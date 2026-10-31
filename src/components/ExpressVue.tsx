@@ -32,7 +32,15 @@ function clic(cible: EventTarget | null): string | null {
   const zone = lien?.closest<HTMLElement>("[data-zone]")?.dataset.zone;
   if (!lien || !zone) return null;
   const href = lien.getAttribute("href") ?? "";
-  const action = href.startsWith("tel:") ? "appel" : href.includes("wa.me") ? "whatsapp" : href.endsWith("#devis") ? "devis" : null;
+  const action = href.startsWith("tel:")
+    ? "appel"
+    : href.includes("wa.me")
+      ? "whatsapp"
+      : href.endsWith("#devis")
+        ? "devis"
+        : href.startsWith("/commander")
+          ? "commande"
+          : null;
   return action && `${zone}-${action}`;
 }
 
