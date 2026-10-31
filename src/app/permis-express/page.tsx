@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import ExpressForm from "@/components/ExpressForm";
+import ExpressPiecesDossier from "@/components/ExpressPiecesDossier";
 import BandeauDefilant from "@/components/BandeauDefilant";
 import ExpressBarre from "@/components/ExpressBarre";
 import ExpressConfiance, { AVIS_GOOGLE, NOTE_GOOGLE } from "@/components/ExpressConfiance";
@@ -115,6 +116,7 @@ export default function PermisExpressPage() {
                 Maison jusqu&apos;à {express.surfaceMax} m² de surface de plancher, plain-pied ou à étage, dépôt en ligne
                 inclus. Offre valable pour toute commande passée avant le {formatFrDate(express.fin)}.
               </p>
+              <ExpressPiecesDossier />
             </div>
 
             <div className="mt-6 sm:mt-10 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-4">
