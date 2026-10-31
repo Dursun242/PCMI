@@ -20,6 +20,8 @@ import EtapeCoordonnees, { type ChampsCoordonnees } from "./EtapeCoordonnees";
 import EtapeDevis from "./EtapeDevis";
 import EtapeIban from "./EtapeIban";
 import { ecrireCommandeEnCours, lireCommandeEnCours, type CommandeEnCours } from "./commandeEnCours";
+import { suivreEtape } from "./suiviTunnel";
+import { visiteAds } from "@/lib/suiviClient";
 
 /**
  * Le parcours complet, affiché dès le départ, comme sur un site marchand :
@@ -74,6 +76,20 @@ export default function CommandeTunnel({ presetFormule, presetSurface }: { prese
     }
   }, []);
 
+  // Compteur de l'espace admin : panier, coordonnées et règlement vus (le serveur compte la suite).
+  useEffect(() => {
+    if (reprise) return;
+    const etapeVue = ({ 0: "panier", 1: "coordonnees", 2: "reglement" } as const)[etape as 0 | 1 | 2];
+    if (etapeVue) suivreEtape(etapeVue, formule, etape === 2 ? nombre : undefined);
+    // Seul le changement d'étape compte : changer de formule sur place n'est pas une nouvelle étape.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [etape, reprise]);
+
+  function changerCoordonnees(valeurs: ChampsCoordonnees) {
+    suivreEtape("formulaire", formule);
+    setCoordonnees(valeurs);
+  }
+
   function devisAccepte(jeton: string) {
     if (!enCours) return;
     const c: CommandeEnCours = { ...enCours, jeton, accepte: true };
@@ -117,6 +133,7 @@ export default function CommandeTunnel({ presetFormule, presetSurface }: { prese
           panier: { formule, options: optionsValides },
           coordonnees,
           echeances: choixEcheancier.nombre,
+          ads: visiteAds(),
           website: "",
         }),
       });
@@ -157,7 +174,7 @@ export default function CommandeTunnel({ presetFormule, presetSurface }: { prese
           {etape === 1 && (
             <EtapeCoordonnees
               valeurs={coordonnees}
-              onChange={setCoordonnees}
+              onChange={changerCoordonnees}
               surfaceMax={formulesCommande.find((f) => f.id === formule)?.surfaceMax}
             />
           )}

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { commandeDuJeton, finaliserCommande } from "@/lib/commandeServeur";
 import { ipOf, rateLimited } from "@/lib/mailer";
 import { ouvrirQonto } from "@/lib/qontoConnexion";
+import { suivreCommande } from "@/lib/suiviCommandeStore";
 
 export const runtime = "nodejs";
 
@@ -27,6 +28,8 @@ export async function POST(req: Request) {
       const error = r.raison === "devis-non-accepte" ? "Merci d'accepter d'abord votre devis." : "Votre mandat de prélèvement n'est pas encore validé.";
       return NextResponse.json({ ok: false, error }, { status: 409 });
     }
+    const d = signable.donnees;
+    if (r.premiere) await suivreCommande(req, "signee", { formule: d.selection.formule, echeances: d.echeances, ads: d.ads });
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[commande/finaliser] commande non finalisée", err);

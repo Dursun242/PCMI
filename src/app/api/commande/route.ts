@@ -6,6 +6,7 @@ import { creerCommandeQonto, ErreurQonto } from "@/lib/qonto";
 import { ouvrirQonto } from "@/lib/qontoConnexion";
 import { ErreurConnexionQonto } from "@/lib/qontoOAuth";
 import { jourParis } from "@/lib/suivi";
+import { suivreCommande } from "@/lib/suiviCommandeStore";
 
 export const runtime = "nodejs";
 
@@ -37,13 +38,17 @@ export async function POST(req: Request) {
 
   const resultat = validerCommande(body);
   if (!resultat.ok) return NextResponse.json({ ok: false, error: resultat.erreur }, { status: 400 });
+  const ads = (body as { ads?: unknown }).ads === true;
+  const detail = { formule: resultat.commande.panier.formule, echeances: resultat.commande.echeancier.nombre, ads };
 
   try {
     const cfg = await ouvrirQonto();
     const qonto = await creerCommandeQonto(cfg, resultat.commande, jourParis(new Date()));
-    const jeton = jetonPour(resultat.commande, qonto, optionsRetenues((body as { panier?: unknown }).panier));
+    const jeton = jetonPour(resultat.commande, qonto, optionsRetenues((body as { panier?: unknown }).panier), ads);
+    await suivreCommande(req, "devis", detail);
     return NextResponse.json({ ok: true, urlMandat: qonto.urlMandat, jeton });
   } catch (err) {
+    await suivreCommande(req, "erreur", detail);
     // Connexion Qonto absente ou expirée : l'administrateur est déjà prévenu par e-mail (ouvrirQonto).
     if (err instanceof ErreurConnexionQonto) {
       return NextResponse.json({ ok: false, error: "Le règlement en ligne est momentanément indisponible. Réessayez plus tard." }, { status: 503 });

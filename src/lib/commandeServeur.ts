@@ -15,7 +15,7 @@ import { jourParis } from "@/lib/suivi";
 const secret = () => process.env.QONTO_CLIENT_SECRET ?? process.env.QONTO_SECRET_KEY ?? "";
 
 /** Jeton à placer dans le lien de signature, une fois la commande créée chez Qonto. */
-export function jetonPour(commande: Commande, qonto: CommandeQonto, options: Record<string, number>): string {
+export function jetonPour(commande: Commande, qonto: CommandeQonto, options: Record<string, number>, ads = false): string {
   const { surface, ...coordonnees } = commande.coordonnees;
   const donnees: DonneesCommande = {
     clientId: qonto.clientId,
@@ -24,6 +24,7 @@ export function jetonPour(commande: Commande, qonto: CommandeQonto, options: Rec
     selection: { formule: commande.panier.formule, options },
     echeances: commande.echeancier.nombre,
     coordonnees: { ...coordonnees, surface: String(surface) },
+    ...(ads ? { ads: true } : {}),
   };
   return signerJeton(donnees, secret());
 }
@@ -46,7 +47,8 @@ export function jetonAccepte(donnees: DonneesCommande, acceptation: PreuveAccept
   return signerJeton({ ...donnees, acceptation }, secret());
 }
 
-export type ResultatFinalisation = { ok: true } | { ok: false; raison: "devis-non-accepte" | "mandat-non-signe" };
+/** `premiere` : faux si la commande était déjà confirmée (autre onglet, double clic). */
+export type ResultatFinalisation = { ok: true; premiere: boolean } | { ok: false; raison: "devis-non-accepte" | "mandat-non-signe" };
 
 /**
  * Finalise une commande dont le devis est accepté et le mandat signé : le
@@ -59,7 +61,7 @@ export async function finaliserCommande(signable: CommandeSignable, cfg: ConfigQ
   const [devis, mandat] = await Promise.all([lireDevis(cfg, donnees.devisId), lireMandat(cfg, donnees.mandatId)]);
   if (!mandat.signe) return { ok: false, raison: "mandat-non-signe" };
   // Déjà confirmée (autre onglet, double clic) : rien à renvoyer.
-  if (await dejaFinalisee(donnees.mandatId)) return { ok: true };
+  if (await dejaFinalisee(donnees.mandatId)) return { ok: true, premiere: false };
   const oterMarque = await marquerFinalisee(donnees.mandatId);
 
   // Le devis signé en PDF, joint aux deux e-mails ; à défaut, ils portent le lien vers le devis.
@@ -83,7 +85,7 @@ export async function finaliserCommande(signable: CommandeSignable, cfg: ConfigQ
     await oterMarque().catch((e) => console.error("[commande] marque de finalisation non ôtée", e));
     throw err;
   }
-  return { ok: true };
+  return { ok: true, premiere: true };
 }
 
 /** Options retenues par le panier, réduites aux quantités non nulles. */

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { commandeDuJeton, jetonAccepte } from "@/lib/commandeServeur";
 import { ipOf, rateLimited } from "@/lib/mailer";
+import { suivreCommande } from "@/lib/suiviCommandeStore";
 
 export const runtime = "nodejs";
 
@@ -35,5 +36,8 @@ export async function POST(req: Request) {
     navigateur: (req.headers.get("user-agent") ?? "inconnu").slice(0, LONGUEUR_MAX_NAVIGATEUR),
     executionAnticipee: body.executionAnticipee === true,
   });
+  const d = signable.donnees;
+  // Un devis déjà accepté (page rechargée) ne recompte pas.
+  if (!d.acceptation) await suivreCommande(req, "accepte", { formule: d.selection.formule, echeances: d.echeances, ads: d.ads });
   return NextResponse.json({ ok: true, jeton });
 }
