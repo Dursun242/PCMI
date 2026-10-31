@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { plans, site, whatsappUrl, type PlanId } from "@/config/site";
+import { plans, type PlanId } from "@/config/site";
 import { formatEuro } from "@/lib/format";
 import {
   calculerPanier,
@@ -283,9 +283,8 @@ function RecapPanier({ lignes, totalTTC, echeance, afficherEcheance }: RecapPani
   );
 }
 
-/** Toujours visible à côté du panier : ce qui rassure, et à qui parler en cas de doute. */
+/** Toujours visible à côté du panier : ce qui rassure, sans détourner de la commande. */
 function AideCommande() {
-  const whatsapp = whatsappUrl("Bonjour, j'ai une question sur ma commande de permis de construire.");
   return (
     <div className="grid gap-3 border-l-2 border-brass pl-5 text-sm text-ink-2">
       <p>
@@ -293,23 +292,6 @@ function AideCommande() {
         votre terrain permet le dépôt du permis.
       </p>
       <p>Vous pouvez vous rétracter pendant 14 jours après la signature, sans frais ni justification.</p>
-      {site.phone && (
-        <p>
-          Une question ? Appelez le{" "}
-          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="font-bold text-ink underline decoration-brass underline-offset-2">
-            {site.phone}
-          </a>
-          {whatsapp && (
-            <>
-              {" "}ou{" "}
-              <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="underline decoration-brass underline-offset-2">
-                écrivez-nous sur WhatsApp
-              </a>
-            </>
-          )}
-          .
-        </p>
-      )}
     </div>
   );
 }
