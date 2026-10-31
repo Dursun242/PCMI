@@ -65,7 +65,10 @@ export default function GoogleAds() {
       <Script id="gads-consent" strategy="afterInteractive">
         {CONSENT_DEFAULT}
       </Script>
-      <Script src={`https://www.googletagmanager.com/gtag/js?id=${GADS_ID}`} strategy="afterInteractive" />
+      {/* Bibliothèque Google (153 Ko, plus d’une demi-seconde de calcul sur téléphone) chargée une fois la page affichée : elle occupait le
+          téléphone pendant l'affichage. Les appels gtag() faits avant restent en file dans dataLayer
+          (fonction posée par gads-consent, chargé tout de suite) et partent à son arrivée. */}
+      <Script src={`https://www.googletagmanager.com/gtag/js?id=${GADS_ID}`} strategy="lazyOnload" />
       {banniere && (
         <div
           role="dialog"
