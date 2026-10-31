@@ -17,6 +17,17 @@ import { SURFACE_MAX } from "@/lib/formulaFinder";
 export const NOMBRES_ECHEANCES = [1, 4, 10] as const;
 export type NombreEcheances = (typeof NOMBRES_ECHEANCES)[number];
 
+/**
+ * Signature de la commande par e-mail : objet du message, durée de validité
+ * du lien et délai de relance. Lus par la page « Vérifiez vos e-mails » et
+ * par l'envoi du lien, pour que la promesse affichée soit celle tenue.
+ */
+export const SIGNATURE = {
+  objetEmail: "Confirmez votre commande de permis de construire",
+  validiteJours: 7,
+  relanceHeures: 48,
+} as const;
+
 export type OptionCommandeId = "rendu-3d" | "attestation-re2020" | "eaux-pluviales";
 
 export interface OptionCommande {

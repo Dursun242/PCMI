@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { plans, type PlanId } from "@/config/site";
+import { plans, site, whatsappUrl, type PlanId } from "@/config/site";
 import { formatEuro } from "@/lib/format";
 import {
   calculerPanier,
@@ -15,8 +15,19 @@ import {
 } from "@/lib/commande";
 import EtapeCoordonnees, { type ChampsCoordonnees } from "./EtapeCoordonnees";
 
-const ETAPES = ["Panier", "Coordonnées", "Règlement"] as const;
+/**
+ * Le parcours complet, affiché dès le départ : les trois étapes du site, puis
+ * la saisie de l'IBAN chez Qonto et la signature par e-mail. Le client sait
+ * ainsi où il en est et ce qui l'attend hors du site.
+ */
+const ETAPES = ["Panier", "Coordonnées", "Règlement", "IBAN", "Signature"] as const;
 type Etape = 0 | 1 | 2;
+
+const INTRO_ETAPE: Record<Etape, string> = {
+  0: "Choisissez votre formule et, si besoin, des options. Le total se met à jour au fur et à mesure.",
+  1: "Ces informations rempliront votre devis et votre mandat de prélèvement : vous n'aurez pas à les saisir deux fois.",
+  2: "Choisissez en combien de fois vous réglez. Aucun prélèvement aujourd'hui : il faudra encore saisir votre IBAN, puis signer votre commande par e-mail.",
+};
 
 type Envoi = { etat: "repos" } | { etat: "envoi" } | { etat: "erreur"; message: string };
 
@@ -86,13 +97,18 @@ export default function CommandeTunnel({ presetFormule }: { presetFormule?: stri
   return (
     <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr]">
       <div>
-        <ol className="flex gap-6 border-b border-stone-2 pb-4 text-sm" aria-label="Étapes de la commande">
+        <ol className="flex flex-wrap gap-x-6 gap-y-2 border-b border-stone-2 pb-4 text-sm" aria-label="Étapes de la commande">
           {ETAPES.map((nom, i) => (
-            <li key={nom} aria-current={i === etape ? "step" : undefined} className={i === etape ? "font-bold text-ink" : "text-ink-2"}>
-              <span className="numeral text-bronze">{String(i + 1).padStart(2, "0")}</span> {nom}
+            <li
+              key={nom}
+              aria-current={i === etape ? "step" : undefined}
+              className={i === etape ? "font-bold text-ink" : i < etape ? "text-ink" : "text-ink-3"}
+            >
+              <span className="numeral text-bronze">{i < etape ? "✓" : String(i + 1).padStart(2, "0")}</span> {nom}
             </li>
           ))}
         </ol>
+        <p className="mt-6 max-w-[60ch] text-ink-2">{INTRO_ETAPE[etape]}</p>
 
         <div className="mt-10">
           {etape === 0 && (
@@ -135,7 +151,10 @@ export default function CommandeTunnel({ presetFormule }: { presetFormule?: stri
         </div>
       </div>
 
-      <RecapPanier lignes={panier?.lignes ?? []} totalTTC={panier?.totalTTC ?? 0} echeance={choixEcheancier} afficherEcheance={etape === 2} />
+      <div className="grid h-fit gap-6 lg:sticky lg:top-24">
+        <RecapPanier lignes={panier?.lignes ?? []} totalTTC={panier?.totalTTC ?? 0} echeance={choixEcheancier} afficherEcheance={etape === 2} />
+        <AideCommande />
+      </div>
     </div>
   );
 }
@@ -241,7 +260,7 @@ interface RecapPanierProps {
 
 function RecapPanier({ lignes, totalTTC, echeance, afficherEcheance }: RecapPanierProps) {
   return (
-    <aside className="h-fit border border-ink bg-paper p-6 lg:sticky lg:top-24" aria-label="Récapitulatif de la commande">
+    <aside className="border border-ink bg-paper p-6" aria-label="Récapitulatif de la commande">
       <p className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-bronze">Votre commande</p>
       <ul className="mt-4 grid gap-2 text-sm">
         {lignes.map((l) => (
@@ -261,5 +280,36 @@ function RecapPanier({ lignes, totalTTC, echeance, afficherEcheance }: RecapPani
         </p>
       )}
     </aside>
+  );
+}
+
+/** Toujours visible à côté du panier : ce qui rassure, et à qui parler en cas de doute. */
+function AideCommande() {
+  const whatsapp = whatsappUrl("Bonjour, j'ai une question sur ma commande de permis de construire.");
+  return (
+    <div className="grid gap-3 border-l-2 border-brass pl-5 text-sm text-ink-2">
+      <p>
+        <strong className="text-ink">Rien n&apos;est prélevé aujourd&apos;hui.</strong> Nous vérifions d&apos;abord que
+        votre terrain permet le dépôt du permis.
+      </p>
+      <p>Vous pouvez vous rétracter pendant 14 jours après la signature, sans frais ni justification.</p>
+      {site.phone && (
+        <p>
+          Une question ? Appelez le{" "}
+          <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="font-bold text-ink underline decoration-brass underline-offset-2">
+            {site.phone}
+          </a>
+          {whatsapp && (
+            <>
+              {" "}ou{" "}
+              <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="underline decoration-brass underline-offset-2">
+                écrivez-nous sur WhatsApp
+              </a>
+            </>
+          )}
+          .
+        </p>
+      )}
+    </div>
   );
 }
