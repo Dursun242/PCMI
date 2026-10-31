@@ -5,6 +5,9 @@ import {
   echeancier,
   echeanciersPossibles,
   estTunnelCommande,
+  ficheFactureRecurrente,
+  mentionFacturation,
+  premiereFactureAuPlusTot,
   formatCentimes,
   optionsCommande,
   validerCommande,
@@ -200,5 +203,61 @@ describe("estTunnelCommande", () => {
     expect(estTunnelCommande("/")).toBe(false);
     expect(estTunnelCommande("/commanderie")).toBe(false);
     expect(estTunnelCommande("/devis")).toBe(false);
+  });
+});
+
+describe("mentionFacturation", () => {
+  it("décrit une facture unique", () => {
+    const m = mentionFacturation({ nombre: 1, montantCentimes: 199000 }).replace(/\s/g, " ");
+    expect(m).toMatch(/^Prix facturé en une facture de 1 990 € TTC, réglée par prélèvement SEPA/);
+  });
+
+  it("décrit des factures mensuelles et leur montant", () => {
+    const m = mentionFacturation({ nombre: 4, montantCentimes: 49750 }).replace(/\s/g, " ");
+    expect(m).toMatch(/^Prix facturé en 4 factures mensuelles de 497,50 € TTC, réglées par prélèvement SEPA/);
+    expect(m).toMatch(/délai de rétractation de 14 jours/);
+  });
+});
+
+describe("premiereFactureAuPlusTot", () => {
+  it("tombe le lendemain du 14e jour suivant la signature", () => {
+    expect(premiereFactureAuPlusTot("2026-11-01")).toBe("2026-11-16");
+  });
+
+  it("passe les fins de mois et d'année", () => {
+    expect(premiereFactureAuPlusTot("2026-12-20")).toBe("2027-01-04");
+    expect(premiereFactureAuPlusTot("2027-02-20")).toBe("2027-03-07");
+  });
+});
+
+describe("ficheFactureRecurrente", () => {
+  const commande = (echeances: number) => {
+    const r = validerCommande({ panier: { formule: "complet", options: {} }, coordonnees: coordonneesValides, echeances });
+    if (!r.ok) throw new Error(r.erreur);
+    return r.commande;
+  };
+  const valeur = (fiche: [string, string][], cle: string) => fiche.find(([k]) => k === cle)?.[1].replace(/\s/g, " ");
+
+  it("prépare une récurrence mensuelle pour un paiement en plusieurs fois", () => {
+    const fiche = ficheFactureRecurrente(commande(4), "2026-11-01", "D-2026-012");
+    expect(valeur(fiche, "Client")).toBe("Marie Martin");
+    expect(valeur(fiche, "Facturation")).toBe("Récurrente, mensuelle, 4 factures");
+    expect(valeur(fiche, "Montant de chaque facture")).toMatch(/TTC$/);
+    expect(valeur(fiche, "1re facture au plus tôt")).toBe("16/11/2026");
+    expect(valeur(fiche, "Libellé")).toBe("Permis de construire, formule Complet, devis D-2026-012");
+  });
+
+  it("cite les options dans le libellé", () => {
+    const r = validerCommande({ panier: { formule: "complet", options: { "rendu-3d": 2 } }, coordonnees: coordonneesValides, echeances: 10 });
+    if (!r.ok) throw new Error(r.erreur);
+    expect(valeur(ficheFactureRecurrente(r.commande, "2026-11-01"), "Libellé")).toBe(
+      "Permis de construire, formule Complet + 2 × Rendu 3D supplémentaire",
+    );
+  });
+
+  it("prépare une facture unique pour un paiement en une fois", () => {
+    const fiche = ficheFactureRecurrente(commande(1), "2026-11-01");
+    expect(valeur(fiche, "Facturation")).toBe("Facture unique");
+    expect(valeur(fiche, "Libellé")).toBe("Permis de construire, formule Complet");
   });
 });

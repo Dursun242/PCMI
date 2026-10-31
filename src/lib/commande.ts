@@ -214,3 +214,53 @@ export function validerCommande(input: unknown): ResultatCommande {
 
   return { ok: true, commande: { panier, coordonnees: coordonnees.coordonnees, echeancier: choix } };
 }
+
+/** Délai légal de rétractation (code de la consommation, art. L221-18), en jours calendaires. */
+export const DELAI_RETRACTATION_JOURS = 14;
+
+/**
+ * Phrase de facturation reprise au règlement, sur le devis et dans les CGV :
+ * chaque échéance est une facture, réglée par prélèvement sur le mandat signé.
+ */
+export function mentionFacturation(e: Echeancier): string {
+  const montant = `${formatCentimes(e.montantCentimes)} TTC`;
+  const factures =
+    e.nombre === 1
+      ? `une facture de ${montant}, réglée par prélèvement SEPA`
+      : `${e.nombre} factures mensuelles de ${montant}, réglées par prélèvement SEPA`;
+  const premiere = e.nombre === 1 ? "Elle est émise" : "La première est émise";
+  return `Prix facturé en ${factures}. ${premiere} après validation de votre projet et la fin du délai de rétractation de ${DELAI_RETRACTATION_JOURS} jours.`;
+}
+
+/**
+ * Premier jour où la première facture peut être prélevée : le délai de
+ * rétractation ne compte pas le jour de la signature et expire à la fin du
+ * 14e jour, d'où le 15e jour. Dates au format AAAA-MM-JJ.
+ */
+export function premiereFactureAuPlusTot(jourSignature: string): string {
+  const jour = new Date(`${jourSignature}T00:00:00Z`);
+  jour.setUTCDate(jour.getUTCDate() + DELAI_RETRACTATION_JOURS + 1);
+  return jour.toISOString().slice(0, 10);
+}
+
+const jourFr = (iso: string) => iso.split("-").reverse().join("/");
+
+/**
+ * Fiche à recopier dans Qonto pour lancer la facturation d'une commande
+ * signée : facture unique (1 fois) ou facture récurrente mensuelle.
+ */
+export function ficheFactureRecurrente(commande: Commande, jourSignature: string, numeroDevis?: string): [string, string][] {
+  const { coordonnees, echeancier, panier } = commande;
+  const formule = plans.find((p) => p.id === panier.formule)?.name ?? panier.formule;
+  const options = panier.lignes.slice(1).map((l) => (l.quantite > 1 ? `${l.quantite} × ${l.libelle}` : l.libelle));
+  const unique = echeancier.nombre === 1;
+  return [
+    ["Client", `${coordonnees.prenom} ${coordonnees.nom}`],
+    ["Facturation", unique ? "Facture unique" : `Récurrente, mensuelle, ${echeancier.nombre} factures`],
+    [unique ? "Montant de la facture" : "Montant de chaque facture", `${formatCentimes(echeancier.montantCentimes)} TTC`],
+    ["Total de la commande", `${formatCentimes(panier.totalTTC * 100)} TTC`],
+    ["1re facture au plus tôt", jourFr(premiereFactureAuPlusTot(jourSignature))],
+    ["Règlement", "Prélèvement SEPA, mandat déjà signé par le client"],
+    ["Libellé", `Permis de construire, formule ${formule}${options.map((o) => ` + ${o}`).join("")}${numeroDevis ? `, devis ${numeroDevis}` : ""}`],
+  ];
+}

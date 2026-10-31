@@ -8,6 +8,7 @@ import {
   calculerPanier,
   echeanciersPossibles,
   formatCentimes,
+  mentionFacturation,
   optionsCommande,
   validerCoordonnees,
   type NombreEcheances,
@@ -223,6 +224,7 @@ interface EtapeReglementProps {
 }
 
 function EtapeReglement({ echeanciers, choix, onChoix }: EtapeReglementProps) {
+  const choisi = echeanciers.find((e) => e.nombre === choix);
   return (
     <fieldset className="grid gap-3">
       <legend className="display mb-4 text-3xl">Règlement par prélèvement SEPA</legend>
@@ -238,9 +240,9 @@ function EtapeReglement({ echeanciers, choix, onChoix }: EtapeReglementProps) {
           </span>
         </label>
       ))}
+      {choisi && <p className="mt-2 border-l-2 border-brass pl-4 text-sm text-ink">{mentionFacturation(choisi)}</p>}
       <p className="mt-4 text-sm text-ink-2">
-        Rien n&apos;est prélevé à la commande. Nous vérifions d&apos;abord que votre terrain permet le dépôt du permis ;
-        le premier prélèvement n&apos;intervient qu&apos;après notre validation et la fin de votre délai de rétractation de 14 jours.
+        Rien n&apos;est prélevé à la commande : nous vérifions d&apos;abord que votre terrain permet le dépôt du permis.
       </p>
       <p className="text-sm text-ink-2">
         À l&apos;étape suivante, vous saisissez votre IBAN et validez le mandat SEPA sur la page sécurisée de notre banque,

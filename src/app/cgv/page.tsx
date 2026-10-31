@@ -8,13 +8,20 @@ import Link from "next/link";
 import { plans, options, site } from "@/config/site";
 import { legal, isTodo } from "@/lib/legal";
 import { formatEuro } from "@/lib/format";
+import { DELAI_RETRACTATION_JOURS, NOMBRES_ECHEANCES } from "@/lib/commande";
 import { withSeo } from "@/lib/seo";
 
 export const metadata: Metadata = withSeo("/cgv", {
   title: "Conditions générales de vente",
-  description: "Conditions générales de vente des prestations de dossier de permis de construire Permis by ID Maîtrise : formules, prix, acompte, délais, rétractation.",
+  description: "Conditions générales de vente des prestations de dossier de permis de construire Permis by ID Maîtrise : formules, prix, acompte, commande en ligne et prélèvement SEPA, délais, rétractation.",
   robots: { index: true, follow: true },
 });
+
+/** « 1, 4 ou 10 » : les nombres d'échéances proposés à la commande en ligne. */
+const echeancesProposees = `${NOMBRES_ECHEANCES.slice(0, -1).join(", ")} ou ${NOMBRES_ECHEANCES.at(-1)}`;
+
+/** Délai de pré-notification des prélèvements, convenu avec le client (règles SEPA). */
+const PRENOTIFICATION_JOURS_OUVRES = 2;
 
 export default function CgvPage() {
   return (
@@ -49,19 +56,31 @@ export default function CgvPage() {
       </ul>
       <p>Les prix sont exprimés toutes taxes comprises, TVA 20 % incluse, et n&apos;évoluent pas après acceptation du devis, hors ajout d&apos;options par le client.</p>
 
-      <h2>3. Devis et formation du contrat</h2>
+      <h2>3. Devis, commande en ligne et formation du contrat</h2>
       <p>
-        Toute prestation fait l&apos;objet d&apos;un devis écrit préalable, établi après lecture du règlement d&apos;urbanisme applicable au terrain du client. Le contrat est formé à la date d&apos;acceptation expresse du devis par le client (signature, réponse écrite d&apos;accord ou paiement de l&apos;acompte, selon le mode d&apos;acceptation proposé) et du versement de l&apos;acompte prévu à l&apos;article 4.
+        <strong>Commande sur devis.</strong> Toute prestation demandée par le formulaire de devis fait l&apos;objet d&apos;un devis écrit préalable, établi après lecture du règlement d&apos;urbanisme applicable au terrain du client. Le contrat est formé à la date d&apos;acceptation expresse du devis par le client (signature, réponse écrite d&apos;accord ou paiement de l&apos;acompte, selon le mode d&apos;acceptation proposé) et du versement de l&apos;acompte prévu à l&apos;article 4.
+      </p>
+      <p>
+        <strong>Commande en ligne.</strong> Le client peut aussi commander en ligne une formule à prix fixe et ses options. La commande comprend, dans l&apos;ordre : le choix de la formule, des options et du nombre d&apos;échéances ; la saisie de ses coordonnées et de l&apos;adresse du terrain ; la signature d&apos;un mandat de prélèvement SEPA, sur la page sécurisée de l&apos;établissement bancaire de {legal.raisonSociale} ; enfin la signature électronique du devis et des présentes CGV, depuis le lien envoyé par e-mail. Le contrat est formé à cette dernière signature, dont le client reçoit confirmation par e-mail avec le devis signé, les CGV et le formulaire de rétractation.
+      </p>
+      <p>
+        <strong>Validation de faisabilité.</strong> Après la signature, {legal.raisonSociale} vérifie, à la lecture du règlement d&apos;urbanisme applicable, que le permis peut être déposé pour le terrain et le projet décrits. Si ce n&apos;est pas le cas, {legal.raisonSociale} en informe le client et la commande est annulée sans frais : aucune facture n&apos;est émise, aucun prélèvement n&apos;est effectué et le mandat est annulé. Dans le cas contraire, {legal.raisonSociale} confirme au client le démarrage de la prestation.
       </p>
 
       <h2>4. Prix, acompte et paiement</h2>
       <p>
-        Le prix est payable de la façon suivante : un acompte de <strong>40 %</strong> du montant TTC est dû à la commande, le solde à la livraison du dossier prêt à déposer (formule Essentiel) ou selon l&apos;échéancier précisé au devis pour les formules Complet et Premium. Le paiement s&apos;effectue par virement ou carte bancaire. Une facture est émise par {legal.raisonSociale} à chaque règlement.
+        <strong>Commande sur devis.</strong> Le prix est payable de la façon suivante : un acompte de <strong>40 %</strong> du montant TTC est dû à la commande, le solde à la livraison du dossier prêt à déposer (formule Essentiel) ou selon l&apos;échéancier précisé au devis pour les formules Complet et Premium. Le paiement s&apos;effectue par virement ou carte bancaire. Une facture est émise par {legal.raisonSociale} à chaque règlement.
+      </p>
+      <p>
+        <strong>Commande en ligne.</strong> Le prix est réglé par prélèvement SEPA, en {echeancesProposees} fois sans frais selon le choix fait par le client lors de la commande. Chaque échéance fait l&apos;objet d&apos;une facture, d&apos;un montant égal au prix TTC divisé par le nombre d&apos;échéances ; en cas de paiement en plusieurs fois, les factures sont mensuelles. La première facture est émise après la validation de faisabilité prévue à l&apos;article 3, et au plus tôt le lendemain de l&apos;expiration du délai de rétractation de {DELAI_RETRACTATION_JOURS} jours.
+      </p>
+      <p>
+        Le client est informé du montant et de la date de chaque prélèvement par l&apos;envoi de la facture correspondante ; il accepte que ce délai de pré-notification soit ramené à {PRENOTIFICATION_JOURS_OUVRES} jours ouvrés avant l&apos;échéance. En cas de rejet d&apos;un prélèvement, le client en est informé et s&apos;engage à régulariser le paiement dans les meilleurs délais. Ces modalités s&apos;appliquent sans préjudice des droits que le client tient de la réglementation des prélèvements SEPA auprès de sa banque.
       </p>
 
       <h2>5. Délais</h2>
       <p>
-        Les délais de livraison indiqués par formule (10, 15 ou 20 jours ouvrés selon la formule choisie) courent à compter de la réception, par {legal.raisonSociale}, de l&apos;ensemble des documents et informations nécessaires visés à l&apos;article 6, et du versement de l&apos;acompte. Ces délais sont donnés à titre indicatif et peuvent être ajustés en fonction de la complexité du dossier ou du temps de réponse du client aux demandes de précisions ; le client en est informé sans délai.
+        Les délais de livraison indiqués par formule (10, 15 ou 20 jours ouvrés selon la formule choisie) courent à compter de la réception, par {legal.raisonSociale}, de l&apos;ensemble des documents et informations nécessaires visés à l&apos;article 6, et du versement de l&apos;acompte ou, pour une commande en ligne, de la confirmation du démarrage prévue à l&apos;article 3. Ces délais sont donnés à titre indicatif et peuvent être ajustés en fonction de la complexité du dossier ou du temps de réponse du client aux demandes de précisions ; le client en est informé sans délai.
       </p>
 
       <h2>6. Obligations du client</h2>
@@ -82,7 +101,7 @@ export default function CgvPage() {
         Pour exercer ce droit, le client notifie sa décision par une déclaration dénuée d&apos;ambiguïté (courrier ou message via le <Link href="/contact">formulaire de contact</Link>), le cas échéant au moyen du formulaire type ci-dessous.
       </p>
       <p>
-        <strong>Exécution avant la fin du délai de rétractation.</strong> Le client peut demander expressément, dès la commande, que la prestation commence avant l&apos;expiration du délai de rétractation de 14 jours (case dédiée lors de la demande de devis). Dans ce cas, conformément à l&apos;article L. 221-25 du Code de la consommation :
+        <strong>Exécution avant la fin du délai de rétractation.</strong> Le client peut demander expressément, dès la commande, que la prestation commence avant l&apos;expiration du délai de rétractation de 14 jours (case dédiée lors de la demande de devis ou de la signature de la commande en ligne). Dans ce cas, conformément à l&apos;article L. 221-25 du Code de la consommation :
       </p>
       <ul>
         <li>si le client se rétracte alors que la prestation n&apos;est pas encore intégralement exécutée, il paie un montant correspondant au service fourni jusqu&apos;à la communication de sa décision de se rétracter, proportionnel au prix total de la prestation ;</li>
