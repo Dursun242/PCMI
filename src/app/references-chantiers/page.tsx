@@ -101,7 +101,7 @@ export default function ReferencesChantiersPage() {
 
         <Cta
           title="Votre maison sera peut-être la prochaine."
-          text="Envoyez l'adresse ou la référence cadastrale de votre terrain : nous lisons le règlement applicable et vous répondons sous 4 h ouvrées avec un prix fixe."
+          text="Commandez en ligne à prix fixe, en 1, 4 ou 10 fois : nous lisons le règlement applicable à votre terrain avant de lancer le dossier."
           source="references_chantiers"
           secondaryHref="/tarifs"
           secondaryLabel="Voir les formules"

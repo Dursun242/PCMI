@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { plans } from "@/config/site";
+import { express, plans } from "@/config/site";
 import {
   calculerPanier,
   echeancier,
@@ -9,6 +9,8 @@ import {
   mentionFacturation,
   premiereFactureAuPlusTot,
   formatCentimes,
+  formulesCommande,
+  CODES_DEPARTEMENTS_EXPRESS,
   optionsCommande,
   validerCommande,
   validerCoordonnees,
@@ -36,7 +38,7 @@ describe("calculerPanier", () => {
   });
 
   it("refuse une formule inconnue", () => {
-    expect(calculerPanier({ formule: "express", options: {} })).toBeNull();
+    expect(calculerPanier({ formule: "inconnue", options: {} })).toBeNull();
     expect(calculerPanier(null)).toBeNull();
     expect(calculerPanier("complet")).toBeNull();
   });
@@ -259,5 +261,48 @@ describe("ficheFactureRecurrente", () => {
     const fiche = ficheFactureRecurrente(commande(1), "2026-11-01");
     expect(valeur(fiche, "Facturation")).toBe("Facture unique");
     expect(valeur(fiche, "Libellé")).toBe("Permis de construire, formule Complet");
+  });
+});
+
+describe("formule Express dans le panier", () => {
+  const express76 = { ...coordonneesValides, terrainCodePostal: "76290" };
+
+  it("propose l'Express à son prix tant que l'offre est active", () => {
+    const f = formulesCommande.find((x) => x.id === "express");
+    expect(Boolean(f)).toBe(express.actif);
+    if (f) expect(f.priceTTC).toBe(express.prixTTC);
+  });
+
+  it("connaît le code de chaque département de l'Express", () => {
+    for (const d of express.departements) expect(CODES_DEPARTEMENTS_EXPRESS[d]).toMatch(/^\d{2}$/);
+  });
+
+  it("accepte un terrain dans un département de l'Express", () => {
+    const r = validerCommande({ panier: { formule: "express", options: {} }, coordonnees: express76, echeances: 10 });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.commande.echeancier).toEqual({ nombre: 10, montantCentimes: express.prixTTC * 10 });
+  });
+
+  it("refuse un terrain hors des départements de l'Express", () => {
+    const r = validerCommande({ panier: { formule: "express", options: {} }, coordonnees: { ...express76, terrainCodePostal: "75011" }, echeances: 1 });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.erreur).toMatch(/Seine-Maritime/);
+  });
+
+  it("accepte l'Express jusqu'à sa propre surface maximale", () => {
+    const ok = validerCommande({ panier: { formule: "express", options: {} }, coordonnees: { ...express76, surface: String(express.surfaceMax) }, echeances: 1 });
+    expect(ok.ok).toBe(true);
+    const ko = validerCommande({ panier: { formule: "complet", options: {} }, coordonnees: { ...express76, surface: String(express.surfaceMax) }, echeances: 1 });
+    expect(ko.ok).toBe(false);
+  });
+
+  it("autorise les options que l'Express n'inclut pas", () => {
+    expect(calculerPanier({ formule: "express", options: { "rendu-3d": 1, "attestation-re2020": 1 } })?.lignes).toHaveLength(3);
+  });
+
+  it("nomme la formule Express dans le libellé de facturation", () => {
+    const r = validerCommande({ panier: { formule: "express", options: {} }, coordonnees: express76, echeances: 4 });
+    if (!r.ok) throw new Error(r.erreur);
+    expect(ficheFactureRecurrente(r.commande, "2026-11-01").find(([k]) => k === "Libellé")?.[1]).toBe("Permis de construire, formule Express");
   });
 });

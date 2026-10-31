@@ -59,6 +59,7 @@ export const ZONES = [
 export const ACTIONS = [
   ["appel", "Appeler"],
   ["devis", "Mon devis"],
+  ["commande", "Commander"],
   ["whatsapp", "WhatsApp ouvert"],
 ] as const;
 export type Clic = `${(typeof ZONES)[number][0]}-${(typeof ACTIONS)[number][0]}`;

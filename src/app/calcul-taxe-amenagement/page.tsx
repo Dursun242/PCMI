@@ -188,7 +188,7 @@ export default function CalculTaxeAmenagementPage() {
           près et déclarée sur le CERFA. Vous connaissez le prix avant de commencer.
         </p>
         <div className="mt-8 flex flex-wrap gap-4">
-          <Link href="/devis" className="btn btn-ink">Demander un devis</Link>
+          <Link href="/commander" className="btn btn-ink">Commander mon permis</Link>
           <Link href="/tarifs" className="btn btn-line">Voir les tarifs</Link>
         </div>
         <Garanties className="mt-16" />

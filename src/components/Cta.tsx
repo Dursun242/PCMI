@@ -5,8 +5,8 @@ import TrackedLink from "@/components/TrackedLink";
 export default function Cta({
   title,
   text,
-  href = "/devis",
-  label = "Demander un devis",
+  href = "/commander",
+  label = "Commander mon permis",
   secondaryHref,
   secondaryLabel,
   source = "cta_contenu",

@@ -2,15 +2,17 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { plans, type PlanId } from "@/config/site";
 import { formatEuro } from "@/lib/format";
+import { surfaceBucket, trackEvent } from "@/lib/analytics";
 import {
   calculerPanier,
   echeanciersPossibles,
   formatCentimes,
+  formulesCommande,
   mentionFacturation,
   optionsCommande,
-  validerCoordonnees,
+  validerCommande,
+  type FormuleCommandeId,
   type NombreEcheances,
   type OptionCommandeId,
 } from "@/lib/commande";
@@ -39,13 +41,18 @@ const ECHEANCES_PAR_DEFAUT: NombreEcheances = 10;
  * Les montants affichés sont calculés avec les mêmes fonctions que le serveur,
  * qui les recalcule de toute façon à l'envoi.
  */
-export default function CommandeTunnel({ presetFormule }: { presetFormule?: string }) {
-  const formuleInitiale = plans.find((p) => p.id === presetFormule)?.id ?? plans.find((p) => p.highlight)?.id ?? plans[0].id;
+export default function CommandeTunnel({ presetFormule, presetSurface }: { presetFormule?: string; presetSurface?: string }) {
+  const formuleInitiale =
+    formulesCommande.find((f) => f.id === presetFormule)?.id ??
+    formulesCommande.find((f) => f.highlight)?.id ??
+    formulesCommande[0].id;
 
   const [etape, setEtape] = useState<Etape>(0);
-  const [formule, setFormule] = useState<PlanId>(formuleInitiale);
+  const [formule, setFormule] = useState<FormuleCommandeId>(formuleInitiale);
   const [quantites, setQuantites] = useState<Partial<Record<OptionCommandeId, number>>>({});
-  const [coordonnees, setCoordonnees] = useState<ChampsCoordonnees>({});
+  const [coordonnees, setCoordonnees] = useState<ChampsCoordonnees>((): ChampsCoordonnees =>
+    presetSurface && Number(presetSurface) > 0 ? { surface: String(Math.round(Number(presetSurface))) } : {},
+  );
   const [nombre, setNombre] = useState<NombreEcheances>(ECHEANCES_PAR_DEFAUT);
   const [erreurEtape, setErreurEtape] = useState("");
   const [envoi, setEnvoi] = useState<Envoi>({ etat: "repos" });
@@ -65,7 +72,8 @@ export default function CommandeTunnel({ presetFormule }: { presetFormule?: stri
   }
 
   function validerEtapeCoordonnees() {
-    const r = validerCoordonnees(coordonnees);
+    // Même vérification que le serveur, terrain et surface compris (l'Express a ses propres limites).
+    const r = validerCommande({ panier: { formule, options: optionsValides }, coordonnees, echeances: 1 });
     if (!r.ok) {
       setErreurEtape(r.erreur);
       return;
@@ -89,6 +97,7 @@ export default function CommandeTunnel({ presetFormule }: { presetFormule?: stri
       });
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error ?? "Envoi impossible.");
+      trackEvent("commande_submit", { formule, echeances: String(choixEcheancier.nombre), surface_bucket: surfaceBucket(coordonnees.surface ?? "") });
       if (typeof json.redirection === "string") window.location.assign(json.redirection);
     } catch (err) {
       setEnvoi({ etat: "erreur", message: err instanceof Error ? err.message : "Envoi impossible." });
@@ -115,7 +124,13 @@ export default function CommandeTunnel({ presetFormule }: { presetFormule?: stri
           {etape === 0 && (
             <EtapePanier formule={formule} onFormule={setFormule} quantites={quantites} onQuantites={setQuantites} />
           )}
-          {etape === 1 && <EtapeCoordonnees valeurs={coordonnees} onChange={setCoordonnees} />}
+          {etape === 1 && (
+            <EtapeCoordonnees
+              valeurs={coordonnees}
+              onChange={setCoordonnees}
+              surfaceMax={formulesCommande.find((f) => f.id === formule)?.surfaceMax}
+            />
+          )}
           {etape === 2 && choixEcheancier && (
             <EtapeReglement echeanciers={echeanciers} choix={choixEcheancier.nombre} onChoix={setNombre} />
           )}
@@ -161,8 +176,8 @@ export default function CommandeTunnel({ presetFormule }: { presetFormule?: stri
 }
 
 interface EtapePanierProps {
-  formule: PlanId;
-  onFormule: (id: PlanId) => void;
+  formule: FormuleCommandeId;
+  onFormule: (id: FormuleCommandeId) => void;
   quantites: Partial<Record<OptionCommandeId, number>>;
   onQuantites: (q: Partial<Record<OptionCommandeId, number>>) => void;
 }
@@ -173,17 +188,20 @@ function EtapePanier({ formule, onFormule, quantites, onQuantites }: EtapePanier
     <div className="grid gap-10">
       <fieldset className="grid gap-3">
         <legend className="display mb-4 text-3xl">Votre formule</legend>
-        {plans.map((p) => (
+        {formulesCommande.map((f) => (
           <label
-            key={p.id}
+            key={f.id}
             className="flex cursor-pointer items-start gap-4 border border-stone-2 bg-paper px-5 py-4 has-[:checked]:border-ink"
           >
-            <input type="radio" name="formule" checked={formule === p.id} onChange={() => onFormule(p.id)} className="mt-1.5 accent-ink h-4 w-4" />
+            <input type="radio" name="formule" checked={formule === f.id} onChange={() => onFormule(f.id)} className="mt-1.5 accent-ink h-4 w-4" />
             <span className="grow">
-              <span className="display text-2xl">{p.name}</span>
-              <span className="block text-sm text-ink-2">{p.promise} Livré sous {p.delayWorkingDays}.</span>
+              <span className="display text-2xl">{f.name}</span>
+              <span className="block text-sm text-ink-2">{f.promise} Livré sous {f.delai}.</span>
             </span>
-            <span className="numeral text-lg">{formatEuro(p.priceTTC)}</span>
+            <span className="text-right">
+              <span className="numeral block text-lg">{formatEuro(f.priceTTC)}</span>
+              {f.regularPriceTTC && <s className="numeral block text-sm text-ink-3">{formatEuro(f.regularPriceTTC)}</s>}
+            </span>
           </label>
         ))}
         <Link href="/tarifs" className="text-sm underline decoration-brass underline-offset-2">Comparer les formules en détail</Link>

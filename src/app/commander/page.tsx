@@ -4,9 +4,9 @@ import CommandeTunnel from "@/components/commande/CommandeTunnel";
 /**
  * Commande en ligne avec règlement par prélèvement SEPA (1, 4 ou 10 fois).
  *
- * Hors index et hors sitemap tant que le branchement Qonto (mandat, devis,
- * signature) n'est pas en service : la page existe, mais aucun lien du site
- * n'y mène encore.
+ * Hors index et hors sitemap, comme toute page de tunnel : on y arrive par
+ * les boutons « Commander » du site (?formule= et ?surface= pré-remplissent
+ * le panier et les coordonnées).
  */
 export const metadata: Metadata = {
   title: "Commander votre permis de construire",
@@ -17,8 +17,12 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function CommanderPage({ searchParams }: { searchParams: Promise<{ formule?: string }> }) {
-  const { formule } = await searchParams;
+export default async function CommanderPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ formule?: string; surface?: string }>;
+}) {
+  const { formule, surface } = await searchParams;
   return (
     <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24">
       <span className="rule" aria-hidden="true" />
@@ -27,7 +31,7 @@ export default async function CommanderPage({ searchParams }: { searchParams: Pr
         Rien n&apos;est prélevé avant que nous ayons vérifié que votre terrain permet le dépôt du permis.
       </p>
       <div className="mt-14">
-        <CommandeTunnel presetFormule={formule} />
+        <CommandeTunnel presetFormule={formule} presetSurface={surface} />
       </div>
     </div>
   );

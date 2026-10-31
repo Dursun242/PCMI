@@ -31,8 +31,8 @@ const pieces = [
 
 const steps = [
   {
-    title: "Votre devis sous 4 h ouvrées",
-    text: "Vous décrivez votre projet en trois minutes. Nous lisons le règlement d'urbanisme de votre commune et vous confirmons la formule, le prix et le délai.",
+    title: "Vous commandez en ligne",
+    text: "Formule, terrain, règlement en 1, 4 ou 10 fois : quelques minutes suffisent. Nous lisons le règlement d'urbanisme de votre commune avant de lancer le dossier ; s'il ne permet pas le permis, rien n'est facturé.",
   },
   {
     title: "Conception et vérification",
@@ -99,7 +99,7 @@ export default function HomePage() {
               <span className="text-paper">{new Intl.NumberFormat("fr-FR").format(plans[0].priceTTC)}&nbsp;€&nbsp;TTC</span>.
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
-              <TrackedLink href="/devis" source="hero_accueil" className="btn btn-paper">Demander un devis</TrackedLink>
+              <TrackedLink href="/commander" source="hero_accueil" className="btn btn-paper">Commander mon permis</TrackedLink>
               <Link href="/tarifs" className="btn btn-line-light">Découvrir les formules</Link>
             </div>
             <div className="mt-7">
@@ -366,10 +366,10 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl px-5 sm:px-8">
         <div data-reveal="" className="border-t border-ink pt-12 flex flex-wrap items-end justify-between gap-8">
           <div className="max-w-[36ch]">
-            <h2 className="display text-4xl sm:text-5xl">Votre devis chiffré sous 4 h ouvrées.</h2>
-            <p className="mt-4 text-ink-2 leading-relaxed">Trois minutes pour décrire votre projet. Aucun engagement, aucun frais caché.</p>
+            <h2 className="display text-4xl sm:text-5xl">Commandez en ligne, réglez en 1, 4 ou 10 fois.</h2>
+            <p className="mt-4 text-ink-2 leading-relaxed">Prix fixe, sans frais. Rien n&apos;est prélevé avant que nous ayons vérifié que votre terrain permet le permis.</p>
           </div>
-          <TrackedLink href="/devis" source="accueil_final" className="btn btn-ink">Demander un devis</TrackedLink>
+          <TrackedLink href="/commander" source="accueil_final" className="btn btn-ink">Commander mon permis</TrackedLink>
         </div>
       </section>
     </>

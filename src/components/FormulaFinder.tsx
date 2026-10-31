@@ -179,7 +179,7 @@ export default function FormulaFinder({ className = "" }: { className?: string }
                   })
                 }
               >
-                {result.planId ? `Demander un devis ${result.planName}` : "Demander un devis sur mesure"}
+                {result.planId ? `Commander ${result.planName}` : "Demander un devis sur mesure"}
               </Link>
               <p className="mt-4 text-sm text-ink-2">
                 Cette recommandation n&apos;engage à rien : vous pourrez changer de formule dans le formulaire, et nous

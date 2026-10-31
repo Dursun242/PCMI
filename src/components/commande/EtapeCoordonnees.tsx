@@ -25,7 +25,7 @@ const champsClient: Champ[] = [
   { name: "ville", label: "Ville", autoComplete: "address-level2" },
 ];
 
-const champsTerrain: Champ[] = [
+const champsTerrain = (surfaceMax: number): Champ[] => [
   { name: "terrainAdresse", label: "Adresse ou lieu-dit du terrain" },
   { name: "terrainCodePostal", label: "Code postal", inputMode: "numeric" },
   { name: "terrainCommune", label: "Commune" },
@@ -35,7 +35,7 @@ const champsTerrain: Champ[] = [
     type: "number",
     inputMode: "numeric",
     placeholder: "ex. 120",
-    hint: `Une estimation suffit. Commande en ligne jusqu'à ${SURFACE_MAX} m².`,
+    hint: `Une estimation suffit. Cette formule s'applique jusqu'à ${surfaceMax} m².`,
   },
   {
     name: "referenceCadastrale",
@@ -55,10 +55,12 @@ const COPIE_ADRESSE: [string, string][] = [
 interface EtapeCoordonneesProps {
   valeurs: ChampsCoordonnees;
   onChange: (valeurs: ChampsCoordonnees) => void;
+  /** Surface maximale de la formule choisie, en m². */
+  surfaceMax?: number;
 }
 
 /** Coordonnées du client puis adresse du terrain : elles rempliront le devis et le mandat SEPA. */
-export default function EtapeCoordonnees({ valeurs, onChange }: EtapeCoordonneesProps) {
+export default function EtapeCoordonnees({ valeurs, onChange, surfaceMax = SURFACE_MAX }: EtapeCoordonneesProps) {
   const set = (name: string, value: string) => onChange({ ...valeurs, [name]: value });
 
   const terrainALAdresse = (coche: boolean) =>
@@ -78,7 +80,7 @@ export default function EtapeCoordonnees({ valeurs, onChange }: EtapeCoordonnees
         inputMode={c.inputMode}
         placeholder={c.placeholder}
         min={c.type === "number" ? 1 : undefined}
-        max={c.type === "number" ? SURFACE_MAX : undefined}
+        max={c.type === "number" ? surfaceMax : undefined}
         value={valeurs[c.name] ?? ""}
         onChange={(e) => set(c.name, e.target.value)}
       />
@@ -99,7 +101,7 @@ export default function EtapeCoordonnees({ valeurs, onChange }: EtapeCoordonnees
           <input type="checkbox" className="accent-ink h-4 w-4" onChange={(e) => terrainALAdresse(e.target.checked)} />
           Le terrain est à l&apos;adresse ci-dessus
         </label>
-        <div className="grid gap-6 sm:grid-cols-2">{champsTerrain.map(rendre)}</div>
+        <div className="grid gap-6 sm:grid-cols-2">{champsTerrain(surfaceMax).map(rendre)}</div>
       </fieldset>
     </div>
   );

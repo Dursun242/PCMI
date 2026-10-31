@@ -1,4 +1,4 @@
-import { options, plans, type PlanId } from "@/config/site";
+import { express, options, plans, type PlanId } from "@/config/site";
 import { SURFACE_MAX } from "@/lib/formulaFinder";
 
 /**
@@ -35,6 +35,63 @@ export const SIGNATURE = {
   relanceHeures: 48,
 } as const;
 
+export type FormuleCommandeId = PlanId | "express";
+
+export interface FormuleCommande {
+  id: FormuleCommandeId;
+  name: string;
+  priceTTC: number;
+  /** Prix habituel barré pendant une offre (formules à prix de lancement). */
+  regularPriceTTC?: number;
+  promise: string;
+  delai: string;
+  highlight?: boolean;
+  /** Surface de plancher maximale acceptée, en m². */
+  surfaceMax: number;
+  /** Départements où la formule est proposée (codes) ; absent : partout. */
+  departements?: readonly string[];
+}
+
+/** Codes des départements de l'Express, nommés en toutes lettres dans site.ts. */
+export const CODES_DEPARTEMENTS_EXPRESS: Record<string, string> = {
+  "Seine-Maritime": "76",
+  Eure: "27",
+  Calvados: "14",
+  Manche: "50",
+  Orne: "61",
+  Somme: "80",
+};
+
+/**
+ * Formules vendues en ligne : l'Express (tant que l'offre est active, limitée
+ * à ses départements), puis les trois formules aux prix en vigueur.
+ */
+export const formulesCommande: FormuleCommande[] = [
+  ...(express.actif
+    ? [
+        {
+          id: "express" as const,
+          name: express.nom,
+          priceTTC: express.prixTTC,
+          promise: `Le dossier complet, déposé en ligne. ${express.departements.join(", ")} uniquement.`,
+          delai: express.delai,
+          surfaceMax: express.surfaceMax,
+          departements: express.departements.map((d) => CODES_DEPARTEMENTS_EXPRESS[d]).filter(Boolean),
+        },
+      ]
+    : []),
+  ...plans.map((p) => ({
+    id: p.id,
+    name: p.name,
+    priceTTC: p.priceTTC,
+    regularPriceTTC: p.regularPriceTTC,
+    promise: p.promise,
+    delai: p.delayWorkingDays,
+    highlight: p.highlight,
+    surfaceMax: SURFACE_MAX,
+  })),
+];
+
 export type OptionCommandeId = "rendu-3d" | "attestation-re2020" | "eaux-pluviales";
 
 export interface OptionCommande {
@@ -44,7 +101,7 @@ export interface OptionCommande {
   note: string;
   quantiteMax: number;
   /** Formules auxquelles l'option peut s'ajouter : ailleurs, elle est déjà incluse. */
-  formules: readonly PlanId[];
+  formules: readonly FormuleCommandeId[];
 }
 
 /**
@@ -53,9 +110,9 @@ export interface OptionCommande {
  * pas des compléments du permis.
  */
 const reglesOptions: Record<OptionCommandeId, Pick<OptionCommande, "quantiteMax" | "formules">> = {
-  "rendu-3d": { quantiteMax: 5, formules: ["essentiel", "complet", "premium"] },
-  "attestation-re2020": { quantiteMax: 1, formules: ["essentiel"] },
-  "eaux-pluviales": { quantiteMax: 1, formules: ["essentiel", "complet"] },
+  "rendu-3d": { quantiteMax: 5, formules: ["express", "essentiel", "complet", "premium"] },
+  "attestation-re2020": { quantiteMax: 1, formules: ["express", "essentiel"] },
+  "eaux-pluviales": { quantiteMax: 1, formules: ["express", "essentiel", "complet"] },
 };
 
 export const optionsCommande: OptionCommande[] = options
@@ -70,7 +127,7 @@ export interface LignePanier {
 }
 
 export interface Panier {
-  formule: PlanId;
+  formule: FormuleCommandeId;
   lignes: LignePanier[];
   totalTTC: number;
 }
@@ -80,7 +137,7 @@ const estObjet = (v: unknown): v is Record<string, unknown> => typeof v === "obj
 /** Recalcule le panier depuis la configuration ; null si la sélection est invalide. */
 export function calculerPanier(selection: unknown): Panier | null {
   if (!estObjet(selection)) return null;
-  const plan = plans.find((p) => p.id === selection.formule);
+  const plan = formulesCommande.find((f) => f.id === selection.formule);
   if (!plan) return null;
 
   const choix = estObjet(selection.options) ? selection.options : {};
@@ -136,7 +193,7 @@ export interface Coordonnees {
   terrainAdresse: string;
   terrainCodePostal: string;
   terrainCommune: string;
-  /** Surface de plancher en m², limitée aux formules (SURFACE_MAX). */
+  /** Surface de plancher en m², limitée par la formule choisie. */
   surface: number;
   referenceCadastrale: string;
 }
@@ -150,7 +207,7 @@ const CHIFFRES_TELEPHONE_MIN = 10;
 const texte = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
 
 /** Vérifie et nettoie les coordonnées du client et du terrain. */
-export function validerCoordonnees(input: unknown): ResultatCoordonnees {
+export function validerCoordonnees(input: unknown, surfaceMax: number = SURFACE_MAX): ResultatCoordonnees {
   if (!estObjet(input)) return { ok: false, erreur: "Formulaire illisible." };
 
   const c: Coordonnees = {
@@ -182,10 +239,10 @@ export function validerCoordonnees(input: unknown): ResultatCoordonnees {
   if (!Number.isFinite(c.surface) || c.surface <= 0) {
     return { ok: false, erreur: "Merci d'indiquer la surface de plancher prévue." };
   }
-  if (c.surface > SURFACE_MAX) {
+  if (c.surface > surfaceMax) {
     return {
       ok: false,
-      erreur: `Les formules s'appliquent jusqu'à ${SURFACE_MAX} m². Au-delà, demandez un devis sur mesure.`,
+      erreur: `Cette formule s'applique jusqu'à ${surfaceMax} m². Au-delà, demandez un devis sur mesure.`,
     };
   }
   return { ok: true, coordonnees: c };
@@ -206,8 +263,15 @@ export function validerCommande(input: unknown): ResultatCommande {
   const panier = calculerPanier(input.panier);
   if (!panier) return { ok: false, erreur: "Panier invalide. Rechargez la page et recommencez." };
 
-  const coordonnees = validerCoordonnees(input.coordonnees);
+  const formule = formulesCommande.find((f) => f.id === panier.formule);
+  const coordonnees = validerCoordonnees(input.coordonnees, formule?.surfaceMax);
   if (!coordonnees.ok) return coordonnees;
+  if (formule?.departements && !formule.departements.includes(coordonnees.coordonnees.terrainCodePostal.slice(0, 2))) {
+    return {
+      ok: false,
+      erreur: `La formule ${formule.name} est réservée aux terrains situés en ${express.departements.join(", ")}. Choisissez une autre formule dans votre panier.`,
+    };
+  }
 
   const choix = echeancier(panier.totalTTC, input.echeances);
   if (!choix) return { ok: false, erreur: "Nombre d'échéances non proposé pour ce montant." };
@@ -251,7 +315,7 @@ const jourFr = (iso: string) => iso.split("-").reverse().join("/");
  */
 export function ficheFactureRecurrente(commande: Commande, jourSignature: string, numeroDevis?: string): [string, string][] {
   const { coordonnees, echeancier, panier } = commande;
-  const formule = plans.find((p) => p.id === panier.formule)?.name ?? panier.formule;
+  const formule = formulesCommande.find((f) => f.id === panier.formule)?.name ?? panier.formule;
   const options = panier.lignes.slice(1).map((l) => (l.quantite > 1 ? `${l.quantite} × ${l.libelle}` : l.libelle));
   const unique = echeancier.nombre === 1;
   return [

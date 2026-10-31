@@ -191,7 +191,7 @@ export default function ConseilsPage() {
                 </p>
               </div>
               <div className="flex flex-wrap gap-3">
-                <Link href="/devis" className="btn btn-paper">Demander un devis</Link>
+                <Link href="/commander" className="btn btn-paper">Commander mon permis</Link>
                 <Link href="/contact" className="btn btn-line-light">Nous écrire</Link>
               </div>
             </div>

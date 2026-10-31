@@ -116,7 +116,7 @@ export default function PlanDeMassePage() {
               C&apos;est le cas le plus fréquent, et ce n&apos;est pas un problème : nous dessinons le plan de masse à
               partir du cadastre et de vos souhaits.
             </p>
-            <Link href="/devis" className="btn btn-line mt-4 !min-h-11">Demander un devis sans plan</Link>
+            <Link href="/commander" className="btn btn-line mt-4 !min-h-11">Commander mon permis sans plan</Link>
           </div>
         </div>
 

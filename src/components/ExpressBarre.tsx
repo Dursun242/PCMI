@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import TelLink from "./TelLink";
 
 /**
- * Barre fixe en bas d'écran sur mobile, propre à /permis-express : appeler ou
- * remplir le formulaire, à portée de pouce. Elle se masque quand le
+ * Barre fixe en bas d'écran sur mobile, propre à /permis-express : commander
+ * en ligne ou appeler, à portée de pouce. Elle se masque quand le
  * formulaire est à l'écran, pour ne pas le recouvrir.
  */
 export default function ExpressBarre() {
@@ -36,9 +37,9 @@ export default function ExpressBarre() {
       <TelLink source="express_barre" className="btn btn-line !min-h-12 !px-3">
         Appeler
       </TelLink>
-      <a href="#devis" className="btn btn-ink !min-h-12 !px-3">
-        Mon devis gratuit
-      </a>
+      <Link href="/commander?formule=express" className="btn btn-ink !min-h-12 !px-3">
+        Commander
+      </Link>
     </div>
   );
 }

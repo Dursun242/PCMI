@@ -71,7 +71,7 @@ export default function PlanCard({ plan, compact = false }: { plan: Plan; compac
 
       <div className="mt-auto pt-9">
         <TrackedLink
-          href={`/devis?formule=${plan.id}`}
+          href={`/commander?formule=${plan.id}`}
           source={compact ? "plan_card_accueil" : "plan_card_tarifs"}
           formule={plan.id}
           className={`btn w-full ${hi ? "btn-ink" : "btn-line"}`}

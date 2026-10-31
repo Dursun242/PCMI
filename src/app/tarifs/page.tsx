@@ -212,7 +212,7 @@ export default function TarifsPage() {
                 <dd className="text-ink-2 leading-relaxed">Les trois formules ne s&apos;appliquent plus : le permis est établi sur devis, avec notre architecte partenaire. Le recours à un architecte devient en plus légalement obligatoire dès que la surface de plancher dépasse 150 m².</dd>
               </div>
             </dl>
-            <Link href="/devis" className="btn btn-ink mt-10">Demander un devis</Link>
+            <Link href="/commander" className="btn btn-ink mt-10">Commander mon permis</Link>
           </div>
         </div>
       </section>

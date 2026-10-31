@@ -110,7 +110,7 @@ export default function AProposPage() {
           </li>
           <li>
             <strong>Aucun dossier déposé au hasard.</strong> Nous lisons le règlement d&apos;urbanisme de votre commune
-            avant de chiffrer, pas après. Même en 4 h ouvrées, le devis part toujours après cette lecture, jamais avant.
+            avant de lancer votre dossier, pas après. Si elle montre que le permis n&apos;est pas possible, la commande est annulée sans frais.
           </li>
           <li>
             <strong>Pas de promesse d&apos;obtention.</strong> Personne ne peut garantir qu&apos;une mairie accordera un
@@ -126,8 +126,8 @@ export default function AProposPage() {
           sur site reste possible en {site.address.region}.
         </p>
         <ol>
-          <li>Vous décrivez votre projet et nous envoyez ce que vous avez : plan du terrain, esquisse, photos.</li>
-          <li>Nous consultons le PLU ou le PLUi de votre commune et vous adressons un devis chiffré sous 4 h ouvrées.</li>
+          <li>Vous commandez en ligne votre formule, à prix fixe, en 1, 4 ou 10 fois, et nous envoyez ce que vous avez : plan du terrain, esquisse, photos.</li>
+          <li>Nous consultons le PLU ou le PLUi de votre commune avant de lancer le dossier ; s&apos;il ne permet pas le permis, rien n&apos;est facturé.</li>
           <li>Nous dessinons les pièces PCMI 1 à 8, vous les relisez, nous ajustons.</li>
           <li>Selon la formule, vous déposez vous-même ou nous déposons et suivons l&apos;instruction jusqu&apos;à la décision.</li>
         </ol>
@@ -136,8 +136,8 @@ export default function AProposPage() {
         <p>
           Par e-mail à <a href={`mailto:${site.email}`}>{site.email}</a>
           {site.phone ? <>, par téléphone au {site.phone}</> : null}, ou via le{" "}
-          <Link href="/contact">formulaire de contact</Link>. Pour un chiffrage direct, le{" "}
-          <Link href="/devis">formulaire de devis</Link> suffit.
+          <Link href="/contact">formulaire de contact</Link>. Pour commander, passez par la{" "}
+          <Link href="/commander">commande en ligne</Link> ; pour un projet hors formules, par le <Link href="/devis">formulaire de devis</Link>.
         </p>
       </div>
     </>

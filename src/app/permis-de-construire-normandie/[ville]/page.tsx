@@ -108,7 +108,7 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
           </h1>
           <p className="lead mt-8 max-w-[62ch]">{v.accroche}</p>
           <div className="mt-9 flex flex-wrap gap-3">
-            <TrackedLink href="/devis" source={source} className="btn btn-ink">Demander un devis</TrackedLink>
+            <TrackedLink href="/commander" source={source} className="btn btn-ink">Commander mon permis</TrackedLink>
             <Link href="/tarifs" className="btn btn-line">Voir les formules</Link>
           </div>
         </div>
@@ -324,8 +324,8 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
           title={`Un terrain ${v.a} ?`}
           text={
             pole
-              ? `L'adresse ou la référence cadastrale de votre parcelle à ${v.nom} suffit : réponse sous 4 h ouvrées, prix fixe compris.`
-              : "Envoyez l'adresse ou la référence cadastrale : nous lisons le règlement applicable et vous répondons sous 4 h ouvrées avec un prix fixe."
+              ? `Commandez en ligne avec l'adresse de votre parcelle à ${v.nom} : prix fixe, en 1, 4 ou 10 fois, et nous vérifions le règlement avant de lancer le dossier.`
+              : "Commandez en ligne à prix fixe, en 1, 4 ou 10 fois : nous lisons le règlement applicable à votre terrain avant de lancer le dossier."
           }
           source={`${source}_bas`}
           secondaryHref="/plan-de-masse"

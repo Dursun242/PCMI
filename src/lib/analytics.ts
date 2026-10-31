@@ -44,6 +44,8 @@ type Events = {
   plans_exe_submit: { pack: string; lots: string };
   /** Demande d'étude thermique RE2020 transmise avec succès. */
   etude_thermique_submit: { prestations: string };
+  /** Commande en ligne transmise (panier validé, passage à la saisie de l'IBAN). */
+  commande_submit: { formule: string; echeances: string; surface_bucket: SurfaceBucket };
   /** Demande transmise depuis la page Express (campagne Google Ads). */
   express_submit: { eligible: string; urgent: string; surface_bucket: SurfaceBucket };
   /** Clic sur un numéro de téléphone. */
