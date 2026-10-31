@@ -87,7 +87,7 @@ export default function ExpressForm() {
       )}
 
       <button type="submit" className="btn btn-ink" disabled={status === "sending"}>
-        {status === "sending" ? "Envoi en cours…" : "Recevoir mon devis gratuit"}
+        {status === "sending" ? "Envoi en cours…" : `On vous rappelle ${express.rappel.delai}`}
       </button>
       <ul className="grid gap-1.5 text-sm">
         {[`Rappel ${express.rappel.delai}, ${express.rappel.horaires}`, "Prix fixe annoncé avant tout engagement", "Gratuit, sans engagement, aucune revente de vos données"].map((t) => (
