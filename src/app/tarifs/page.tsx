@@ -196,8 +196,8 @@ export default function TarifsPage() {
             <h2 className="h-section mt-6">Paiement et garanties</h2>
             <dl className="mt-8 grid gap-6">
               <div>
-                <dt className="font-bold">Acompte de 40 %, solde à la livraison</dt>
-                <dd className="text-ink-2 leading-relaxed">Par virement ou carte bancaire. Facture émise par {site.legal.company}, maître d&apos;œuvre assuré en responsabilité civile professionnelle.</dd>
+                <dt className="font-bold">Devis immédiat, réglé en 1, 4 ou 10 fois sans frais</dt>
+                <dd className="text-ink-2 leading-relaxed">Votre devis s&apos;affiche dès la commande et se signe en ligne. Une facture unique, réglée par prélèvement SEPA en 1, 4 ou 10 mensualités. Rien n&apos;est prélevé avant la vérification de votre terrain et la fin du délai de rétractation. Facture émise par {site.legal.company}, maître d&apos;œuvre assuré en responsabilité civile professionnelle.</dd>
               </div>
               <div>
                 <dt className="font-bold">Prix fixe</dt>

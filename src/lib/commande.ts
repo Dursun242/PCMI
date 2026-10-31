@@ -163,6 +163,13 @@ export function echeanciersPossibles(totalTTC: number): Echeancier[] {
   return NOMBRES_ECHEANCES.filter((n) => centimes % n === 0).map((n) => ({ nombre: n, montantCentimes: centimes / n }));
 }
 
+/** Paiements fractionnés proposés pour un prix, du plus long au plus court, sans le paiement comptant. */
+export function mensualites(totalTTC: number): Echeancier[] {
+  return echeanciersPossibles(totalTTC)
+    .filter((e) => e.nombre > 1)
+    .sort((a, b) => b.nombre - a.nombre);
+}
+
 /** Échéancier choisi par le client, s'il fait partie de ceux proposés pour ce total. */
 export function echeancier(totalTTC: number, nombre: unknown): Echeancier | null {
   return echeanciersPossibles(totalTTC).find((e) => e.nombre === nombre) ?? null;

@@ -1,6 +1,7 @@
 import { ht, lancement, type Plan } from "@/config/site";
 import { formatEuro } from "@/lib/format";
 import TrackedLink from "@/components/TrackedLink";
+import PaiementFractionne from "@/components/PaiementFractionne";
 
 /**
  * Colonne de formule : pas de carte, un filet haut. La formule mise en avant
@@ -34,11 +35,9 @@ export default function PlanCard({ plan, compact = false }: { plan: Plan; compac
           </span>
         )}
       </div>
-      <p className="mt-1 text-sm text-ink-2">
+      <PaiementFractionne prixTTC={plan.priceTTC} className="mt-3" />
+      <p className="mt-3 text-sm text-ink-2">
         soit {formatEuro(ht(plan.priceTTC))} HT. Livré sous {plan.delayWorkingDays}.
-      </p>
-      <p className="mt-1 text-sm text-ink-2">
-        Pour démarrer : acompte de {formatEuro(Math.round(plan.priceTTC * 0.4))}, le solde à la remise du dossier.
       </p>
 
       {!compact && <p className="mt-6 text-[0.98rem] leading-relaxed">{plan.forWho}</p>}
