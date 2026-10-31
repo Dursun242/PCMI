@@ -11,6 +11,7 @@ import BandeauLancement from "@/components/BandeauLancement";
 import HorsPages from "@/components/HorsPages";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { EnTeteCommande, PiedCommande, SelonTunnel } from "@/components/commande/CadreCommande";
 import StickyCta from "@/components/StickyCta";
 import SuiteExpress from "@/components/SuiteExpress";
 import WhatsAppBubble from "@/components/WhatsAppBubble";
@@ -70,14 +71,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Aller au contenu
         </a>
-        <HorsPages chemins={["/permis-express"]}>
-          <BandeauLancement />
-        </HorsPages>
-        <Header />
+        {/* Tunnel de commande : en-tête et pied de page réduits (voir CadreCommande). */}
+        <SelonTunnel
+          tunnel={<EnTeteCommande />}
+          ailleurs={
+            <>
+              <HorsPages chemins={["/permis-express"]}>
+                <BandeauLancement />
+              </HorsPages>
+              <Header />
+            </>
+          }
+        />
         <main id="contenu" className="flex-1">
           {children}
         </main>
-        <Footer />
+        <SelonTunnel tunnel={<PiedCommande />} ailleurs={<Footer />} />
         <StickyCta />
         <WhatsAppBubble />
         <SuiteExpress />

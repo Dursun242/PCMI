@@ -4,6 +4,7 @@ import {
   calculerPanier,
   echeancier,
   echeanciersPossibles,
+  estTunnelCommande,
   formatCentimes,
   optionsCommande,
   validerCommande,
@@ -186,5 +187,18 @@ describe("validerCoordonnees", () => {
 
   it("refuse une entrée qui n'est pas un objet", () => {
     expect(validerCoordonnees(null).ok).toBe(false);
+  });
+});
+
+describe("estTunnelCommande", () => {
+  it("reconnaît le tunnel et ses sous-pages", () => {
+    expect(estTunnelCommande("/commander")).toBe(true);
+    expect(estTunnelCommande("/commander/email-envoye")).toBe(true);
+  });
+
+  it("ignore les autres pages, même au nom proche", () => {
+    expect(estTunnelCommande("/")).toBe(false);
+    expect(estTunnelCommande("/commanderie")).toBe(false);
+    expect(estTunnelCommande("/devis")).toBe(false);
   });
 });

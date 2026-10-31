@@ -17,6 +17,13 @@ import { SURFACE_MAX } from "@/lib/formulaFinder";
 export const NOMBRES_ECHEANCES = [1, 4, 10] as const;
 export type NombreEcheances = (typeof NOMBRES_ECHEANCES)[number];
 
+/** Racine du tunnel de commande : en-tête et pied de page y sont réduits au strict nécessaire. */
+const RACINE_TUNNEL = "/commander";
+
+export function estTunnelCommande(pathname: string): boolean {
+  return pathname === RACINE_TUNNEL || pathname.startsWith(`${RACINE_TUNNEL}/`);
+}
+
 /**
  * Signature de la commande par e-mail : objet du message, durée de validité
  * du lien et délai de relance. Lus par la page « Vérifiez vos e-mails » et
