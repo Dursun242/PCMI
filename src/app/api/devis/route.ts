@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { site, plans } from "@/config/site";
+import { formatEuro } from "@/lib/format";
+import { formuleDevisImmediat } from "@/lib/devisImmediat";
+import { devisImmediatEmailHtml, devisImmediatEmailSujet } from "@/lib/emailDevisImmediat";
 import { attachmentsList, collectFiles, esc, ipOf, rateLimited, section, sendPair } from "@/lib/mailer";
 
 export const runtime = "nodejs";
@@ -72,6 +75,11 @@ export async function POST(req: Request) {
   }
   const executionAnticipee = Boolean(body.executionAnticipee);
 
+  // Même règle que le formulaire et la page de confirmation : le client reçoit le prix qu'il a vu à l'écran.
+  // Sur la valeur reçue, non tronquée : exactement celle que le formulaire a jugée.
+  const immediatId = formuleDevisImmediat({ plan: body.plan, surface: body.surface, projet: body.projectType });
+  const immediat = plans.find((p) => p.id === immediatId);
+
   const surfaceNum = Number(surface);
   const architectFlag = surfaceNum > 149 ? " ⚠️ > 149 m² : hors formules, devis sur mesure (architecte obligatoire au-delà de 150 m²)" : "";
 
@@ -84,6 +92,7 @@ export async function POST(req: Request) {
     ["Surface de plancher", surface ? `${surface} m²${architectFlag}` : "Non précisée"],
     ["Stade", stage],
     ["Formule envisagée", plan],
+    ["Devis immédiat affiché", immediat ? `Oui — ${formatEuro(immediat.priceTTC)} TTC` : "Non (à chiffrer)"],
     ["CGV acceptées", "Oui"],
     ["Exécution anticipée demandée", executionAnticipee ? "Oui" : "Non"],
   ];
@@ -111,7 +120,7 @@ export async function POST(req: Request) {
     <div style="font-family:Lato,Arial,sans-serif;font-size:16px;line-height:1.6;color:#10233f;max-width:560px">
       <p>Bonjour ${esc(name.split(" ")[0])},</p>
       <p>Nous avons bien reçu votre demande de devis pour un permis de construire à <strong>${esc(city)}</strong>.</p>
-      <p>Nous consultons le règlement d'urbanisme de votre commune et vous répondons sous <strong>4 h ouvrées</strong> avec un prix fixe, la formule conseillée et la liste des documents utiles.</p>
+      ${immediat ? devisImmediatEmailHtml(immediat, surface) : `<p>Nous consultons le règlement d'urbanisme de votre commune et vous répondons sous <strong>4 h ouvrées</strong> avec un prix fixe, la formule conseillée et la liste des documents utiles.</p>`}
       <p>${joints.length
         ? `Nous avons bien reçu ${joints.length === 1 ? "votre document" : `vos ${joints.length} documents`}. Si vous en avez d'autres, répondez simplement à cet e-mail en les joignant.`
         : "Si vous avez déjà des plans, une esquisse ou des photos du terrain, vous pouvez simplement répondre à cet e-mail en les joignant."}</p>
@@ -124,7 +133,7 @@ export async function POST(req: Request) {
       subject: `Devis permis — ${name} — ${city} — ${plan}`,
       internalHtml,
       replyTo: email,
-      clientSubject: `Votre demande de devis est bien reçue — ${site.name}`,
+      clientSubject: immediat ? devisImmediatEmailSujet(immediat) : `Votre demande de devis est bien reçue — ${site.name}`,
       clientHtml,
       attachments: files?.inline,
     });

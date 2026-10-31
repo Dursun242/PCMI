@@ -29,8 +29,16 @@ export async function generateMetadata({ params }: { params: Promise<{ type: str
   };
 }
 
-export default async function MerciTypePage({ params }: { params: Promise<{ type: string }> }) {
+export default async function MerciTypePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ type: string }>;
+  searchParams: Promise<{ surface?: string; projet?: string }>;
+}) {
   const { type } = await params;
   if (!isMerciType(type)) notFound();
-  return <MerciContent type={type} />;
+  // Surface et type de projet : de quoi afficher le devis immédiat (contrôlé de nouveau dans MerciContent).
+  const { surface, projet } = await searchParams;
+  return <MerciContent type={type} surface={surface} projet={projet} />;
 }
