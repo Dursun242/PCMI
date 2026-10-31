@@ -2,11 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { SIGNATURE } from "@/lib/commande";
 
 /** Intervalle de lecture du mandat pendant que le client saisit son IBAN chez Qonto. */
 const INTERVALLE_SUIVI_MS = 4000;
 
 type Etat = { etat: "attente" } | { etat: "envoi" } | { etat: "erreur"; message: string };
+type PlusTard = { etat: "repos" } | { etat: "envoi" } | { etat: "envoye" } | { etat: "erreur"; message: string };
 
 interface EtapeIbanProps {
   jeton: string;
@@ -25,6 +27,24 @@ export default function EtapeIban({ jeton, urlMandat, onTermine }: EtapeIbanProp
   const router = useRouter();
   const [etat, setEtat] = useState<Etat>({ etat: "attente" });
   const envoye = useRef(false);
+  const [plusTard, setPlusTard] = useState<PlusTard>({ etat: "repos" });
+
+  /** Pas de RIB sous la main : un e-mail avec un lien pour terminer plus tard. Le suivi du mandat continue. */
+  async function terminerPlusTard() {
+    setPlusTard({ etat: "envoi" });
+    try {
+      const res = await fetch("/api/commande/plus-tard", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jeton }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.ok) throw new Error(json.error ?? "L'envoi de l'e-mail a échoué.");
+      setPlusTard({ etat: "envoye" });
+    } catch (err) {
+      setPlusTard({ etat: "erreur", message: err instanceof Error ? err.message : "L'envoi de l'e-mail a échoué." });
+    }
+  }
 
   async function finaliser() {
     if (envoye.current) return;
@@ -47,7 +67,8 @@ export default function EtapeIban({ jeton, urlMandat, onTermine }: EtapeIbanProp
   }
 
   useEffect(() => {
-    if (etat.etat !== "attente") return;
+    // Après « Terminer plus tard », c'est l'onglet ouvert depuis l'e-mail qui confirmera la commande.
+    if (etat.etat !== "attente" || plusTard.etat === "envoye") return;
     const controleur = new AbortController();
     const id = setInterval(async () => {
       try {
@@ -67,7 +88,7 @@ export default function EtapeIban({ jeton, urlMandat, onTermine }: EtapeIbanProp
     };
     // finaliser ne dépend que du jeton, déjà dans les dépendances.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [jeton, etat.etat]);
+  }, [jeton, etat.etat, plusTard.etat]);
 
   return (
     <div className="grid gap-6">
@@ -106,6 +127,33 @@ export default function EtapeIban({ jeton, urlMandat, onTermine }: EtapeIbanProp
       )}
 
       <p className="text-sm text-ink-2">Rien n&apos;est prélevé aujourd&apos;hui : le mandat autorise seulement les prélèvements futurs, après validation de votre projet.</p>
+
+      <div className="border-t border-stone-2 pt-6">
+        {plusTard.etat === "envoye" ? (
+          <div role="status" className="border-l-2 border-brass pl-4 text-sm text-ink">
+            <p>
+              C&apos;est noté. Nous venons de vous envoyer un e-mail avec un lien pour saisir votre IBAN quand vous voulez,
+              valable {SIGNATURE.validiteJours} jours. Votre devis reste signé ; rien n&apos;est prélevé. Vous pouvez fermer cette page.
+            </p>
+            <button type="button" className="mt-2 underline underline-offset-2" onClick={() => setPlusTard({ etat: "repos" })}>
+              J&apos;ai finalement mon RIB
+            </button>
+          </div>
+        ) : (
+          <>
+            <p className="text-sm text-ink-2">Vous n&apos;avez pas votre RIB sous la main ?</p>
+            <button
+              type="button"
+              className="btn btn-line mt-3"
+              onClick={terminerPlusTard}
+              disabled={plusTard.etat === "envoi"}
+            >
+              {plusTard.etat === "envoi" ? "Envoi…" : "Terminer plus tard par e-mail"}
+            </button>
+            {plusTard.etat === "erreur" && <p role="alert" className="mt-3 text-sm text-alert">{plusTard.message}</p>}
+          </>
+        )}
+      </div>
     </div>
   );
 }
