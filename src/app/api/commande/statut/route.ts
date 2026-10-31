@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { commandeDuJeton } from "@/lib/commandeServeur";
 import { ipOf, rateLimited } from "@/lib/mailer";
-import { configQonto, lireMandat } from "@/lib/qonto";
+import { lireMandat } from "@/lib/qonto";
+import { ouvrirQonto } from "@/lib/qontoConnexion";
 
 export const runtime = "nodejs";
 
@@ -14,11 +15,10 @@ export async function GET(req: Request) {
     return NextResponse.json({ ok: false, error: "Trop de requêtes." }, { status: 429 });
   }
   const signable = commandeDuJeton(new URL(req.url).searchParams.get("jeton"));
-  const cfg = configQonto();
-  if (!signable || !cfg) return NextResponse.json({ ok: false, error: "Commande introuvable ou expirée." }, { status: 404 });
+  if (!signable) return NextResponse.json({ ok: false, error: "Commande introuvable ou expirée." }, { status: 404 });
 
   try {
-    const mandat = await lireMandat(cfg, signable.donnees.mandatId);
+    const mandat = await lireMandat(await ouvrirQonto(), signable.donnees.mandatId);
     return NextResponse.json({ ok: true, signe: mandat.signe });
   } catch (err) {
     console.error("[commande/statut] lecture du mandat échouée", err);

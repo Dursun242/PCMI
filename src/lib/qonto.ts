@@ -5,10 +5,9 @@ import { DELAI_RETRACTATION_JOURS, formulesCommande, mentionFacturation, SIGNATU
  * Appels à l'API Qonto pour la commande en ligne : création du client, du
  * devis et du mandat SEPA, puis lecture du mandat (signé ou non).
  *
- * Authentification par clé API (« identifiant:clé secrète »), acceptée par ces
- * routes. Si QONTO_STAGING_TOKEN est défini, les appels vont à la banque de
- * test (sandbox) ; sinon à la vraie banque. Rien n'est encaissé ici : les
- * factures, réglées par prélèvement, sont lancées à la main dans Qonto.
+ * Authentification OAuth (jeton d'accès Bearer) : la clé API ne permet pas
+ * de créer un mandat. Rien n'est encaissé ici : les factures, réglées par
+ * prélèvement, sont lancées à la main dans Qonto.
  */
 
 const BASE_PRODUCTION = "https://thirdparty.qonto.com";
@@ -19,18 +18,17 @@ export interface ConfigQonto {
   headers: Record<string, string>;
 }
 
-type Env = Partial<Record<"QONTO_LOGIN" | "QONTO_SECRET_KEY" | "QONTO_STAGING_TOKEN" | "QONTO_API_BASE", string>> &
-  Record<string, string | undefined>;
+type Env = Record<string, string | undefined>;
 
 /**
- * Configuration lue dans l'environnement ; null tant que la clé API n'est pas
- * renseignée. QONTO_API_BASE ne sert qu'aux essais locaux (fausse banque) et
- * n'est défini ni en preview ni en production.
+ * Configuration d'appel à partir d'un jeton d'accès OAuth (voir
+ * qontoConnexion.ts) : Qonto exige OAuth pour les mandats SEPA. Si
+ * QONTO_STAGING_TOKEN est défini, les appels vont à la banque de test ;
+ * QONTO_API_BASE ne sert qu'aux essais locaux (fausse banque).
  */
-export function configQonto(env: Env = process.env): ConfigQonto | null {
-  const { QONTO_LOGIN: login, QONTO_SECRET_KEY: cle, QONTO_STAGING_TOKEN: jetonTest, QONTO_API_BASE: baseLocale } = env;
-  if (!login || !cle) return null;
-  const headers: Record<string, string> = { Authorization: `${login}:${cle}` };
+export function configQonto(jetonAcces: string, env: Env = process.env): ConfigQonto {
+  const { QONTO_STAGING_TOKEN: jetonTest, QONTO_API_BASE: baseLocale } = env;
+  const headers: Record<string, string> = { Authorization: `Bearer ${jetonAcces}` };
   if (jetonTest) headers["X-Qonto-Staging-Token"] = jetonTest;
   return { base: baseLocale || (jetonTest ? BASE_SANDBOX : BASE_PRODUCTION), headers };
 }

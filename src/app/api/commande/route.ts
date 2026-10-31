@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 import { validerCommande } from "@/lib/commande";
 import { jetonPour, optionsRetenues } from "@/lib/commandeServeur";
 import { ipOf, rateLimited } from "@/lib/mailer";
-import { configQonto, creerCommandeQonto, ErreurQonto } from "@/lib/qonto";
+import { creerCommandeQonto, ErreurQonto } from "@/lib/qonto";
+import { ouvrirQonto } from "@/lib/qontoConnexion";
+import { ErreurConnexionQonto } from "@/lib/qontoOAuth";
 import { jourParis } from "@/lib/suivi";
 
 export const runtime = "nodejs";
@@ -36,17 +38,16 @@ export async function POST(req: Request) {
   const resultat = validerCommande(body);
   if (!resultat.ok) return NextResponse.json({ ok: false, error: resultat.erreur }, { status: 400 });
 
-  const cfg = configQonto();
-  if (!cfg) {
-    console.error("[commande] QONTO_LOGIN / QONTO_SECRET_KEY absentes : commande non créée");
-    return NextResponse.json({ ok: false, error: "Le règlement en ligne est momentanément indisponible. Réessayez plus tard." }, { status: 503 });
-  }
-
   try {
+    const cfg = await ouvrirQonto();
     const qonto = await creerCommandeQonto(cfg, resultat.commande, jourParis(new Date()));
     const jeton = jetonPour(resultat.commande, qonto, optionsRetenues((body as { panier?: unknown }).panier));
     return NextResponse.json({ ok: true, urlMandat: qonto.urlMandat, jeton });
   } catch (err) {
+    // Connexion Qonto absente ou expirée : l'administrateur est déjà prévenu par e-mail (ouvrirQonto).
+    if (err instanceof ErreurConnexionQonto) {
+      return NextResponse.json({ ok: false, error: "Le règlement en ligne est momentanément indisponible. Réessayez plus tard." }, { status: 503 });
+    }
     if (err instanceof ErreurQonto) console.error(`[commande] ${err.message}`, err.detail);
     else console.error("[commande] création chez Qonto échouée", err);
     return NextResponse.json(

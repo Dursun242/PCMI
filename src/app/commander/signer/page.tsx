@@ -4,7 +4,8 @@ import SignatureCommande from "@/components/commande/SignatureCommande";
 import { formatCentimes, mentionFacturation } from "@/lib/commande";
 import { commandeDuJeton } from "@/lib/commandeServeur";
 import { formatEuro } from "@/lib/format";
-import { configQonto, lireDevis, lireMandat } from "@/lib/qonto";
+import { lireDevis, lireMandat } from "@/lib/qonto";
+import { ouvrirQonto } from "@/lib/qontoConnexion";
 
 /**
  * Page ouverte depuis l'e-mail « Confirmez votre commande » : le client relit
@@ -35,8 +36,7 @@ function Message({ titre, children }: { titre: string; children: React.ReactNode
 export default async function SignerPage({ searchParams }: { searchParams: Promise<{ jeton?: string }> }) {
   const { jeton } = await searchParams;
   const signable = commandeDuJeton(jeton);
-  const cfg = configQonto();
-  if (!signable || !cfg || !jeton) {
+  if (!signable || !jeton) {
     return (
       <Message titre="Ce lien n'est plus valable.">
         <p>Il a expiré ou il est incomplet. Recommencez votre commande : cela ne prend que quelques minutes.</p>
@@ -47,6 +47,7 @@ export default async function SignerPage({ searchParams }: { searchParams: Promi
 
   let devis, mandat;
   try {
+    const cfg = await ouvrirQonto();
     [devis, mandat] = await Promise.all([lireDevis(cfg, signable.donnees.devisId), lireMandat(cfg, signable.donnees.mandatId)]);
   } catch (err) {
     console.error("[commande/signer] lecture Qonto échouée", err);

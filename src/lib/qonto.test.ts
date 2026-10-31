@@ -36,21 +36,16 @@ function commande(options: Record<string, number> = {}, echeances = 4): Commande
 const CONFIG: ConfigQonto = { base: "https://qonto.test", headers: { Authorization: "login:cle" } };
 
 describe("configQonto", () => {
-  it("n'existe pas sans identifiant ni clé", () => {
-    expect(configQonto({})).toBeNull();
-    expect(configQonto({ QONTO_LOGIN: "l" })).toBeNull();
+  it("appelle la vraie banque avec le jeton d'accès OAuth", () => {
+    const c = configQonto("jeton-oauth", {});
+    expect(c.base).toBe("https://thirdparty.qonto.com");
+    expect(c.headers).toEqual({ Authorization: "Bearer jeton-oauth" });
   });
 
-  it("vise la vraie banque sans jeton de test", () => {
-    const c = configQonto({ QONTO_LOGIN: "mon-org", QONTO_SECRET_KEY: "cle" });
-    expect(c?.base).toBe("https://thirdparty.qonto.com");
-    expect(c?.headers).toEqual({ Authorization: "mon-org:cle" });
-  });
-
-  it("vise la banque de test avec le jeton de test", () => {
-    const c = configQonto({ QONTO_LOGIN: "l", QONTO_SECRET_KEY: "c", QONTO_STAGING_TOKEN: "t" });
-    expect(c?.base).toBe("https://thirdparty-sandbox.staging.qonto.co");
-    expect(c?.headers["X-Qonto-Staging-Token"]).toBe("t");
+  it("appelle la banque de test avec le jeton de test", () => {
+    const c = configQonto("jeton-oauth", { QONTO_STAGING_TOKEN: "t" });
+    expect(c.base).toBe("https://thirdparty-sandbox.staging.qonto.co");
+    expect(c.headers["X-Qonto-Staging-Token"]).toBe("t");
   });
 });
 

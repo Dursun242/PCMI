@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { commandeDuJeton } from "@/lib/commandeServeur";
 import { emailLienSignature } from "@/lib/emailsCommande";
 import { ipOf, rateLimited, sendToClient } from "@/lib/mailer";
-import { configQonto, lireMandat } from "@/lib/qonto";
+import { lireMandat } from "@/lib/qonto";
+import { ouvrirQonto } from "@/lib/qontoConnexion";
 
 export const runtime = "nodejs";
 
@@ -24,13 +25,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Requête illisible." }, { status: 400 });
   }
   const signable = commandeDuJeton(jeton);
-  const cfg = configQonto();
-  if (!signable || !cfg || typeof jeton !== "string") {
+  if (!signable || typeof jeton !== "string") {
     return NextResponse.json({ ok: false, error: "Commande introuvable ou expirée." }, { status: 404 });
   }
 
   try {
-    const mandat = await lireMandat(cfg, signable.donnees.mandatId);
+    const mandat = await lireMandat(await ouvrirQonto(), signable.donnees.mandatId);
     if (!mandat.signe) return NextResponse.json({ ok: false, error: "Le mandat n'est pas encore signé." }, { status: 409 });
 
     const url = `${new URL(req.url).origin}/commander/signer?jeton=${encodeURIComponent(jeton)}`;
