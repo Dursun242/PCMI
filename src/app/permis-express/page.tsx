@@ -27,6 +27,8 @@ import PaiementFractionne from "@/components/PaiementFractionne";
  */
 /** Le panier, formule Express déjà choisie. */
 const COMMANDER_EXPRESS = "/commander?formule=express";
+/** Libellé des boutons de commande, le même partout sur la page. */
+const LIBELLE_COMMANDER = `Commander votre permis de construire ${express.nom}`;
 
 /** « Seine-Maritime, Eure… ou Somme » : la liste des départements de la campagne, en français. */
 const zone = (mot: "et" | "ou") =>
@@ -70,7 +72,7 @@ function RelanceDevis({ titre, zone }: { titre: string; zone: "relance1" | "rela
           </p>
         </div>
         <div className="grid shrink-0 grid-cols-2 gap-3 md:flex">
-          <Link href={COMMANDER_EXPRESS} className="btn btn-ink col-span-2 whitespace-nowrap !px-3 sm:!px-7 md:col-span-1">Commander l&apos;Express</Link>
+          <Link href={COMMANDER_EXPRESS} className="btn btn-ink col-span-2 text-center leading-snug !py-2.5 !px-3 sm:!px-7 md:col-span-1">{LIBELLE_COMMANDER}</Link>
           <TelLink source="express_relance" className="btn btn-line col-span-2 !px-3 sm:!px-7 md:col-span-1">
             Appeler
           </TelLink>
@@ -118,9 +120,9 @@ export default function PermisExpressPage() {
             </div>
 
             <div className="mt-6 sm:mt-10 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-4">
-              {/* Sur téléphone, le bouton principal prend toute la largeur : son libellé tient sur une ligne. */}
-              <Link href={COMMANDER_EXPRESS} className="btn btn-paper col-span-2 whitespace-nowrap !px-3 sm:!px-7">
-                Commander l&apos;Express
+              {/* Sur téléphone, le bouton principal prend toute la largeur. */}
+              <Link href={COMMANDER_EXPRESS} className="btn btn-paper col-span-2 text-center leading-snug !py-2.5 !px-3 sm:!px-7">
+                {LIBELLE_COMMANDER}
               </Link>
               <TelLink source="express_hero" className="btn btn-line-light col-span-2 !px-3 sm:!px-7 lg:!border-transparent lg:!bg-paper lg:!text-ink lg:hover:!bg-brass-2">
                 <span className="sm:hidden">Appeler</span>
@@ -176,8 +178,8 @@ export default function PermisExpressPage() {
             <p className="mt-3 text-sm text-ink-2">
               Par prélèvement. Rien n&apos;est prélevé avant que nous ayons vérifié que votre terrain permet le permis.
             </p>
-            <Link href={COMMANDER_EXPRESS} className="btn btn-ink mt-5 w-full">
-              Commander l&apos;Express
+            <Link href={COMMANDER_EXPRESS} className="btn btn-ink mt-5 w-full text-center leading-snug !py-2.5">
+              {LIBELLE_COMMANDER}
             </Link>
             <p className="mt-8 border-t border-stone-2 pt-6 display text-2xl leading-tight">Vous préférez en parler d&apos;abord ?</p>
             <p className="mt-2 text-sm text-ink-2">
@@ -278,7 +280,7 @@ export default function PermisExpressPage() {
             <p className="mt-3 text-paper/75">Commande en ligne, en 1, 4 ou 10 fois. Dossier prêt en {express.delai}.</p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link href={COMMANDER_EXPRESS} className="btn btn-paper">Commander l&apos;Express</Link>
+            <Link href={COMMANDER_EXPRESS} className="btn btn-paper text-center leading-snug !py-2.5">{LIBELLE_COMMANDER}</Link>
             <TelLink source="express_bas" className="btn btn-line-light">
               {site.phone}
             </TelLink>
