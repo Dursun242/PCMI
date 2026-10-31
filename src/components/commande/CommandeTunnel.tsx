@@ -17,27 +17,30 @@ import {
   type OptionCommandeId,
 } from "@/lib/commande";
 import EtapeCoordonnees, { type ChampsCoordonnees } from "./EtapeCoordonnees";
+import EtapeDevis from "./EtapeDevis";
 import EtapeIban from "./EtapeIban";
 
 /**
- * Le parcours complet, affiché dès le départ : les trois étapes du site, puis
- * la saisie de l'IBAN chez Qonto et la signature par e-mail. Le client sait
- * ainsi où il en est et ce qui l'attend hors du site.
+ * Le parcours complet, affiché dès le départ, comme sur un site marchand :
+ * panier, coordonnées, règlement, devis à accepter, puis l'IBAN chez Qonto.
  */
-const ETAPES = ["Panier", "Coordonnées", "Règlement", "IBAN", "Signature"] as const;
-type Etape = 0 | 1 | 2 | 3;
+const ETAPES = ["Panier", "Coordonnées", "Règlement", "Devis", "IBAN"] as const;
+type Etape = 0 | 1 | 2 | 3 | 4;
 
 const INTRO_ETAPE: Record<Etape, string> = {
   0: "Choisissez votre formule et, si besoin, des options. Le total se met à jour au fur et à mesure.",
   1: "Ces informations rempliront votre devis et votre mandat de prélèvement : vous n'aurez pas à les saisir deux fois.",
-  2: "Choisissez en combien de fois vous réglez. Aucun prélèvement aujourd'hui : il faudra encore saisir votre IBAN, puis signer votre commande par e-mail.",
-  3: "Dernière étape sur le site. Ensuite, vous signerez votre commande depuis l'e-mail que nous vous enverrons.",
+  2: "Choisissez en combien de fois vous réglez. Aucun prélèvement aujourd'hui : vous relirez ensuite votre devis, puis saisirez votre IBAN.",
+  3: "Relisez votre devis et votre échéancier, puis signez-le en un clic.",
+  4: "Dernière étape : votre IBAN, sur la page sécurisée de notre banque.",
 };
 
-/** Commande créée chez Qonto, en attente du mandat : gardée le temps de l'onglet pour survivre à un rechargement. */
+/** Commande créée chez Qonto, pas encore confirmée : gardée le temps de l'onglet pour survivre à un rechargement. */
 interface CommandeEnCours {
   jeton: string;
   urlMandat: string;
+  /** Devis accepté : on reprend alors à l'IBAN, sinon au devis. */
+  accepte?: boolean;
 }
 const CLE_COMMANDE_EN_COURS = "pmi-commande-en-cours";
 
@@ -88,15 +91,23 @@ export default function CommandeTunnel({ presetFormule, presetSurface }: { prese
   // Après un rechargement, le panier affiché ne serait plus celui de la commande : on ne l'affiche pas.
   const [reprise, setReprise] = useState(false);
 
-  // Commande déjà créée dans cet onglet (page rechargée pendant la saisie de l'IBAN) : on reprend à l'étape IBAN.
+  // Commande déjà créée dans cet onglet (page rechargée) : on reprend au devis, ou à l'IBAN s'il est accepté.
   useEffect(() => {
     const c = lireCommandeEnCours();
     if (c) {
       setEnCours(c);
       setReprise(true);
-      setEtape(3);
+      setEtape(c.accepte ? 4 : 3);
     }
   }, []);
+
+  function devisAccepte(jeton: string) {
+    if (!enCours) return;
+    const c: CommandeEnCours = { ...enCours, jeton, accepte: true };
+    ecrireCommandeEnCours(c);
+    setEnCours(c);
+    allerA(4);
+  }
 
   // Une option déjà incluse dans la formule choisie ne compte plus.
   const optionsValides = Object.fromEntries(
@@ -179,7 +190,8 @@ export default function CommandeTunnel({ presetFormule, presetSurface }: { prese
           {etape === 2 && choixEcheancier && (
             <EtapeReglement echeanciers={echeanciers} choix={choixEcheancier.nombre} onChoix={setNombre} />
           )}
-          {etape === 3 && enCours && (
+          {etape === 3 && enCours && <EtapeDevis jeton={enCours.jeton} onAccepte={devisAccepte} />}
+          {etape === 4 && enCours && (
             <EtapeIban jeton={enCours.jeton} urlMandat={enCours.urlMandat} onTermine={() => ecrireCommandeEnCours(null)} />
           )}
         </div>
@@ -209,7 +221,7 @@ export default function CommandeTunnel({ presetFormule, presetSurface }: { prese
           )}
           {etape === 2 && (
             <button type="button" className="btn btn-ink" onClick={passerAuPaiement} disabled={envoi.etat === "envoi"}>
-              {envoi.etat === "envoi" ? "Préparation…" : "Saisir mon IBAN"}
+              {envoi.etat === "envoi" ? "Préparation de votre devis…" : "Voir mon devis"}
             </button>
           )}
         </div>
@@ -311,9 +323,9 @@ function EtapeReglement({ echeanciers, choix, onChoix }: EtapeReglementProps) {
         Rien n&apos;est prélevé à la commande : nous vérifions d&apos;abord que votre terrain permet le dépôt du permis.
       </p>
       <p className="text-sm text-ink-2">
-        À l&apos;étape suivante, vous saisissez votre IBAN et validez le mandat SEPA sur la page sécurisée de notre banque,
-        Qonto. Vous recevez ensuite un e-mail pour signer le devis et les{" "}
-        <Link href="/cgv" className="underline decoration-brass underline-offset-2">conditions générales de vente</Link> : votre commande est alors confirmée.
+        À l&apos;étape suivante, vous relisez et signez votre devis, avec les{" "}
+        <Link href="/cgv" className="underline decoration-brass underline-offset-2">conditions générales de vente</Link>, puis vous saisissez
+        votre IBAN sur la page sécurisée de notre banque, Qonto : votre commande est alors confirmée.
       </p>
     </fieldset>
   );
