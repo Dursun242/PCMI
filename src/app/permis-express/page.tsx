@@ -14,6 +14,7 @@ import { express, site } from "@/config/site";
 import { FAQ_EXPRESS } from "@/lib/express";
 import { formatEuro, formatFrDate } from "@/lib/format";
 import type { ReferenceVitrine } from "@/lib/vitrine";
+import PaiementFractionne from "@/components/PaiementFractionne";
 
 /**
  * Page d'atterrissage de la campagne Google Ads « permis express »
@@ -65,7 +66,7 @@ function RelanceDevis({ titre, zone }: { titre: string; zone: "relance1" | "rela
         <div>
           <p className="display text-3xl leading-tight">{titre}</p>
           <p className="mt-2 text-ink-2">
-            Prix fixe de {formatEuro(express.prixTTC)} TTC, en 1, 4 ou 10 fois sans frais. Rien n&apos;est prélevé avant la vérification de votre terrain.
+            Prix fixe de {formatEuro(express.prixTTC)} TTC, en 1, 4 ou 10 fois sans frais, devis immédiat. Rien n&apos;est prélevé avant la vérification de votre terrain.
           </p>
         </div>
         <div className="grid shrink-0 grid-cols-2 gap-3 md:flex">
@@ -109,6 +110,7 @@ export default function PermisExpressPage() {
                 <span className="display text-4xl sm:text-5xl">{formatEuro(express.prixTTC)}</span>{" "}
                 <span className="text-paper/80">TTC, prix fixe</span>
               </p>
+              <PaiementFractionne sombre prixTTC={express.prixTTC} className="mt-2" />
               <p className="mt-1 sm:mt-2 text-sm text-paper/70 max-w-[46ch]">
                 Maison jusqu&apos;à {express.surfaceMax} m² de surface de plancher, plain-pied ou à étage, dépôt en ligne
                 inclus. Réservée aux{" "}
@@ -171,9 +173,9 @@ export default function PermisExpressPage() {
           <div id="devis" data-section="formulaire" className="scroll-mt-24 bg-paper text-ink px-6 py-8 sm:px-9 sm:py-10 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)]">
             <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">Commande en ligne</p>
             <h2 className="display mt-3 text-4xl leading-tight">Votre permis Express, {formatEuro(express.prixTTC)} TTC</h2>
+            <PaiementFractionne prixTTC={express.prixTTC} className="mt-3" />
             <p className="mt-3 text-sm text-ink-2">
-              En 1, 4 ou 10 fois sans frais, par prélèvement. Rien n&apos;est prélevé avant que nous ayons vérifié que votre
-              terrain permet le permis.
+              Par prélèvement. Rien n&apos;est prélevé avant que nous ayons vérifié que votre terrain permet le permis.
             </p>
             <Link href={COMMANDER_EXPRESS} className="btn btn-ink mt-5 w-full">
               Commander l&apos;Express

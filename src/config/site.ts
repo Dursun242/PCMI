@@ -540,6 +540,6 @@ export const faq = [
   },
   {
     q: "Comment se passe le paiement ?",
-    a: "Un acompte de 40 % au démarrage, le solde à la remise du dossier prêt à déposer. Paiement par virement ou carte bancaire. Aucun frais caché : le prix affiché est le prix payé.",
+    a: "Vous commandez en ligne et votre devis s'affiche immédiatement : vous le signez à l'écran, puis choisissez de régler en 1, 4 ou 10 fois sans frais, par prélèvement SEPA. Rien n'est prélevé avant que nous ayons vérifié que votre terrain permet le permis et que le délai de rétractation de 14 jours soit écoulé. Aucun frais caché : le prix affiché est le prix payé.",
   },
 ];

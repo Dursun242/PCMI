@@ -17,6 +17,10 @@ import { realisations } from "@data/realisations";
 import { chantiers, vitrine } from "@/config/references";
 import { enVitrine } from "@/lib/vitrine";
 import { chiffresCles } from "@data/chiffres";
+import { formatCentimes, mensualites } from "@/lib/commande";
+
+/** Le paiement le plus étalé de la première formule, cité dans le hero. */
+const dixFois = mensualites(plans[0].priceTTC)[0];
 
 const pieces = [
   { code: "PCMI 1", name: "Plan de situation", what: "Situe le terrain dans la commune, avec l'orientation et l'échelle." },
@@ -96,12 +100,26 @@ export default function HomePage() {
             </h1>
             <p className="mt-8 text-lg sm:text-xl leading-relaxed text-paper/75 max-w-[44ch]">
               Dossier complet, rendus 3D, dépôt en mairie et suivi jusqu&apos;à l&apos;accord — à distance, sans rendez-vous physique. Conçu par un bureau d&apos;études qui allie ingénierie et architecture, à partir de{" "}
-              <span className="text-paper">{new Intl.NumberFormat("fr-FR").format(plans[0].priceTTC)}&nbsp;€&nbsp;TTC</span>.
+              <span className="text-paper">{new Intl.NumberFormat("fr-FR").format(plans[0].priceTTC)}&nbsp;€&nbsp;TTC</span>
+              {dixFois && (
+                <>
+                  , ou <span className="text-paper">{dixFois.nombre}&nbsp;×&nbsp;{formatCentimes(dixFois.montantCentimes)} sans frais</span>
+                </>
+              )}
+              .
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
               <TrackedLink href="/commander" source="hero_accueil" className="btn btn-paper">Commander mon permis</TrackedLink>
               <Link href="/tarifs" className="btn btn-line-light">Découvrir les formules</Link>
             </div>
+            <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-paper/85">
+              {["Devis immédiat", "En 1, 4 ou 10 fois sans frais", "Rien n'est prélevé avant validation du terrain"].map((t) => (
+                <li key={t} className="flex items-center gap-2">
+                  <span className="h-px w-3 bg-brass-2" aria-hidden="true" />
+                  {t}
+                </li>
+              ))}
+            </ul>
             <div className="mt-7">
               <VideoDerouleBouton />
             </div>
@@ -366,8 +384,8 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl px-5 sm:px-8">
         <div data-reveal="" className="border-t border-ink pt-12 flex flex-wrap items-end justify-between gap-8">
           <div className="max-w-[36ch]">
-            <h2 className="display text-4xl sm:text-5xl">Commandez en ligne, réglez en 1, 4 ou 10 fois.</h2>
-            <p className="mt-4 text-ink-2 leading-relaxed">Prix fixe, sans frais. Rien n&apos;est prélevé avant que nous ayons vérifié que votre terrain permet le permis.</p>
+            <h2 className="display text-4xl sm:text-5xl">Devis immédiat, réglé en 1, 4 ou 10 fois.</h2>
+            <p className="mt-4 text-ink-2 leading-relaxed">Prix fixe, sans frais : votre devis s&apos;affiche dès la commande et se signe en ligne. Rien n&apos;est prélevé avant que nous ayons vérifié que votre terrain permet le permis.</p>
           </div>
           <TrackedLink href="/commander" source="accueil_final" className="btn btn-ink">Commander mon permis</TrackedLink>
         </div>

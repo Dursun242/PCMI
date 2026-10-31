@@ -7,6 +7,7 @@ import {
   estTunnelCommande,
   echeancierPrevisionnel,
   ficheFacturation,
+  mensualites,
   mentionFacturation,
   premierPrelevementAuPlusTot,
   formatCentimes,
@@ -59,6 +60,19 @@ describe("calculerPanier", () => {
   it("ne se fie jamais à un prix envoyé par le navigateur", () => {
     const panier = calculerPanier({ formule: "complet", options: {}, totalTTC: 1 });
     expect(panier?.totalTTC).toBe(prix("complet"));
+  });
+});
+
+describe("mensualites", () => {
+  it("donne les paiements fractionnés, du plus long au plus court, sans le comptant", () => {
+    expect(mensualites(1490)).toEqual([
+      { nombre: 10, montantCentimes: 14900 },
+      { nombre: 4, montantCentimes: 37250 },
+    ]);
+  });
+
+  it("écarte un fractionnement qui ne tombe pas juste au centime", () => {
+    expect(mensualites(1001.01).map((e) => e.nombre)).toEqual([]);
   });
 });
 
