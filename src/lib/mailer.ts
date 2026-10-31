@@ -61,6 +61,8 @@ export async function sendPair(opts: {
   clientSubject: string;
   clientHtml: string;
   attachments?: MailAttachment[];
+  /** Pièces jointes de l'e-mail au client (le devis signé, par exemple). */
+  clientAttachments?: MailAttachment[];
 }) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.MAIL_FROM ?? `${site.name} <contact@id-maitrise.com>`;
@@ -88,7 +90,14 @@ export async function sendPair(opts: {
   // La demande est arrivée : un échec de l'accusé de réception ne doit pas
   // faire croire au visiteur que l'envoi a échoué (il renverrait un doublon).
   try {
-    const ack = await resend.emails.send({ from, to: opts.replyTo, replyTo: to, subject: opts.clientSubject, html: opts.clientHtml });
+    const ack = await resend.emails.send({
+      from,
+      to: opts.replyTo,
+      replyTo: to,
+      subject: opts.clientSubject,
+      html: opts.clientHtml,
+      attachments: opts.clientAttachments?.map((a) => ({ filename: a.filename, content: a.content, path: a.path })),
+    });
     if (ack.error) console.error(`[mail] accusé de réception non envoyé : ${ack.error.message}`);
   } catch (err) {
     console.error("[mail] accusé de réception non envoyé", err);

@@ -19,6 +19,8 @@ export const SCOPES_QONTO = [
   "client_invoice.write",
   "sepa_direct_debit.read",
   "sepa_direct_debit.write",
+  // PDF des devis, joints aux e-mails de confirmation.
+  "attachment.read",
 ] as const;
 
 export interface ConfigOAuth {

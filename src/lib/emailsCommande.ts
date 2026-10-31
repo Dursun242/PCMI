@@ -35,8 +35,11 @@ export interface DevisSigne {
 }
 
 /** Confirmation au client : devis signé, CGV et formulaire de rétractation (support durable), et la suite. */
-export function emailConfirmationClient(commande: Commande, devis: DevisSigne): Email {
+export function emailConfirmationClient(commande: Commande, devis: DevisSigne, pdfJoint = false): Email {
   const { coordonnees: c, echeancier } = commande;
+  const devisSigne = pdfJoint
+    ? `Votre devis signé n° ${esc(devis.numero)}, joint à cet e-mail en PDF (${lien(devis.url, "également consultable en ligne")})`
+    : lien(devis.url, `Votre devis signé n° ${devis.numero}`);
   return {
     subject: `Votre commande est confirmée — ${site.name}`,
     html: clientWrap(`
@@ -45,7 +48,7 @@ export function emailConfirmationClient(commande: Commande, devis: DevisSigne): 
       <p><strong>Et maintenant ?</strong> Nous lisons le règlement d'urbanisme de votre commune pour confirmer que le permis peut être déposé, puis nous vous confirmons le démarrage par e-mail. Si le permis n'est pas possible, nous annulons tout : rien n'est facturé ni prélevé.</p>
       <p>${esc(mentionFacturation(echeancier))}</p>
       ${section("Vos documents", `<ul style="padding-left:18px">
-        <li>${lien(devis.url, `Votre devis signé n° ${devis.numero}`)}</li>
+        <li>${devisSigne}</li>
         <li>${lien(`${site.url}/cgv`, "Les conditions générales de vente")}, dont le formulaire de rétractation (article 8)</li>
       </ul>`)}
       <p style="font-size:14px;color:#5a645e">Vous pouvez vous rétracter pendant ${DELAI_RETRACTATION_JOURS} jours à compter d'aujourd'hui, sans frais ni justification, en répondant simplement à cet e-mail.</p>
@@ -73,6 +76,7 @@ export function emailNouvelleCommande(
   mandat: MandatSigne,
   preuve: PreuveSignature,
   jourSignature: string,
+  pdfJoint = false,
 ): Email {
   const { coordonnees: c, panier } = commande;
   const signeLe = new Date(preuve.instant).toLocaleString("fr-FR", { timeZone: "Europe/Paris" });
@@ -93,7 +97,7 @@ export function emailNouvelleCommande(
         ["Adresse", `${c.adresse}, ${c.codePostal} ${c.ville}`],
       ]))}
       ${section("Signature", table([
-        ["Devis", `n° ${devis.numero}`],
+        ["Devis", `n° ${devis.numero}${pdfJoint ? " (PDF joint)" : ""}`],
         ["Mandat SEPA", `${mandat.reference} · IBAN ${mandat.iban}`],
         ["Signée le", signeLe],
         ["Exécution anticipée demandée", preuve.executionAnticipee ? "Oui" : "Non"],

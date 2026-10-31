@@ -39,6 +39,11 @@ describe("e-mails de la commande", () => {
     expect(e.html).not.toContain("Chemin <du> Bois");
   });
 
+  it("annonce le devis joint en PDF quand il l'est", () => {
+    expect(emailConfirmationClient(commande, devis, true).html).toMatch(/joint à cet e-mail en PDF/);
+    expect(emailConfirmationClient(commande, devis, false).html).not.toMatch(/joint/);
+  });
+
   it("la fiche interne contient la facturation à lancer et la preuve de signature", () => {
     const e = emailNouvelleCommande(
       commande,

@@ -227,11 +227,14 @@ export interface Devis {
   conditions: string;
   emetteur: PartieDevis & { siret: string };
   client: PartieDevis & { email: string };
+  /** Pièce jointe Qonto portant le PDF du devis. */
+  pieceJointeId?: string;
 }
 
 type Montant = { value: string } | undefined;
 interface DevisQonto {
   number: string;
+  attachment_id?: string;
   quote_url: string;
   issue_date: string;
   expiry_date: string;
@@ -282,5 +285,35 @@ export async function lireDevis(cfg: ConfigQonto, devisId: string, f: typeof fet
       ville: ville(q.client?.zip_code, q.client?.city),
       email: q.client?.email ?? "",
     },
+    ...(q.attachment_id ? { pieceJointeId: q.attachment_id } : {}),
   };
+}
+
+export interface PdfDevis {
+  nomFichier: string;
+  contenu: Buffer;
+}
+
+/**
+ * PDF du devis, pour le joindre aux e-mails de confirmation. Qonto le sert
+ * par un lien temporaire (droit attachment.read). En cas d'échec, null :
+ * l'e-mail part alors avec le lien vers le devis, la signature n'échoue pas.
+ */
+export async function pdfDevis(cfg: ConfigQonto, pieceJointeId: string | undefined, f: typeof fetch = fetch): Promise<PdfDevis | null> {
+  if (!pieceJointeId) return null;
+  try {
+    const { attachment } = await appel<{ attachment: { file_name: string; url: string } }>(
+      cfg,
+      "GET",
+      `/v2/attachments/${encodeURIComponent(pieceJointeId)}`,
+      undefined,
+      f,
+    );
+    const res = await f(attachment.url, { cache: "no-store" });
+    if (!res.ok) throw new Error(`téléchargement du PDF : ${res.status}`);
+    return { nomFichier: attachment.file_name, contenu: Buffer.from(await res.arrayBuffer()) };
+  } catch (err) {
+    console.error("[qonto] PDF du devis indisponible", err instanceof ErreurQonto ? `${err.message} ${err.detail}` : err);
+    return null;
+  }
 }

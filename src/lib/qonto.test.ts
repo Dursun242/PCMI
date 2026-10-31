@@ -8,6 +8,7 @@ import {
   creerCommandeQonto,
   ErreurQonto,
   lireDevis,
+  pdfDevis,
   lireMandat,
   masquerIban,
   type ConfigQonto,
@@ -208,10 +209,11 @@ describe("lireDevis", () => {
       client: { name: "Dursun OZKAN", address: "64 RUE HENRI DUNANT", zip_code: "76620", city: "LE HAVRE", email: "d@example.fr" },
       organization: { legal_name: "ID MAITRISE", address_line_1: "9 RUE HENRY GENESTAL", address_zipcode: "76600", address_city: "LE HAVRE", legal_number: "92153618100024" },
     };
-    const f = fauxFetch({ "GET /v2/quotes/devis-1": { quote } }, []);
+    const f = fauxFetch({ "GET /v2/quotes/devis-1": { quote: { ...quote, attachment_id: "piece-1" } } }, []);
     const d = await lireDevis(CONFIG, "devis-1", f);
     expect(d).toMatchObject({
       numero: "D-2026-058",
+      pieceJointeId: "piece-1",
       url: "https://portal.qonto.com/quotes/1",
       dateEmission: "2026-10-31",
       dateExpiration: "2026-11-07",
@@ -225,5 +227,28 @@ describe("lireDevis", () => {
     expect(d.lignes).toEqual([
       { titre: "Permis de construire Express", description: "Terrain : 64 rue Henri Dunant", quantite: 1, prixUnitaireHT: 741.67, tauxTVA: 0.2, totalHT: 741.67 },
     ]);
+  });
+});
+
+describe("pdfDevis", () => {
+  it("télécharge le PDF du devis par le lien temporaire de Qonto", async () => {
+    const appels: string[] = [];
+    const f = (async (url: string) => {
+      appels.push(url);
+      if (url === `${CONFIG.base}/v2/attachments/piece-1`) {
+        return new Response(JSON.stringify({ attachment: { file_name: "D-2026-058.pdf", url: "https://s3.test/devis.pdf" } }), { status: 200 });
+      }
+      if (url === "https://s3.test/devis.pdf") return new Response(new Uint8Array([37, 80, 68, 70]), { status: 200 });
+      return new Response("introuvable", { status: 404 });
+    }) as typeof fetch;
+    const pdf = await pdfDevis(CONFIG, "piece-1", f);
+    expect(pdf?.contenu.subarray(0, 4).toString()).toBe("%PDF");
+    expect(appels).toEqual([`${CONFIG.base}/v2/attachments/piece-1`, "https://s3.test/devis.pdf"]);
+  });
+
+  it("renvoie null si le PDF est inaccessible (droit manquant, lien expiré), sans faire échouer la signature", async () => {
+    const f = (async () => new Response(JSON.stringify({ errors: [{ code: "forbidden" }] }), { status: 403 })) as unknown as typeof fetch;
+    expect(await pdfDevis(CONFIG, "piece-1", f)).toBeNull();
+    expect(await pdfDevis(CONFIG, undefined, f)).toBeNull();
   });
 });
