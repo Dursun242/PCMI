@@ -50,6 +50,10 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
       </section>
 
       <div className="grid gap-4 sm:grid-cols-3">
+        <Link href="/admin/commandes" className="border border-ink/10 bg-paper p-6 hover:border-brass sm:col-span-3">
+          <h2 className="font-bold text-lg mb-1">Compteur des commandes en ligne</h2>
+          <p className="text-sm text-ink-2">Paniers ouverts, formulaires commencés, devis affichés et acceptés, commandes signées, par formule et par paiement.</p>
+        </Link>
         <Link href="/admin/express" className="border border-ink/10 bg-paper p-6 hover:border-brass sm:col-span-3">
           <h2 className="font-bold text-lg mb-1">Compteur de la page Express</h2>
           <p className="text-sm text-ink-2">Visites, formulaires, demandes, clics Appeler et WhatsApp de la campagne Google Ads.</p>

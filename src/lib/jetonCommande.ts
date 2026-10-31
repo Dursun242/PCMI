@@ -32,6 +32,8 @@ export interface DonneesCommande {
   coordonnees: Record<string, string>;
   /** Présente une fois le devis accepté : la commande peut alors être finalisée dès le mandat signé. */
   acceptation?: PreuveAcceptation;
+  /** Visite venue d'une annonce Google : pour le compteur des commandes (suiviCommande.ts). */
+  ads?: boolean;
 }
 
 const JOUR_MS = 24 * 60 * 60 * 1000;

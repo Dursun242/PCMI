@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { commandeDuJeton } from "@/lib/commandeServeur";
 import { emailIbanEnAttente, emailReprise } from "@/lib/emailsCommande";
 import { ipOf, rateLimited, sendPair } from "@/lib/mailer";
+import { suivreCommande } from "@/lib/suiviCommandeStore";
 
 export const runtime = "nodejs";
 
@@ -40,6 +41,8 @@ export async function POST(req: Request) {
       clientSubject: client.subject,
       clientHtml: client.html,
     });
+    const d = signable.donnees;
+    await suivreCommande(req, "plus-tard", { formule: d.selection.formule, echeances: d.echeances, ads: d.ads });
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[commande/plus-tard] e-mail non envoyé", err);
