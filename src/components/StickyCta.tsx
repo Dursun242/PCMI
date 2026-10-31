@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { trackEvent } from "@/lib/analytics";
-import WhatsAppLink from "./WhatsAppLink";
 
 /** Pages de contenu : on y rappelle l'appel à l'action. */
 function showsOn(pathname: string) {
@@ -43,12 +42,7 @@ export default function StickyCta() {
       <div className="barre-cta md:hidden fixed inset-x-0 bottom-0 z-30 border-t border-stone-2 bg-paper/97 backdrop-blur px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center gap-3">
         <div className="min-w-0 flex-1">
           <p className="display text-lg leading-tight">Devis immédiat</p>
-          <p className="text-xs text-ink-2 truncate">
-            En 1, 4 ou 10 fois sans frais ·{" "}
-            <WhatsAppLink source="sticky_mobile" noIcon className="text-ink underline decoration-brass underline-offset-2">
-              Écrire sur WhatsApp
-            </WhatsAppLink>
-          </p>
+          <p className="text-xs text-ink-2 truncate">En 1, 4 ou 10 fois sans frais</p>
         </div>
         <Link
           href="/commander"
