@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { whatsappUrl } from "@/config/site";
+import { estTunnelCommande } from "@/lib/commande";
 import { trackEvent } from "@/lib/analytics";
 import { suivreExpress } from "@/lib/suiviClient";
 
@@ -10,13 +11,19 @@ import { suivreExpress } from "@/lib/suiviClient";
  * Capsule WhatsApp flottante, ordinateur uniquement (le mobile a la barre
  * fixe). Dans les couleurs du site (vert profond, filet laiton), libellé
  * toujours lisible, point vert qui pulse pour dire « ligne ouverte ». Elle apparaît après un début de lecture,
- * pas sur la page contact où le lien est déjà en évidence.
+ * pas sur la page contact où le lien est déjà en évidence, ni dans le tunnel
+ * de commande, où elle détournerait le client de son achat.
  */
 export default function WhatsAppBubble() {
   const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   const href = whatsappUrl();
-  const eligible = Boolean(href) && pathname !== "/contact" && pathname !== "/permis-express" && !pathname.startsWith("/admin");
+  const eligible =
+    Boolean(href) &&
+    pathname !== "/contact" &&
+    pathname !== "/permis-express" &&
+    !pathname.startsWith("/admin") &&
+    !estTunnelCommande(pathname);
 
   useEffect(() => {
     if (!eligible) {
