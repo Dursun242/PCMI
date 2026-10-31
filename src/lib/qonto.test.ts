@@ -36,21 +36,16 @@ function commande(options: Record<string, number> = {}, echeances = 4): Commande
 const CONFIG: ConfigQonto = { base: "https://qonto.test", headers: { Authorization: "login:cle" } };
 
 describe("configQonto", () => {
-  it("n'existe pas sans identifiant ni clé", () => {
-    expect(configQonto({})).toBeNull();
-    expect(configQonto({ QONTO_LOGIN: "l" })).toBeNull();
+  it("appelle la vraie banque avec le jeton d'accès OAuth", () => {
+    const c = configQonto("jeton-oauth", {});
+    expect(c.base).toBe("https://thirdparty.qonto.com");
+    expect(c.headers).toEqual({ Authorization: "Bearer jeton-oauth" });
   });
 
-  it("vise la vraie banque sans jeton de test", () => {
-    const c = configQonto({ QONTO_LOGIN: "mon-org", QONTO_SECRET_KEY: "cle" });
-    expect(c?.base).toBe("https://thirdparty.qonto.com");
-    expect(c?.headers).toEqual({ Authorization: "mon-org:cle" });
-  });
-
-  it("vise la banque de test avec le jeton de test", () => {
-    const c = configQonto({ QONTO_LOGIN: "l", QONTO_SECRET_KEY: "c", QONTO_STAGING_TOKEN: "t" });
-    expect(c?.base).toBe("https://thirdparty-sandbox.staging.qonto.co");
-    expect(c?.headers["X-Qonto-Staging-Token"]).toBe("t");
+  it("appelle la banque de test avec le jeton de test", () => {
+    const c = configQonto("jeton-oauth", { QONTO_STAGING_TOKEN: "t" });
+    expect(c.base).toBe("https://thirdparty-sandbox.staging.qonto.co");
+    expect(c.headers["X-Qonto-Staging-Token"]).toBe("t");
   });
 });
 
@@ -93,10 +88,20 @@ describe("corpsDevis", () => {
     expect(corps).toMatchObject({ client_id: "client-1", issue_date: "2026-11-01", expiry_date: "2026-11-08", currency: "EUR" });
   });
 
-  it("indique le terrain, la facturation et les CGV", () => {
+  it("nomme la prestation « Permis de construire » et détaille le terrain sur sa ligne", () => {
+    const corps = corpsDevis("client-1", commande({ "rendu-3d": 1 }), "2026-11-01");
+    const [permis, option] = corps.items;
+    expect(permis.title).toBe("Permis de construire Complet");
+    expect(permis.description).toMatch(/Chemin du Bois, 76290 Montivilliers/);
+    expect(permis.description).toMatch(/AB 123/);
+    expect(permis.description).toMatch(/120 m²/);
+    expect(option.title).toBe("Rendu 3D supplémentaire");
+    expect(option.description).toBeUndefined();
+    expect(corps).not.toHaveProperty("header");
+  });
+
+  it("indique la facturation et les CGV", () => {
     const corps = corpsDevis("client-1", commande(), "2026-11-01");
-    expect(corps.header).toMatch(/Chemin du Bois, 76290 Montivilliers/);
-    expect(corps.header).toMatch(/AB 123/);
     expect(corps.footer).toMatch(/4 factures mensuelles/);
     expect(corps.terms_and_conditions).toMatch(/\/cgv/);
     expect(corps.terms_and_conditions.length).toBeLessThanOrEqual(3000);
@@ -129,29 +134,36 @@ function fauxFetch(reponses: Record<string, unknown>, appels: Appel[]): typeof f
 }
 
 describe("creerCommandeQonto", () => {
-  it("crée le client, le devis puis le mandat et renvoie la page de saisie de l'IBAN", async () => {
+  const LISTE = "GET /v2/clients?filter%5Bemail%5D=marie%40example.fr";
+  const reponsesCreation = {
+    "POST /v2/clients": { client: { id: "client-1" } },
+    "POST /v2/quotes": { quote: { id: "devis-1", number: "D-2026-012" } },
+    "POST /v2/sepa/direct_debit_mandates": { direct_debit_mandate: { id: "mandat-1", sign_url: "https://pay.qonto.com/mandates/1" } },
+  };
+  const trace = (appels: Appel[]) => appels.map((a) => `${a.method} ${a.url.replace(CONFIG.base, "")}`);
+
+  it("crée le client, le mandat puis le devis et renvoie la page de saisie de l'IBAN", async () => {
     const appels: Appel[] = [];
-    const f = fauxFetch(
-      {
-        "POST /v2/clients": { client: { id: "client-1" } },
-        "POST /v2/quotes": { quote: { id: "devis-1", number: "D-2026-012" } },
-        "POST /v2/sepa/direct_debit_mandates": { direct_debit_mandate: { id: "mandat-1", sign_url: "https://pay.qonto.com/mandates/1" } },
-      },
-      appels,
-    );
+    const f = fauxFetch({ [LISTE]: { clients: [] }, ...reponsesCreation }, appels);
     const r = await creerCommandeQonto(CONFIG, commande(), "2026-11-01", f);
     expect(r).toEqual({ clientId: "client-1", devisId: "devis-1", mandatId: "mandat-1", urlMandat: "https://pay.qonto.com/mandates/1" });
-    expect(appels.map((a) => `${a.method} ${a.url.replace(CONFIG.base, "")}`)).toEqual([
-      "POST /v2/clients",
-      "POST /v2/quotes",
-      "POST /v2/sepa/direct_debit_mandates",
-    ]);
-    expect((appels[1].body as { client_id: string }).client_id).toBe("client-1");
+    expect(trace(appels)).toEqual([LISTE, "POST /v2/clients", "POST /v2/sepa/direct_debit_mandates", "POST /v2/quotes"]);
+    expect((appels[3].body as { client_id: string }).client_id).toBe("client-1");
   });
 
-  it("signale l'étape qui échoue sans divulguer la réponse de Qonto", async () => {
-    const f = fauxFetch({ "POST /v2/clients": { client: { id: "client-1" } } }, []);
+  it("reprend le client qui existe déjà pour cet e-mail", async () => {
+    const appels: Appel[] = [];
+    const f = fauxFetch({ [LISTE]: { clients: [{ id: "client-existant", email: "Marie@Example.fr" }] }, ...reponsesCreation }, appels);
+    const r = await creerCommandeQonto(CONFIG, commande(), "2026-11-01", f);
+    expect(r.clientId).toBe("client-existant");
+    expect(trace(appels)).not.toContain("POST /v2/clients");
+  });
+
+  it("ne crée pas de devis si le mandat est refusé", async () => {
+    const appels: Appel[] = [];
+    const f = fauxFetch({ [LISTE]: { clients: [] }, "POST /v2/clients": { client: { id: "client-1" } } }, appels);
     await expect(creerCommandeQonto(CONFIG, commande(), "2026-11-01", f)).rejects.toThrow(ErreurQonto);
+    expect(trace(appels)).not.toContain("POST /v2/quotes");
   });
 });
 

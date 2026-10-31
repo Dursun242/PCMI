@@ -1,14 +1,13 @@
 import { site } from "@/config/site";
-import { DELAI_RETRACTATION_JOURS, mentionFacturation, SIGNATURE, type Commande, type Coordonnees } from "@/lib/commande";
+import { DELAI_RETRACTATION_JOURS, formulesCommande, mentionFacturation, SIGNATURE, type Commande, type Coordonnees } from "@/lib/commande";
 
 /**
  * Appels à l'API Qonto pour la commande en ligne : création du client, du
  * devis et du mandat SEPA, puis lecture du mandat (signé ou non).
  *
- * Authentification par clé API (« identifiant:clé secrète »), acceptée par ces
- * routes. Si QONTO_STAGING_TOKEN est défini, les appels vont à la banque de
- * test (sandbox) ; sinon à la vraie banque. Rien n'est encaissé ici : les
- * factures, réglées par prélèvement, sont lancées à la main dans Qonto.
+ * Authentification OAuth (jeton d'accès Bearer) : la clé API ne permet pas
+ * de créer un mandat. Rien n'est encaissé ici : les factures, réglées par
+ * prélèvement, sont lancées à la main dans Qonto.
  */
 
 const BASE_PRODUCTION = "https://thirdparty.qonto.com";
@@ -19,18 +18,17 @@ export interface ConfigQonto {
   headers: Record<string, string>;
 }
 
-type Env = Partial<Record<"QONTO_LOGIN" | "QONTO_SECRET_KEY" | "QONTO_STAGING_TOKEN" | "QONTO_API_BASE", string>> &
-  Record<string, string | undefined>;
+type Env = Record<string, string | undefined>;
 
 /**
- * Configuration lue dans l'environnement ; null tant que la clé API n'est pas
- * renseignée. QONTO_API_BASE ne sert qu'aux essais locaux (fausse banque) et
- * n'est défini ni en preview ni en production.
+ * Configuration d'appel à partir d'un jeton d'accès OAuth (voir
+ * qontoConnexion.ts) : Qonto exige OAuth pour les mandats SEPA. Si
+ * QONTO_STAGING_TOKEN est défini, les appels vont à la banque de test ;
+ * QONTO_API_BASE ne sert qu'aux essais locaux (fausse banque).
  */
-export function configQonto(env: Env = process.env): ConfigQonto | null {
-  const { QONTO_LOGIN: login, QONTO_SECRET_KEY: cle, QONTO_STAGING_TOKEN: jetonTest, QONTO_API_BASE: baseLocale } = env;
-  if (!login || !cle) return null;
-  const headers: Record<string, string> = { Authorization: `${login}:${cle}` };
+export function configQonto(jetonAcces: string, env: Env = process.env): ConfigQonto {
+  const { QONTO_STAGING_TOKEN: jetonTest, QONTO_API_BASE: baseLocale } = env;
+  const headers: Record<string, string> = { Authorization: `Bearer ${jetonAcces}` };
   if (jetonTest) headers["X-Qonto-Staging-Token"] = jetonTest;
   return { base: baseLocale || (jetonTest ? BASE_SANDBOX : BASE_PRODUCTION), headers };
 }
@@ -98,20 +96,32 @@ function conditionsDevis(): string {
   ].join("\n");
 }
 
+/** Détail de la ligne du permis : le terrain et la surface, une information par ligne. */
+function detailTerrain(c: Coordonnees): string {
+  return [
+    `Terrain : ${c.terrainAdresse}, ${c.terrainCodePostal} ${c.terrainCommune}`,
+    c.referenceCadastrale ? `Référence cadastrale : ${c.referenceCadastrale}` : "",
+    `Surface de plancher prévue : ${c.surface} m²`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
 export function corpsDevis(clientId: string, commande: Commande, aujourdhui: string) {
   const { coordonnees: c, echeancier, panier } = commande;
-  const reference = c.referenceCadastrale ? `, référence cadastrale ${c.referenceCadastrale}` : "";
+  const formule = formulesCommande.find((f) => f.id === panier.formule)?.name ?? panier.formule;
   return {
     client_id: clientId,
     issue_date: aujourdhui,
     expiry_date: ajouterJours(aujourdhui, SIGNATURE.validiteJours),
     currency: "EUR",
-    header: `Permis de construire. Terrain : ${c.terrainAdresse}, ${c.terrainCodePostal} ${c.terrainCommune}${reference}. Surface de plancher prévue : ${c.surface} m².`,
     footer: mentionFacturation(echeancier),
     terms_and_conditions: conditionsDevis(),
     // Une ligne par prestation, quantité 1 au total de la ligne : le TTC de chaque ligne retombe ainsi au centime près.
-    items: panier.lignes.map((l) => ({
-      title: l.quantite > 1 ? `${l.quantite} × ${l.libelle}` : l.libelle,
+    // La première est le permis lui-même, avec le terrain en détail ; les suivantes, les options.
+    items: panier.lignes.map((l, i) => ({
+      title: i === 0 ? `Permis de construire ${formule}` : l.quantite > 1 ? `${l.quantite} × ${l.libelle}` : l.libelle,
+      ...(i === 0 ? { description: detailTerrain(c) } : {}),
       quantity: "1",
       unit_price: { value: ht(l.totalTTC), currency: "EUR" },
       vat_rate: String(TVA),
@@ -132,19 +142,37 @@ export interface CommandeQonto {
   urlMandat: string;
 }
 
-/** Crée chez Qonto le client, son devis et son mandat SEPA (non signé). */
+/** Client existant pour cet e-mail (nouvel essai, deuxième commande) : réutilisé plutôt que dupliqué. */
+async function clientExistant(cfg: ConfigQonto, email: string, f: typeof fetch): Promise<string | null> {
+  const { clients } = await appel<{ clients: { id: string; email?: string }[] }>(
+    cfg,
+    "GET",
+    `/v2/clients?${new URLSearchParams({ "filter[email]": email })}`,
+    undefined,
+    f,
+  );
+  return clients.find((c) => c.email?.toLowerCase() === email.toLowerCase())?.id ?? null;
+}
+
+/**
+ * Crée chez Qonto le client (ou reprend celui qui existe), son mandat SEPA
+ * (non signé) puis son devis. Le devis vient en dernier : si le mandat est
+ * refusé, aucun numéro de devis n'est consommé.
+ */
 export async function creerCommandeQonto(cfg: ConfigQonto, commande: Commande, aujourdhui: string, f: typeof fetch = fetch): Promise<CommandeQonto> {
-  const { client } = await appel<{ client: { id: string } }>(cfg, "POST", "/v2/clients", corpsClient(commande.coordonnees), f);
-  const { quote } = await appel<{ quote: { id: string } }>(cfg, "POST", "/v2/quotes", corpsDevis(client.id, commande, aujourdhui), f);
+  const clientId =
+    (await clientExistant(cfg, commande.coordonnees.email, f)) ??
+    (await appel<{ client: { id: string } }>(cfg, "POST", "/v2/clients", corpsClient(commande.coordonnees), f)).client.id;
   const { direct_debit_mandate: mandat } = await appel<{ direct_debit_mandate: { id: string; sign_url?: string } }>(
     cfg,
     "POST",
     "/v2/sepa/direct_debit_mandates",
-    corpsMandat(client.id),
+    corpsMandat(clientId),
     f,
   );
   if (!mandat.sign_url) throw new ErreurQonto("Qonto : mandat créé sans page de signature", 502, "");
-  return { clientId: client.id, devisId: quote.id, mandatId: mandat.id, urlMandat: mandat.sign_url };
+  const { quote } = await appel<{ quote: { id: string } }>(cfg, "POST", "/v2/quotes", corpsDevis(clientId, commande, aujourdhui), f);
+  return { clientId, devisId: quote.id, mandatId: mandat.id, urlMandat: mandat.sign_url };
 }
 
 /** IBAN réduit à ses quatre derniers caractères : le seul affichage autorisé côté site. */

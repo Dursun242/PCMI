@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { commandeDuJeton } from "@/lib/commandeServeur";
 import { emailConfirmationClient, emailNouvelleCommande } from "@/lib/emailsCommande";
 import { ipOf, rateLimited, sendPair } from "@/lib/mailer";
-import { configQonto, lireDevis, lireMandat } from "@/lib/qonto";
+import { lireDevis, lireMandat } from "@/lib/qonto";
+import { ouvrirQonto } from "@/lib/qontoConnexion";
 import { jourParis } from "@/lib/suivi";
 
 export const runtime = "nodejs";
@@ -31,10 +32,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Merci d'accepter le devis, l'échéancier et les conditions générales de vente." }, { status: 400 });
   }
   const signable = commandeDuJeton(body.jeton);
-  const cfg = configQonto();
-  if (!signable || !cfg) return NextResponse.json({ ok: false, error: "Ce lien a expiré. Recommencez votre commande." }, { status: 404 });
+  if (!signable) return NextResponse.json({ ok: false, error: "Ce lien a expiré. Recommencez votre commande." }, { status: 404 });
 
   try {
+    const cfg = await ouvrirQonto();
     const [devis, mandat] = await Promise.all([lireDevis(cfg, signable.donnees.devisId), lireMandat(cfg, signable.donnees.mandatId)]);
     if (!mandat.signe) return NextResponse.json({ ok: false, error: "Votre mandat de prélèvement n'est pas encore validé." }, { status: 409 });
 

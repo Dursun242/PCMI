@@ -4,11 +4,11 @@ import { signerJeton, verifierJeton, type DonneesCommande } from "@/lib/jetonCom
 import type { CommandeQonto } from "@/lib/qonto";
 
 /**
- * Le jeton de commande est signé avec une clé dérivée de la clé secrète Qonto :
- * pas de variable de plus à gérer, et une clé qui change invalide les liens
- * en cours, ce qui est le comportement voulu.
+ * Le jeton de commande est signé avec une clé dérivée du secret de
+ * l'application Qonto : pas de variable de plus à gérer, et un secret qui
+ * change invalide les liens en cours, ce qui est le comportement voulu.
  */
-const secret = () => process.env.QONTO_SECRET_KEY ?? "";
+const secret = () => process.env.QONTO_CLIENT_SECRET ?? process.env.QONTO_SECRET_KEY ?? "";
 
 /** Jeton à placer dans le lien de signature, une fois la commande créée chez Qonto. */
 export function jetonPour(commande: Commande, qonto: CommandeQonto, options: Record<string, number>): string {
