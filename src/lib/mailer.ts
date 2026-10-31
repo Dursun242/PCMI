@@ -96,6 +96,25 @@ export async function sendPair(opts: {
   return { dev: false };
 }
 
+/**
+ * E-mail adressé au seul client (lien de signature de la commande, par
+ * exemple). Lève une erreur si l'envoi échoue : le client attend ce message
+ * pour continuer, l'échec doit lui être signalé. Sans RESEND_API_KEY : log
+ * serveur et retour { dev: true }.
+ */
+export async function sendToClient(opts: { to: string; subject: string; html: string }) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn(`[mail] RESEND_API_KEY absente — non envoyé : ${opts.subject}`);
+    return { dev: true };
+  }
+  const from = process.env.MAIL_FROM ?? `${site.name} <contact@id-maitrise.com>`;
+  const replyTo = process.env.MAIL_TO ?? site.email;
+  const envoi = await new Resend(apiKey).emails.send({ from, to: opts.to, replyTo, subject: opts.subject, html: opts.html });
+  if (envoi.error) throw new Error(`Resend (e-mail client) : ${envoi.error.message}`);
+  return { dev: false };
+}
+
 /* ---------- Fichiers ---------- */
 export const ALLOWED_TYPES = ["application/pdf", "image/jpeg", "image/png", "image/webp", "image/heic", "application/zip", "application/x-zip-compressed", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/msword", "application/acad", "image/vnd.dwg", "application/dxf"];
 export const MAX_FILE_BYTES = 25 * 1024 * 1024; // via stockage direct

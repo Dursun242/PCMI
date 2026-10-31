@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { formatEuro } from "@/lib/format";
 import { surfaceBucket, trackEvent } from "@/lib/analytics";
@@ -17,6 +17,7 @@ import {
   type OptionCommandeId,
 } from "@/lib/commande";
 import EtapeCoordonnees, { type ChampsCoordonnees } from "./EtapeCoordonnees";
+import EtapeIban from "./EtapeIban";
 
 /**
  * Le parcours complet, affiché dès le départ : les trois étapes du site, puis
@@ -24,13 +25,40 @@ import EtapeCoordonnees, { type ChampsCoordonnees } from "./EtapeCoordonnees";
  * ainsi où il en est et ce qui l'attend hors du site.
  */
 const ETAPES = ["Panier", "Coordonnées", "Règlement", "IBAN", "Signature"] as const;
-type Etape = 0 | 1 | 2;
+type Etape = 0 | 1 | 2 | 3;
 
 const INTRO_ETAPE: Record<Etape, string> = {
   0: "Choisissez votre formule et, si besoin, des options. Le total se met à jour au fur et à mesure.",
   1: "Ces informations rempliront votre devis et votre mandat de prélèvement : vous n'aurez pas à les saisir deux fois.",
   2: "Choisissez en combien de fois vous réglez. Aucun prélèvement aujourd'hui : il faudra encore saisir votre IBAN, puis signer votre commande par e-mail.",
+  3: "Dernière étape sur le site. Ensuite, vous signerez votre commande depuis l'e-mail que nous vous enverrons.",
 };
+
+/** Commande créée chez Qonto, en attente du mandat : gardée le temps de l'onglet pour survivre à un rechargement. */
+interface CommandeEnCours {
+  jeton: string;
+  urlMandat: string;
+}
+const CLE_COMMANDE_EN_COURS = "pmi-commande-en-cours";
+
+function lireCommandeEnCours(): CommandeEnCours | null {
+  try {
+    const brut = sessionStorage.getItem(CLE_COMMANDE_EN_COURS);
+    const c = brut ? JSON.parse(brut) : null;
+    return c && typeof c.jeton === "string" && typeof c.urlMandat === "string" ? c : null;
+  } catch {
+    return null;
+  }
+}
+
+function ecrireCommandeEnCours(c: CommandeEnCours | null) {
+  try {
+    if (c) sessionStorage.setItem(CLE_COMMANDE_EN_COURS, JSON.stringify(c));
+    else sessionStorage.removeItem(CLE_COMMANDE_EN_COURS);
+  } catch {
+    /* stockage indisponible (navigation privée) : la commande reste suivie tant que la page est ouverte */
+  }
+}
 
 type Envoi = { etat: "repos" } | { etat: "envoi" } | { etat: "erreur"; message: string };
 
@@ -56,6 +84,19 @@ export default function CommandeTunnel({ presetFormule, presetSurface }: { prese
   const [nombre, setNombre] = useState<NombreEcheances>(ECHEANCES_PAR_DEFAUT);
   const [erreurEtape, setErreurEtape] = useState("");
   const [envoi, setEnvoi] = useState<Envoi>({ etat: "repos" });
+  const [enCours, setEnCours] = useState<CommandeEnCours | null>(null);
+  // Après un rechargement, le panier affiché ne serait plus celui de la commande : on ne l'affiche pas.
+  const [reprise, setReprise] = useState(false);
+
+  // Commande déjà créée dans cet onglet (page rechargée pendant la saisie de l'IBAN) : on reprend à l'étape IBAN.
+  useEffect(() => {
+    const c = lireCommandeEnCours();
+    if (c) {
+      setEnCours(c);
+      setReprise(true);
+      setEtape(3);
+    }
+  }, []);
 
   // Une option déjà incluse dans la formule choisie ne compte plus.
   const optionsValides = Object.fromEntries(
@@ -98,7 +139,11 @@ export default function CommandeTunnel({ presetFormule, presetSurface }: { prese
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error ?? "Envoi impossible.");
       trackEvent("commande_submit", { formule, echeances: String(choixEcheancier.nombre), surface_bucket: surfaceBucket(coordonnees.surface ?? "") });
-      if (typeof json.redirection === "string") window.location.assign(json.redirection);
+      const c: CommandeEnCours = { jeton: json.jeton, urlMandat: json.urlMandat };
+      ecrireCommandeEnCours(c);
+      setEnCours(c);
+      setEnvoi({ etat: "repos" });
+      allerA(3);
     } catch (err) {
       setEnvoi({ etat: "erreur", message: err instanceof Error ? err.message : "Envoi impossible." });
     }
@@ -134,6 +179,9 @@ export default function CommandeTunnel({ presetFormule, presetSurface }: { prese
           {etape === 2 && choixEcheancier && (
             <EtapeReglement echeanciers={echeanciers} choix={choixEcheancier.nombre} onChoix={setNombre} />
           )}
+          {etape === 3 && enCours && (
+            <EtapeIban jeton={enCours.jeton} urlMandat={enCours.urlMandat} onTermine={() => ecrireCommandeEnCours(null)} />
+          )}
         </div>
 
         {erreurEtape && (
@@ -144,7 +192,7 @@ export default function CommandeTunnel({ presetFormule, presetSurface }: { prese
         )}
 
         <div className="mt-10 flex flex-wrap items-center gap-4">
-          {etape > 0 && (
+          {etape > 0 && etape < 3 && (
             <button type="button" className="btn btn-line" onClick={() => allerA((etape - 1) as Etape)}>
               Retour
             </button>
@@ -168,7 +216,7 @@ export default function CommandeTunnel({ presetFormule, presetSurface }: { prese
       </div>
 
       <div className="grid h-fit gap-6 lg:sticky lg:top-24">
-        <RecapPanier lignes={panier?.lignes ?? []} totalTTC={panier?.totalTTC ?? 0} echeance={choixEcheancier} afficherEcheance={etape === 2} />
+        {!reprise && <RecapPanier lignes={panier?.lignes ?? []} totalTTC={panier?.totalTTC ?? 0} echeance={choixEcheancier} afficherEcheance={etape >= 2} />}
         <AideCommande />
       </div>
     </div>

@@ -1,18 +1,19 @@
 import { NextResponse } from "next/server";
 import { validerCommande } from "@/lib/commande";
+import { jetonPour, optionsRetenues } from "@/lib/commandeServeur";
 import { ipOf, rateLimited } from "@/lib/mailer";
+import { configQonto, creerCommandeQonto, ErreurQonto } from "@/lib/qonto";
+import { jourParis } from "@/lib/suivi";
 
 export const runtime = "nodejs";
 
 const MAX_COMMANDES_PAR_FENETRE = 5;
 
 /**
- * Réception d'une commande en ligne.
- *
- * Étape actuelle : la commande est vérifiée et recalculée côté serveur (prix,
- * options autorisées, échéancier). La suite — création du client, du devis et
- * du mandat chez Qonto, puis redirection vers la saisie de l'IBAN — arrive
- * avec le branchement Qonto ; d'ici là, la route le dit sans rien enregistrer.
+ * Réception d'une commande en ligne : vérification (prix, options, terrain,
+ * échéancier recalculés), puis création chez Qonto du client, du devis et du
+ * mandat SEPA. Répond avec la page Qonto de saisie de l'IBAN et le jeton qui
+ * permet de suivre le mandat puis de signer la commande.
  */
 export async function POST(req: Request) {
   const ip = ipOf(req);
@@ -35,8 +36,22 @@ export async function POST(req: Request) {
   const resultat = validerCommande(body);
   if (!resultat.ok) return NextResponse.json({ ok: false, error: resultat.erreur }, { status: 400 });
 
-  return NextResponse.json(
-    { ok: false, error: "Le règlement en ligne ouvre très bientôt. En attendant, demandez votre devis : nous vous répondons sous 4 h ouvrées." },
-    { status: 503 },
-  );
+  const cfg = configQonto();
+  if (!cfg) {
+    console.error("[commande] QONTO_LOGIN / QONTO_SECRET_KEY absentes : commande non créée");
+    return NextResponse.json({ ok: false, error: "Le règlement en ligne est momentanément indisponible. Réessayez plus tard." }, { status: 503 });
+  }
+
+  try {
+    const qonto = await creerCommandeQonto(cfg, resultat.commande, jourParis(new Date()));
+    const jeton = jetonPour(resultat.commande, qonto, optionsRetenues((body as { panier?: unknown }).panier));
+    return NextResponse.json({ ok: true, urlMandat: qonto.urlMandat, jeton });
+  } catch (err) {
+    if (err instanceof ErreurQonto) console.error(`[commande] ${err.message}`, err.detail);
+    else console.error("[commande] création chez Qonto échouée", err);
+    return NextResponse.json(
+      { ok: false, error: "La préparation de votre commande a échoué. Réessayez dans quelques minutes." },
+      { status: 502 },
+    );
+  }
 }
