@@ -68,9 +68,9 @@ function RelanceDevis({ titre, zone }: { titre: string; zone: "relance1" | "rela
             Prix fixe de {formatEuro(express.prixTTC)} TTC, en 1, 4 ou 10 fois sans frais. Rien n&apos;est prélevé avant la vérification de votre terrain.
           </p>
         </div>
-        <div className="grid shrink-0 grid-cols-[3fr_2fr] gap-3 md:flex">
-          <Link href={COMMANDER_EXPRESS} className="btn btn-ink whitespace-nowrap !px-3 sm:!px-7">Commander l&apos;Express</Link>
-          <TelLink source="express_relance" className="btn btn-line !px-3 sm:!px-7">
+        <div className="grid shrink-0 grid-cols-2 gap-3 md:flex">
+          <Link href={COMMANDER_EXPRESS} className="btn btn-ink col-span-2 whitespace-nowrap !px-3 sm:!px-7 md:col-span-1">Commander l&apos;Express</Link>
+          <TelLink source="express_relance" className="btn btn-line col-span-2 !px-3 sm:!px-7 md:col-span-1">
             Appeler
           </TelLink>
         </div>
@@ -117,10 +117,11 @@ export default function PermisExpressPage() {
             </div>
 
             <div className="mt-6 sm:mt-10 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-4">
-              <Link href={COMMANDER_EXPRESS} className="btn btn-paper !px-3 sm:!px-7">
+              {/* Sur téléphone, le bouton principal prend toute la largeur : son libellé tient sur une ligne. */}
+              <Link href={COMMANDER_EXPRESS} className="btn btn-paper col-span-2 whitespace-nowrap !px-3 sm:!px-7">
                 Commander l&apos;Express
               </Link>
-              <TelLink source="express_hero" className="btn btn-line-light !px-3 sm:!px-7 lg:!border-transparent lg:!bg-paper lg:!text-ink lg:hover:!bg-brass-2">
+              <TelLink source="express_hero" className="btn btn-line-light col-span-2 !px-3 sm:!px-7 lg:!border-transparent lg:!bg-paper lg:!text-ink lg:hover:!bg-brass-2">
                 <span className="sm:hidden">Appeler</span>
                 <span className="hidden sm:inline">Appeler le {site.phone}</span>
               </TelLink>
