@@ -1,32 +1,17 @@
 import { site } from "@/config/site";
-import { DELAI_RETRACTATION_JOURS, ficheFacturation, mentionFacturation, SIGNATURE, type Commande } from "@/lib/commande";
+import { DELAI_RETRACTATION_JOURS, ficheFacturation, mentionFacturation, type Commande } from "@/lib/commande";
 import { clientWrap, esc, section, table } from "@/lib/mailer";
 
 /**
- * Contenu des e-mails de la commande en ligne : lien de signature, puis
- * confirmation au client et fiche interne une fois la commande signée.
+ * Contenu des e-mails de la commande en ligne, une fois le devis accepté et
+ * le mandat signé : confirmation au client et fiche interne.
  */
 
-const BOUTON =
-  "display:inline-block;background:#1b1f1d;color:#fcfbf9;text-decoration:none;font-weight:700;padding:14px 26px;border-radius:4px";
 const lien = (url: string, texte: string) => `<a href="${esc(url)}" style="color:#1b1f1d">${esc(texte)}</a>`;
 
 export interface Email {
   subject: string;
   html: string;
-}
-
-/** Envoyé quand le mandat est signé : le client relit et signe devis, CGV et échéancier. */
-export function emailLienSignature(prenom: string, urlSignature: string): Email {
-  return {
-    subject: SIGNATURE.objetEmail,
-    html: clientWrap(`
-      <p>Bonjour ${esc(prenom)},</p>
-      <p>Votre IBAN est bien enregistré. Il reste une dernière étape : relire et signer votre commande (devis, conditions générales de vente et échéancier).</p>
-      <p style="margin:28px 0"><a href="${esc(urlSignature)}" style="${BOUTON}">Signer ma commande</a></p>
-      <p style="font-size:14px;color:#5a645e">Ce lien est valable ${SIGNATURE.validiteJours} jours. Rien n'est prélevé à la signature : nous vérifions d'abord que votre terrain permet le dépôt du permis.</p>
-    `),
-  };
 }
 
 export interface DevisSigne {

@@ -2,14 +2,25 @@ import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { SIGNATURE } from "@/lib/commande";
 
 /**
- * Jeton de commande : ce que le site doit retrouver entre la saisie de l'IBAN
- * et la signature, sans base de données. La commande voyage dans le lien
- * envoyé par e-mail, signée (HMAC-SHA256) pour qu'on ne puisse ni la modifier
- * ni la forger, et datée pour expirer avec le lien.
+ * Jeton de commande : ce que le site doit retrouver entre la création de la
+ * commande, l'acceptation du devis et la validation du mandat, sans base de
+ * données. La commande voyage avec le navigateur du client, signée
+ * (HMAC-SHA256) pour qu'on ne puisse ni la modifier ni la forger, et datée
+ * pour expirer.
  *
  * Seuls des choix et des identifiants y figurent : les prix sont toujours
  * recalculés depuis la configuration, l'IBAN reste chez Qonto.
  */
+
+/** Preuve de l'acceptation du devis (signature électronique simple), relevée au clic « J'accepte ». */
+export interface PreuveAcceptation {
+  /** Instant de l'acceptation, ISO 8601. */
+  instant: string;
+  ip: string;
+  navigateur: string;
+  executionAnticipee: boolean;
+}
+
 export interface DonneesCommande {
   clientId: string;
   devisId: string;
@@ -19,6 +30,8 @@ export interface DonneesCommande {
   echeances: number;
   /** Coordonnées du client et du terrain, en texte (relues par validerCoordonnees). */
   coordonnees: Record<string, string>;
+  /** Présente une fois le devis accepté : la commande peut alors être finalisée dès le mandat signé. */
+  acceptation?: PreuveAcceptation;
 }
 
 const JOUR_MS = 24 * 60 * 60 * 1000;

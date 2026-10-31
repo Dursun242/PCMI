@@ -1,7 +1,10 @@
 import "server-only";
 import { validerCommande, type Commande } from "@/lib/commande";
-import { signerJeton, verifierJeton, type DonneesCommande } from "@/lib/jetonCommande";
-import type { CommandeQonto } from "@/lib/qonto";
+import { emailConfirmationClient, emailNouvelleCommande } from "@/lib/emailsCommande";
+import { signerJeton, verifierJeton, type DonneesCommande, type PreuveAcceptation } from "@/lib/jetonCommande";
+import { sendPair } from "@/lib/mailer";
+import { lireDevis, lireMandat, pdfDevis, type CommandeQonto, type ConfigQonto } from "@/lib/qonto";
+import { jourParis } from "@/lib/suivi";
 
 /**
  * Le jeton de commande est signé avec une clé dérivée du secret de
@@ -35,6 +38,42 @@ export function commandeDuJeton(jeton: unknown): CommandeSignable | null {
   if (!donnees) return null;
   const r = validerCommande({ panier: donnees.selection, coordonnees: donnees.coordonnees, echeances: donnees.echeances });
   return r.ok ? { donnees, commande: r.commande } : null;
+}
+
+/** Nouveau jeton, portant la preuve d'acceptation du devis. */
+export function jetonAccepte(donnees: DonneesCommande, acceptation: PreuveAcceptation): string {
+  return signerJeton({ ...donnees, acceptation }, secret());
+}
+
+export type ResultatFinalisation = { ok: true } | { ok: false; raison: "devis-non-accepte" | "mandat-non-signe" };
+
+/**
+ * Finalise une commande dont le devis est accepté et le mandat signé : le
+ * client reçoit sa confirmation avec le devis signé en PDF (support durable),
+ * l'administrateur sa fiche (terrain à vérifier, facturation, preuve).
+ */
+export async function finaliserCommande(signable: CommandeSignable, cfg: ConfigQonto): Promise<ResultatFinalisation> {
+  const { donnees, commande } = signable;
+  if (!donnees.acceptation) return { ok: false, raison: "devis-non-accepte" };
+  const [devis, mandat] = await Promise.all([lireDevis(cfg, donnees.devisId), lireMandat(cfg, donnees.mandatId)]);
+  if (!mandat.signe) return { ok: false, raison: "mandat-non-signe" };
+
+  // Le devis signé en PDF, joint aux deux e-mails ; à défaut, ils portent le lien vers le devis.
+  const pdf = await pdfDevis(cfg, devis.pieceJointeId);
+  const pieces = pdf ? [{ filename: `Devis-${devis.numero}-signe.pdf`, content: pdf.contenu }] : undefined;
+  const jourSignature = jourParis(new Date(donnees.acceptation.instant));
+  const interne = emailNouvelleCommande(commande, devis, mandat, donnees.acceptation, jourSignature, Boolean(pdf));
+  const client = emailConfirmationClient(commande, devis, Boolean(pdf));
+  await sendPair({
+    subject: interne.subject,
+    internalHtml: interne.html,
+    replyTo: commande.coordonnees.email,
+    clientSubject: client.subject,
+    clientHtml: client.html,
+    attachments: pieces,
+    clientAttachments: pieces,
+  });
+  return { ok: true };
 }
 
 /** Options retenues par le panier, réduites aux quantités non nulles. */

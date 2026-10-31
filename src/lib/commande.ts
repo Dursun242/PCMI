@@ -25,14 +25,11 @@ export function estTunnelCommande(pathname: string): boolean {
 }
 
 /**
- * Signature de la commande par e-mail : objet du message, durée de validité
- * du lien et délai de relance. Lus par la page « Vérifiez vos e-mails » et
- * par l'envoi du lien, pour que la promesse affichée soit celle tenue.
+ * Durée de validité d'une commande en cours (jeton signé, devis Qonto) : au-delà,
+ * le client recommence sa commande.
  */
 export const SIGNATURE = {
-  objetEmail: "Confirmez votre commande de permis de construire",
   validiteJours: 7,
-  relanceHeures: 48,
 } as const;
 
 export type FormuleCommandeId = PlanId | "express";

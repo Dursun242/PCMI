@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { validerCommande } from "./commande";
-import { emailConfirmationClient, emailLienSignature, emailNouvelleCommande } from "./emailsCommande";
+import { emailConfirmationClient, emailNouvelleCommande } from "./emailsCommande";
 
 const r = validerCommande({
   panier: { formule: "complet", options: {} },
@@ -24,12 +24,6 @@ const commande = r.commande;
 const devis = { numero: "D-2026-012", url: "https://portal.qonto.com/quotes/1" };
 
 describe("e-mails de la commande", () => {
-  it("le lien de signature mène à la page de signature", () => {
-    const e = emailLienSignature("Marie", "https://site.test/commander/signer?jeton=abc");
-    expect(e.html).toContain('href="https://site.test/commander/signer?jeton=abc"');
-    expect(e.subject).toMatch(/Confirmez votre commande/);
-  });
-
   it("la confirmation donne le devis, les CGV et le délai de rétractation, en échappant le texte saisi", () => {
     const e = emailConfirmationClient(commande, devis);
     expect(e.html).toContain(devis.url);

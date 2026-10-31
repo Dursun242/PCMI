@@ -20,6 +20,11 @@ describe("jeton de commande", () => {
     expect(verifierJeton(jeton, SECRET, maintenant + JOUR)).toEqual(donnees);
   });
 
+  it("transporte la preuve d'acceptation du devis", () => {
+    const acceptee = { ...donnees, acceptation: { instant: "2026-11-01T10:00:00Z", ip: "1.2.3.4", navigateur: "Safari", executionAnticipee: true } };
+    expect(verifierJeton(signerJeton(acceptee, SECRET, maintenant), SECRET, maintenant)).toEqual(acceptee);
+  });
+
   it("refuse un jeton modifié", () => {
     const [charge, signature] = signerJeton(donnees, SECRET, maintenant).split(".");
     const falsifiee = Buffer.from(
