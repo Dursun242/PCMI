@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { commandeDuJeton } from "@/lib/commandeServeur";
 import { emailConfirmationClient, emailNouvelleCommande } from "@/lib/emailsCommande";
 import { ipOf, rateLimited, sendPair } from "@/lib/mailer";
-import { lireDevis, lireMandat } from "@/lib/qonto";
+import { lireDevis, lireMandat, pdfDevis } from "@/lib/qonto";
 import { ouvrirQonto } from "@/lib/qontoConnexion";
 import { jourParis } from "@/lib/suivi";
 
@@ -47,14 +47,19 @@ export async function POST(req: Request) {
       executionAnticipee: body.executionAnticipee === true,
     };
     const { commande } = signable;
-    const interne = emailNouvelleCommande(commande, devis, mandat, preuve, jourParis(maintenant));
-    const client = emailConfirmationClient(commande, devis);
+    // Le devis signé en PDF, joint aux deux e-mails ; à défaut, ils portent le lien vers le devis.
+    const pdf = await pdfDevis(cfg, devis.pieceJointeId);
+    const pieces = pdf ? [{ filename: `Devis-${devis.numero}-signe.pdf`, content: pdf.contenu }] : undefined;
+    const interne = emailNouvelleCommande(commande, devis, mandat, preuve, jourParis(maintenant), Boolean(pdf));
+    const client = emailConfirmationClient(commande, devis, Boolean(pdf));
     await sendPair({
       subject: interne.subject,
       internalHtml: interne.html,
       replyTo: commande.coordonnees.email,
       clientSubject: client.subject,
       clientHtml: client.html,
+      attachments: pieces,
+      clientAttachments: pieces,
     });
     return NextResponse.json({ ok: true });
   } catch (err) {
