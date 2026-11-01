@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { plans, site, faq } from "@/config/site";
+import BlocPlanGratuit from "@/components/BlocPlanGratuit";
 import HouseDrawing from "@/components/HouseDrawing";
 import HeroVideo from "@/components/HeroVideo";
 import PlanCard from "@/components/PlanCard";
@@ -155,6 +156,9 @@ export default function HomePage() {
 
       {/* ---------- Références : de vraies photos de chantiers, juste sous le haut de page ---------- */}
       <ReferencesSlider items={enVitrine(chantiers, vitrine)} />
+
+      {/* ---------- Plan gratuit du terrain : recueille l'adresse, la suite se fait sur /plans-gratuits ---------- */}
+      <BlocPlanGratuit />
 
       {/* ---------- Chiffres (masqués tant que data/chiffres.ts est vide : chiffres vérifiables uniquement) ---------- */}
       {stats.length > 0 && (
