@@ -186,12 +186,14 @@ describe("e-mails de la planche", () => {
   });
 
   it("signale à Dursun une planche à faire à la main", () => {
-    expect(emailInterneDemande(contact, x, true).subject).toContain("À FAIRE À LA MAIN");
-    expect(emailInterneDemande(contact, x, false).html).toContain("en cours de dessin");
+    const manuel = emailInterneDemande(contact, x, "IDPLANS_GITHUB_TOKEN absente");
+    expect(manuel.subject).toContain("À FAIRE À LA MAIN");
+    expect(manuel.html).toContain("IDPLANS_GITHUB_TOKEN absente");
+    expect(emailInterneDemande(contact, x, null).html).toContain("en cours de dessin");
   });
 
   it("échappe les données du visiteur", () => {
-    const m = emailInterneDemande({ ...contact, nom: "<b>X</b>" }, x, false);
+    const m = emailInterneDemande({ ...contact, nom: "<b>X</b>" }, x, null);
     expect(m.html).not.toContain("<b>X</b>");
   });
 });

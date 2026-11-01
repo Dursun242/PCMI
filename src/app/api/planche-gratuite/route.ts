@@ -3,7 +3,7 @@ import { site } from "@/config/site";
 import { emailInterneDemande, emailInterneRefus, type ContactPlanche, type ContextePlanche } from "@/lib/emailsPlanche";
 import { ipOf, rateLimited, sendInternal } from "@/lib/mailer";
 import { nomCartouche, referenceCourte, validerDemande, type DemandePlanche } from "@/lib/planche";
-import { declencherPlanche } from "@/lib/plancheGithub";
+import { declencherPlanche, githubConfigure } from "@/lib/plancheGithub";
 import { chiffrer, empreinteParcelle, secretPlanche, signerRappel, VALIDITE_RAPPEL_MS } from "@/lib/plancheSecret";
 import { ecrirePlanche, lirePlanche, majPlanche, parcellePrise } from "@/lib/plancheStore";
 
@@ -57,7 +57,10 @@ export async function POST(req: Request) {
   const secret = secretPlanche();
   if (!secret) {
     console.error("[planche] PLANCHE_SECRET (ou ADMIN_SESSION_SECRET) absent : demande transmise à la main");
-    await prevenir(emailInterneDemande(contact, x, true), d.email);
+    await prevenir(
+      emailInterneDemande(contact, x, "PLANCHE_SECRET et ADMIN_SESSION_SECRET absentes des variables Vercel."),
+      d.email,
+    );
     return NextResponse.json({ ok: true, manuel: true });
   }
   const empreinte = empreinteParcelle(d.idu, secret);
@@ -92,22 +95,27 @@ export async function POST(req: Request) {
       s: signerRappel(id, empreinte, expire, secret),
     }).toString();
 
-    let lancee = false;
-    try {
-      lancee = await declencherPlanche({
-        planche: d.planche,
-        adresse: d.voie,
-        ville: d.ville,
-        client: nomCartouche(d),
-        parcelle: d.idu,
-        rappel: rappel.toString(),
-      });
-    } catch (err) {
-      console.error("[planche] lancement impossible", err);
+    let cause: string | null = githubConfigure()
+      ? null
+      : "IDPLANS_GITHUB_TOKEN absente des variables Vercel (Production), ou ajoutée sans redéploiement.";
+    if (!cause) {
+      try {
+        await declencherPlanche({
+          planche: d.planche,
+          adresse: d.voie,
+          ville: d.ville,
+          client: nomCartouche(d),
+          parcelle: d.idu,
+          rappel: rappel.toString(),
+        });
+      } catch (err) {
+        console.error("[planche] lancement impossible", err);
+        cause = `Le lancement du workflow id-plans a échoué : ${err instanceof Error ? err.message : String(err)}`;
+      }
     }
-    if (!lancee) await majPlanche(empreinte, { statut: "echec", erreur: "Lancement automatique impossible" });
-    await prevenir(emailInterneDemande(contact, x, !lancee), d.email);
-    return NextResponse.json({ ok: true, manuel: !lancee });
+    if (cause) await majPlanche(empreinte, { statut: "echec", erreur: cause.slice(0, 300) });
+    await prevenir(emailInterneDemande(contact, x, cause), d.email);
+    return NextResponse.json({ ok: true, manuel: cause !== null });
   } catch (err) {
     console.error("[planche] demande non enregistrée", err);
     return NextResponse.json({ ok: false, error: "La demande n'a pas pu être enregistrée. Réessayez." }, { status: 502 });
