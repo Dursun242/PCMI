@@ -4,7 +4,16 @@ import { del, list, put } from "@vercel/blob";
 import { site } from "@/config/site";
 import { sendToClient } from "@/lib/mailer";
 import { configQonto, type ConfigQonto } from "@/lib/qonto";
-import { chiffrer, configOAuth, dechiffrer, ErreurConnexionQonto, jetonAcces, type Jetons, type StockageJetons } from "@/lib/qontoOAuth";
+import {
+  chiffrer,
+  configOAuth,
+  dechiffrer,
+  ErreurConnexionQonto,
+  jetonAcces,
+  stockageAvecCache,
+  type Jetons,
+  type StockageJetons,
+} from "@/lib/qontoOAuth";
 
 /**
  * Jetons OAuth Qonto, chiffrés, dans le stockage Vercel Blob du site.
@@ -22,7 +31,22 @@ function dossier(secret: string) {
   return `qonto-oauth/${createHash("sha256").update(secret).digest("hex").slice(0, 24)}/`;
 }
 
+/** Durée pendant laquelle une instance réutilise les jetons déjà lus, sans relire le stockage Blob. */
+const DUREE_CACHE_JETONS_MS = 5 * 60 * 1000;
+/** Un stockage (avec sa mémoire) par dossier et par instance du serveur. */
+const stockagesBlob = new Map<string, StockageJetons>();
+
 function stockageBlob(secret: string): StockageJetons {
+  const prefixe = dossier(secret);
+  let stockage = stockagesBlob.get(prefixe);
+  if (!stockage) {
+    stockage = stockageAvecCache(stockageBlobBrut(secret), DUREE_CACHE_JETONS_MS);
+    stockagesBlob.set(prefixe, stockage);
+  }
+  return stockage;
+}
+
+function stockageBlobBrut(secret: string): StockageJetons {
   const prefixe = dossier(secret);
   const fichiers = async () =>
     (await list({ prefix: prefixe, limit: 100 })).blobs.sort((a, b) => b.uploadedAt.getTime() - a.uploadedAt.getTime());

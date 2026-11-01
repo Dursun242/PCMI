@@ -79,6 +79,31 @@ export function urlAutorisation(cfg: ConfigOAuth, redirectUri: string, state: st
 /** Marge avant expiration : un jeton qui expire dans moins de 2 minutes est renouvelé d'avance. */
 const MARGE_MS = 2 * 60 * 1000;
 
+/**
+ * Garde en mémoire, `dureeMs` au plus, les jetons lus ou écrits : le tunnel
+ * interroge le statut du mandat toutes les 4 s pendant la saisie de l'IBAN,
+ * et chaque lecture du stockage Blob est une opération comptée (quota du plan
+ * gratuit Vercel). Un jeton proche de l'expiration n'est jamais servi depuis
+ * la mémoire : son renouvellement, et la relecture après un renouvellement
+ * refusé, lisent toujours le stockage.
+ */
+export function stockageAvecCache(source: StockageJetons, dureeMs: number, horloge: () => number = Date.now): StockageJetons {
+  let cache: { jetons: Jetons; lu: number } | null = null;
+  return {
+    async lire() {
+      const t = horloge();
+      if (cache && t - cache.lu < dureeMs && cache.jetons.expireA - MARGE_MS > t) return cache.jetons;
+      const jetons = await source.lire();
+      cache = jetons ? { jetons, lu: t } : null;
+      return jetons;
+    },
+    async ecrire(jetons) {
+      await source.ecrire(jetons);
+      cache = { jetons, lu: horloge() };
+    },
+  };
+}
+
 async function demanderJetons(cfg: ConfigOAuth, champs: Record<string, string>, f: typeof fetch, maintenant: number): Promise<Jetons> {
   // Identifiants dans le corps du formulaire : Qonto refuse l'en-tête Authorization: Basic.
   const res = await f(cfg.urlJeton, {
