@@ -32,6 +32,12 @@ type Events = {
   formula_finder_result: { formule: string; surface_bucket: SurfaceBucket };
   /** Montant affiché par le calculateur de taxe d'aménagement. */
   taxe_calcul_result: { surface_bucket: SurfaceBucket; residence: "principale" | "secondaire" };
+  /** Panneau de chantier téléchargé ou envoyé à l'impression. */
+  panneau_export: { format: "svg" | "impression"; type: "PC" | "DP" };
+  /** Verdict rendu par le simulateur « permis ou déclaration préalable ? ». */
+  autorisation_result: { projet: string; verdict: string };
+  /** Résultat rendu par le calculateur de surface de plancher et d'emprise au sol. */
+  surfaces_result: { surface_bucket: SurfaceBucket; architecte: "oui" | "non" };
   /** Première saisie réelle dans le formulaire de devis. */
   devis_start: { formule: string };
   /** Demande de devis transmise avec succès. */

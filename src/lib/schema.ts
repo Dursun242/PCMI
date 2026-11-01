@@ -325,8 +325,8 @@ export function collectionPageSchema(items: { slug: string; title: string }[]) {
   };
 }
 
-/** Outil gratuit utilisable dans le navigateur : /calcul-taxe-amenagement. */
-export function webApplicationSchema(path: string, name: string, description: string) {
+/** Outil gratuit utilisable dans le navigateur : /calcul-taxe-amenagement, /outils… */
+export function webApplicationSchema(path: string, name: string, description: string, applicationCategory = "FinanceApplication") {
   return {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -334,7 +334,7 @@ export function webApplicationSchema(path: string, name: string, description: st
     name,
     description,
     url: `${site.url}${path}`,
-    applicationCategory: "FinanceApplication",
+    applicationCategory,
     operatingSystem: "Web",
     inLanguage: "fr-FR",
     isAccessibleForFree: true,
