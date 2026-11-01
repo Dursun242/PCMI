@@ -142,8 +142,8 @@ const euros = (n: number) => `${n.toLocaleString("fr-FR")} € TTC`;
  */
 export const lancement = {
   actif: true,
-  nom: "Offre d'automne",
-  fin: "2026-11-30",
+  nom: "Offre d'hiver",
+  fin: "2027-01-31",
   prix: { essentiel: 990, complet: 1490, premium: 2490 } as Record<PlanId, number>,
 };
 
