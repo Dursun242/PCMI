@@ -13,7 +13,7 @@ import {
   type ParcelleCandidate,
 } from "./planche";
 import { chiffrer, dechiffrer, empreinteParcelle, signerRappel, verifierRappel } from "./plancheSecret";
-import { emailClientPlanche, emailInterneDemande, nomFichierPlanche } from "./emailsPlanche";
+import { emailClientAccuse, emailClientPlanche, emailInterneDemande, nomFichierPlanche } from "./emailsPlanche";
 
 const corps = {
   planche: "masse",
@@ -190,6 +190,14 @@ describe("e-mails de la planche", () => {
     expect(manuel.subject).toContain("À FAIRE À LA MAIN");
     expect(manuel.html).toContain("IDPLANS_GITHUB_TOKEN absente");
     expect(emailInterneDemande(contact, x, null).html).toContain("en cours de dessin");
+  });
+
+  it("accuse réception au visiteur avec le délai qui correspond", () => {
+    const auto = emailClientAccuse(contact, x, false);
+    expect(auto.subject).toContain("bien reçue");
+    expect(auto.html).toContain("quelques minutes");
+    expect(emailClientAccuse(contact, x, true).html).toContain("24 h ouvrées");
+    expect(emailClientAccuse({ ...contact, prenom: "<i>A</i>" }, x, false).html).not.toContain("<i>A</i>");
   });
 
   it("échappe les données du visiteur", () => {
