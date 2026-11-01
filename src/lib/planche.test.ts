@@ -13,7 +13,8 @@ import {
   type ParcelleCandidate,
 } from "./planche";
 import { chiffrer, dechiffrer, empreinteParcelle, signerRappel, verifierRappel } from "./plancheSecret";
-import { emailClientAccuse, emailClientPlanche, emailInterneDemande, nomFichierPlanche } from "./emailsPlanche";
+import { emailClientAccuse, emailClientEchec, emailClientPlanche, emailInterneDemande, nomFichierPlanche } from "./emailsPlanche";
+import { site } from "@/config/site";
 
 const corps = {
   planche: "masse",
@@ -175,7 +176,7 @@ describe("e-mails de la planche", () => {
   const x = { planche: "coupes" as const, reference: "OJ 0646", commune: "Le Havre", adresse: "28 Rue Léon Hallaure, 76620 Le Havre" };
 
   it("nomme le fichier joint sans accent ni espace", () => {
-    expect(nomFichierPlanche(x)).toBe("ID-Maitrise_Coupes-du-terrain_Le-Havre_OJ-0646.pdf");
+    expect(nomFichierPlanche(x)).toBe("permis-maison-individuelle_Coupes-du-terrain_Le-Havre_OJ-0646.pdf");
   });
 
   it("présente la planche au visiteur sans promettre plus qu'un document indicatif", () => {
@@ -183,6 +184,16 @@ describe("e-mails de la planche", () => {
     expect(m.subject).toBe("Votre planche gratuite : coupes du terrain — Le Havre");
     expect(m.html).toContain("ne remplace pas un plan de géomètre");
     expect(m.html).toContain("/tarifs");
+  });
+
+  it("met le site en avant, sans signature personnelle", () => {
+    for (const m of [emailClientPlanche(contact, x), emailClientAccuse(contact, x, false), emailClientEchec(contact, x)]) {
+      expect(m.html).toContain("permis-maison-individuelle.fr");
+      expect(m.html).toContain("utm_source=email&amp;utm_medium=planche-gratuite");
+      expect(m.html).toContain("/commander");
+      expect(m.html).not.toMatch(/ma[îi]tre d.(œ|oe)uvre/i);
+      expect(m.html).not.toContain(site.legal.director);
+    }
   });
 
   it("signale à Dursun une planche à faire à la main", () => {
