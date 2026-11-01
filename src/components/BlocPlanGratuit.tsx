@@ -1,12 +1,18 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+import ChampAdresse from "@/components/ChampAdresse";
 import { CORRESPONDANCE_PIECES, HUB, PAGES_PLANCHES } from "@/config/planchesGratuites";
 
 /**
- * Bloc « plan offert » de la page d'accueil. Un simple formulaire GET, sans
- * JavaScript ni carte : il ne pèse rien sur l'accueil et mène à
- * /plans-gratuits, qui reprend l'adresse et lance la recherche du terrain.
+ * Bloc « plan offert » de la page d'accueil. Un formulaire GET sans carte :
+ * il pèse peu sur l'accueil et mène à /plans-gratuits, qui reprend l'adresse
+ * et lance la recherche du terrain. Choisir une adresse proposée l'envoie
+ * aussitôt ; sans JavaScript, le formulaire marche tel quel.
  */
 export default function BlocPlanGratuit() {
+  const [adresse, setAdresse] = useState("");
   return (
     <section className="border-b border-stone-2 bg-stone" aria-labelledby="plan-gratuit-titre">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:items-center lg:gap-16">
@@ -26,15 +32,16 @@ export default function BlocPlanGratuit() {
             <label htmlFor="accueil-adresse" className="sr-only">
               Adresse de votre terrain
             </label>
-            <input
+            <ChampAdresse
               id="accueil-adresse"
               name="adresse"
-              type="text"
+              value={adresse}
+              onChange={setAdresse}
+              onChoisir={(a) => window.location.assign(`${HUB.path}?${new URLSearchParams({ adresse: a })}#formulaire`)}
               required
               minLength={3}
-              autoComplete="street-address"
               placeholder="Adresse de votre terrain"
-              className="min-h-12 border border-stone-2 bg-paper px-4"
+              className="min-h-12 w-full border border-stone-2 bg-paper px-4"
             />
             <button type="submit" className="btn btn-ink !min-h-12 whitespace-nowrap">
               Recevoir mon plan gratuit

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
+import ChampAdresse from "@/components/ChampAdresse";
 import CarteParcelles from "@/components/planche/CarteParcelles";
 import { trackEvent } from "@/lib/analytics";
 import {
@@ -163,13 +164,13 @@ export default function PlancheGratuite({ planchePage }: { planchePage: Planche 
         <form onSubmit={trouver} className="field" role="search">
           <label htmlFor="pg-adresse">Adresse du terrain</label>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-            <input
+            <ChampAdresse
               id="pg-adresse"
               className="min-h-12"
               value={q}
-              onChange={(e) => setQ(e.target.value)}
+              onChange={setQ}
+              onChoisir={(a) => void chercher(a)}
               placeholder="12 rue des Lilas 76600 Le Havre"
-              autoComplete="street-address"
               required
               minLength={5}
             />
