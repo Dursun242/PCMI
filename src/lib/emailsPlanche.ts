@@ -39,7 +39,9 @@ export function nomFichierPlanche(x: Pick<ContextePlanche, "planche" | "referenc
   return `ID-Maitrise_${propre(PLANCHES[x.planche].titre)}_${propre(x.commune)}_${propre(x.reference)}.pdf`;
 }
 
-export function emailInterneDemande(c: ContactPlanche, x: ContextePlanche, manuel: boolean) {
+/** `cause` : pourquoi la planche n'est pas partie toute seule ; null si elle est lancée. */
+export function emailInterneDemande(c: ContactPlanche, x: ContextePlanche, cause: string | null) {
+  const manuel = cause !== null;
   return {
     subject: `Planche gratuite${manuel ? " À FAIRE À LA MAIN" : ""} — ${c.prenom} ${c.nom} — ${x.commune}`,
     html: `<h2 style="${FONT}">Nouvelle demande de planche gratuite</h2>
@@ -49,6 +51,7 @@ export function emailInterneDemande(c: ContactPlanche, x: ContextePlanche, manue
           ? "<strong>La planche n'a pas pu être lancée automatiquement.</strong> Prépare-la à la main et envoie-la au visiteur : il a été prévenu d'un envoi sous 24 h ouvrées."
           : "La planche est en cours de dessin : elle partira toute seule au visiteur, tu en recevras une copie."
       }</p>
+      ${manuel ? section("Cause", `<pre style="white-space:pre-wrap;font-size:12px">${esc(cause.slice(0, 600))}</pre>`) : ""}
       <p style="${FONT};color:#5a645e">Un prospect qui prépare un projet sur ce terrain : bon moment pour le rappeler.</p>`,
   };
 }
