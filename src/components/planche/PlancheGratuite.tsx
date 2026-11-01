@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import CarteParcelles from "@/components/planche/CarteParcelles";
 import { trackEvent } from "@/lib/analytics";
 import {
@@ -49,12 +49,12 @@ export default function PlancheGratuite({ planchePage }: { planchePage: Planche 
 
   const parcelle = recherche?.parcelles.find((p) => p.idu === idu);
 
-  async function trouver(e: FormEvent) {
-    e.preventDefault();
+  async function chercher(texte: string) {
+    setQ(texte);
     setCherche(true);
     setErreurRecherche(null);
     try {
-      const r = await fetch(`/api/planche-gratuite/terrain?${new URLSearchParams({ q })}`);
+      const r = await fetch(`/api/planche-gratuite/terrain?${new URLSearchParams({ q: texte })}`);
       const json = await r.json();
       if (!json.ok) {
         setRecherche(null);
@@ -70,6 +70,17 @@ export default function PlancheGratuite({ planchePage }: { planchePage: Planche 
       setCherche(false);
     }
   }
+
+  function trouver(e: FormEvent) {
+    e.preventDefault();
+    void chercher(q);
+  }
+
+  // Arrivée depuis le bloc de l'accueil (?adresse=…) : la recherche du terrain part toute seule.
+  useEffect(() => {
+    const adresse = new URLSearchParams(window.location.search).get("adresse")?.trim();
+    if (adresse && adresse.length >= 3) void chercher(adresse.slice(0, 200));
+  }, []);
 
   async function envoyer(e: FormEvent) {
     e.preventDefault();

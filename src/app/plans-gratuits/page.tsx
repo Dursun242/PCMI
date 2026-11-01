@@ -58,7 +58,7 @@ export default function PlansGratuits() {
           })}
         </ul>
 
-        <section className="mt-14 bg-stone px-5 py-8 sm:px-10 sm:py-12" aria-label="Demander un plan gratuit">
+        <section id="formulaire" className="mt-14 scroll-mt-24 bg-stone px-5 py-8 sm:px-10 sm:py-12" aria-label="Demander un plan gratuit">
           <PlancheGratuite planchePage="masse" />
         </section>
       </div>
