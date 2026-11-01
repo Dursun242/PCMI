@@ -94,6 +94,28 @@ export function emailClientPlanche(c: ContactPlanche, x: ContextePlanche) {
   };
 }
 
+/** Accusé de réception envoyé au visiteur dès sa demande, avant la planche elle-même. */
+export function emailClientAccuse(c: ContactPlanche, x: ContextePlanche, manuel: boolean) {
+  const titre = PLANCHES[x.planche].titre;
+  return {
+    subject: `Votre demande de plan gratuit est bien reçue — ${x.commune}`,
+    html: clientWrap(`
+      <p>Bonjour ${esc(c.prenom)},</p>
+      <p>Merci pour votre demande. Nous avons bien reçu :</p>
+      ${table([
+        ["Plan demandé", titre],
+        ["Terrain", x.adresse],
+        ["Parcelle", `${x.reference} (${x.commune})`],
+      ])}
+      <p>${
+        manuel
+          ? "Votre terrain demande une vérification de notre part : nous finalisons la planche nous-mêmes et vous l'envoyons par e-mail sous 24 h ouvrées."
+          : "Notre outil est en train de la dessiner : vous la recevrez par e-mail d'ici quelques minutes, en PDF au format A3. Pensez à regarder dans vos courriers indésirables."
+      }</p>
+      <p>Vous préparez un projet sur ce terrain ? Nous montons le dossier de permis de construire complet, pièces PCMI 1 à 8, à prix fixe et payable en plusieurs fois : ${lien("/tarifs", "voir les formules")}. Une question ? Répondez simplement à cet e-mail.</p>`),
+  };
+}
+
 export function emailClientEchec(c: ContactPlanche, x: ContextePlanche) {
   const titre = PLANCHES[x.planche].titre;
   return {

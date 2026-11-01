@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import { site } from "@/config/site";
-import { emailInterneDemande, emailInterneRefus, type ContactPlanche, type ContextePlanche } from "@/lib/emailsPlanche";
-import { ipOf, rateLimited, sendInternal } from "@/lib/mailer";
+import {
+  emailClientAccuse,
+  emailInterneDemande,
+  emailInterneRefus,
+  type ContactPlanche,
+  type ContextePlanche,
+} from "@/lib/emailsPlanche";
+import { ipOf, rateLimited, sendInternal, sendToClient } from "@/lib/mailer";
 import { nomCartouche, referenceCourte, validerDemande, type DemandePlanche } from "@/lib/planche";
 import { declencherPlanche, githubConfigure } from "@/lib/plancheGithub";
 import { chiffrer, empreinteParcelle, secretPlanche, signerRappel, VALIDITE_RAPPEL_MS } from "@/lib/plancheSecret";
@@ -24,6 +30,15 @@ const contexte = (d: DemandePlanche): ContextePlanche => ({
 
 /** Base de l'adresse de rappel : le site lui-même (surchargée seulement pour un essai local). */
 const baseRappel = () => process.env.PLANCHE_RAPPEL_BASE || site.url;
+
+/** Accusé de réception au visiteur : un échec d'envoi ne bloque pas la demande. */
+async function accuser(contact: ContactPlanche, x: ContextePlanche, manuel: boolean) {
+  try {
+    await sendToClient({ to: contact.email, ...emailClientAccuse(contact, x, manuel) });
+  } catch (err) {
+    console.error("[planche] accusé de réception non envoyé", err);
+  }
+}
 
 async function prevenir(mail: { subject: string; html: string }, replyTo: string) {
   try {
@@ -61,6 +76,7 @@ export async function POST(req: Request) {
       emailInterneDemande(contact, x, "PLANCHE_SECRET et ADMIN_SESSION_SECRET absentes des variables Vercel."),
       d.email,
     );
+    await accuser(contact, x, true);
     return NextResponse.json({ ok: true, manuel: true });
   }
   const empreinte = empreinteParcelle(d.idu, secret);
@@ -115,6 +131,7 @@ export async function POST(req: Request) {
     }
     if (cause) await majPlanche(empreinte, { statut: "echec", erreur: cause.slice(0, 300) });
     await prevenir(emailInterneDemande(contact, x, cause), d.email);
+    await accuser(contact, x, cause !== null);
     return NextResponse.json({ ok: true, manuel: cause !== null });
   } catch (err) {
     console.error("[planche] demande non enregistrée", err);

@@ -45,7 +45,7 @@ export default function PagePlancheGratuite({ page }: { page: PagePlanche }) {
           </aside>
         </div>
 
-        <section className="mt-14 bg-stone px-5 py-8 sm:px-10 sm:py-12" aria-label="Demander la planche gratuite">
+        <section id="formulaire" className="mt-14 scroll-mt-24 bg-stone px-5 py-8 sm:px-10 sm:py-12" aria-label="Demander la planche gratuite">
           <PlancheGratuite planchePage={page.planche} />
         </section>
         <p className="mt-4 max-w-[80ch] text-sm text-ink-2">

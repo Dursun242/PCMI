@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import ChampAdresse from "@/components/ChampAdresse";
 import CarteParcelles from "@/components/planche/CarteParcelles";
 import { trackEvent } from "@/lib/analytics";
+import { HUB } from "@/config/planchesGratuites";
 import {
   ORDRE_PLANCHES,
   PLANCHES,
@@ -47,6 +49,11 @@ export default function PlancheGratuite({ planchePage }: { planchePage: Planche 
   const [consentement, setConsentement] = useState(false);
   const [erreurs, setErreurs] = useState<ErreursDemande>({});
   const [etat, setEtat] = useState<Etat>({ t: "saisie" });
+  const router = useRouter();
+
+  /** Le message remplace un long formulaire : on le ramène sous les yeux du visiteur. */
+  const montrer = () =>
+    requestAnimationFrame(() => document.getElementById("formulaire")?.scrollIntoView({ behavior: "smooth", block: "start" }));
 
   const parcelle = recherche?.parcelles.find((p) => p.idu === idu);
 
@@ -106,9 +113,11 @@ export default function PlancheGratuite({ planchePage }: { planchePage: Planche 
       if (json.ok) {
         setEtat({ t: "envoye", manuel: Boolean(json.manuel) });
         trackEvent("planche_demande", { planche, resultat: "envoyee" });
+        router.push(`${HUB.path}/merci/${planche}${json.manuel ? "?suivi=manuel" : ""}`);
       } else if (json.deja) {
         setEtat({ t: "deja" });
         trackEvent("planche_demande", { planche, resultat: "deja_servie" });
+        montrer();
       } else if (json.erreurs) {
         setErreurs(json.erreurs);
         setEtat({ t: "saisie" });
