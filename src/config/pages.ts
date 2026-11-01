@@ -106,6 +106,30 @@ export const staticPages: StaticPage[] = [
       "Calculateur gratuit de la taxe d'aménagement 2026 d'une maison : valeur forfaitaire de 892 €/m², abattement de 50 % sur 100 m² en résidence principale, taux communal et départemental, piscine, stationnement, taxe d'archéologie préventive et dates de paiement.",
   },
   {
+    path: "/plan-de-masse-gratuit",
+    lastModified: "2026-11-01",
+    changeFrequency: "monthly",
+    priority: 0.8,
+    summary:
+      "Plan de masse de l'existant gratuit, envoyé en PDF A3 : limites cotées, contenance, bâti, voie, voisins et altitudes du terrain naturel, d'après le cadastre et l'IGN. Une planche gratuite par parcelle.",
+  },
+  {
+    path: "/coupe-de-terrain-gratuite",
+    lastModified: "2026-11-01",
+    changeFrequency: "monthly",
+    priority: 0.8,
+    summary:
+      "Coupes gratuites du terrain naturel dans ses deux sens, en PDF A3 : altitudes NGF au mètre (RGE ALTI de l'IGN), pente et limites de propriété. Une planche gratuite par parcelle.",
+  },
+  {
+    path: "/plan-de-situation-gratuit",
+    lastModified: "2026-11-01",
+    changeFrequency: "monthly",
+    priority: 0.8,
+    summary:
+      "Plan de situation gratuit en PDF A3 : terrain repéré dans la commune (1/25 000), le quartier (1/5 000) et sur l'extrait cadastral. Document indicatif, une planche gratuite par parcelle.",
+  },
+  {
     path: "/plans-execution",
     lastModified: "2026-09-19",
     changeFrequency: "monthly",
@@ -161,7 +185,7 @@ export const staticPages: StaticPage[] = [
   },
   {
     path: "/confidentialite",
-    lastModified: "2026-09-19",
+    lastModified: "2026-11-01",
     changeFrequency: "yearly",
     priority: 0.2,
     summary: "Politique de confidentialité et mesure d'audience.",

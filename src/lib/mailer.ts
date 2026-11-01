@@ -111,7 +111,7 @@ export async function sendPair(opts: {
  * pour continuer, l'échec doit lui être signalé. Sans RESEND_API_KEY : log
  * serveur et retour { dev: true }.
  */
-export async function sendToClient(opts: { to: string; subject: string; html: string }) {
+export async function sendToClient(opts: { to: string; subject: string; html: string; attachments?: MailAttachment[] }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.warn(`[mail] RESEND_API_KEY absente — non envoyé : ${opts.subject}`);
@@ -119,8 +119,39 @@ export async function sendToClient(opts: { to: string; subject: string; html: st
   }
   const from = process.env.MAIL_FROM ?? `${site.name} <contact@id-maitrise.com>`;
   const replyTo = process.env.MAIL_TO ?? site.email;
-  const envoi = await new Resend(apiKey).emails.send({ from, to: opts.to, replyTo, subject: opts.subject, html: opts.html });
+  const envoi = await new Resend(apiKey).emails.send({
+    from,
+    to: opts.to,
+    replyTo,
+    subject: opts.subject,
+    html: opts.html,
+    attachments: opts.attachments?.map((a) => ({ filename: a.filename, content: a.content, path: a.path })),
+  });
   if (envoi.error) throw new Error(`Resend (e-mail client) : ${envoi.error.message}`);
+  return { dev: false };
+}
+
+/**
+ * E-mail interne seul (adressé à MAIL_TO). Lève une erreur si l'envoi échoue.
+ * Sans RESEND_API_KEY : log serveur et retour { dev: true }.
+ */
+export async function sendInternal(opts: { subject: string; html: string; replyTo?: string; attachments?: MailAttachment[] }) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn(`[mail] RESEND_API_KEY absente — non envoyé : ${opts.subject}`);
+    return { dev: true };
+  }
+  const from = process.env.MAIL_FROM ?? `${site.name} <contact@id-maitrise.com>`;
+  const to = process.env.MAIL_TO ?? site.email;
+  const envoi = await new Resend(apiKey).emails.send({
+    from,
+    to,
+    replyTo: opts.replyTo,
+    subject: opts.subject,
+    html: opts.html,
+    attachments: opts.attachments?.map((a) => ({ filename: a.filename, content: a.content, path: a.path })),
+  });
+  if (envoi.error) throw new Error(`Resend (e-mail interne) : ${envoi.error.message}`);
   return { dev: false };
 }
 
