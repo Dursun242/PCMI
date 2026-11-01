@@ -53,7 +53,7 @@ export const staticPages: StaticPage[] = [
   },
   {
     path: "/permis-de-construire-maison",
-    lastModified: "2026-10-27",
+    lastModified: "2026-11-01",
     changeFrequency: "monthly",
     priority: 0.9,
     summary:
@@ -91,7 +91,7 @@ export const staticPages: StaticPage[] = [
   },
   {
     path: "/plan-de-masse",
-    lastModified: "2026-09-19",
+    lastModified: "2026-11-01",
     changeFrequency: "monthly",
     priority: 0.8,
     summary:
@@ -106,20 +106,28 @@ export const staticPages: StaticPage[] = [
       "Calculateur gratuit de la taxe d'aménagement 2026 d'une maison : valeur forfaitaire de 892 €/m², abattement de 50 % sur 100 m² en résidence principale, taux communal et départemental, piscine, stationnement, taxe d'archéologie préventive et dates de paiement.",
   },
   {
+    path: "/plans-gratuits",
+    lastModified: "2026-11-01",
+    changeFrequency: "monthly",
+    priority: 0.8,
+    summary:
+      "Plans gratuits du terrain pour un permis de construire ou une déclaration préalable : plan de situation (PCMI 1, DP1), plan de masse (PCMI 2, DP2) ou plan de coupe (PCMI 3, DP3), en PDF A3. Une planche gratuite par parcelle.",
+  },
+  {
     path: "/plan-de-masse-gratuit",
     lastModified: "2026-11-01",
     changeFrequency: "monthly",
     priority: 0.8,
     summary:
-      "Plan de masse de l'existant gratuit, envoyé en PDF A3 : limites cotées, contenance, bâti, voie, voisins et altitudes du terrain naturel, d'après le cadastre et l'IGN. Une planche gratuite par parcelle.",
+      "Plan de masse de l'existant gratuit, envoyé en PDF A3 : limites cotées, contenance, bâti, voie, voisins et altitudes du terrain naturel, d'après le cadastre et l'IGN. Base du PCMI 2, du PC2 ou du DP2. Une planche gratuite par parcelle.",
   },
   {
-    path: "/coupe-de-terrain-gratuite",
+    path: "/plan-de-coupe-gratuit",
     lastModified: "2026-11-01",
     changeFrequency: "monthly",
     priority: 0.8,
     summary:
-      "Coupes gratuites du terrain naturel dans ses deux sens, en PDF A3 : altitudes NGF au mètre (RGE ALTI de l'IGN), pente et limites de propriété. Une planche gratuite par parcelle.",
+      "Plan de coupe gratuit du terrain naturel dans ses deux sens, en PDF A3 : altitudes NGF au mètre (RGE ALTI de l'IGN), pente et limites de propriété. Base du PCMI 3, du PC3 ou du DP3. Une planche gratuite par parcelle.",
   },
   {
     path: "/plan-de-situation-gratuit",
@@ -127,7 +135,7 @@ export const staticPages: StaticPage[] = [
     changeFrequency: "monthly",
     priority: 0.8,
     summary:
-      "Plan de situation gratuit en PDF A3 : terrain repéré dans la commune (1/25 000), le quartier (1/5 000) et sur l'extrait cadastral. Document indicatif, une planche gratuite par parcelle.",
+      "Plan de situation gratuit en PDF A3 : terrain repéré dans la commune (1/25 000), le quartier (1/5 000) et sur l'extrait cadastral. Modèle du PCMI 1, du PC1 ou du DP1, document indicatif. Une planche gratuite par parcelle.",
   },
   {
     path: "/plans-execution",

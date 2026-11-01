@@ -2,7 +2,7 @@ import Link from "next/link";
 import Garanties from "@/components/Garanties";
 import JsonLd from "@/components/JsonLd";
 import PlancheGratuite from "@/components/planche/PlancheGratuite";
-import type { PagePlanche } from "@/config/planchesGratuites";
+import { HUB, type PagePlanche } from "@/config/planchesGratuites";
 import { ORDRE_PLANCHES, PLANCHES } from "@/lib/planche";
 import { breadcrumb, faqPageSchema, webApplicationSchema } from "@/lib/schema";
 
@@ -19,6 +19,7 @@ export default function PagePlancheGratuite({ page }: { page: PagePlanche }) {
           faqPageSchema(page.faq),
           breadcrumb([
             { name: "Accueil", path: "/" },
+            { name: HUB.court, path: HUB.path },
             { name: page.court, path: page.path },
           ]),
         ]}
@@ -55,7 +56,8 @@ export default function PagePlancheGratuite({ page }: { page: PagePlanche }) {
               <Link href={PLANCHES[p].path} className={lien}>{PLANCHES[p].titre.toLowerCase()}</Link>
               {i < autres.length - 1 ? " ou " : "."}
             </span>
-          ))}
+          ))}{" "}
+          <Link href={HUB.path} className={lien}>Tous nos plans gratuits</Link>.
         </p>
       </div>
 

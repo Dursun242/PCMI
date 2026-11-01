@@ -189,6 +189,12 @@ export default function GuidePage() {
             Selon la situation s&apos;ajoutent notamment : l&apos;attestation de prise en compte de la <a href="#re2020">RE2020</a>, l&apos;étude de gestion des eaux pluviales exigée par certains PLU, l&apos;attestation d&apos;un contrôleur technique en zone sismique, le formulaire de calcul de la surface taxable, ou encore une notice paysagère en site protégé — voir la section <a href="#pieces-complementaires">pièces complémentaires</a> ci-dessous.
           </p>
           <p>
+            Pour démarrer, nous vous offrons l&apos;un des trois plans du terrain, établi d&apos;après le cadastre et
+            l&apos;IGN : <Link href="/plan-de-situation-gratuit">plan de situation gratuit</Link> (PCMI 1),{" "}
+            <Link href="/plan-de-masse-gratuit">plan de masse gratuit</Link> (PCMI 2) ou{" "}
+            <Link href="/plan-de-coupe-gratuit">plan de coupe gratuit</Link> (PCMI 3), en PDF A3.
+          </p>
+          <p>
             Vous avez déjà un plan de masse, dessiné par un constructeur ou un géomètre ? Vous pouvez{" "}
             <Link href="/plan-de-masse">nous l&apos;envoyer en PDF ou en DWG</Link> : nous le confrontons au règlement de
             votre commune et vous disons sous 4 h ouvrées ce qu&apos;il lui manque.

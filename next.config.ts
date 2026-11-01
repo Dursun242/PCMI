@@ -28,6 +28,8 @@ const nextConfig: NextConfig = {
     // les liens déjà partagés vers le fichier .html y mènent toujours.
     return [
       { source: "/references-chantiers.html", destination: "/references-chantiers", permanent: true },
+      // Page des coupes renommée le 01/11/2026 pour la recherche « plan de coupe gratuit ».
+      { source: "/coupe-de-terrain-gratuite", destination: "/plan-de-coupe-gratuit", permanent: true },
       // www servait une copie du site (même contenu, deux adresses) : une seule adresse, sans www.
       {
         source: "/:path*",

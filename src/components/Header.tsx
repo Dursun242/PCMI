@@ -7,14 +7,16 @@ import { ETAT_INITIAL, suivreDefilement } from "@/lib/defilement";
 import Logo from "./Logo";
 import TrackedLink from "./TrackedLink";
 
-const nav = [
+/** `grandEcran` : masqué entre 1024 et 1280 px, où la ligne serait trop longue (toujours dans le menu mobile et le pied de page). */
+const nav: { href: string; label: string; grandEcran?: boolean }[] = [
   { href: "/permis-de-construire-en-ligne", label: "Permis de construire" },
   { href: "/tarifs", label: "Tarifs" },
+  { href: "/plans-gratuits", label: "Plans gratuits" },
   { href: "/plans-execution", label: "Plans EXE" },
   { href: "/etude-thermique-re2020", label: "Étude RE2020" },
   { href: "/conseils", label: "Conseils" },
-  { href: "/references-chantiers", label: "Réalisations" },
-  { href: "/contact", label: "Contact" },
+  { href: "/references-chantiers", label: "Réalisations", grandEcran: true },
+  { href: "/contact", label: "Contact", grandEcran: true },
 ];
 
 /**
@@ -78,13 +80,17 @@ export default function Header() {
     <>
       <header data-zone="entete" className="entete sticky top-0 z-40 bg-paper/92 backdrop-blur border-b border-stone-2">
         <div className="entete-ligne mx-auto max-w-7xl px-5 sm:px-8 flex items-center justify-between gap-4">
-          <Link href="/" aria-label="ID Maîtrise, Permis en ligne : accueil" className="entete-logo entete-logo-entree">
+          <Link href="/" aria-label="ID Maîtrise, Permis en ligne : accueil" className="entete-logo entete-logo-entree shrink-0">
             <Logo priority compact />
           </Link>
 
-          <nav aria-label="Navigation principale" className="hidden lg:flex items-center gap-5 xl:gap-7 text-[0.92rem] whitespace-nowrap">
+          <nav aria-label="Navigation principale" className="hidden lg:flex items-center gap-4 xl:gap-6 text-[0.88rem] xl:text-[0.92rem] whitespace-nowrap">
             {nav.map((n) => (
-              <Link key={n.href} href={n.href} className="hover:text-bronze transition-colors">
+              <Link
+                key={n.href}
+                href={n.href}
+                className={`hover:text-bronze transition-colors${n.grandEcran ? " hidden xl:inline" : ""}`}
+              >
                 {n.label}
               </Link>
             ))}

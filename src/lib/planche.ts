@@ -28,7 +28,7 @@ export const PLANCHES: Record<Planche, InfoPlanche> = {
   coupes: {
     titre: "Coupes du terrain",
     contenu: "Le profil du terrain naturel dans ses deux sens, en long et en travers, avec les altitudes et la pente.",
-    path: "/coupe-de-terrain-gratuite",
+    path: "/plan-de-coupe-gratuit",
   },
   situation: {
     titre: "Plan de situation",
