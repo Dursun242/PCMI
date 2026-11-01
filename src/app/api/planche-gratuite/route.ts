@@ -50,14 +50,16 @@ export async function POST(req: Request) {
   if ("erreurs" in v) return NextResponse.json({ ok: false, erreurs: v.erreurs }, { status: 400 });
   const d = v.demande;
 
-  const secret = secretPlanche();
-  if (!secret) {
-    console.error("[planche] PLANCHE_SECRET (ou ADMIN_SESSION_SECRET) absent : service fermé");
-    return NextResponse.json({ ok: false, error: "Service momentanément indisponible." }, { status: 503 });
-  }
-
   const contact: ContactPlanche = { prenom: d.prenom, nom: d.nom, email: d.email };
   const x = contexte(d);
+
+  // Sans secret, ni registre ni rappel signé : la demande reste reçue, et part à la main.
+  const secret = secretPlanche();
+  if (!secret) {
+    console.error("[planche] PLANCHE_SECRET (ou ADMIN_SESSION_SECRET) absent : demande transmise à la main");
+    await prevenir(emailInterneDemande(contact, x, true), d.email);
+    return NextResponse.json({ ok: true, manuel: true });
+  }
   const empreinte = empreinteParcelle(d.idu, secret);
 
   try {
