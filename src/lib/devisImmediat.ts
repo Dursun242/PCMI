@@ -40,8 +40,8 @@ function dateLongue(iso: string): string {
 
 /**
  * Date limite du prix promotionnel, à afficher partout où ce prix est écrit
- * (page et e-mail) : un e-mail relu en décembre ne doit pas promettre le prix
- * d'automne. Null hors offre.
+ * (page et e-mail) : un e-mail relu après la fin de l'offre ne doit pas en
+ * promettre le prix. Null hors offre.
  */
 export function mentionOffreLancement(plan: Pick<Plan, "regularPriceTTC">): string | null {
   if (!lancement.actif || !plan.regularPriceTTC) return null;
