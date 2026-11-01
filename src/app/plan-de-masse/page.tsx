@@ -116,6 +116,13 @@ export default function PlanDeMassePage() {
               C&apos;est le cas le plus fréquent, et ce n&apos;est pas un problème : nous dessinons le plan de masse à
               partir du cadastre et de vos souhaits.
             </p>
+            <p className="mt-3 text-sm text-ink-2">
+              Pour voir votre terrain avant de vous décider :{" "}
+              <Link href="/plan-de-masse-gratuit" className="text-ink underline decoration-brass underline-offset-4">
+                recevez son plan de masse gratuit
+              </Link>{" "}
+              en PDF A3.
+            </p>
             <Link href="/commander" className="btn btn-line mt-4 !min-h-11">Commander mon permis sans plan</Link>
           </div>
         </div>

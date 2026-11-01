@@ -5,16 +5,37 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ETAT_INITIAL, suivreDefilement } from "@/lib/defilement";
 import Logo from "./Logo";
+import MenuDeroulant, { type EntreeMenu } from "./MenuDeroulant";
 import TrackedLink from "./TrackedLink";
 
-const nav = [
-  { href: "/permis-de-construire-en-ligne", label: "Permis de construire" },
+/** Menu principal : deux listes déroulantes et trois liens directs. */
+const services: EntreeMenu[] = [
+  { href: "/permis-de-construire-en-ligne", label: "Permis de construire", detail: "Dossier PCMI 1 à 8 à prix fixe, déposé et suivi" },
+  { href: "/plans-execution", label: "Plans d'exécution", detail: "Plans EXE pour chiffrer et construire" },
+  { href: "/etude-thermique-re2020", label: "Étude thermique RE2020", detail: "Attestation exigée au dépôt du permis" },
+];
+
+const gratuits: EntreeMenu[] = [
+  { href: "/plans-gratuits", label: "Plans gratuits", detail: "Plan de situation, de masse ou de coupe de votre terrain" },
+  { href: "/calcul-taxe-amenagement", label: "Calcul de la taxe d'aménagement", detail: "Le montant de la taxe pour votre maison" },
+  { href: "/conseils", label: "Conseils", detail: "Nos articles pour préparer votre permis" },
+];
+
+const groupes = [
+  { label: "Nos services", entrees: services },
+  { label: "Outils gratuits", entrees: gratuits },
+];
+
+const liens: EntreeMenu[] = [
   { href: "/tarifs", label: "Tarifs" },
-  { href: "/plans-execution", label: "Plans EXE" },
-  { href: "/etude-thermique-re2020", label: "Étude RE2020" },
-  { href: "/conseils", label: "Conseils" },
   { href: "/references-chantiers", label: "Réalisations" },
   { href: "/contact", label: "Contact" },
+];
+
+/** Ordre du menu mobile : les groupes à plat, puis les liens directs (index pour l'animation d'entrée). */
+const mobile: (EntreeMenu & { titre?: string; separe?: boolean })[] = [
+  ...groupes.flatMap((g) => g.entrees.map((e, i) => ({ ...e, titre: i === 0 ? g.label : undefined }))),
+  ...liens.map((e, i) => ({ ...e, separe: i === 0 })),
 ];
 
 /**
@@ -78,12 +99,15 @@ export default function Header() {
     <>
       <header data-zone="entete" className="entete sticky top-0 z-40 bg-paper/92 backdrop-blur border-b border-stone-2">
         <div className="entete-ligne mx-auto max-w-7xl px-5 sm:px-8 flex items-center justify-between gap-4">
-          <Link href="/" aria-label="ID Maîtrise, Permis en ligne : accueil" className="entete-logo entete-logo-entree">
+          <Link href="/" aria-label="ID Maîtrise, Permis en ligne : accueil" className="entete-logo entete-logo-entree shrink-0">
             <Logo priority compact />
           </Link>
 
-          <nav aria-label="Navigation principale" className="hidden lg:flex items-center gap-5 xl:gap-7 text-[0.92rem] whitespace-nowrap">
-            {nav.map((n) => (
+          <nav aria-label="Navigation principale" className="hidden lg:flex items-center gap-6 xl:gap-8 text-[0.92rem] whitespace-nowrap">
+            <MenuDeroulant {...groupes[0]} />
+            <Link href={liens[0].href} className="hover:text-bronze transition-colors">{liens[0].label}</Link>
+            <MenuDeroulant {...groupes[1]} />
+            {liens.slice(1).map((n) => (
               <Link key={n.href} href={n.href} className="hover:text-bronze transition-colors">
                 {n.label}
               </Link>
@@ -118,23 +142,26 @@ export default function Header() {
           inert={!open}
           className="menu-mobile lg:hidden absolute inset-x-0 top-full max-h-[calc(100dvh-var(--h-entete))] overflow-y-auto border-t border-stone-2 bg-paper px-5 py-5 grid gap-1 shadow-[0_24px_40px_rgb(27_31_29/0.12)]"
         >
-          {nav.map((n, i) => (
-            <Link
+          {mobile.map((n, i) => (
+            <div
               key={n.href}
-              href={n.href}
-              onClick={fermer}
-              className="menu-item py-3 text-lg display"
+              className={`menu-item${n.separe ? " mt-3 border-t border-stone-2 pt-3" : ""}`}
               style={{ "--i": i } as React.CSSProperties}
             >
-              {n.label}
-            </Link>
+              {n.titre && (
+                <p className="pt-3 text-[0.68rem] font-bold uppercase tracking-[0.2em] text-bronze">{n.titre}</p>
+              )}
+              <Link href={n.href} onClick={fermer} className="block py-3 text-lg display">
+                {n.label}
+              </Link>
+            </div>
           ))}
           <TrackedLink
             href={lienCommande}
             source="menu_mobile"
             onClickCapture={fermer}
             className="menu-item btn btn-ink mt-3"
-            style={{ "--i": nav.length } as React.CSSProperties}
+            style={{ "--i": mobile.length } as React.CSSProperties}
           >
             Commander mon permis
           </TrackedLink>

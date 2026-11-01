@@ -99,8 +99,9 @@ export default function Footer() {
               <li><Link href="/permis-de-construire-maison" className="hover:text-brass-2">Le guide du permis</Link></li>
               <li><Link href={NORMANDIE_PATH} className="hover:text-brass-2">Permis en Normandie</Link></li>
               <li><Link href="/calcul-taxe-amenagement" className="hover:text-brass-2">Calcul de la taxe d&apos;aménagement</Link></li>
+              <li><Link href="/plans-gratuits" className="hover:text-brass-2">Plans gratuits</Link></li>
               <li><Link href="/plan-de-masse-gratuit" className="hover:text-brass-2">Plan de masse gratuit</Link></li>
-              <li><Link href="/coupe-de-terrain-gratuite" className="hover:text-brass-2">Coupes de terrain gratuites</Link></li>
+              <li><Link href="/plan-de-coupe-gratuit" className="hover:text-brass-2">Plan de coupe gratuit</Link></li>
               <li><Link href="/plan-de-situation-gratuit" className="hover:text-brass-2">Plan de situation gratuit</Link></li>
               <li><Link href="/conseils" className="hover:text-brass-2">Conseils</Link></li>
               <li><Link href="/a-propos" className="hover:text-brass-2">À propos</Link></li>
