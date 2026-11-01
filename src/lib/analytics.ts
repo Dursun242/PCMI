@@ -32,6 +32,10 @@ type Events = {
   formula_finder_result: { formule: string; surface_bucket: SurfaceBucket };
   /** Montant affiché par le calculateur de taxe d'aménagement. */
   taxe_calcul_result: { surface_bucket: SurfaceBucket; residence: "principale" | "secondaire" };
+  /** Terrain trouvé par le formulaire de la planche gratuite (nombre de parcelles proposées). */
+  planche_terrain_trouve: { parcelles: string };
+  /** Demande de planche gratuite : envoyée, ou refusée car la parcelle a déjà eu la sienne. */
+  planche_demande: { planche: string; resultat: "envoyee" | "deja_servie" };
   /** Première saisie réelle dans le formulaire de devis. */
   devis_start: { formule: string };
   /** Demande de devis transmise avec succès. */

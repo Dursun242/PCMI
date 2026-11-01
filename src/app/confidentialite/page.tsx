@@ -23,6 +23,13 @@ export default function ConfidentialitePage() {
       <p>
         Via le formulaire de devis : nom, e-mail, téléphone, commune du terrain, caractéristiques du projet et message libre. Ces données sont nécessaires pour établir votre devis (base légale : mesures précontractuelles à votre demande).
       </p>
+      <p>
+        Via la demande de planche gratuite (plan de situation, plan de masse ou coupes du terrain) : prénom, nom, e-mail et
+        parcelle choisie. Ces données servent à vous envoyer la planche et à vous recontacter au sujet de votre projet
+        (base légale : votre consentement, que vous pouvez retirer à tout moment). Pour dessiner la planche, l&apos;adresse
+        du terrain, la parcelle et votre nom (porté dans le cartouche) passent par notre outil de dessin, hébergé chez
+        GitHub ; les coordonnées conservées pour appliquer la règle d&apos;une planche par parcelle sont chiffrées.
+      </p>
 
       <h2>Destinataires et sous-traitants</h2>
       <p>
