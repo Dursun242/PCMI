@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import FileField, { appendFiles, filesReady, type PickedFile } from "./FileField";
 import { suivreSuite } from "@/lib/suiviClient";
+import { RappelSpams } from "@/components/RappelSpams";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
@@ -41,6 +42,7 @@ export default function ContactForm() {
         <span className="stamp text-2xl w-fit">Reçu</span>
         <h2 className="display text-4xl">Message bien reçu.</h2>
         <p className="text-ink-2 leading-relaxed">Nous vous répondons sous 4 h ouvrées. Un accusé de réception vient de vous être envoyé.</p>
+        <RappelSpams />
         <Link href="/conseils" className="btn btn-line w-fit">Lire nos conseils en attendant</Link>
       </div>
     );
