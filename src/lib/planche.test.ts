@@ -181,9 +181,8 @@ describe("e-mails de la planche", () => {
 
   it("présente la planche au visiteur sans promettre plus qu'un document indicatif", () => {
     const m = emailClientPlanche(contact, x);
-    expect(m.subject).toBe("Votre planche gratuite : coupes du terrain — Le Havre");
+    expect(m.subject).toBe("Coupes du terrain — parcelle OJ 0646, Le Havre");
     expect(m.html).toContain("ne remplace pas un plan de géomètre");
-    expect(m.html).toContain("/tarifs");
   });
 
   it("met le site en avant, sans signature personnelle", () => {
@@ -193,6 +192,13 @@ describe("e-mails de la planche", () => {
       expect(m.html).toContain("/commander");
       expect(m.html).not.toMatch(/ma[îi]tre d.(œ|oe)uvre/i);
       expect(m.html).not.toContain(site.legal.director);
+    }
+  });
+
+  it("évite les déclencheurs de spam : pas de « gratuit » dans l'objet, peu de liens", () => {
+    for (const m of [emailClientPlanche(contact, x), emailClientAccuse(contact, x, false), emailClientEchec(contact, x)]) {
+      expect(m.subject).not.toMatch(/gratuit/i);
+      expect((m.html.match(/<a\s/g) ?? []).length).toBeLessThanOrEqual(2);
     }
   });
 
