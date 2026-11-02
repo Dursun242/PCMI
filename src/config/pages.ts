@@ -107,7 +107,7 @@ export const staticPages: StaticPage[] = [
   },
   {
     path: "/plans-gratuits",
-    lastModified: "2026-11-01",
+    lastModified: "2026-11-02",
     changeFrequency: "monthly",
     priority: 0.8,
     summary:

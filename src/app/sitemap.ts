@@ -5,6 +5,8 @@ import { getArticles } from "@/lib/articles";
 import { villes, VILLES_LAST_MODIFIED } from "@/config/normandie";
 import { villePath } from "@/lib/normandie";
 import { chantiers, vitrine } from "@/config/references";
+import { TERRITOIRES_LAST_MODIFIED } from "@/config/territoires";
+import { territoirePath, territoires } from "@/lib/territoires";
 
 const absolue = (path: string) => `${site.url}${path}`;
 
@@ -55,6 +57,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(v.lastModified ?? VILLES_LAST_MODIFIED),
       changeFrequency: "monthly" as const,
       priority: 0.8,
+    })),
+    // Plans gratuits par région et par département (/plans-gratuits/<territoire>).
+    ...territoires().map((t) => ({
+      url: `${site.url}${territoirePath(t)}`,
+      lastModified: new Date(TERRITOIRES_LAST_MODIFIED),
+      changeFrequency: "monthly" as const,
+      priority: t.type === "region" ? 0.7 : 0.6,
     })),
     ...articles.map((a) => ({
       url: `${site.url}/conseils/${a.slug}`,
