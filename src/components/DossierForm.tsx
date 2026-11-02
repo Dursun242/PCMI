@@ -6,6 +6,7 @@ import { steps, type Field } from "@/config/dossier";
 import FileField, { appendFiles, filesReady, type PickedFile } from "./FileField";
 import { trackEvent } from "@/lib/analytics";
 import { suivreSuite } from "@/lib/suiviClient";
+import { RappelSpams } from "@/components/RappelSpams";
 
 type Values = Record<string, string>;
 type Status = "idle" | "sending" | "sent" | "error";
@@ -96,6 +97,7 @@ export default function DossierForm() {
             ? "Votre projet dépasse 149 m² de surface de plancher : nos formules à prix fixe ne s'appliquent plus. Nous préparons un devis sur mesure avec notre architecte partenaire (obligatoire au-delà de 150 m²) et revenons vers vous sous 4 h ouvrées."
             : "Nous lisons le règlement d'urbanisme de votre commune et vous adressons sous 4 h ouvrées un devis à prix fixe, avec la formule conseillée et les prochaines étapes."}
         </p>
+        <RappelSpams />
         <Link href="/conseils" className="btn btn-line w-fit">Lire nos conseils en attendant</Link>
       </div>
     );

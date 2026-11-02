@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Garanties from "@/components/Garanties";
 import { HUB } from "@/config/planchesGratuites";
 import { ORDRE_PLANCHES, PLANCHES, estPlanche } from "@/lib/planche";
+import { RappelSpams } from "@/components/RappelSpams";
 
 /**
  * Remerciement après une demande de plan gratuit, une page par planche :
@@ -53,8 +54,9 @@ export default async function MerciPlanche({
         <p className="lead mt-7 max-w-[60ch]">
           {manuel
             ? `Votre planche « ${titre} » demande une vérification de notre part : nous la finalisons nous-mêmes et vous l'envoyons par e-mail sous 24 h ouvrées.`
-            : `Votre planche « ${titre} » est en cours de dessin. Vous la recevrez par e-mail d'ici quelques minutes ; pensez à regarder dans vos courriers indésirables.`}
+            : `Votre planche « ${titre} » est en cours de dessin. Vous la recevrez par e-mail d'ici quelques minutes.`}
         </p>
+        <RappelSpams className="mt-6 max-w-[60ch]" />
       </div>
 
       <ol className="mt-14 grid gap-px border-y border-stone-2 bg-stone-2 sm:grid-cols-3">

@@ -4,6 +4,7 @@ import { formatEuro } from "@/lib/format";
 import { formuleDevisImmediat } from "@/lib/devisImmediat";
 import DevisImmediatCarte from "./DevisImmediatCarte";
 import WhatsAppLink from "./WhatsAppLink";
+import { RappelSpams } from "@/components/RappelSpams";
 
 /**
  * Corps de la page de confirmation, partagé par /devis/merci et par
@@ -53,14 +54,14 @@ export default function MerciContent({ type, surface, projet }: { type?: MerciTy
       <span className="stamp text-2xl w-fit" aria-hidden="true">Reçu</span>
       <h1 className="display mt-8 text-5xl sm:text-6xl">{immediat ? "Votre devis est prêt." : "Votre demande est bien arrivée."}</h1>
       <p className="lead mt-7">
-        Un e-mail de confirmation part à l&apos;instant vers votre boîte de réception — pensez à vérifier vos courriers
-        indésirables.{viaPlanDeMasse ? " Votre plan nous est bien parvenu." : ""}
+        Un e-mail de confirmation part à l&apos;instant vers votre boîte de réception.{viaPlanDeMasse ? " Votre plan nous est bien parvenu." : ""}
         {viaExe ? " Votre demande porte sur des plans d'exécution : le devis détaille un prix fixe par lot." : ""}
         {viaThermique ? " Votre demande porte sur une étude thermique RE2020 : notre thermicien vous répond avec un prix fixe par prestation." : ""}
         {viaExpress ? ` Nous vous rappelons ${express.rappel.delai} (${express.rappel.horaires} ; ${express.rappel.sinon}) pour la formule ${express.nom} (${formatEuro(express.prixTTC)} TTC, dossier prêt en ${express.delai}) ou la formule adaptée à votre projet.` : ""}
         {plan && !immediat ? ` Votre demande porte sur la formule ${plan.name} (${formatEuro(plan.priceTTC)} TTC, livrée sous ${plan.delayWorkingDays}).` : ""}
         {immediat ? " Il contient aussi le devis ci-dessous." : ""}
       </p>
+      <RappelSpams className="mt-6" />
 
       {immediat && surface && <DevisImmediatCarte plan={immediat} surface={surface} />}
 

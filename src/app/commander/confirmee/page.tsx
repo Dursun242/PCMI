@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DELAI_RETRACTATION_JOURS } from "@/lib/commande";
+import { RappelSpams } from "@/components/RappelSpams";
 
 /** Fin du tunnel : la commande est signée, le client sait ce qui se passe ensuite. */
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export default function ConfirmeePage() {
         Merci de votre confiance. Vous venez de recevoir par e-mail votre devis signé, les conditions générales de vente et
         le formulaire de rétractation.
       </p>
+      <RappelSpams className="mt-6" />
 
       <h2 className="display mt-14 text-3xl">Et maintenant ?</h2>
       <ol className="mt-6 grid gap-6">
