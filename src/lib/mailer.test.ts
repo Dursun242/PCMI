@@ -7,7 +7,7 @@ vi.mock("resend", () => ({
   },
 }));
 
-import { sendPair } from "./mailer";
+import { htmlEnTexte, sendPair, sendToClient } from "./mailer";
 
 const opts = {
   subject: "Contact — Jean",
@@ -78,3 +78,27 @@ describe("sendPair", () => {
     expect(send).not.toHaveBeenCalled();
   });
 });
+
+describe("version texte des e-mails (anti-spam)", () => {
+  beforeEach(() => {
+    send.mockReset();
+    process.env.RESEND_API_KEY = "re_test";
+  });
+  afterEach(() => {
+    delete process.env.RESEND_API_KEY;
+  });
+
+  test("convertit le HTML en texte lisible, liens gardés", () => {
+    const t = htmlEnTexte('<p>Bonjour&nbsp;Jean,</p><p>Voir <a href="https://exemple.fr/a">le site</a></p><ul><li>un</li></ul>');
+    expect(t).toBe("Bonjour Jean,\nVoir le site (https://exemple.fr/a)\n- un");
+  });
+
+  test("chaque e-mail au client part avec une partie texte et un lien de désinscription", async () => {
+    send.mockResolvedValue({ data: { id: "1" }, error: null });
+    await sendToClient({ to: "jean@exemple.fr", subject: "Votre plan", html: "<p>Bonjour</p>" });
+    const envoye = send.mock.calls[0][0];
+    expect(envoye.text).toBe("Bonjour");
+    expect(envoye.headers["List-Unsubscribe"]).toMatch(/^<mailto:/);
+  });
+});
+

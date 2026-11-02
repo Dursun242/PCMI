@@ -23,6 +23,35 @@ export function rateLimited(ip: string, max = 6) {
 export const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] as string);
 
+/**
+ * Version texte d'un e-mail HTML (anti-spam) : un message sans partie texte est
+ * mal noté par Gmail, Outlook et SpamAssassin. Liens gardés entre parenthèses.
+ */
+export function htmlEnTexte(html: string): string {
+  return html
+    .replace(/<a\s[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi, (_, href: string, t: string) => {
+      const libelle = t.replace(/<[^>]+>/g, "").trim();
+      return libelle && libelle !== href ? `${libelle} (${href})` : href;
+    })
+    .replace(/<(br|\/p|\/div|\/h\d|\/li|\/tr)\s*\/?>/gi, "\n")
+    .replace(/<li[^>]*>/gi, "- ")
+    .replace(/<\/td>/gi, " ")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/[ \t]{2,}/g, " ")
+    .trim();
+}
+
+/** En-têtes communs (anti-spam) : désinscription en un clic par e-mail. */
+const entetes = (contact: string) => ({ "List-Unsubscribe": `<mailto:${contact}?subject=desinscription>` });
+
 export const ipOf = (req: Request) => req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "anon";
 
 const FONT = "font-family:Lato,Arial,sans-serif";
@@ -83,6 +112,7 @@ export async function sendPair(opts: {
     replyTo: opts.replyTo,
     subject: opts.subject,
     html: opts.internalHtml,
+    text: htmlEnTexte(opts.internalHtml),
     attachments: opts.attachments?.map((a) => (a.content ? { filename: a.filename, content: a.content } : { filename: a.filename, path: a.path ?? "" })),
   });
   if (internal.error) throw new Error(`Resend (e-mail interne) : ${internal.error.message}`);
@@ -96,6 +126,8 @@ export async function sendPair(opts: {
       replyTo: to,
       subject: opts.clientSubject,
       html: opts.clientHtml,
+      text: htmlEnTexte(opts.clientHtml),
+      headers: entetes(to),
       attachments: opts.clientAttachments?.map((a) => ({ filename: a.filename, content: a.content, path: a.path })),
     });
     if (ack.error) console.error(`[mail] accusé de réception non envoyé : ${ack.error.message}`);
@@ -125,6 +157,8 @@ export async function sendToClient(opts: { to: string; subject: string; html: st
     replyTo,
     subject: opts.subject,
     html: opts.html,
+    text: htmlEnTexte(opts.html),
+    headers: entetes(replyTo),
     attachments: opts.attachments?.map((a) => ({ filename: a.filename, content: a.content, path: a.path })),
   });
   if (envoi.error) throw new Error(`Resend (e-mail client) : ${envoi.error.message}`);
@@ -149,6 +183,7 @@ export async function sendInternal(opts: { subject: string; html: string; replyT
     replyTo: opts.replyTo,
     subject: opts.subject,
     html: opts.html,
+    text: htmlEnTexte(opts.html),
     attachments: opts.attachments?.map((a) => ({ filename: a.filename, content: a.content, path: a.path })),
   });
   if (envoi.error) throw new Error(`Resend (e-mail interne) : ${envoi.error.message}`);
