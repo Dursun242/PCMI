@@ -35,7 +35,7 @@ export const HUB_PATH = "/plans-gratuits";
 const PROJETS =
   "Maison neuve, extension, agrandissement, garage, carport, piscine, abri de jardin, véranda, terrasse surélevée, clôture ou mur de soutènement : tous ces projets passent par une demande de permis de construire ou une déclaration préalable de travaux, et toutes deux commencent par l'état existant du terrain.";
 
-const FAQ_COMMUNE: { q: string; a: string }[] = [
+export const FAQ_COMMUNE: { q: string; a: string }[] = [
   {
     q: "Pourquoi une seule planche gratuite par terrain ?",
     a: "C'est un service offert par notre bureau d'études pour vous aider à démarrer. Chaque parcelle a droit à une planche gratuite, au choix : plan de situation, plan de masse de l'existant ou plan de coupe du terrain. Les autres plans font partie de nos formules de permis à prix fixe.",
