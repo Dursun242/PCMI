@@ -7,8 +7,8 @@ import matter from "gray-matter";
 import { GoogleAuth } from "google-auth-library";
 
 export const ROOT = resolve(import.meta.dirname, "../..");
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://permis.id-maitrise.com").replace(/\/$/, "");
-export const GSC_PROPERTY = process.env.GSC_PROPERTY ?? `sc-domain:${new URL(SITE_URL).hostname.replace(/^permis\./, "")}`;
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://permis-maison-individuelle.fr").replace(/\/$/, "");
+export const GSC_PROPERTY = process.env.GSC_PROPERTY || `sc-domain:${new URL(SITE_URL).hostname.replace(/^permis\./, "")}`;
 
 /* ---------- Modèle de langage (API Mistral) ---------- */
 

@@ -94,7 +94,7 @@ async function alerterAdmin(raison: string) {
   derniereAlerte = Date.now();
   try {
     await sendToClient({
-      to: process.env.MAIL_TO ?? site.email,
+      to: process.env.MAIL_TO || site.email,
       subject: "Commande en ligne bloquée : reconnectez Qonto",
       html: `<p style="font-family:Lato,Arial,sans-serif">La commande en ligne ne peut plus créer de mandat chez Qonto : ${raison}</p>
         <p style="font-family:Lato,Arial,sans-serif">Ouvrez <a href="${site.url}/admin">l'espace admin</a> et cliquez sur « Connecter Qonto ».</p>`,

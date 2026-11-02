@@ -94,8 +94,8 @@ export async function sendPair(opts: {
   clientAttachments?: MailAttachment[];
 }) {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.MAIL_FROM ?? `${site.name} <contact@id-maitrise.com>`;
-  const to = process.env.MAIL_TO ?? site.email;
+  const from = process.env.MAIL_FROM || `${site.name} <contact@id-maitrise.com>`;
+  const to = process.env.MAIL_TO || site.email;
   if (!apiKey) {
     console.warn(`[mail] RESEND_API_KEY absente — non envoyé : ${opts.subject}`);
     return { dev: true };
@@ -149,8 +149,8 @@ export async function sendToClient(opts: { to: string; subject: string; html: st
     console.warn(`[mail] RESEND_API_KEY absente — non envoyé : ${opts.subject}`);
     return { dev: true };
   }
-  const from = process.env.MAIL_FROM ?? `${site.name} <contact@id-maitrise.com>`;
-  const replyTo = process.env.MAIL_TO ?? site.email;
+  const from = process.env.MAIL_FROM || `${site.name} <contact@id-maitrise.com>`;
+  const replyTo = process.env.MAIL_TO || site.email;
   const envoi = await new Resend(apiKey).emails.send({
     from,
     to: opts.to,
@@ -175,8 +175,8 @@ export async function sendInternal(opts: { subject: string; html: string; replyT
     console.warn(`[mail] RESEND_API_KEY absente — non envoyé : ${opts.subject}`);
     return { dev: true };
   }
-  const from = process.env.MAIL_FROM ?? `${site.name} <contact@id-maitrise.com>`;
-  const to = process.env.MAIL_TO ?? site.email;
+  const from = process.env.MAIL_FROM || `${site.name} <contact@id-maitrise.com>`;
+  const to = process.env.MAIL_TO || site.email;
   const envoi = await new Resend(apiKey).emails.send({
     from,
     to,

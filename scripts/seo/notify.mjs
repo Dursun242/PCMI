@@ -61,8 +61,8 @@ ${next ? `<h3 style="font-size:13px;letter-spacing:.12em;text-transform:uppercas
 try {
   const resend = new Resend(apiKey);
   const { error } = await resend.emails.send({
-    from: process.env.MAIL_FROM ?? "Permis by ID Maîtrise <contact@id-maitrise.com>",
-    to: process.env.MAIL_TO ?? "contact@id-maitrise.com",
+    from: process.env.MAIL_FROM || "Permis by ID Maîtrise <contact@id-maitrise.com>",
+    to: process.env.MAIL_TO || "contact@id-maitrise.com",
     subject: `${run.kind === "refresh" ? "Article mis à jour" : "Nouvel article"} : ${article.title}`,
     html,
   });
