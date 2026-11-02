@@ -34,7 +34,7 @@ export const site: {
   author: "Dursun O.",
   tagline: "Le permis de construire de votre maison, par un bureau d'études qui allie ingénierie et architecture, au prix juste.",
   // Domaine de production
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://permis-maison-individuelle.fr",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://permis-maison-individuelle.fr",
   parentUrl: "https://www.id-maitrise.com",
   email: "contact@id-maitrise.com",
   // Laisser vide pour masquer le téléphone sur le site
