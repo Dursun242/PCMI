@@ -18,7 +18,7 @@ export const runtime = "nodejs";
  * Retour du workflow « Planche gratuite » (id-plans) : le PDF de la planche
  * (application/pdf) ou l'erreur rencontrée (application/json). L'adresse est
  * signée et datée par le site au moment de la demande : personne d'autre ne
- * peut s'en servir, et une seule livraison est envoyée par parcelle.
+ * peut s'en servir, et une seule livraison est envoyée par demande.
  */
 
 /** Limite d'une requête vers une fonction Vercel (4,5 Mo), avec une marge. */

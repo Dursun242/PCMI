@@ -5,7 +5,7 @@ import type { Planche } from "@/lib/planche";
  * et une page par planche. Chaque page vise sa propre famille de recherches
  * (« plan de masse gratuit », « plan de situation gratuit », « plan de coupe
  * gratuit », avec leurs variantes PCMI, PC et DP) et propose les trois
- * planches : une seule par terrain.
+ * planches : une seule par terrain et par personne.
  *
  * Les mots-clés sont placés là où un lecteur les attend (titre, chapô,
  * intertitres, questions) : une page écrite pour Google et illisible pour un
@@ -40,7 +40,7 @@ const PROJETS =
 export const FAQ_COMMUNE: { q: string; a: string }[] = [
   {
     q: "Pourquoi une seule planche gratuite par terrain ?",
-    a: "C'est un service offert par notre bureau d'études pour vous aider à démarrer. Chaque parcelle a droit à une planche gratuite, au choix : plan de situation, plan de masse de l'existant ou plan de coupe du terrain. Les autres plans font partie de nos formules de permis à prix fixe.",
+    a: "C'est un service offert par notre bureau d'études pour vous aider à démarrer. Chacun a droit à une planche gratuite par terrain, au choix : plan de situation, plan de masse de l'existant ou plan de coupe du terrain. Les autres plans font partie de nos formules de permis à prix fixe.",
   },
   {
     q: "En combien de temps je reçois le plan ?",

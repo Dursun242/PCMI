@@ -10,13 +10,13 @@ import {
 import { ipOf, rateLimited, sendInternal, sendToClient } from "@/lib/mailer";
 import { nomCartouche, referenceCourte, validerDemande, type DemandePlanche } from "@/lib/planche";
 import { declencherPlanche, githubConfigure } from "@/lib/plancheGithub";
-import { chiffrer, empreinteParcelle, secretPlanche, signerRappel, VALIDITE_RAPPEL_MS } from "@/lib/plancheSecret";
-import { ecrirePlanche, lirePlanche, majPlanche, parcellePrise } from "@/lib/plancheStore";
+import { chiffrer, empreinteDemande, secretPlanche, signerRappel, VALIDITE_RAPPEL_MS } from "@/lib/plancheSecret";
+import { demandeDejaFaite, ecrirePlanche, majPlanche } from "@/lib/plancheStore";
 
 export const runtime = "nodejs";
 
 /**
- * Demande de planche gratuite : une seule par parcelle. La planche est
+ * Demande de planche gratuite : une par terrain et par personne (e-mail). La planche est
  * dessinée par l'outil PCMI (workflow GitHub d'id-plans), qui la renvoie à
  * /api/planche-gratuite/livraison ; c'est là qu'elle part au visiteur.
  */
@@ -79,11 +79,10 @@ export async function POST(req: Request) {
     await accuser(contact, x, true);
     return NextResponse.json({ ok: true, manuel: true });
   }
-  const empreinte = empreinteParcelle(d.idu, secret);
+  const empreinte = empreinteDemande(d.idu, d.email, secret);
 
   try {
-    const existante = await lirePlanche(empreinte);
-    if (parcellePrise(existante)) {
+    if (await demandeDejaFaite(d.idu, d.email, secret)) {
       await prevenir(emailInterneRefus(contact, x), d.email);
       return NextResponse.json({ ok: false, deja: true }, { status: 409 });
     }

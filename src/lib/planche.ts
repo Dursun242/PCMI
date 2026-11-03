@@ -1,5 +1,5 @@
 /**
- * Planche gratuite de l'état existant : une seule planche par parcelle
+ * Planche gratuite de l'état existant : une planche par terrain et par personne
  * (plan de situation, plan de masse de l'existant ou coupes du terrain),
  * envoyée par e-mail contre le nom et l'adresse e-mail du visiteur.
  *

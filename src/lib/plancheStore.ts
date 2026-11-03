@@ -1,11 +1,13 @@
 import "server-only";
 import { list, put } from "@vercel/blob";
 import type { Planche } from "@/lib/planche";
+import { empreinteDemande, empreinteParcelle, memeDemandeur } from "@/lib/plancheSecret";
 
 /**
- * Registre des planches gratuites : une entrée par parcelle, nommée par
- * l'empreinte de la parcelle (plancheSecret.ts). C'est lui qui garantit
- * « une seule planche par parcelle ». Les coordonnées du visiteur y sont
+ * Registre des planches gratuites : une entrée par demande, nommée par
+ * l'empreinte de la parcelle et de l'e-mail du visiteur (plancheSecret.ts).
+ * C'est lui qui garantit « une planche par terrain et par personne » ; les
+ * entrées plus anciennes sont nommées par la parcelle seule. Les coordonnées du visiteur y sont
  * chiffrées ; le reste (commune, référence cadastrale, planche, statut) est
  * public par nature. Stockage Vercel Blob (BLOB_READ_WRITE_TOKEN) ; en local,
  * sans jeton, le registre vit en mémoire.
@@ -77,7 +79,15 @@ export async function listerPlanches(max = 200): Promise<EntreePlanche[]> {
 }
 
 /**
- * Une parcelle est prise dès sa première demande, même en échec : la planche
- * est alors préparée à la main et livrée quand même (une seule par parcelle).
+ * Vrai si cette personne a déjà demandé une planche pour cette parcelle, même
+ * en échec : la planche est alors préparée à la main et livrée quand même.
+ * Relit aussi l'ancien registre (une entrée par parcelle) : son auteur reste
+ * servi, les autres visiteurs ne sont plus bloqués.
  */
-export const parcellePrise = (e: EntreePlanche | null) => e !== null;
+export async function demandeDejaFaite(idu: string, email: string, secret: string): Promise<boolean> {
+  const [demande, ancienne] = await Promise.all([
+    lirePlanche(empreinteDemande(idu, email, secret)),
+    lirePlanche(empreinteParcelle(idu, secret)),
+  ]);
+  return demande !== null || (ancienne !== null && memeDemandeur(ancienne.contact, email, secret));
+}

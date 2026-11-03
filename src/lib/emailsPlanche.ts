@@ -93,10 +93,10 @@ export function emailInterneDemande(c: ContactPlanche, x: ContextePlanche, cause
 
 export function emailInterneRefus(c: ContactPlanche, x: ContextePlanche) {
   return {
-    subject: `Planche gratuite refusée (parcelle déjà servie) — ${c.prenom} ${c.nom} — ${x.commune}`,
-    html: `<h2 style="${FONT}">Deuxième demande sur une même parcelle</h2>
+    subject: `Planche gratuite refusée (déjà servie à ce visiteur) — ${c.prenom} ${c.nom} — ${x.commune}`,
+    html: `<h2 style="${FONT}">Deuxième demande du même visiteur sur une même parcelle</h2>
       ${table(lignes(c, x))}
-      <p style="${FONT}">La parcelle a déjà eu sa planche gratuite : la demande a été refusée et le visiteur invité à vous contacter. Son contact reste utile.</p>`,
+      <p style="${FONT}">Ce visiteur a déjà eu une planche gratuite pour cette parcelle : la demande a été refusée et le visiteur invité à vous contacter. Son contact reste utile.</p>`,
   };
 }
 
