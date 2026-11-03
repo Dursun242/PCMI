@@ -187,7 +187,7 @@ export default function ConseilsPage() {
                 <span className="rule" aria-hidden="true" />
                 <p className="display mt-6 text-3xl sm:text-4xl max-w-[22ch]">Une question sur votre projet&nbsp;? Posez-la à un maître d&apos;œuvre.</p>
                 <p className="mt-4 text-paper/75 max-w-[52ch]">
-                  Nous lisons le PLU de votre commune et vous répondons sous 48&nbsp;h, sans engagement.
+                  Nous lisons le PLU de votre commune et vous répondons sous 4&nbsp;h ouvrées, sans engagement.
                 </p>
               </div>
               <div className="flex flex-wrap gap-3">
