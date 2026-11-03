@@ -6,7 +6,7 @@ import ChampAdresse from "@/components/ChampAdresse";
 import CarteParcelles from "@/components/planche/CarteParcelles";
 import { trackEvent } from "@/lib/analytics";
 import type { Apercu, ErreursFiche, Niveau } from "@/lib/ficheTerrain";
-import { referenceCourte, type RechercheTerrain } from "@/lib/planche";
+import { referenceCourte, type ParcelleCandidate, type RechercheTerrain } from "@/lib/planche";
 
 const etiquette = "text-[0.72rem] font-bold uppercase tracking-[0.2em] text-bronze";
 const lien = "text-ink underline decoration-brass underline-offset-4";
@@ -76,7 +76,8 @@ export default function FicheTerrain() {
   const [recherche, setRecherche] = useState<RechercheTerrain | null>(null);
   const [erreurRecherche, setErreurRecherche] = useState<string | null>(null);
   const [cherche, setCherche] = useState(false);
-  const [idu, setIdu] = useState("");
+  const [parcelle, setParcelle] = useState<ParcelleCandidate | null>(null);
+  const idu = parcelle?.idu ?? "";
   const [apercu, setApercu] = useState<Apercu | null>(null);
   const [charge, setCharge] = useState(false);
   const [erreurApercu, setErreurApercu] = useState<string | null>(null);
@@ -85,7 +86,6 @@ export default function FicheTerrain() {
   const [erreurs, setErreurs] = useState<ErreursFiche>({});
   const [envoi, setEnvoi] = useState<Envoi>({ t: "saisie" });
 
-  const parcelle = recherche?.parcelles.find((p) => p.idu === idu);
 
   async function chercher(texte: string) {
     setQ(texte);
@@ -101,7 +101,7 @@ export default function FicheTerrain() {
         return;
       }
       setRecherche(json as RechercheTerrain);
-      setIdu(json.parcelles[0]?.idu ?? "");
+      setParcelle(json.parcelles[0] ?? null);
     } catch {
       setErreurRecherche("Recherche impossible. Vérifiez votre connexion.");
     } finally {
@@ -197,12 +197,12 @@ export default function FicheTerrain() {
         {recherche && (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:items-start lg:gap-10">
             <div className="grid gap-3">
-              <CarteParcelles parcelles={recherche.parcelles} choisie={idu} onChoisir={setIdu} />
+              <CarteParcelles parcelles={recherche.parcelles} choisie={idu} onChoisir={setParcelle} />
               {parcelle && (
                 <p className="text-[0.95rem]">
                   <strong>Parcelle {referenceCourte(parcelle.idu)}</strong> · {parcelle.contenance.toLocaleString("fr-FR")} m² ·{" "}
                   {parcelle.commune}
-                  <span className="block text-sm text-ink-2">Ce n&apos;est pas votre terrain ? Touchez la bonne parcelle sur la carte.</span>
+                  <span className="block text-sm text-ink-2">Ce n&apos;est pas votre terrain ? Faites glisser ou zoomez la carte, puis touchez la bonne parcelle.</span>
                 </p>
               )}
             </div>
