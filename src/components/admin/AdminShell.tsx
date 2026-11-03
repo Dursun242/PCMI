@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { UMAMI } from "./liens";
 
 const NAV = [
   { href: "/admin", label: "Tableau de bord" },
@@ -13,9 +14,6 @@ const NAV = [
   { href: "/admin/chiffres", label: "Chiffres clés" },
   { href: "/admin/realisations", label: "Réalisations" },
 ];
-
-/** Tableau de bord Umami : parcours sur tout le site (components/MesureSite.tsx). */
-const UMAMI = "https://cloud.umami.is/analytics";
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
