@@ -14,7 +14,7 @@ import { CORRESPONDANCE_PIECES, HUB, PAGES_PLANCHES } from "@/config/planchesGra
 export default function BlocPlanGratuit() {
   const [adresse, setAdresse] = useState("");
   return (
-    <section className="border-b border-stone-2 bg-stone" aria-labelledby="plan-gratuit-titre">
+    <section data-masque-barre className="border-b border-stone-2 bg-stone" aria-labelledby="plan-gratuit-titre">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:items-center lg:gap-16">
         <div>
           <p className="text-[0.72rem] font-bold uppercase tracking-[0.2em] text-bronze">Offert · une planche par terrain</p>
