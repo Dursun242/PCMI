@@ -31,6 +31,7 @@ export default function ChampAdresse({ id, name, value, onChange, onChoisir, pla
   const [ouvert, setOuvert] = useState(false);
   const [actif, setActif] = useState(-1);
   const choisie = useRef<string | null>(null);
+  const champ = useRef<HTMLInputElement>(null);
   const liste = useId();
 
   useEffect(() => {
@@ -47,7 +48,8 @@ export default function ChampAdresse({ id, name, value, onChange, onChoisir, pla
         const labels = (json.features ?? []).map((f) => f.properties?.label).filter((l): l is string => Boolean(l));
         setSuggestions([...new Set(labels)]);
         setActif(-1);
-        setOuvert(labels.length > 0);
+        // Une adresse posée par la page (lien ?adresse=…) ne doit pas ouvrir la liste : seulement pendant la frappe.
+        setOuvert(labels.length > 0 && document.activeElement === champ.current);
       } catch {
         // Réseau coupé ou frappe suivante : le champ reste utilisable sans suggestions.
       }
@@ -70,6 +72,7 @@ export default function ChampAdresse({ id, name, value, onChange, onChoisir, pla
   return (
     <div className="relative w-full">
       <input
+        ref={champ}
         id={id}
         name={name}
         type="text"

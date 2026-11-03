@@ -32,6 +32,7 @@ const EXPECTATIONS = [
   { path: "/devis", types: ["ContactPage", "BreadcrumbList"] },
   { path: "/plan-de-masse", types: ["ContactPage", "BreadcrumbList"] },
   { path: "/calcul-taxe-amenagement", types: ["WebApplication", "FAQPage", "BreadcrumbList"] },
+  { path: "/terrain-constructible", types: ["WebApplication", "FAQPage", "BreadcrumbList"] },
   { path: "/plan-de-masse-gratuit", types: ["WebApplication", "FAQPage", "BreadcrumbList"] },
   { path: "/plan-de-coupe-gratuit", types: ["WebApplication", "FAQPage", "BreadcrumbList"] },
   { path: "/plans-gratuits", types: ["WebApplication", "FAQPage", "BreadcrumbList"] },

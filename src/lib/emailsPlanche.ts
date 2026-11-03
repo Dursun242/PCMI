@@ -25,16 +25,16 @@ const FONT = "font-family:Lato,Arial,sans-serif";
 const DOMAINE = site.url.replace(/^https?:\/\//, "");
 
 /** Lien vers le site, marqué pour la mesure (nomenclature utm du site : minuscules, sans accent). */
-export function lienSite(path: string, contenu: string): string {
+export function lienSite(path: string, contenu: string, medium = "planche-gratuite"): string {
   const sep = path.includes("?") ? "&" : "?";
-  return `${site.url}${path}${sep}utm_source=email&utm_medium=planche-gratuite&utm_campaign=${contenu}`;
+  return `${site.url}${path}${sep}utm_source=email&utm_medium=${medium}&utm_campaign=${contenu}`;
 }
 
-const lien = (path: string, texte: string, contenu: string) =>
-  `<a href="${esc(lienSite(path, contenu))}" style="color:#1b1f1d;text-decoration:underline">${esc(texte)}</a>`;
+const lien = (path: string, texte: string, contenu: string, medium?: string) =>
+  `<a href="${esc(lienSite(path, contenu, medium))}" style="color:#1b1f1d;text-decoration:underline">${esc(texte)}</a>`;
 
-const bouton = (path: string, texte: string, contenu: string, plein = true) =>
-  `<a href="${esc(lienSite(path, contenu))}" style="${FONT};display:inline-block;margin:4px 8px 4px 0;padding:12px 20px;font-size:15px;font-weight:700;text-decoration:none;${
+const bouton = (path: string, texte: string, contenu: string, plein = true, medium?: string) =>
+  `<a href="${esc(lienSite(path, contenu, medium))}" style="${FONT};display:inline-block;margin:4px 8px 4px 0;padding:12px 20px;font-size:15px;font-weight:700;text-decoration:none;${
     plein ? "background:#1b1f1d;color:#fcfbf9;border:1px solid #1b1f1d" : "background:#fcfbf9;color:#1b1f1d;border:1px solid #1b1f1d"
   }">${esc(texte)}</a>`;
 
@@ -43,7 +43,7 @@ const bouton = (path: string, texte: string, contenu: string, plein = true) =>
  * 02/11/2026 : « le but du jeu est que le site soit promu »). Pas de
  * signature personnelle : le site, ses formules et ses plans gratuits.
  */
-export function siteWrap(inner: string, campagne: string): string {
+export function siteWrap(inner: string, campagne: string, medium = "planche-gratuite"): string {
   const prix = formatEuro(plans[0].priceTTC);
   return `<div style="${FONT};font-size:16px;line-height:1.6;color:#1b1f1d;max-width:560px">
     <p style="margin:0 0 18px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#82663a;font-weight:700">Permis de construire en ligne</p>
@@ -52,9 +52,9 @@ export function siteWrap(inner: string, campagne: string): string {
     <div style="margin:28px 0;padding:20px 22px;background:#f2f0eb;border-left:3px solid #a9884f">
       <p style="margin:0 0 6px;font-weight:700;font-size:17px">Votre permis de maison, à prix fixe, dès ${esc(prix)} TTC</p>
       <p style="margin:0 0 14px;color:#5a645e;font-size:15px">Dossier complet PCMI 1 à 8, prêt à déposer en mairie. Devis immédiat, paiement en 1, 4 ou 10 fois sans frais.</p>
-      ${bouton("/commander", "Mon devis immédiat", `${campagne}-devis`)}
+      ${bouton("/commander", "Mon devis immédiat", `${campagne}-devis`, true, medium)}
     </div>
-    <p style="font-size:15px">Un proche a un terrain ? Le plan gratuit est pour lui aussi : ${lien("/plans-gratuits", DOMAINE + "/plans-gratuits", `${campagne}-partage`)}</p>
+    <p style="font-size:15px">Un proche a un terrain ? Le plan gratuit est pour lui aussi : ${lien("/plans-gratuits", DOMAINE + "/plans-gratuits", `${campagne}-partage`, medium)}</p>
     <p style="margin-top:28px;font-size:13px;color:#5a645e">${esc(DOMAINE)} · le permis de construire de votre maison, en ligne<br>Une question ? Répondez simplement à cet e-mail.</p>
   </div>`;
 }

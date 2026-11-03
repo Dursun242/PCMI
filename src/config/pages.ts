@@ -138,6 +138,14 @@ export const staticPages: StaticPage[] = [
       "Plan de situation gratuit en PDF A3 : terrain repéré dans la commune (1/25 000), le quartier (1/5 000) et sur l'extrait cadastral. Modèle du PCMI 1, du PC1 ou du DP1, document indicatif. Une planche gratuite par parcelle.",
   },
   {
+    path: "/terrain-constructible",
+    lastModified: "2026-11-03",
+    changeFrequency: "monthly",
+    priority: 0.9,
+    summary:
+      "Fiche gratuite « mon terrain est-il constructible ? » : zone du PLU ou de la carte communale, plan de prévention des risques, cavités et marnières, argiles, secteur protégé (ABF), et ce que ça change pour le projet. Aperçu immédiat, fiche PDF par e-mail.",
+  },
+  {
     path: "/plans-execution",
     lastModified: "2026-09-19",
     changeFrequency: "monthly",
@@ -193,7 +201,7 @@ export const staticPages: StaticPage[] = [
   },
   {
     path: "/confidentialite",
-    lastModified: "2026-11-01",
+    lastModified: "2026-11-03",
     changeFrequency: "yearly",
     priority: 0.2,
     summary: "Politique de confidentialité et mesure d'audience.",

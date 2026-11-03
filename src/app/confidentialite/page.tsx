@@ -30,6 +30,12 @@ export default function ConfidentialitePage() {
         du terrain, la parcelle et votre nom (porté dans le cartouche) passent par notre outil de dessin, hébergé chez
         GitHub ; les coordonnées conservées pour appliquer la règle d&apos;une planche par parcelle sont chiffrées.
       </p>
+      <p>
+        Via la fiche terrain (« mon terrain est-il constructible ? ») : prénom, nom, e-mail et parcelle choisie, pour vous
+        envoyer la fiche et vous recontacter au sujet de votre projet (base légale : votre consentement). La parcelle est
+        transmise aux services publics de l&apos;IGN et de Géorisques pour lire ses données ; vos coordonnées ne leur sont
+        pas transmises et ne sont pas stockées sur le site : elles nous parviennent par e-mail.
+      </p>
 
       <h2>Destinataires et sous-traitants</h2>
       <p>
