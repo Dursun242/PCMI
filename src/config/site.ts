@@ -253,11 +253,14 @@ export const plans: Plan[] = plansHabituels.map((p) =>
 /** `id` : identifiant stable lu par la commande en ligne (src/lib/commande.ts), à ne pas renommer. */
 export const options = [
   { id: "permis-modificatif", name: "Permis modificatif", priceTTC: 830, note: "Si le projet évolue après l'accord." },
-  { id: "declaration-prealable", name: "Déclaration préalable (DP) à la place du PC", priceTTC: 1070, note: "Extension, garage, abri, clôture, piscine." },
+  { id: "declaration-prealable", name: "Déclaration préalable (DP) à la place du PC", priceTTC: 400, aPartirDe: true, note: "Extension, garage, abri, clôture, piscine. Prix selon le projet, annoncé au devis." },
   { id: "rendu-3d", name: "Rendu 3D supplémentaire", priceTTC: 230, note: "Par vue." },
   { id: "attestation-re2020", name: ATTESTATION_RE2020.name, priceTTC: ATTESTATION_RE2020.priceTTC, note: "En option de la formule Essentiel, ou seule si vous avez déjà votre dossier." },
   { id: "eaux-pluviales", name: "Étude eaux pluviales", priceTTC: 710, note: "Dimensionnement d'infiltration / rétention." },
 ] as const;
+
+/** Une option dont le prix est un minimum (« à partir de »), fixé au devis selon le projet. */
+export const estAPartirDe = (o: (typeof options)[number]): boolean => "aPartirDe" in o && o.aPartirDe === true;
 
 /**
  * Plans d'exécution (phase EXE) : la suite naturelle du permis.

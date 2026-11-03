@@ -76,7 +76,7 @@ const faqEnLigne = [
   {
     q: "Mon projet est une extension ou un garage : est-ce un permis ?",
     a: optionDp
-      ? `Pas forcément : en dessous de certains seuils, une déclaration préalable suffit. Nous vous le disons en vérifiant votre terrain et proposons la déclaration préalable à ${formatEuro(optionDp.priceTTC)} TTC à la place du permis.`
+      ? `Pas forcément : en dessous de certains seuils, une déclaration préalable suffit. Nous vous le disons en vérifiant votre terrain et proposons la déclaration préalable, à partir de ${formatEuro(optionDp.priceTTC)} TTC, à la place du permis.`
       : "Pas forcément : en dessous de certains seuils, une déclaration préalable suffit. Nous vous le disons en vérifiant votre terrain.",
   },
   {

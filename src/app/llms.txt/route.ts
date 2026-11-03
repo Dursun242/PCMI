@@ -1,4 +1,4 @@
-import { site, plans, options, whatsappUrl, exePlans, exePacks, metiers, thermique, lancement } from "@/config/site";
+import { site, plans, options, estAPartirDe, whatsappUrl, exePlans, exePacks, metiers, thermique, lancement } from "@/config/site";
 import { staticPages } from "@/config/pages";
 import { formatFrDate } from "@/lib/format";
 import { getArticles } from "@/lib/articles";
@@ -51,7 +51,7 @@ Au-delà de ${SURFACE_MAX} m² de surface de plancher : sur devis.
 
 ## Options
 
-${options.map((o) => `- ${o.name} — ${euros(o.priceTTC)}. ${o.note}`).join("\n")}
+${options.map((o) => `- ${o.name} — ${estAPartirDe(o) ? "à partir de " : ""}${euros(o.priceTTC)}. ${o.note}`).join("\n")}
 
 ## Plans d'exécution (après le permis)
 Plans EXE dessinés par le pôle conception, dimensionnement des ouvrages porteurs par le bureau d'études structure d'ID Maîtrise. Prix « à partir de », TTC, devis fixe lot par lot sous 4 h ouvrées.

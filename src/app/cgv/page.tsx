@@ -5,7 +5,7 @@
 // par un avocat ou un juriste spécialisé en droit de la consommation.
 import type { Metadata } from "next";
 import Link from "next/link";
-import { plans, options, site } from "@/config/site";
+import { plans, options, site, estAPartirDe } from "@/config/site";
 import { legal, isTodo } from "@/lib/legal";
 import { formatEuro } from "@/lib/format";
 import { DELAI_RETRACTATION_JOURS, NOMBRES_ECHEANCES } from "@/lib/commande";
@@ -51,7 +51,7 @@ export default function CgvPage() {
       <p>Options facturées en supplément, sur demande :</p>
       <ul>
         {options.map((o) => (
-          <li key={o.name}>{o.name} — {formatEuro(o.priceTTC)} TTC ({o.note})</li>
+          <li key={o.name}>{o.name} — {estAPartirDe(o) ? "à partir de " : ""}{formatEuro(o.priceTTC)} TTC ({o.note})</li>
         ))}
       </ul>
       <p>Les prix sont exprimés toutes taxes comprises, TVA 20 % incluse, et n&apos;évoluent pas après acceptation du devis, hors ajout d&apos;options par le client.</p>

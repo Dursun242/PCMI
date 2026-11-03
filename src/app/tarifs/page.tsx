@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { plans, options, site, exePlans, ATTESTATION_RE2020 } from "@/config/site";
+import { plans, options, site, exePlans, ATTESTATION_RE2020, estAPartirDe } from "@/config/site";
 import PlanCard from "@/components/PlanCard";
 import { formatEuro } from "@/lib/format";
 import JsonLd from "@/components/JsonLd";
@@ -186,7 +186,7 @@ export default function TarifsPage() {
                     <div className="font-bold">{o.name}</div>
                     <div className="text-sm text-ink-2">{o.note}</div>
                   </div>
-                  <div className="shrink-0 numeral text-2xl">{formatEuro(o.priceTTC)} <span className="font-sans text-xs text-ink-2">TTC</span></div>
+                  <div className="shrink-0 numeral text-2xl">{estAPartirDe(o) && <span className="font-sans text-xs text-ink-2">dès </span>}{formatEuro(o.priceTTC)} <span className="font-sans text-xs text-ink-2">TTC</span></div>
                 </li>
               ))}
             </ul>
