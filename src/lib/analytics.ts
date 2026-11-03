@@ -36,6 +36,10 @@ type Events = {
   planche_terrain_trouve: { parcelles: string };
   /** Demande de planche gratuite : envoyée, ou refusée car la parcelle a déjà eu la sienne. */
   planche_demande: { planche: string; resultat: "envoyee" | "deja_servie" };
+  /** Aperçu de la fiche terrain affiché (zone et voyants). */
+  fiche_terrain_apercu: { zone: string; alertes: string };
+  /** Fiche terrain complète demandée (PDF envoyé par e-mail). */
+  fiche_terrain_demande: { zone: string };
   /** Première saisie réelle dans le formulaire de devis. */
   devis_start: { formule: string };
   /** Demande de devis transmise avec succès. */

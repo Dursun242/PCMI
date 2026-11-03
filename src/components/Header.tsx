@@ -16,6 +16,7 @@ const services: EntreeMenu[] = [
 ];
 
 const gratuits: EntreeMenu[] = [
+  { href: "/terrain-constructible", label: "Mon terrain est-il constructible ?", detail: "Zone du PLU et risques de votre parcelle" },
   { href: "/plans-gratuits", label: "Plans gratuits", detail: "Plan de situation, de masse ou de coupe de votre terrain" },
   { href: "/calcul-taxe-amenagement", label: "Calcul de la taxe d'aménagement", detail: "Le montant de la taxe pour votre maison" },
   { href: "/conseils", label: "Conseils", detail: "Nos articles pour préparer votre permis" },
