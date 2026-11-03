@@ -12,6 +12,7 @@ import {
   PLANCHES,
   referenceCourte,
   type ErreursDemande,
+  type ParcelleCandidate,
   type Planche,
   type RechercheTerrain,
 } from "@/lib/planche";
@@ -43,7 +44,8 @@ export default function PlancheGratuite({ planchePage }: { planchePage: Planche 
   const [recherche, setRecherche] = useState<RechercheTerrain | null>(null);
   const [erreurRecherche, setErreurRecherche] = useState<string | null>(null);
   const [cherche, setCherche] = useState(false);
-  const [idu, setIdu] = useState("");
+  const [parcelle, setParcelle] = useState<ParcelleCandidate | null>(null);
+  const idu = parcelle?.idu ?? "";
   const [planche, setPlanche] = useState<Planche>(planchePage);
   const [contact, setContact] = useState({ prenom: "", nom: "", email: "", site_web: "" });
   const [consentement, setConsentement] = useState(false);
@@ -55,7 +57,6 @@ export default function PlancheGratuite({ planchePage }: { planchePage: Planche 
   const montrer = () =>
     requestAnimationFrame(() => document.getElementById("formulaire")?.scrollIntoView({ behavior: "smooth", block: "start" }));
 
-  const parcelle = recherche?.parcelles.find((p) => p.idu === idu);
 
   async function chercher(texte: string) {
     setQ(texte);
@@ -70,7 +71,7 @@ export default function PlancheGratuite({ planchePage }: { planchePage: Planche 
         return;
       }
       setRecherche(json as RechercheTerrain);
-      setIdu(json.parcelles[0]?.idu ?? "");
+      setParcelle(json.parcelles[0] ?? null);
       trackEvent("planche_terrain_trouve", { parcelles: String(Math.min(json.parcelles.length, 10)) });
     } catch {
       setErreurRecherche("Recherche impossible. Vérifiez votre connexion.");
@@ -192,13 +193,13 @@ export default function PlancheGratuite({ planchePage }: { planchePage: Planche 
 
         {recherche && (
           <div className="grid gap-3">
-            <div className="max-w-3xl"><CarteParcelles parcelles={recherche.parcelles} choisie={idu} onChoisir={setIdu} /></div>
+            <div className="max-w-3xl"><CarteParcelles parcelles={recherche.parcelles} choisie={idu} onChoisir={setParcelle} /></div>
             {parcelle && (
               <p className="text-[0.95rem]" aria-live="polite">
                 <strong>Parcelle {referenceCourte(parcelle.idu)}</strong> · {parcelle.contenance.toLocaleString("fr-FR")} m² ·{" "}
                 {parcelle.commune}
                 <span className="block text-sm text-ink-2">
-                  Ce n&apos;est pas votre terrain ? Touchez la bonne parcelle sur la carte.
+                  Ce n&apos;est pas votre terrain ? Faites glisser ou zoomez la carte, puis touchez la bonne parcelle.
                 </span>
               </p>
             )}

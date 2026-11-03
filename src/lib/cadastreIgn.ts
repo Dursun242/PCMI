@@ -84,3 +84,36 @@ export async function rechercherTerrain(q: string): Promise<RechercheTerrain | n
     parcelles,
   };
 }
+
+/** Côté maximal de l'emprise demandée par la carte, en mètres : au-delà, on ne charge pas (trop de parcelles). */
+export const EMPRISE_MAX_M = 700;
+const PARCELLES_EMPRISE_MAX = 400;
+
+/** Dimensions d'une emprise [ouest, sud, est, nord] en mètres. */
+export function dimensionsEmprise([o, s, e, n]: [number, number, number, number]): [number, number] {
+  const mLat = 111_195;
+  const mLon = mLat * Math.cos((((s + n) / 2) * Math.PI) / 180);
+  return [(e - o) * mLon, (n - s) * mLat];
+}
+
+/**
+ * Parcelles visibles dans l'emprise de la carte, pour que le visiteur puisse
+ * se déplacer et choisir une parcelle hors des voisines de l'adresse.
+ */
+export async function parcellesDansEmprise(emprise: [number, number, number, number]): Promise<ParcelleCandidate[]> {
+  const [o, s, e, n] = emprise;
+  const geom = { type: "Polygon", coordinates: [[[o, s], [e, s], [e, n], [o, n], [o, s]]] };
+  const cad = await lireJson<{ features: FeatureParcelle[] }>(
+    `${CADASTRE}?${new URLSearchParams({ geom: JSON.stringify(geom), _limit: String(PARCELLES_EMPRISE_MAX) })}`,
+  );
+  return cad.features.map((f) => ({
+    idu: f.properties.idu,
+    section: f.properties.section,
+    numero: f.properties.numero,
+    commune: f.properties.nom_com,
+    codeInsee: f.properties.code_insee,
+    contenance: f.properties.contenance,
+    contours: anneauxExterieurs(f.geometry),
+    distance: 0,
+  }));
+}
