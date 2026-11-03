@@ -118,8 +118,7 @@ export const websiteSchema = {
 /** L'auteur des contenus. Le même objet pour le guide et les articles. */
 export const authorSchema = {
   "@type": "Person",
-  // Même signature que celle affichée sous les titres : un schéma qui
-  // annoncerait le nom complet le rendrait public malgré l'abréviation.
+  // Même signature que celle affichée sous les titres.
   name: site.author,
   jobTitle: "Maître d'œuvre",
   worksFor: ORG_REF,

@@ -9,6 +9,7 @@ export const site: {
   shortName: string;
   parent: string;
   author: string;
+  authorRole: string;
   tagline: string;
   url: string;
   parentUrl: string;
@@ -25,13 +26,15 @@ export const site: {
   /**
    * Nom affiché partout sur le site public : signature des articles et du
    * guide, auteur et fondateur dans les données structurées, page À propos,
-   * llms.txt.
+   * llms.txt. Nom complet depuis le 3 novembre 2026, à la demande du gérant
+   * (auteur identifiable pour Google ; la page Express l'affichait déjà) ;
+   * auparavant « Dursun O. ».
    *
-   * `legal.director` garde le nom complet, et uniquement là où la loi ou un
-   * échange contractuel l'impose : mentions légales et directeur de la
-   * publication, signature des e-mails adressés à un client.
+   * `legal.director` reste la forme des mentions légales et des e-mails clients.
    */
-  author: "Dursun O.",
+  author: "Dursun Ozkan",
+  /** Fonction affichée avec la signature des contenus. */
+  authorRole: "gérant d'ID Maîtrise, maître d'œuvre au Havre",
   tagline: "Le permis de construire de votre maison, par un bureau d'études qui allie ingénierie et architecture, au prix juste.",
   // Domaine de production
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://permis-maison-individuelle.fr",
