@@ -115,7 +115,7 @@ export const staticPages: StaticPage[] = [
   },
   {
     path: "/plan-de-masse-gratuit",
-    lastModified: "2026-11-01",
+    lastModified: "2026-11-03",
     changeFrequency: "monthly",
     priority: 0.8,
     summary:
@@ -123,7 +123,7 @@ export const staticPages: StaticPage[] = [
   },
   {
     path: "/plan-de-coupe-gratuit",
-    lastModified: "2026-11-01",
+    lastModified: "2026-11-03",
     changeFrequency: "monthly",
     priority: 0.8,
     summary:
@@ -131,7 +131,7 @@ export const staticPages: StaticPage[] = [
   },
   {
     path: "/plan-de-situation-gratuit",
-    lastModified: "2026-11-01",
+    lastModified: "2026-11-03",
     changeFrequency: "monthly",
     priority: 0.8,
     summary:

@@ -7,6 +7,7 @@ import { villePath } from "@/lib/normandie";
 import { chantiers, vitrine } from "@/config/references";
 import { TERRITOIRES_LAST_MODIFIED } from "@/config/territoires";
 import { territoirePath, territoires } from "@/lib/territoires";
+import { PAGES_PLANCHES } from "@/config/planchesGratuites";
 
 const absolue = (path: string) => `${site.url}${path}`;
 
@@ -17,6 +18,7 @@ const absolue = (path: string) => `${site.url}${path}`;
  */
 const IMAGES_PAR_PAGE: Record<string, string[]> = {
   "/": [...vitrine, "/office/bureau-id-maitrise.jpg"],
+  ...Object.fromEntries(Object.values(PAGES_PLANCHES).map((p) => [p.path, [p.exemple.src]])),
   "/references-chantiers": [...new Set(chantiers.map((c) => c.photo))],
 };
 

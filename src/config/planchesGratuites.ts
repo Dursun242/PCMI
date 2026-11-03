@@ -25,6 +25,8 @@ export interface PagePlanche {
   /** Fil d'Ariane et liens internes. */
   court: string;
   montre: string[];
+  /** Planche d'exemple réelle (terrain de démonstration), affichée sous le formulaire. */
+  exemple: { src: string; alt: string; legende: string };
   sections: { titre: string; paragraphes: string[] }[];
   faq: { q: string; a: string }[];
 }
@@ -71,6 +73,12 @@ export const PAGES_PLANCHES: Record<Planche, PagePlanche> = {
       "Des points d'altitude du terrain naturel (NGF)",
       "Le nord, l'échelle graphique et un cartouche à votre nom",
     ],
+    exemple: {
+      src: "/planches/exemple-plan-de-masse.webp",
+      alt: "Exemple de plan de masse gratuit de l'existant : terrain de 1 197 m² coté, points d'altitude NGF, accès, parcelles voisines, nord et cartouche",
+      legende:
+        "Exemple réel, au Havre : terrain de 1 197 m², limites cotées, une grille de points d'altitude du terrain naturel (il monte de 2,14 m, soit environ 5 %), accès depuis la rue, voisins et légende. C'est ce que vous recevez pour votre terrain.",
+    },
     sections: [
       {
         titre: "Qu'est-ce qu'un plan de masse ?",
@@ -141,6 +149,14 @@ export const PAGES_PLANCHES: Record<Planche, PagePlanche> = {
         a: "Le plus souvent au 1/200 ou au 1/250, parfois au 1/500 pour un grand terrain et au 1/100 pour un petit projet. L'important est que l'échelle soit indiquée et que les cotes soient lisibles. Notre planche porte une échelle graphique et l'échelle numérique dans le cartouche.",
       },
       {
+        q: "Comment obtenir un plan de masse gratuit ?",
+        a: "Trois solutions : le dessiner vous-même à partir de l'extrait cadastral (gratuit sur cadastre.gouv.fr, mais il faut le remettre à l'échelle et le coter) ; utiliser un logiciel de dessin gratuit ; ou demander notre planche sur cette page. Vous saisissez l'adresse, confirmez la parcelle et recevez le plan de masse de l'existant en PDF A3, coté et à l'échelle, en quelques minutes.",
+      },
+      {
+        q: "Plan de masse et plan cadastral : quelle différence ?",
+        a: "Le plan cadastral montre les parcelles et leurs numéros, sans cotes ni altitudes, à une échelle qui n'est pas celle du projet. Le plan de masse représente votre terrain à l'échelle, avec la longueur de chaque limite, sa surface, le bâti, l'accès, les voisins et le relief. Le cadastre en est la base, pas le résultat.",
+      },
+      {
         q: "Qui peut faire un plan de masse ?",
         a: "Vous pouvez le dessiner vous-même. Un maître d'œuvre, un architecte, un dessinateur ou un géomètre peuvent aussi le faire. Au-delà de 150 m² de surface de plancher, l'architecte est obligatoire pour l'ensemble du permis.",
       },
@@ -175,6 +191,12 @@ export const PAGES_PLANCHES: Record<Planche, PagePlanche> = {
       "Les limites de propriété repérées sur chaque profil",
       "Un plan de repérage des coupes et un cartouche à votre nom",
     ],
+    exemple: {
+      src: "/planches/exemple-plan-de-coupe.webp",
+      alt: "Exemple de plan de coupe gratuit du terrain : coupes A-A et B-B avec altitudes NGF, pente moyenne et plan de repérage",
+      legende:
+        "Exemple réel, au Havre : coupe A-A dans la longueur (pente de 4 %), coupe B-B en travers (1 %), altitudes NGF tous les 5 m et plan de repérage des coupes. C'est ce que vous recevez pour votre terrain.",
+    },
     sections: [
       {
         titre: "Qu'est-ce qu'un plan de coupe ?",
@@ -247,6 +269,12 @@ export const PAGES_PLANCHES: Record<Planche, PagePlanche> = {
       "L'extrait cadastral avec la parcelle surlignée",
       "La référence cadastrale, la contenance et un cartouche à votre nom",
     ],
+    exemple: {
+      src: "/planches/exemple-plan-de-situation.webp",
+      alt: "Exemple de plan de situation gratuit : terrain repéré dans la commune au 1/25 000, dans le quartier au 1/5 000 et sur l'extrait cadastral",
+      legende:
+        "Exemple réel, au Havre : le terrain dans la commune au 1/25 000, dans le quartier au 1/5 000 et sur l'extrait cadastral au 1/1 000, avec sa référence et sa contenance. C'est ce que vous recevez pour votre terrain.",
+    },
     sections: [
       {
         titre: "Qu'est-ce qu'un plan de situation ?",

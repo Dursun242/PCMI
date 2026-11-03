@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import Garanties from "@/components/Garanties";
 import JsonLd from "@/components/JsonLd";
@@ -59,6 +60,29 @@ export default function PagePlancheGratuite({ page }: { page: PagePlanche }) {
           ))}{" "}
           <Link href={HUB.path} className={lien}>Tous nos plans gratuits</Link>.
         </p>
+
+        <figure className="mt-16">
+          <p className="text-[0.72rem] font-bold uppercase tracking-[0.2em] text-bronze">Exemple de planche reçue</p>
+          <a
+            href={page.exemple.src}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 block border border-ink bg-paper transition-shadow hover:shadow-lg focus-visible:shadow-lg"
+            aria-label={`Voir l'exemple en grand : ${page.court}`}
+          >
+            <Image
+              src={page.exemple.src}
+              alt={page.exemple.alt}
+              width={1600}
+              height={1131}
+              sizes="(min-width: 1280px) 1216px, 100vw"
+              className="h-auto w-full"
+            />
+          </a>
+          <figcaption className="mt-3 max-w-[80ch] text-sm text-ink-2">
+            {page.exemple.legende} Cliquez sur l&apos;image pour l&apos;ouvrir en grand.
+          </figcaption>
+        </figure>
       </div>
 
       <section className="border-y border-stone-2 bg-stone">
