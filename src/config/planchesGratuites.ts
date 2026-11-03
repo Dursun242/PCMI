@@ -101,6 +101,26 @@ export const PAGES_PLANCHES: Record<Planche, PagePlanche> = {
         ],
       },
       {
+        titre: "Ce que doit montrer le plan de masse du permis (PCMI 2)",
+        paragraphes: [
+          "Le code de l'urbanisme (article R. 431-9) demande un plan de masse des constructions à édifier ou à modifier, coté dans les trois dimensions. Concrètement, la mairie s'attend à y trouver : la maison projetée et ses dimensions ; ses distances aux limites séparatives et à la voie ; sa hauteur, ou les altitudes du terrain et du plancher ; les constructions existantes conservées ou démolies ; les arbres maintenus, abattus ou plantés ; les travaux extérieurs (accès, allées, stationnement, terrasse, clôture) ; et le raccordement aux réseaux d'eau, d'électricité et d'assainissement, ou l'assainissement individuel prévu.",
+          "Si le terrain n'est pas desservi directement par une voie ouverte au public, le plan indique aussi la servitude de passage qui y mène. Le nord, l'échelle et les points d'où ont été prises les photos des pièces PCMI 7 et PCMI 8 y sont généralement reportés.",
+        ],
+      },
+      {
+        titre: "Les cotes que la mairie vérifie en premier",
+        paragraphes: [
+          "Le service urbanisme compare le plan de masse au règlement du PLU de votre zone. Il regarde d'abord le recul de la maison par rapport à la voie, les distances aux limites séparatives (souvent une règle du type « au moins 3 m, ou la moitié de la hauteur »), l'emprise au sol si le PLU la limite, les places de stationnement exigées et la part du terrain laissée en pleine terre. Chacune de ces règles doit pouvoir se vérifier sur le plan, sans calcul.",
+        ],
+      },
+      {
+        titre: "Les erreurs qui entraînent une demande de pièces",
+        paragraphes: [
+          "Une pièce incomplète suspend l'instruction : la mairie demande un complément, et le délai de deux mois ne court qu'à partir de sa réception. Sur le plan de masse, les oublis les plus fréquents sont l'absence d'échelle ou de nord, des distances aux limites non cotées, aucune indication de hauteur ou d'altitude, des réseaux et un assainissement absents, et des arbres existants oubliés.",
+          "Autre piège : les écarts entre les pièces. La maison doit avoir les mêmes dimensions sur le plan de masse, sur la coupe (PCMI 3) et sur les façades (PCMI 5), et la surface déclarée sur le CERFA doit correspondre aux plans. Un écart suffit parfois à déclencher une demande de pièces.",
+        ],
+      },
+      {
         titre: "Ce que le plan gratuit ne remplace pas",
         paragraphes: [
           "Le cadastre n'est pas un bornage : ses limites peuvent s'écarter du terrain réel de quelques décimètres, parfois davantage, et les altitudes de l'IGN sont précises à 0,2 à 0,5 m. Pour une vente, un bornage, une division parcellaire ou un terrain très pentu, le plan d'un géomètre-expert fait foi.",
@@ -123,6 +143,18 @@ export const PAGES_PLANCHES: Record<Planche, PagePlanche> = {
       {
         q: "Qui peut faire un plan de masse ?",
         a: "Vous pouvez le dessiner vous-même. Un maître d'œuvre, un architecte, un dessinateur ou un géomètre peuvent aussi le faire. Au-delà de 150 m² de surface de plancher, l'architecte est obligatoire pour l'ensemble du permis.",
+      },
+      {
+        q: "Quelle est la différence entre plan de masse et plan de situation ?",
+        a: "Le plan de situation (PCMI 1) place le terrain dans la commune, à petite échelle, pour qu'on le retrouve sur une carte. Le plan de masse (PCMI 2) est un zoom sur le terrain lui-même, à grande échelle, avec le projet et ses cotes.",
+      },
+      {
+        q: "Faut-il un géomètre pour faire un plan de masse ?",
+        a: "Non, ce n'est pas obligatoire pour un permis de construire : le plan peut être établi d'après le cadastre. Un relevé de géomètre est conseillé quand les limites sont incertaines, que le terrain est très pentu ou que la maison s'implante au plus près des limites, car le cadastre n'a pas la précision d'un bornage.",
+      },
+      {
+        q: "Que faire si la mairie demande de compléter le plan de masse ?",
+        a: "Envoyer un plan corrigé avant la date indiquée dans le courrier, trois mois au plus : sans réponse dans ce délai, la demande est rejetée. Le délai d'instruction repart à la réception des pièces complètes.",
       },
       ...FAQ_COMMUNE,
     ],

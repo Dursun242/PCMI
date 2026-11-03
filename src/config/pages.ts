@@ -73,7 +73,7 @@ export const staticPages: StaticPage[] = [
     changeFrequency: "monthly",
     priority: 0.6,
     summary:
-      "Qui monte les dossiers : ID Maîtrise, bureau d'études au Havre qui allie ingénierie de la construction et conception architecturale, fondé par Dursun O. Méthode de travail, assurances et engagement de prix fixe.",
+      "Qui monte les dossiers : ID Maîtrise, bureau d'études au Havre qui allie ingénierie de la construction et conception architecturale, fondé par Dursun Ozkan. Méthode de travail, assurances et engagement de prix fixe.",
   },
   {
     path: "/references-chantiers",
