@@ -12,7 +12,15 @@ import {
   validerDemande,
   type ParcelleCandidate,
 } from "./planche";
-import { chiffrer, dechiffrer, empreinteParcelle, signerRappel, verifierRappel } from "./plancheSecret";
+import {
+  chiffrer,
+  dechiffrer,
+  empreinteDemande,
+  empreinteParcelle,
+  memeDemandeur,
+  signerRappel,
+  verifierRappel,
+} from "./plancheSecret";
 import { emailClientAccuse, emailClientEchec, emailClientPlanche, emailInterneDemande, nomFichierPlanche } from "./emailsPlanche";
 import { site } from "@/config/site";
 
@@ -150,6 +158,45 @@ describe("secrets de la planche", () => {
     expect(empreinteParcelle("76351000OJ0646", secret)).toBe(empreinteParcelle("76351000oj0646", secret));
     expect(empreinteParcelle("76351000OJ0646", secret)).not.toBe(empreinteParcelle("76351000OJ0646", "autre"));
     expect(empreinteParcelle("76351000OJ0646", secret)).not.toContain("OJ");
+  });
+
+  describe("une planche par terrain et par personne", () => {
+    const idu = "76351000OJ0646";
+
+    it("bloque la même personne sur la même parcelle, quelle que soit l'écriture de l'adresse", () => {
+      expect(empreinteDemande(idu, "marie@exemple.fr", secret)).toBe(
+        empreinteDemande("76351000oj0646", "  Marie@Exemple.FR ", secret),
+      );
+    });
+
+    it("laisse la même personne demander une autre parcelle", () => {
+      expect(empreinteDemande(idu, "marie@exemple.fr", secret)).not.toBe(
+        empreinteDemande("76351000OJ0647", "marie@exemple.fr", secret),
+      );
+    });
+
+    it("laisse une autre personne demander la même parcelle", () => {
+      expect(empreinteDemande(idu, "marie@exemple.fr", secret)).not.toBe(
+        empreinteDemande(idu, "paul@exemple.fr", secret),
+      );
+    });
+
+    it("ne laisse lire ni l'e-mail ni la parcelle, et ne se confond pas avec l'ancienne empreinte", () => {
+      const e = empreinteDemande(idu, "marie@exemple.fr", secret);
+      expect(e).not.toContain("marie");
+      expect(e).not.toContain("OJ");
+      expect(e).not.toBe(empreinteParcelle(idu, secret));
+      expect(e).not.toBe(empreinteDemande(idu, "marie@exemple.fr", "autre"));
+    });
+
+    it("reconnaît l'auteur d'une demande enregistrée avant la règle par personne", () => {
+      const contact = chiffrer(JSON.stringify({ prenom: "Marie", nom: "Durand", email: "marie@exemple.fr" }), secret);
+      expect(memeDemandeur(contact, " MARIE@exemple.fr", secret)).toBe(true);
+      expect(memeDemandeur(contact, "paul@exemple.fr", secret)).toBe(false);
+      expect(memeDemandeur(contact, "marie@exemple.fr", "autre")).toBe(false);
+      expect(memeDemandeur(null, "marie@exemple.fr", secret)).toBe(false);
+      expect(memeDemandeur(chiffrer("pas du json", secret), "marie@exemple.fr", secret)).toBe(false);
+    });
   });
 
   it("vérifie la signature de l'adresse de rappel et son expiration", () => {

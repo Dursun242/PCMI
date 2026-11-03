@@ -28,7 +28,7 @@ export default function ConfidentialitePage() {
         parcelle choisie. Ces données servent à vous envoyer la planche et à vous recontacter au sujet de votre projet
         (base légale : votre consentement, que vous pouvez retirer à tout moment). Pour dessiner la planche, l&apos;adresse
         du terrain, la parcelle et votre nom (porté dans le cartouche) passent par notre outil de dessin, hébergé chez
-        GitHub ; les coordonnées conservées pour appliquer la règle d&apos;une planche par parcelle sont chiffrées.
+        GitHub ; les coordonnées conservées pour appliquer la règle d&apos;une planche par terrain et par personne sont chiffrées.
       </p>
       <p>
         Via la fiche terrain (« mon terrain est-il constructible ? ») : prénom, nom, e-mail et parcelle choisie, pour vous

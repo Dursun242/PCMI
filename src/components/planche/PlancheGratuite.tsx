@@ -153,9 +153,9 @@ export default function PlancheGratuite({ planchePage }: { planchePage: Planche 
   if (etat.t === "deja") {
     return (
       <div role="alert" className="grid gap-4 border-l-2 border-alert py-2 pl-6">
-        <p className="display text-4xl">Ce terrain a déjà eu sa planche.</p>
+        <p className="display text-4xl">Vous avez déjà reçu la planche de ce terrain.</p>
         <p className="max-w-[56ch] leading-relaxed text-ink-2">
-          La planche gratuite est limitée à une seule par parcelle. Pour les autres plans de votre terrain, ou pour votre
+          La planche gratuite est limitée à une par terrain et par personne. Pour les autres plans de votre terrain, ou pour votre
           dossier de permis complet, écrivez-nous : nous vous répondons sous 4 h ouvrées.
         </p>
         <div className="flex flex-wrap gap-3">

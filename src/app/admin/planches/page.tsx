@@ -35,13 +35,13 @@ export default async function PlanchesAdmin() {
   const alertes = [
     !secret && "PLANCHE_SECRET (ou ADMIN_SESSION_SECRET) n'est pas renseignée : le service refuse les demandes.",
     !githubConfigure() && "IDPLANS_GITHUB_TOKEN n'est pas renseignée : chaque demande arrive « à faire à la main ».",
-    !process.env.BLOB_READ_WRITE_TOKEN && "BLOB_READ_WRITE_TOKEN absente : le registre n'est pas conservé (une planche par parcelle non garantie).",
+    !process.env.BLOB_READ_WRITE_TOKEN && "BLOB_READ_WRITE_TOKEN absente : le registre n'est pas conservé (une planche par terrain et par personne non garantie).",
   ].filter(Boolean) as string[];
 
   return (
     <AdminShell>
       <h1 className="display mb-2 text-3xl">Planches gratuites</h1>
-      <p className="lead mb-8">Une planche par parcelle : situation, masse de l&apos;existant ou coupes du terrain.</p>
+      <p className="lead mb-8">Une planche par terrain et par personne : situation, masse de l&apos;existant ou coupes du terrain.</p>
       {alertes.map((a) => (
         <p key={a} className="mb-3 border border-alert/40 bg-alert/5 p-4 text-sm text-alert">{a}</p>
       ))}

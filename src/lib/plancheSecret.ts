@@ -19,9 +19,40 @@ function cle(secret: string, usage: string): Buffer {
   return createHash("sha256").update(`${usage}:${secret}`).digest();
 }
 
-/** Empreinte de la parcelle : même parcelle, même empreinte ; impossible à deviner sans le secret. */
+/**
+ * Ancienne empreinte, de la parcelle seule : c'est sous ce nom que sont
+ * rangées les demandes faites avant la règle « par terrain et par personne ».
+ * Elle ne sert plus qu'à les relire (memeDemandeur).
+ */
 export function empreinteParcelle(idu: string, secret: string): string {
   return createHmac("sha256", cle(secret, "parcelle")).update(idu.toUpperCase()).digest("hex").slice(0, 40);
+}
+
+const normaliserEmail = (email: string) => email.trim().toLowerCase();
+
+/**
+ * Empreinte d'une demande : une parcelle et une adresse e-mail. Une même
+ * personne n'a droit qu'à une planche par parcelle (situation, masse ou
+ * coupes, au choix), mais peut en demander une pour un autre terrain, et une
+ * autre personne peut demander la même parcelle.
+ */
+export function empreinteDemande(idu: string, email: string, secret: string): string {
+  return createHmac("sha256", cle(secret, "demande"))
+    .update(`${idu.toUpperCase()}|${normaliserEmail(email)}`)
+    .digest("hex")
+    .slice(0, 40);
+}
+
+/** Vrai si les coordonnées chiffrées d'une demande enregistrée portent cette adresse e-mail. */
+export function memeDemandeur(contactChiffre: string | null, email: string, secret: string): boolean {
+  const texte = contactChiffre ? dechiffrer(contactChiffre, secret) : null;
+  if (!texte) return false;
+  try {
+    const contact = JSON.parse(texte) as { email?: unknown };
+    return typeof contact.email === "string" && normaliserEmail(contact.email) === normaliserEmail(email);
+  } catch {
+    return false;
+  }
 }
 
 const charge = (id: string, empreinte: string, expire: number) => `${id}.${empreinte}.${expire}`;
