@@ -9,6 +9,7 @@ import MesureSite from "@/components/MesureSite";
 import GoogleAds from "@/components/GoogleAds";
 import BandeauLancement from "@/components/BandeauLancement";
 import HorsPages from "@/components/HorsPages";
+import HorsAdmin from "@/components/HorsAdmin";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { EnTeteCommande, PiedCommande, SelonTunnel } from "@/components/commande/CadreCommande";
@@ -72,21 +73,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Aller au contenu
         </a>
         {/* Tunnel de commande : en-tête et pied de page réduits (voir CadreCommande). */}
-        <SelonTunnel
-          tunnel={<EnTeteCommande />}
-          ailleurs={
-            <>
-              <HorsPages chemins={["/permis-express"]}>
-                <BandeauLancement />
-              </HorsPages>
-              <Header />
-            </>
-          }
-        />
+        <HorsAdmin>
+          <SelonTunnel
+            tunnel={<EnTeteCommande />}
+            ailleurs={
+              <>
+                <HorsPages chemins={["/permis-express"]}>
+                  <BandeauLancement />
+                </HorsPages>
+                <Header />
+              </>
+            }
+          />
+        </HorsAdmin>
         <main id="contenu" className="flex-1">
           {children}
         </main>
-        <SelonTunnel tunnel={<PiedCommande />} ailleurs={<Footer />} />
+        <HorsAdmin>
+          <SelonTunnel tunnel={<PiedCommande />} ailleurs={<Footer />} />
+        </HorsAdmin>
         <StickyCta />
         <WhatsAppBubble />
         <SuiteExpress />

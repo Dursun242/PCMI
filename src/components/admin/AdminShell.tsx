@@ -7,14 +7,21 @@ import { UMAMI } from "./liens";
 
 const NAV = [
   { href: "/admin", label: "Tableau de bord" },
-  { href: "/admin/express", label: "Compteur Express" },
-  { href: "/admin/commandes", label: "Compteur Commandes" },
-  { href: "/admin/planches", label: "Planches gratuites" },
+  { href: "/admin/commandes", label: "Commandes" },
+  { href: "/admin/express", label: "Express" },
+  { href: "/admin/planches", label: "Plans gratuits" },
   { href: "/admin/articles", label: "Articles" },
   { href: "/admin/chiffres", label: "Chiffres clés" },
   { href: "/admin/realisations", label: "Réalisations" },
 ];
 
+const lien = "text-ink-2 transition-colors hover:text-ink";
+
+/**
+ * Cadre de l'espace admin : sa propre barre (le bandeau, l'en-tête et le pied
+ * de page du site public sont masqués ici, voir HorsAdmin), puis le contenu.
+ * Le menu passe à la ligne sur téléphone plutôt que d'être coupé.
+ */
 export default function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -38,30 +45,44 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen bg-stone">
       <header className="border-b border-ink/10 bg-paper">
-        {/* Sur téléphone, le menu tient sur une ligne qui défile au doigt. */}
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:px-6 sm:py-4">
-          <nav className="-mx-1 flex min-w-0 items-center gap-5 overflow-x-auto px-1 py-1 whitespace-nowrap">
-            {NAV.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`text-sm font-bold tracking-wide ${
-                  pathname === item.href ? "text-forest" : "text-ink-2 hover:text-ink"
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-            <a href={UMAMI} target="_blank" rel="noopener noreferrer" className="text-sm font-bold tracking-wide text-ink-2 hover:text-ink">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="flex h-14 items-center justify-between gap-4 text-sm">
+            <Link href="/admin" className="flex items-baseline gap-2">
+              <span className="display text-xl">id Maîtrise</span>
+              <span className="text-ink-3">Admin</span>
+            </Link>
+            <span className="flex items-center gap-5">
+              <a href="/" target="_blank" rel="noopener noreferrer" className={lien}>
+                Voir le site ↗
+              </a>
+              <button type="button" onClick={logout} className={`${lien} cursor-pointer`}>
+                Déconnexion
+              </button>
+            </span>
+          </div>
+          <nav aria-label="Espace admin" className="-mb-px flex flex-wrap gap-x-4 text-sm sm:gap-x-5">
+            {NAV.map((item) => {
+              const actif = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(`${item.href}/`));
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={actif ? "page" : undefined}
+                  className={`border-b-2 py-2.5 transition-colors ${
+                    actif ? "border-forest text-ink" : "border-transparent text-ink-2 hover:text-ink"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+            <a href={UMAMI} target="_blank" rel="noopener noreferrer" className="border-b-2 border-transparent py-2.5 text-ink-2 transition-colors hover:text-ink">
               Statistiques ↗
             </a>
           </nav>
-          <button type="button" onClick={logout} className="btn btn-line shrink-0 text-sm !min-h-10 !px-4">
-            Déconnexion
-          </button>
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-10">{children}</main>
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">{children}</main>
     </div>
   );
 }
