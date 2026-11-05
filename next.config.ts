@@ -18,10 +18,18 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      // Maquettes 3D de projets clients : partagées par lien, jamais indexées.
+      { source: "/maquettes/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
+    ];
   },
   async rewrites() {
-    return [{ source: "/:key([a-f0-9]{16,64}).txt", destination: "/api/indexnow?key=:key" }];
+    return [
+      { source: "/:key([a-f0-9]{16,64}).txt", destination: "/api/indexnow?key=:key" },
+      // Adresse courte sans « /index.html » pour les maquettes 3D (fichiers statiques de public/maquettes).
+      { source: "/maquettes/:slug([a-z0-9-]+)", destination: "/maquettes/:slug/index.html" },
+    ];
   },
   async redirects() {
     // L'ancienne page autonome des références est devenue une page du site :
