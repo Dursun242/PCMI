@@ -30,6 +30,8 @@ const nextConfig: NextConfig = {
       { source: "/references-chantiers.html", destination: "/references-chantiers", permanent: true },
       // Page des coupes renommée le 01/11/2026 pour la recherche « plan de coupe gratuit ».
       { source: "/coupe-de-terrain-gratuite", destination: "/plan-de-coupe-gratuit", permanent: true },
+      // Adresse donnée dans les e-mails : le mot « gratuit » y attire les filtres anti-spam.
+      { source: "/plans-du-terrain", destination: "/plans-gratuits", permanent: false },
       // www servait une copie du site (même contenu, deux adresses) : une seule adresse, sans www.
       {
         source: "/:path*",

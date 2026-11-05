@@ -250,6 +250,15 @@ describe("e-mails de la fiche", () => {
     expect(m.html).toContain("seul un certificat d'urbanisme");
   });
 
+  it("n'écrit « gratuit » nulle part : c'est un déclencheur des filtres anti-spam", () => {
+    const client = emailClientFiche(c, base, analyserTerrain(base));
+    const interne = emailInterneFiche(c, base, analyserTerrain(base), "28 Rue Léon Hallaure");
+    for (const m of [client, interne]) {
+      expect(m.subject).not.toMatch(/gratuit|offert/i);
+      expect(m.html).not.toMatch(/gratuit|offert/i);
+    }
+  });
+
   it("donne à Dursun de quoi rappeler le contact", () => {
     const m = emailInterneFiche(c, base, analyserTerrain(base), "28 Rue Léon Hallaure");
     expect(m.subject).toContain("Jean Durand");
