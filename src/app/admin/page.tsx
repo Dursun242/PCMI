@@ -1,11 +1,10 @@
 import Link from "next/link";
 import AdminShell from "@/components/admin/AdminShell";
-import { UMAMI } from "@/components/admin/liens";
 import { isGithubConfigured } from "@/lib/adminContent";
 import { githubConfigure } from "@/lib/plancheGithub";
 import { listerPlanches, type EntreePlanche } from "@/lib/plancheStore";
 import { etatConnexion } from "@/lib/qontoConnexion";
-import { jourParis, type Evenement } from "@/lib/suivi";
+import { jourParis, joursAvant, type Evenement } from "@/lib/suivi";
 import type { EvenementCommande } from "@/lib/suiviCommande";
 import { lireEvenementsCommande } from "@/lib/suiviCommandeStore";
 import { lireEvenements, suiviConfigure } from "@/lib/suiviStore";
@@ -23,7 +22,7 @@ const MESSAGES_QONTO: Record<string, string> = {
 
 const CONNEXION_QONTO = "/api/admin/qonto/connexion";
 const CONTACTS_EXPRESS = new Set<Evenement["type"]>(["demande", "demande-urgente", "appel"]);
-const surtitre = "text-[0.68rem] font-bold uppercase tracking-[0.2em] text-ink-2";
+const titreSection = "text-sm text-ink-2";
 
 /** Une source de chiffres peut manquer (stockage absent, erreur passagère) : le tableau de bord s'affiche quand même. */
 async function sansErreur<T>(lecture: () => Promise<T>): Promise<T | null> {
@@ -39,29 +38,29 @@ function pluriel(n: number, mot: string) {
   return `${n} ${mot}${n > 1 ? "s" : ""}`;
 }
 
-/** Les 14 derniers jours en barres : la semaine d'avant en clair, la semaine en cours en vert. */
-function Courbe({ serie }: { serie: number[] }) {
-  const max = Math.max(1, ...serie);
-  const largeur = 6;
-  const pas = 9;
-  const hauteur = 30;
+/** « 30 oct. » pour un jour AAAA-MM-JJ. */
+function jourCourt(jour: string) {
+  return new Date(`${jour}T12:00:00Z`).toLocaleDateString("fr-FR", { timeZone: "UTC", day: "numeric", month: "short" });
+}
+
+/** Cartouche de plan, comme sur les planches : la date et les deux périodes comparées. */
+function Cartouche({ aujourdhui, dateLongue }: { aujourdhui: string; dateLongue: string }) {
+  const lignes: [string, string][] = [
+    ["Date", dateLongue],
+    ["Cette semaine", `${jourCourt(joursAvant(aujourdhui, 6))} – ${jourCourt(aujourdhui)}`],
+    ["Comparée à", `${jourCourt(joursAvant(aujourdhui, 13))} – ${jourCourt(joursAvant(aujourdhui, 7))}`],
+  ];
   return (
-    <svg viewBox={`0 0 ${serie.length * pas - (pas - largeur)} ${hauteur}`} className="h-8 w-full" preserveAspectRatio="none" aria-hidden="true">
-      {serie.map((n, i) => {
-        const h = n === 0 ? 1.5 : Math.max(3, (n / max) * hauteur);
-        return (
-          <rect
-            key={i}
-            x={i * pas}
-            y={hauteur - h}
-            width={largeur}
-            height={h}
-            rx={1}
-            className={i >= serie.length - 7 ? "fill-forest" : "fill-stone-2"}
-          />
-        );
-      })}
-    </svg>
+    <table className="w-full border border-ink/15 bg-paper text-sm sm:w-auto">
+      <tbody>
+        {lignes.map(([cle, valeur]) => (
+          <tr key={cle} className="border-b border-ink/10 last:border-b-0">
+            <th scope="row" className="py-1.5 pr-6 pl-3 text-left font-normal text-ink-3">{cle}</th>
+            <td className="py-1.5 pr-3 text-right tabular-nums first-letter:uppercase">{valeur}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
@@ -71,18 +70,62 @@ function Tuile({ href, libelle, valeur, detail }: TuileProps) {
   const ev = valeur ? evolution(valeur) : null;
   const couleur = ev?.sens === "hausse" ? "text-forest" : ev?.sens === "baisse" ? "text-alert" : "text-ink-2";
   const fleche = ev?.sens === "hausse" ? "↗" : ev?.sens === "baisse" ? "↘" : "→";
-  const pied = valeur ? `${detail} · aujourd'hui ${valeur.aujourdhui}` : detail;
   return (
-    <Link href={href} className="group flex flex-col bg-paper p-4 transition-colors hover:bg-white sm:p-5">
-      <span className={surtitre}>{libelle}</span>
-      <span className="display mt-3 text-5xl leading-none lining-nums tabular-nums">{valeur ? valeur.semaine : "—"}</span>
-      <span className={`mt-2 text-xs font-bold ${couleur}`}>{ev ? `${fleche} ${ev.texte}` : "Compteur non relié"}</span>
-      <span className="mt-4 block">{valeur && <Courbe serie={valeur.serie} />}</span>
-      <span className="mt-3 flex items-center justify-between gap-2 border-t border-stone-2 pt-3 text-xs text-ink-2">
-        <span>{pied}</span>
-        <span aria-hidden="true" className="text-bronze transition-transform group-hover:translate-x-0.5">→</span>
+    <Link href={href} className="group flex h-full flex-col bg-paper p-4 transition-colors hover:bg-white sm:p-5">
+      <span className="flex items-center justify-between gap-2 text-sm text-ink-2">
+        {libelle}
+        <span aria-hidden="true" className="text-ink-3 transition-[color,transform] group-hover:translate-x-0.5 group-hover:text-bronze">→</span>
       </span>
+      <span className="display mt-4 text-5xl leading-none lining-nums tabular-nums">{valeur ? valeur.semaine : "—"}</span>
+      <span className={`mt-2 text-sm ${couleur}`}>{ev ? `${fleche} ${ev.texte}` : "Compteur non relié"}</span>
+      <span className="mt-auto pt-4 text-xs text-ink-3">{valeur ? `${detail} · aujourd'hui ${valeur.aujourdhui}` : detail}</span>
     </Link>
+  );
+}
+
+/**
+ * Le graphique principal : les contacts reçus chaque jour sur 14 jours, toutes
+ * sources additionnées. La semaine en cours en vert, celle d'avant en clair.
+ */
+function Graphique({ serie, aujourdhui }: { serie: number[]; aujourdhui: string }) {
+  const max = Math.max(1, ...serie);
+  const semaine = serie.slice(7).reduce((a, b) => a + b, 0);
+  const avant = serie.slice(0, 7).reduce((a, b) => a + b, 0);
+  const jours = serie.map((_, i) => joursAvant(aujourdhui, serie.length - 1 - i));
+  const resume = jours.map((j, i) => `${jourCourt(j)} : ${serie[i]}`).join(", ");
+  return (
+    <div className="border border-stone-2 bg-paper p-4 sm:p-6">
+      <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <span className="display text-3xl leading-none lining-nums tabular-nums">{semaine}</span>
+        <span className="text-sm text-ink-2">cette semaine, contre {avant} la semaine d&apos;avant</span>
+      </p>
+      <div role="img" aria-label={`Contacts reçus par jour sur 14 jours. ${resume}.`} className="mt-6">
+        <div className="relative flex h-36 items-end gap-1 border-b border-ink/15 sm:gap-2">
+          {/* Lignes de repère : la moitié et le maximum. */}
+          <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 border-t border-dashed border-ink/10" />
+          <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-1/2 border-t border-dashed border-ink/10" />
+          {serie.map((n, i) => (
+            <span key={jours[i]} className="relative flex h-full flex-1 flex-col justify-end">
+              {n > 0 && <span className="mb-1 text-center text-xs tabular-nums text-ink-2">{n}</span>}
+              <span
+                className={`block ${i >= 7 ? "bg-forest" : "bg-stone-2"}`}
+                style={{ height: n === 0 ? "2px" : `${(n / max) * 80}%` }}
+              />
+            </span>
+          ))}
+        </div>
+        <div aria-hidden="true" className="mt-2 flex gap-1 text-center text-xs tabular-nums text-ink-3 sm:gap-2">
+          {jours.map((j, i) => (
+            <span key={j} className={`flex-1 ${i === jours.length - 1 ? "text-ink" : ""}`}>{Number(j.slice(8))}</span>
+          ))}
+        </div>
+      </div>
+      <p className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs text-ink-2">
+        <span className="flex items-center gap-2"><span className="size-2.5 bg-forest" aria-hidden="true" />Cette semaine</span>
+        <span className="flex items-center gap-2"><span className="size-2.5 bg-stone-2" aria-hidden="true" />Semaine d&apos;avant</span>
+        <span className="text-ink-3">Commandes signées, demandes et appels Express, plans gratuits</span>
+      </p>
+    </div>
   );
 }
 
@@ -90,57 +133,29 @@ type Niveau = "ok" | "alerte" | "inactif";
 
 function Pastille({ niveau }: { niveau: Niveau }) {
   const couleur = niveau === "ok" ? "bg-forest" : niveau === "alerte" ? "bg-alert" : "bg-ink-3";
-  return <span className={`mt-1.5 inline-block size-2.5 shrink-0 rounded-full ${couleur}`} aria-hidden="true" />;
+  return <span className={`mt-1.5 inline-block size-2 shrink-0 rounded-full ${couleur}`} aria-hidden="true" />;
 }
 
 type Service = { nom: string; niveau: Niveau; etat: string };
 type ATraiter = { texte: string; href: string; action: string };
-type Raccourci = { href: string; titre: string; texte: string; externe?: boolean };
-
-const RACCOURCIS: Raccourci[] = [
-  { href: "/admin/commandes", titre: "Compteur Commandes", texte: "Tunnel /commander : paniers, devis, signatures, par formule." },
-  { href: "/admin/express", titre: "Compteur Express", texte: "Visites, demandes, appels et WhatsApp de la campagne Google Ads." },
-  { href: "/admin/planches", titre: "Planches gratuites", texte: "Demandes de plans gratuits et leur statut d'envoi." },
-  { href: "/admin/articles", titre: "Articles", texte: "Créer, modifier ou supprimer les articles du blog." },
-  { href: "/admin/chiffres", titre: "Chiffres clés", texte: "Permis déposés, taux d'accord, note Google de l'accueil." },
-  { href: "/admin/realisations", titre: "Réalisations", texte: "La galerie de projets réels de l'accueil." },
-  { href: UMAMI, titre: "Statistiques du site", texte: "Parcours des visiteurs sur tout le site (Umami).", externe: true },
-];
-
-function CarteRaccourci({ r }: { r: Raccourci }) {
-  const classe = "group block h-full bg-paper p-4 transition-colors hover:bg-white sm:p-5";
-  const contenu = (
-    <>
-      <span className="flex items-center justify-between gap-2">
-        <span className="font-bold">{r.titre}</span>
-        <span aria-hidden="true" className="text-bronze transition-transform group-hover:translate-x-0.5">{r.externe ? "↗" : "→"}</span>
-      </span>
-      <span className="mt-1 block text-sm leading-snug text-ink-2">{r.texte}</span>
-    </>
-  );
-  if (r.externe) {
-    return <a href={r.href} target="_blank" rel="noopener noreferrer" className={classe}>{contenu}</a>;
-  }
-  return <Link href={r.href} className={classe}>{contenu}</Link>;
-}
 
 function BlocATraiter({ items, servicesOk }: { items: ATraiter[]; servicesOk: boolean }) {
   if (items.length === 0) {
-    const suite = servicesOk ? "Les services tournent normalement." : "Un réglage manque : voir l'état des services.";
+    const suite = servicesOk ? "Les services tournent normalement" : "Un réglage manque, voir l'état des services";
     return (
-      <p className="flex items-center gap-3 bg-paper p-4 text-sm">
-        <span className="grid size-7 shrink-0 place-items-center rounded-full bg-forest text-paper" aria-hidden="true">✓</span>
-        <span><strong>Rien à traiter.</strong> <span className="text-ink-2">{suite}</span></span>
+      <p className="flex items-start gap-3 border border-stone-2 bg-paper px-4 py-3 text-sm">
+        <Pastille niveau={servicesOk ? "ok" : "alerte"} />
+        <span>Rien à traiter <span className="text-ink-2">· {suite}</span></span>
       </p>
     );
   }
   return (
-    <ul className="divide-y divide-alert/20 border border-alert/30 bg-alert/5">
+    <ul className="divide-y divide-alert/20 border border-alert/30 bg-paper">
       {items.map((a) => (
-        <li key={a.texte} className="flex flex-wrap items-center justify-between gap-3 p-4 text-sm">
+        <li key={a.texte} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm">
           <span className="flex items-start gap-3">
             <Pastille niveau="alerte" />
-            <span className="font-bold text-alert">{a.texte}</span>
+            <span className="text-alert">{a.texte}</span>
           </span>
           {/* Lien classique : la connexion Qonto sort du site. */}
           <a href={a.href} className="btn btn-ink shrink-0 text-sm !min-h-9 !px-4">{a.action}</a>
@@ -148,6 +163,13 @@ function BlocATraiter({ items, servicesOk }: { items: ATraiter[]; servicesOk: bo
       ))}
     </ul>
   );
+}
+
+/** Additionne des séries de même longueur ; les séries absentes (compteur non relié) sont ignorées. */
+function additionner(series: (number[] | undefined)[]): number[] | null {
+  const presentes = series.filter((s): s is number[] => Boolean(s));
+  if (presentes.length === 0) return null;
+  return presentes[0].map((_, i) => presentes.reduce((total, s) => total + s[i], 0));
 }
 
 export default async function AdminDashboard({ searchParams }: { searchParams: Promise<{ qonto?: string }> }) {
@@ -213,16 +235,17 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
     },
   ];
 
+  const contactsParJour = additionner([signees?.serie, contacts?.serie, demandesPlanches?.serie]);
+
   return (
     <AdminShell>
-      <header>
-        <p className={`${surtitre} first-letter:uppercase`}>{dateLongue}</p>
-        <h1 className="display mt-2 text-4xl sm:text-5xl">Tableau de bord</h1>
-        <p className="mt-2 text-sm text-ink-2">Les 7 derniers jours, comparés aux 7 d&apos;avant · heure de Paris.</p>
+      <header className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <h1 className="display text-4xl sm:text-5xl">Tableau de bord</h1>
+        <Cartouche aujourdhui={aujourdhui} dateLongue={dateLongue} />
       </header>
 
       {messageQonto && (
-        <p role="status" className="mt-6 border-l-2 border-brass bg-paper p-4 text-sm font-bold">{messageQonto}</p>
+        <p role="status" className="mt-6 border-l-2 border-brass bg-paper p-4 text-sm">{messageQonto}</p>
       )}
 
       <section aria-labelledby="a-traiter" className="mt-8">
@@ -231,36 +254,35 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
       </section>
 
       <section aria-labelledby="chiffres" className="mt-10">
-        <h2 id="chiffres" className={surtitre}>Cette semaine</h2>
+        <h2 id="chiffres" className={titreSection}>Cette semaine</h2>
         <div className="mt-3 grid grid-cols-2 gap-px border border-stone-2 bg-stone-2 lg:grid-cols-4">
           <Tuile href="/admin/commandes" libelle="Commandes" valeur={signees} detail="Mandats signés" />
           <Tuile href="/admin/commandes" libelle="Paniers" valeur={paniers} detail="Paniers ouverts" />
-          <Tuile href="/admin/express" libelle="Express" valeur={contacts} detail="Demandes + appels" />
+          <Tuile href="/admin/express" libelle="Express" valeur={contacts} detail="Demandes et appels" />
           <Tuile href="/admin/planches" libelle="Plans gratuits" valeur={demandesPlanches} detail="Demandes reçues" />
         </div>
       </section>
 
-      <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_22rem]">
-        <section aria-labelledby="gerer">
-          <h2 id="gerer" className={surtitre}>Gérer le site</h2>
-          <ul className="mt-3 grid gap-px border border-stone-2 bg-stone-2 sm:grid-cols-2">
-            {RACCOURCIS.map((r, i) => (
-              // Le dernier raccourci, seul sur sa ligne, prend toute la largeur.
-              <li key={r.href} className={i === RACCOURCIS.length - 1 && RACCOURCIS.length % 2 === 1 ? "sm:col-span-2" : undefined}>
-                <CarteRaccourci r={r} />
-              </li>
-            ))}
-          </ul>
+      <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_20rem]">
+        <section aria-labelledby="quatorze-jours">
+          <h2 id="quatorze-jours" className={titreSection}>Contacts reçus, 14 derniers jours</h2>
+          <div className="mt-3">
+            {contactsParJour ? (
+              <Graphique serie={contactsParJour} aujourdhui={aujourdhui} />
+            ) : (
+              <p className="border border-stone-2 bg-paper p-6 text-sm text-ink-2">Compteurs non reliés : pas de graphique</p>
+            )}
+          </div>
         </section>
 
         <section aria-labelledby="services">
-          <h2 id="services" className={surtitre}>État des services</h2>
+          <h2 id="services" className={titreSection}>État des services</h2>
           <ul className="mt-3 divide-y divide-stone-2 border border-stone-2 bg-paper">
             {services.map((s) => (
-              <li key={s.nom} className="flex gap-3 p-4 text-sm">
+              <li key={s.nom} className="flex gap-3 px-4 py-3 text-sm">
                 <Pastille niveau={s.niveau} />
                 <span>
-                  <span className="block font-bold">{s.nom}</span>
+                  <span className="block text-ink">{s.nom}</span>
                   <span className={s.niveau === "alerte" ? "text-alert" : "text-ink-2"}>{s.etat}</span>
                 </span>
               </li>
