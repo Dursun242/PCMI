@@ -43,8 +43,8 @@ export default function RemiseAZero() {
   return (
     <div className="flex items-center gap-3">
       {etat === "erreur" && <span className="text-sm text-alert">Échec, réessayez.</span>}
-      <button type="button" onClick={() => setEtat("confirmer")} className="btn btn-line text-sm !min-h-10">
-        Remettre à zéro
+      <button type="button" onClick={() => setEtat("confirmer")} className="cursor-pointer text-sm text-ink-2 underline decoration-ink/30 underline-offset-4 transition-colors hover:text-alert">
+        Remettre le compteur à zéro
       </button>
     </div>
   );
