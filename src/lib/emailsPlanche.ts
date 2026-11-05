@@ -5,7 +5,8 @@ import { PLANCHES, type Planche } from "@/lib/planche";
 
 /**
  * E-mails de la planche gratuite. Fonctions pures (testées) : l'API ne fait
- * que les envoyer.
+ * que les envoyer. Le mot « gratuit » n'y figure nulle part, ni dans les
+ * liens : c'est un déclencheur classique des filtres anti-spam.
  */
 
 export interface ContactPlanche {
@@ -22,10 +23,12 @@ export interface ContextePlanche {
 }
 
 const FONT = "font-family:Lato,Arial,sans-serif";
+/** Redirige vers /plans-gratuits (next.config.ts) : une adresse sans « gratuit » pour les e-mails. */
+const PLANS_DU_TERRAIN = "/plans-du-terrain";
 const DOMAINE = site.url.replace(/^https?:\/\//, "");
 
 /** Lien vers le site, marqué pour la mesure (nomenclature utm du site : minuscules, sans accent). */
-export function lienSite(path: string, contenu: string, medium = "planche-gratuite"): string {
+export function lienSite(path: string, contenu: string, medium = "plan-terrain"): string {
   const sep = path.includes("?") ? "&" : "?";
   return `${site.url}${path}${sep}utm_source=email&utm_medium=${medium}&utm_campaign=${contenu}`;
 }
@@ -41,9 +44,9 @@ const bouton = (path: string, texte: string, contenu: string, plein = true, medi
 /**
  * Habillage des e-mails envoyés au visiteur : tout renvoie au site (Dursun,
  * 02/11/2026 : « le but du jeu est que le site soit promu »). Pas de
- * signature personnelle : le site, ses formules et ses plans gratuits.
+ * signature personnelle : le site, ses formules et ses plans du terrain.
  */
-export function siteWrap(inner: string, campagne: string, medium = "planche-gratuite"): string {
+export function siteWrap(inner: string, campagne: string, medium = "plan-terrain"): string {
   const prix = formatEuro(plans[0].priceTTC);
   return `<div style="${FONT};font-size:16px;line-height:1.6;color:#1b1f1d;max-width:560px">
     <p style="margin:0 0 18px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#82663a;font-weight:700">Permis de construire en ligne</p>
@@ -54,7 +57,7 @@ export function siteWrap(inner: string, campagne: string, medium = "planche-grat
       <p style="margin:0 0 14px;color:#5a645e;font-size:15px">Dossier complet PCMI 1 à 8, prêt à déposer en mairie. Devis immédiat, paiement en 1, 4 ou 10 fois sans frais.</p>
       ${bouton("/commander", "Mon devis immédiat", `${campagne}-devis`, true, medium)}
     </div>
-    <p style="font-size:15px">Un proche a un terrain ? Le plan gratuit est pour lui aussi : ${lien("/plans-gratuits", DOMAINE + "/plans-gratuits", `${campagne}-partage`, medium)}</p>
+    <p style="font-size:15px">Un proche a un terrain ? Nous pouvons aussi lui envoyer le plan du sien : ${lien(PLANS_DU_TERRAIN, DOMAINE + PLANS_DU_TERRAIN, `${campagne}-partage`, medium)}</p>
     <p style="margin-top:28px;font-size:13px;color:#5a645e">${esc(DOMAINE)} · le permis de construire de votre maison, en ligne<br>Une question ? Répondez simplement à cet e-mail.</p>
   </div>`;
 }
@@ -78,8 +81,8 @@ export function nomFichierPlanche(x: Pick<ContextePlanche, "planche" | "referenc
 export function emailInterneDemande(c: ContactPlanche, x: ContextePlanche, cause: string | null) {
   const manuel = cause !== null;
   return {
-    subject: `Planche gratuite${manuel ? " À FAIRE À LA MAIN" : ""} — ${c.prenom} ${c.nom} — ${x.commune}`,
-    html: `<h2 style="${FONT}">Nouvelle demande de planche gratuite</h2>
+    subject: `Plan du terrain demandé${manuel ? " — À FAIRE À LA MAIN" : ""} — ${c.prenom} ${c.nom} — ${x.commune}`,
+    html: `<h2 style="${FONT}">Nouvelle demande de plan du terrain</h2>
       ${table(lignes(c, x))}
       <p style="${FONT}">${
         manuel
@@ -93,23 +96,23 @@ export function emailInterneDemande(c: ContactPlanche, x: ContextePlanche, cause
 
 export function emailInterneRefus(c: ContactPlanche, x: ContextePlanche) {
   return {
-    subject: `Planche gratuite refusée (déjà servie à ce visiteur) — ${c.prenom} ${c.nom} — ${x.commune}`,
+    subject: `Plan du terrain refusé (déjà envoyé à ce visiteur) — ${c.prenom} ${c.nom} — ${x.commune}`,
     html: `<h2 style="${FONT}">Deuxième demande du même visiteur sur une même parcelle</h2>
       ${table(lignes(c, x))}
-      <p style="${FONT}">Ce visiteur a déjà eu une planche gratuite pour cette parcelle : la demande a été refusée et le visiteur invité à vous contacter. Son contact reste utile.</p>`,
+      <p style="${FONT}">Ce visiteur a déjà reçu un plan pour cette parcelle : la demande a été refusée et le visiteur invité à vous contacter. Son contact reste utile.</p>`,
   };
 }
 
 export function emailInterneLivree(c: ContactPlanche, x: ContextePlanche) {
   return {
-    subject: `Planche gratuite envoyée — ${c.prenom} ${c.nom} — ${x.commune}`,
-    html: `<h2 style="${FONT}">Planche gratuite envoyée</h2>${table(lignes(c, x))}<p style="${FONT}">Copie jointe.</p>`,
+    subject: `Plan du terrain envoyé — ${c.prenom} ${c.nom} — ${x.commune}`,
+    html: `<h2 style="${FONT}">Plan du terrain envoyé</h2>${table(lignes(c, x))}<p style="${FONT}">Copie jointe.</p>`,
   };
 }
 
 export function emailInterneEchec(c: ContactPlanche, x: ContextePlanche, erreur: string) {
   return {
-    subject: `Planche gratuite EN ÉCHEC, à faire à la main — ${c.prenom} ${c.nom} — ${x.commune}`,
+    subject: `Plan du terrain EN ÉCHEC, à faire à la main — ${c.prenom} ${c.nom} — ${x.commune}`,
     html: `<h2 style="${FONT}">La planche n'a pas pu être dessinée</h2>
       ${table(lignes(c, x))}
       ${section("Erreur", `<pre style="white-space:pre-wrap;font-size:12px">${esc(erreur.slice(0, 1500))}</pre>`)}

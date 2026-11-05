@@ -21,7 +21,16 @@ import {
   signerRappel,
   verifierRappel,
 } from "./plancheSecret";
-import { emailClientAccuse, emailClientEchec, emailClientPlanche, emailInterneDemande, nomFichierPlanche } from "./emailsPlanche";
+import {
+  emailClientAccuse,
+  emailClientEchec,
+  emailClientPlanche,
+  emailInterneDemande,
+  emailInterneEchec,
+  emailInterneLivree,
+  emailInterneRefus,
+  nomFichierPlanche,
+} from "./emailsPlanche";
 import { site } from "@/config/site";
 
 const corps = {
@@ -235,17 +244,34 @@ describe("e-mails de la planche", () => {
   it("met le site en avant, sans signature personnelle", () => {
     for (const m of [emailClientPlanche(contact, x), emailClientAccuse(contact, x, false), emailClientEchec(contact, x)]) {
       expect(m.html).toContain("permis-maison-individuelle.fr");
-      expect(m.html).toContain("utm_source=email&amp;utm_medium=planche-gratuite");
+      expect(m.html).toContain("utm_source=email&amp;utm_medium=plan-terrain");
       expect(m.html).toContain("/commander");
       expect(m.html).not.toMatch(/ma[îi]tre d.(œ|oe)uvre/i);
       expect(m.html).not.toContain(site.legal.director);
     }
   });
 
-  it("évite les déclencheurs de spam : pas de « gratuit » dans l'objet, peu de liens", () => {
+  it("évite les déclencheurs de spam : peu de liens dans les e-mails au visiteur", () => {
     for (const m of [emailClientPlanche(contact, x), emailClientAccuse(contact, x, false), emailClientEchec(contact, x)]) {
-      expect(m.subject).not.toMatch(/gratuit/i);
       expect((m.html.match(/<a\s/g) ?? []).length).toBeLessThanOrEqual(2);
+    }
+  });
+
+  it("n'écrit « gratuit » nulle part, ni dans l'objet, ni dans le texte, ni dans les liens", () => {
+    const tous = [
+      emailClientPlanche(contact, x),
+      emailClientAccuse(contact, x, false),
+      emailClientAccuse(contact, x, true),
+      emailClientEchec(contact, x),
+      emailInterneDemande(contact, x, null),
+      emailInterneDemande(contact, x, "cause"),
+      emailInterneRefus(contact, x),
+      emailInterneLivree(contact, x),
+      emailInterneEchec(contact, x, "erreur"),
+    ];
+    for (const m of tous) {
+      expect(m.subject).not.toMatch(/gratuit|offert/i);
+      expect(m.html).not.toMatch(/gratuit|offert/i);
     }
   });
 
