@@ -8,7 +8,7 @@ import "server-only";
  *
  * Accès par l'API REST de Cloudflare (jeton limité à D1 → Modifier) : CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_D1_ID,
  * CLOUDFLARE_D1_TOKEN. Sans ces trois variables, chaque registre garde son ancien stockage : la bascule se fait en
- * posant les variables dans Vercel, sans redéploiement de code.
+ * posant les variables dans Vercel, puis en redéployant (Vercel ne lit les variables qu'au déploiement).
  *
  * Deux tables, sans schéma propre à chaque registre (les registres gardent leurs anciens chemins Blob comme clés,
  * d'où une recopie directe de l'existant) :
