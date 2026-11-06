@@ -118,6 +118,8 @@ export interface EstimationRun {
   restant: number;
   /** Durée habituelle d'un dossier (médiane des derniers), en secondes. */
   habituel: number;
+  /** Le passage s'est terminé sans réussir (délai dépassé, annulé, quota) : l'outil n'a peut-être rien pu envoyer. */
+  echoue?: boolean;
 }
 
 interface RunGithub {
@@ -145,7 +147,7 @@ export function estimer(runs: RunGithub[], depuis: number, maintenant = Date.now
   const habituel = Math.round(Math.min(600, Math.max(90, median)));
   const le = [...runs].filter((r) => t(r.created_at) >= depuis - 20_000).sort((a, b) => t(a.created_at) - t(b.created_at))[0];
   if (!le) return { etat: "inconnu", restant: Math.max(30, Math.round(habituel - (maintenant - depuis) / 1000)), habituel };
-  if (le.status === "completed") return { etat: "termine", restant: 20, habituel };
+  if (le.status === "completed") return { etat: "termine", restant: 20, habituel, ...(le.conclusion && le.conclusion !== "success" ? { echoue: true } : {}) };
   if (le.status !== "in_progress") return { etat: "attente", restant: habituel, habituel };
   const ecoule = (maintenant - t(le.created_at)) / 1000;
   return { etat: "dessin", restant: Math.max(20, Math.round(habituel - ecoule)), habituel };

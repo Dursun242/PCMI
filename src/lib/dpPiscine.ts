@@ -627,3 +627,19 @@ export function ficheWorkflow(d: DemandeDp) {
 
 /** Prix hors taxe (lien de paiement Qonto : prix unitaire HT + taux de TVA). */
 export const prixHt = (ttc = PRIX_DP_PISCINE_TTC, tva = TVA_DP_PISCINE): string => (ttc / (1 + tva)).toFixed(2);
+
+/** Sans réponse de l'outil passé ce délai, le dossier est déclaré en panne (workflow plafonné à 12 min, file d'attente). */
+export const DELAI_PANNE_MS = 30 * 60 * 1000;
+/** Après un passage GitHub terminé en échec, l'outil a ce délai pour avoir envoyé son erreur lui-même. */
+const GRACE_ECHEC_MS = 90 * 1000;
+
+/**
+ * Dossier resté « en cours » alors que le dessin ne reviendra plus (06/11/2026, « ultra stable ») : passage GitHub
+ * terminé en échec (délai dépassé, annulé, quota épuisé) ou aucune réponse après 30 min. Renvoie la cause, sinon null.
+ */
+export function causePanne(cree: number, estimation: { echoue?: boolean } | null, maintenant = Date.now()): string | null {
+  const ecoule = maintenant - cree;
+  if (estimation?.echoue && ecoule > GRACE_ECHEC_MS) return "Le dessin s'est arrêté chez GitHub sans renvoyer le dossier (délai dépassé, annulation ou quota).";
+  if (ecoule > DELAI_PANNE_MS) return "Aucune réponse de l'outil de dessin après 30 minutes.";
+  return null;
+}
