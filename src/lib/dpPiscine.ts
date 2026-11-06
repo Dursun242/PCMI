@@ -20,6 +20,17 @@ export const COTES: CoteBassin[] = ["petit_cote_2", "grand_cote_2", "petit_cote_
 
 export type TypeBassin = "enterree" | "semi-enterree" | "hors-sol";
 export type Securite = "alarme" | "couverture" | "barriere" | "abri";
+export type MateriauLocal = "bois" | "enduit" | "composite";
+
+export const MATERIAUX_LOCAL: Record<MateriauLocal, string> = {
+  bois: "Bardage bois",
+  enduit: "Enduit ton pierre",
+  composite: "Composite gris anthracite",
+};
+
+/** Valeurs par défaut (Dursun, 06/11/2026) : margelles de 20 cm, pas de plage. */
+export const MARGELLE_DEFAUT_M = 0.2;
+export const PLAGE_DEFAUT_M = 0;
 
 export const TYPES_BASSIN: Record<TypeBassin, string> = {
   enterree: "Enterrée",
@@ -41,6 +52,8 @@ export interface Bassin {
   margelle: number;
   plage: Record<CoteBassin, number>;
   localTechnique: boolean;
+  /** Parement du local technique (DP4) : bois, enduit ou composite. */
+  materiauLocal?: MateriauLocal;
   type: TypeBassin;
   securite: Securite;
   visibleRue: boolean;
@@ -442,6 +455,7 @@ function validerBassin(v: unknown): Bassin | null {
     margelle: margelle as number,
     plage: plage as Record<CoteBassin, number>,
     localTechnique: b.localTechnique === true,
+    materiauLocal: (b.materiauLocal as string) in MATERIAUX_LOCAL ? (b.materiauLocal as MateriauLocal) : "bois",
     type,
     securite,
     visibleRue: b.visibleRue === true,
@@ -516,7 +530,7 @@ export function ficheWorkflow(d: DemandeDp) {
       type: b.type,
       securite: b.securite,
       visible_rue: b.visibleRue,
-      local_technique: b.localTechnique ? { longueur: 2, largeur: 1.5, hauteur: 2 } : null,
+      local_technique: b.localTechnique ? { longueur: 2, largeur: 1.5, hauteur: 2, materiau: b.materiauLocal ?? "bois" } : null,
       centre_wgs84: b.centre,
       // point à 5 m dans l'axe du grand côté : le générateur en tire l'angle exact en Lambert 93
       axe_wgs84: decaler(b.centre, 5 * Math.cos(a), 5 * Math.sin(a)),

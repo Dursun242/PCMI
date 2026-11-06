@@ -1,6 +1,8 @@
 import { describe, expect, test } from "vitest";
 import {
   angleTerrain,
+  MARGELLE_DEFAUT_M,
+  PLAGE_DEFAUT_M,
   arasePrevue,
   cotesLimites,
   distanceBati,
@@ -178,7 +180,7 @@ describe("fiche transmise à l'outil", () => {
     const f = ficheWorkflow(v.demande);
     expect(f.client).toBe("Jean DURAND");
     expect(f.parcelle).toBe("76351000PM0096");
-    expect(f.piscine.local_technique).toEqual({ longueur: 2, largeur: 1.5, hauteur: 2 });
+    expect(f.piscine.local_technique).toEqual({ longueur: 2, largeur: 1.5, hauteur: 2, materiau: "bois" });
     const [dx, dy] = ecart(f.piscine.centre_wgs84, f.piscine.axe_wgs84);
     expect(Math.hypot(dx, dy)).toBeCloseTo(5, 4);
     expect((Math.atan2(dy, dx) * 180) / Math.PI).toBeCloseTo(30, 3);
@@ -186,6 +188,20 @@ describe("fiche transmise à l'outil", () => {
 
   test("prix HT d'un prix TTC de 100 € à 20 %", () => {
     expect(prixHt(100, 0.2)).toBe("83.33");
+  });
+});
+
+describe("local technique et valeurs par défaut", () => {
+  test("matériau du local transmis à l'outil (DP4), bois si inconnu", () => {
+    const v = validerDemandeDp(demande({ bassin: { ...bassin, materiauLocal: "enduit" } }));
+    if (!("demande" in v)) throw new Error("demande refusée");
+    expect(ficheWorkflow(v.demande).piscine.local_technique).toMatchObject({ materiau: "enduit" });
+    const w = validerDemandeDp(demande({ bassin: { ...bassin, materiauLocal: "béton" } }));
+    expect("demande" in w && w.demande.bassin.materiauLocal).toBe("bois");
+  });
+  test("margelles de 20 cm et pas de plage par défaut", () => {
+    expect(MARGELLE_DEFAUT_M).toBe(0.2);
+    expect(PLAGE_DEFAUT_M).toBe(0);
   });
 });
 
