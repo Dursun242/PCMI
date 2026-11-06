@@ -10,7 +10,7 @@ import CoupeLive from "@/components/dp/CoupeLive";
 import PlanMasseLive from "@/components/dp/PlanMasseLive";
 import PhotosDp from "@/components/dp/PhotosDp";
 import ReglagesBassin from "@/components/dp/ReglagesBassin";
-import { trackEvent } from "@/lib/analytics";
+import { mesurerDp } from "@/lib/mesureDp";
 import { MARGELLE_DEFAUT_M, PLAGE_DEFAUT_M, PRIX_DP_PISCINE_TTC, RECUL_CONSEILLE_M, placementInitial, surBati, photosCompletes, type PhotosDp as Photos, angleTerrain, distanceLimites, centreContour, dansTerrain, formesBassin, regimeIndicatif, type Bassin, type ErreursDp } from "@/lib/dpPiscine";
 import { referenceCourte, type ParcelleCandidate, type RechercheTerrain } from "@/lib/planche";
 
@@ -167,7 +167,7 @@ export default function DpPiscine() {
         placeAuto.current = true;
         setBassin(bassinInitial(liste[0]), false);
       }
-      trackEvent("dp_piscine_terrain", {});
+      mesurerDp("terrain");
     } catch {
       setErreurRecherche("Recherche impossible. Vérifiez votre connexion.");
     } finally {
@@ -176,6 +176,9 @@ export default function DpPiscine() {
   }
 
   // Retour depuis la page de suivi (« Corriger mon bassin ») : on reprend le brouillon.
+  // Compteur interne de l'admin : une visite par onglet.
+  useEffect(() => mesurerDp("vue", "page"), []);
+
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get("reprendre") !== "1") return;
     const b = lireBrouillon();
@@ -252,7 +255,7 @@ export default function DpPiscine() {
       });
       const json = await r.json();
       if (json.ok && json.id) {
-        trackEvent("dp_piscine_lancee", {});
+        mesurerDp("lancee");
         router.push(`/dp-piscine/suivi?${new URLSearchParams({ id: json.id, k: json.k })}`);
         return;
       }
@@ -337,7 +340,7 @@ export default function DpPiscine() {
               <ReglagesBassin bassin={bassin} onChange={(b) => setBassin(b)} depasse={depasse} distance={distance?.d ?? null} />
               {empiete && <p role="alert" className="border-l-2 border-alert pl-4 text-sm text-alert">Le bassin ou sa plage touche un bâtiment : déplacez-le.</p>}
               <div>
-                <button type="button" className="btn btn-ink" disabled={!emplacementOk || valide >= 1} onClick={() => { setValide(1); trackEvent("dp_piscine_etape", { etape: "emplacement" }); allerA("dp-etape-3"); }}>
+                <button type="button" className="btn btn-ink" disabled={!emplacementOk || valide >= 1} onClick={() => { setValide(1); mesurerDp("emplacement"); allerA("dp-etape-3"); }}>
                   {valide >= 1 ? "Emplacement validé ✓" : "Je valide l'emplacement"}
                 </button>
               </div>
@@ -356,7 +359,7 @@ export default function DpPiscine() {
                 <input id="dp-prof2" type="number" inputMode="decimal" min={0.6} max={3} step={0.05} className="min-h-12 w-28" value={bassin.profondeur}
                   onChange={(e) => { const n = Number(e.target.value); if (n >= 0.6 && n <= 3) setBassinBrut({ ...bassin, profondeur: n }); }} />
               </div>
-              <button type="button" className="btn btn-ink" disabled={valide >= 2} onClick={() => { setValide(2); trackEvent("dp_piscine_etape", { etape: "coupe" }); allerA(bassin.visibleRue ? "dp-etape-4" : "dp-etape-5"); }}>
+              <button type="button" className="btn btn-ink" disabled={valide >= 2} onClick={() => { setValide(2); mesurerDp("coupe"); allerA(bassin.visibleRue ? "dp-etape-4" : "dp-etape-5"); }}>
                 {valide >= 2 ? "Coupe validée ✓" : "Je valide la coupe"}
               </button>
             </div>
@@ -369,7 +372,7 @@ export default function DpPiscine() {
           <div id="dp-etape-4" className="grid scroll-mt-24 gap-5">
             <PhotosDp photos={photos} onChange={(p) => { setPhotos(p); if (valide >= 3) setValide(2); }} bassin={bassin} contours={anneaux} />
             <div>
-              <button type="button" className="btn btn-ink" disabled={!photosCompletes(photos) || valide >= 3} onClick={() => { setValide(3); trackEvent("dp_piscine_etape", { etape: "photomontage" }); allerA("dp-etape-5"); }}>
+              <button type="button" className="btn btn-ink" disabled={!photosCompletes(photos) || valide >= 3} onClick={() => { setValide(3); mesurerDp("photomontage"); allerA("dp-etape-5"); }}>
                 {valide >= 3 ? "Photomontage validé ✓" : "Je valide le photomontage"}
               </button>
             </div>

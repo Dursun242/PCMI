@@ -8,6 +8,7 @@ import { dechiffrer, secretPlanche } from "@/lib/plancheSecret";
 import { lireLienPaiement } from "@/lib/qonto";
 import { ouvrirQonto } from "@/lib/qontoConnexion";
 import { jetonValide, lireDp, majDp, type EntreeDp } from "@/lib/dpPiscineStore";
+import { enregistrerDp } from "@/lib/suiviDpStore";
 
 /** Clé des signatures et du chiffrement : la même que la planche gratuite. */
 export const secretDp = secretPlanche;
@@ -61,6 +62,8 @@ export const payable = (e: EntreeDp) =>
 /** Paiement reçu : le dossier est débloqué, le client et ID Maîtrise prévenus. */
 export async function marquerPaye(e: EntreeDp, secret: string, mode: "qonto" | "test"): Promise<EntreeDp> {
   const maj = (await majDp(e.id, secret, "paye", { paye: { le: Date.now(), mode } })) ?? e;
+  // Compteur de l'admin : seuls les vrais paiements Qonto comptent, pas les essais.
+  if (mode === "qonto") await enregistrerDp("paye");
   const c = lireContact(maj, secret);
   if (c) {
     const suivi = suiviDuClient(maj, secret);

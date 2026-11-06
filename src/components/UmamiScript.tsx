@@ -3,6 +3,7 @@
 import Script from "next/script";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { sansMesureTierce } from "@/lib/mesureTierce";
 
 /**
  * Mesure d'audience Umami, sans cookie. Le compte Umami gratuit n'accepte qu'un site :
@@ -18,7 +19,7 @@ export default function UmamiScript() {
   const [pret, setPret] = useState(false);
 
   useEffect(() => {
-    if (pret && !path.startsWith("/admin")) window.umami?.track();
+    if (pret && !sansMesureTierce(path)) window.umami?.track();
   }, [pret, path]);
 
   return (

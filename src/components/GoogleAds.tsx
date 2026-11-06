@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { trackEvent } from "@/lib/analytics";
 import { CONSENT_KEY, GADS_ID, OPEN_CONSENT_EVENT, isProductionHost, setAdsConsent } from "@/lib/googleAds";
+import { sansMesureTierce } from "@/lib/mesureTierce";
 
 /**
  * Balise Google Ads + bannière de consentement.
@@ -53,7 +54,7 @@ export default function GoogleAds() {
     };
   }, []);
 
-  if (!actif || path.startsWith("/admin")) return null;
+  if (!actif || sansMesureTierce(path)) return null;
 
   const choisir = (ok: boolean) => {
     setAdsConsent(ok);

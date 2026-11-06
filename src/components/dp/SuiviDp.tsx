@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import AttenteDp from "@/components/dp/AttenteDp";
-import { trackEvent } from "@/lib/analytics";
+import { mesurerDp } from "@/lib/mesureDp";
 import { PRIX_DP_PISCINE_TTC } from "@/lib/dpPiscine";
 
 interface Vue {
@@ -110,7 +110,8 @@ export default function SuiviDp() {
   );
 
   useEffect(() => {
-    if (v && v.statut !== "en_cours") trackEvent("dp_piscine_apercu", { statut: v.statut });
+    // Une fois par dossier et par onglet : la page relit le dossier toutes les quelques secondes.
+    if (v && p && v.statut !== "en_cours") mesurerDp("apercu", p.id);
   }, [v?.statut]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function payer(test = false) {
@@ -126,11 +127,10 @@ export default function SuiviDp() {
       const json = await r.json();
       if (!json.ok) setErreur(json.error ?? "Le paiement n'a pas pu démarrer.");
       else if (json.url) {
-        trackEvent("dp_piscine_payer", {});
+        mesurerDp("payer");
         window.open(json.url, "_blank", "noopener");
         await charger();
       } else {
-        trackEvent("dp_piscine_paye", {});
         setV({ ...(v as Vue), ...json });
       }
     } catch {

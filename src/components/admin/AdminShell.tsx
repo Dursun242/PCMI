@@ -9,6 +9,7 @@ const NAV = [
   { href: "/admin", label: "Tableau de bord" },
   { href: "/admin/commandes", label: "Commandes" },
   { href: "/admin/express", label: "Express" },
+  { href: "/admin/dp-piscine", label: "DP piscine" },
   { href: "/admin/planches", label: "Plans gratuits" },
   { href: "/admin/articles", label: "Articles" },
   { href: "/admin/chiffres", label: "Chiffres clés" },
