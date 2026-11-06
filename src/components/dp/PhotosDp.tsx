@@ -15,7 +15,7 @@ const TEX_L = 1000;
 const COINS = ["le coin proche à gauche", "le coin proche à droite", "le coin loin à droite", "le coin loin à gauche"];
 
 /**
- * Photos exigées quand la piscine se voit de la rue : DP7 (environnement proche), DP8 (paysage lointain), et DP6
+ * Photos exigées quand la piscine se voit de la rue : DPC7 (environnement proche), DPC8 (paysage lointain), et DPC6
  * (insertion) : sur la photo proche, le client touche les 4 coins du futur bassin, l'outil y pose la piscine.
  */
 export default function PhotosDp({ photos, onChange, bassin }: Props) {
@@ -85,7 +85,7 @@ export default function PhotosDp({ photos, onChange, bassin }: Props) {
           <div key={cle} className="field">
             <label htmlFor={`dp-photo-${cle}`}>{cle === "proche" ? "Photo de près (le terrain et la future piscine)" : "Photo de loin (le terrain dans le paysage)"}</label>
             <input id={`dp-photo-${cle}`} type="file" accept="image/jpeg,image/png,image/webp" className="min-h-12 text-sm" onChange={(e) => void choisir(cle, e.target.files?.[0])} />
-            <p className="hint">{envoi === cle ? "Envoi…" : photos[cle] ? "Photo reçue." : cle === "proche" ? "Pièce DP7." : "Pièce DP8."}</p>
+            <p className="hint">{envoi === cle ? "Envoi…" : photos[cle] ? "Photo reçue." : cle === "proche" ? "Pièce DPC7." : "Pièce DPC8."}</p>
           </div>
         ))}
       </div>
@@ -93,7 +93,7 @@ export default function PhotosDp({ photos, onChange, bassin }: Props) {
       {srcProche && (
         <div className="grid gap-3">
           <p className="text-[0.95rem]">
-            <strong>Photomontage (DP6) :</strong>{" "}
+            <strong>Photomontage (DPC6) :</strong>{" "}
             {coins.length < 4 ? `touchez sur la photo ${COINS[coins.length]} du futur bassin (${coins.length + 1}/4).` : "les 4 coins sont posés."}
           </p>
           <div ref={cadre} className="relative max-w-2xl overflow-hidden">

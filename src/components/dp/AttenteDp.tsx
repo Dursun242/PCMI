@@ -23,7 +23,7 @@ const ETAPES: [number, string][] = [
   [0.15, "Lecture du cadastre, du PLU et des servitudes"],
   [0.4, "Altitudes du terrain et implantation du bassin"],
   [0.7, "Plan de masse coté et plan en coupe"],
-  [0.88, "Cerfa 13703 et contrôles"],
+  [0.88, "Cerfa 16702 et contrôles"],
   [1.01, "Mise en page et aperçu"],
 ];
 

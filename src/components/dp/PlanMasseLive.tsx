@@ -33,7 +33,7 @@ const fmt = (n: number) => n.toLocaleString("fr-FR", { minimumFractionDigits: 2,
 
 /**
  * Plan de masse coté, en direct : le client fait glisser le bassin, le tourne avec la poignée, et touche une cote pour
- * la taper (« 3,00 m de la limite ») : le bassin se cale dessus. Même dessin que le DP2 officiel, sans attendre.
+ * la taper (« 3,00 m de la limite ») : le bassin se cale dessus. Même dessin que le DPC2 officiel, sans attendre.
  */
 export default function PlanMasseLive({ anneaux, voisines, batis, bassin, onChange }: Props) {
   const svg = useRef<SVGSVGElement>(null);

@@ -88,7 +88,7 @@ export async function POST(req: Request) {
     if (pdf.length > TAILLE_MAX || pdf.subarray(0, 5).toString("latin1") !== "%PDF-") {
       return NextResponse.json({ ok: false, error: "PDF invalide" }, { status: 400 });
     }
-    const nom = part === "dossier" ? "DP_piscine_plans.pdf" : "DP_piscine_Cerfa13703.pdf";
+    const nom = part === "dossier" ? "DP_piscine_plans.pdf" : "DP_piscine_Cerfa16702.pdf";
     const url = await rangerFichier(id, secret, nom, pdf, "application/pdf");
     await ecrireFacette(id, secret, part === "dossier" ? "fichier-dossier" : "fichier-cerfa", { fichiers: { [part]: url } });
     return NextResponse.json({ ok: true });
