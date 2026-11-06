@@ -92,6 +92,8 @@ export async function verifierPaiement(e: EntreeDp, secret: string): Promise<Ent
 export function vueClient(e: EntreeDp) {
   return {
     statut: e.statut,
+    cree: e.cree,
+    maintenant: Date.now(),
     reference: e.reference,
     commune: e.commune,
     resume: e.resume ?? null,

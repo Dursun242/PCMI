@@ -108,3 +108,64 @@ export async function declencherWorkflow(fichier: string, inputs: Record<string,
     }),
   );
 }
+
+/* ---------- Estimation du temps restant (compte à rebours de la DP piscine) ---------- */
+
+export interface EstimationRun {
+  /** attente : en file chez GitHub ; dessin : en cours ; termine : fini, envoi au site en cours ; inconnu : pas trouvé. */
+  etat: "attente" | "dessin" | "termine" | "inconnu";
+  /** Secondes restantes estimées. */
+  restant: number;
+  /** Durée habituelle d'un dossier (médiane des derniers), en secondes. */
+  habituel: number;
+}
+
+interface RunGithub {
+  status: string;
+  conclusion: string | null;
+  created_at: string;
+  run_started_at?: string;
+  updated_at: string;
+}
+
+export const DUREE_DEFAUT_S = 190;
+
+/**
+ * Où en est le dossier lancé à l'instant `depuis` (ms) : le premier passage du workflow créé après lui, et la durée
+ * habituelle (médiane de création -> fin des derniers passages réussis, bornée à 1 min 30 - 10 min). Pure.
+ */
+export function estimer(runs: RunGithub[], depuis: number, maintenant = Date.now()): EstimationRun {
+  const t = (s?: string) => (s ? Date.parse(s) : NaN);
+  const durees = runs
+    .filter((r) => r.status === "completed" && r.conclusion === "success")
+    .map((r) => (t(r.updated_at) - t(r.created_at)) / 1000)
+    .filter((d) => Number.isFinite(d) && d > 0)
+    .sort((a, b) => a - b);
+  const median = durees.length ? durees[Math.floor(durees.length / 2)] : DUREE_DEFAUT_S;
+  const habituel = Math.round(Math.min(600, Math.max(90, median)));
+  const le = [...runs].filter((r) => t(r.created_at) >= depuis - 20_000).sort((a, b) => t(a.created_at) - t(b.created_at))[0];
+  if (!le) return { etat: "inconnu", restant: Math.max(30, Math.round(habituel - (maintenant - depuis) / 1000)), habituel };
+  if (le.status === "completed") return { etat: "termine", restant: 20, habituel };
+  if (le.status !== "in_progress") return { etat: "attente", restant: habituel, habituel };
+  const ecoule = (maintenant - t(le.created_at)) / 1000;
+  return { etat: "dessin", restant: Math.max(20, Math.round(habituel - ecoule)), habituel };
+}
+
+/** Derniers passages d'un workflow d'id-plans, puis estimation ; null sans jeton ou si GitHub ne répond pas. */
+export async function estimationWorkflow(fichier: string, depuis: number): Promise<EstimationRun | null> {
+  const jeton = process.env.IDPLANS_GITHUB_TOKEN?.trim();
+  if (!jeton) return null;
+  const depot = process.env.IDPLANS_GITHUB_REPO?.trim() || "Dursun242/id-plans";
+  try {
+    const r = await fetch(`${API}/repos/${depot}/actions/workflows/${fichier}/runs?per_page=20`, {
+      headers: entetes(jeton),
+      signal: AbortSignal.timeout(6_000),
+      cache: "no-store",
+    });
+    if (!r.ok) return null;
+    const { workflow_runs: runs } = (await r.json()) as { workflow_runs?: RunGithub[] };
+    return estimer(runs ?? [], depuis);
+  } catch {
+    return null;
+  }
+}
