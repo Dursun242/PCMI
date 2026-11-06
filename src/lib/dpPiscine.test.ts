@@ -12,6 +12,7 @@ import {
   decaler,
   distanceLimites,
   ecart,
+  causePanne,
   dateNaissanceValide,
   ficheWorkflow,
   formesBassin,
@@ -281,5 +282,17 @@ describe("étapes en direct", () => {
 
   test("margelles : TN moyen aux 5 cm, + 5 cm", () => {
     expect(arasePrevue([85.21, 85.28, 85.3])).toBe(85.3); // moyenne 85,263 -> 85,25 + 0,05
+  });
+});
+
+describe("dossier resté en cours (dessin interrompu)", () => {
+  const cree = Date.parse("2026-11-06T20:00:00Z");
+  test("passage GitHub en échec : panne déclarée après 90 s de grâce", () => {
+    expect(causePanne(cree, { echoue: true }, cree + 60_000)).toBeNull();
+    expect(causePanne(cree, { echoue: true }, cree + 120_000)).toMatch(/GitHub/);
+  });
+  test("aucune réponse après 30 min : panne ; avant, on attend", () => {
+    expect(causePanne(cree, null, cree + 29 * 60_000)).toBeNull();
+    expect(causePanne(cree, { echoue: false }, cree + 31 * 60_000)).toMatch(/30 minutes/);
   });
 });
