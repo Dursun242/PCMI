@@ -12,6 +12,7 @@ import {
   decaler,
   distanceLimites,
   ecart,
+  dateNaissanceValide,
   ficheWorkflow,
   formesBassin,
   orientationCote,
@@ -45,6 +46,10 @@ const demande = (p: Partial<Record<string, unknown>> = {}) => ({
   nom: "Durand",
   email: "jean@example.fr",
   telephone: "06 12 34 56 78",
+  naissance: "1980-05-12",
+  communeNaissance: "Le Havre",
+  deptNaissance: "76",
+  paysNaissance: "France",
   consentement: true,
   bassin,
   ...p,
@@ -167,6 +172,21 @@ describe("validation de la demande", () => {
     expect("erreurs" in v && Object.keys(v.erreurs).sort()).toEqual(["bassin", "consentement", "email", "idu"]);
   });
 
+  test("naissance obligatoire (Cerfa 16702, cadre 1) : date réelle, commune, département", () => {
+    const v = validerDemandeDp(demande({ naissance: "", communeNaissance: "", deptNaissance: "" }));
+    expect("erreurs" in v && Object.keys(v.erreurs).sort()).toEqual(["communeNaissance", "deptNaissance", "naissance"]);
+    expect("erreurs" in validerDemandeDp(demande({ naissance: "1980-02-30" }))).toBe(true);
+    expect("erreurs" in validerDemandeDp(demande({ deptNaissance: "99" }))).toBe(true);
+    expect(dateNaissanceValide("2015-01-01", new Date("2026-11-06"))).toBe(false);
+    expect(dateNaissanceValide("1955-12-31", new Date("2026-11-06"))).toBe(true);
+  });
+
+  test("naissance à l'étranger : département 99 par défaut, Corse acceptée", () => {
+    const v = validerDemandeDp(demande({ deptNaissance: "", paysNaissance: "Portugal", communeNaissance: "Porto" }));
+    expect("demande" in v && v.demande.naissance).toEqual({ date: "1980-05-12", commune: "Porto", departement: "99", pays: "Portugal" });
+    expect("demande" in validerDemandeDp(demande({ deptNaissance: "2a" }))).toBe(true);
+  });
+
   test("refus : dimensions hors bornes ou texte suspect", () => {
     expect("erreurs" in validerDemandeDp(demande({ bassin: { ...bassin, profondeur: 5 } }))).toBe(true);
     expect("erreurs" in validerDemandeDp(demande({ prenom: "<script>" }))).toBe(true);
@@ -180,7 +200,8 @@ describe("fiche transmise à l'outil", () => {
     const f = ficheWorkflow(v.demande);
     expect(f.client).toBe("Jean DURAND");
     expect(f.parcelle).toBe("76351000PM0096");
-    expect(f.piscine.local_technique).toEqual({ longueur: 2, largeur: 1.5, hauteur: 2, materiau: "bois" });
+    expect(f.piscine.local_technique).toEqual({ longueur: 2, largeur: 1.5, hauteur: 1.8, materiau: "bois" });
+    expect(f.demandeur.naissance).toEqual({ date: "1980-05-12", commune: "Le Havre", departement: "76", pays: "France" });
     const [dx, dy] = ecart(f.piscine.centre_wgs84, f.piscine.axe_wgs84);
     expect(Math.hypot(dx, dy)).toBeCloseTo(5, 4);
     expect((Math.atan2(dy, dx) * 180) / Math.PI).toBeCloseTo(30, 3);
@@ -192,7 +213,7 @@ describe("fiche transmise à l'outil", () => {
 });
 
 describe("local technique et valeurs par défaut", () => {
-  test("matériau du local transmis à l'outil (DP4), bois si inconnu", () => {
+  test("matériau du local transmis à l'outil (DPC4), bois si inconnu", () => {
     const v = validerDemandeDp(demande({ bassin: { ...bassin, materiauLocal: "enduit" } }));
     if (!("demande" in v)) throw new Error("demande refusée");
     expect(ficheWorkflow(v.demande).piscine.local_technique).toMatchObject({ materiau: "enduit" });

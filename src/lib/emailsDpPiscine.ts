@@ -25,7 +25,7 @@ export function emailClientDemarre(c: ContactDp, e: Pick<EntreeDp, "reference" |
     html: clientWrap(
       `<p>Bonjour ${esc(c.prenom)},</p>
        <p>Nous dessinons votre dossier de déclaration préalable pour la piscine de la parcelle ${esc(e.reference)} (${esc(e.commune)}) :
-       plan de situation, plan de masse coté, plan en coupe et Cerfa 13703 pré-rempli. Comptez 3 minutes.</p>
+       plan de situation, plan de masse coté, plan en coupe et Cerfa 16702 pré-rempli. Comptez 3 minutes.</p>
        ${bouton(suivi, "Suivre mon dossier")}
        <p style="color:#5a645e;font-size:14px">Gardez ce lien : il vous permet de revenir à votre dossier à tout moment.</p>`,
     ),
@@ -63,7 +63,7 @@ export function emailClientPaye(c: ContactDp, suivi: string) {
     subject: "Votre déclaration de piscine : dossier à télécharger",
     html: clientWrap(
       `<p>Bonjour ${esc(c.prenom)},</p>
-       <p>Merci pour votre règlement. Votre dossier complet est disponible : les plans (DP1, DP2, DP3) et le Cerfa 13703 pré-rempli,
+       <p>Merci pour votre règlement. Votre dossier complet est disponible : les plans (DPC1, DPC2, DPC3) et le Cerfa 16702 pré-rempli,
        à vérifier, dater et signer avant le dépôt en mairie.</p>
        ${bouton(suivi, "Télécharger mon dossier")}
        <p>Le dépôt se fait en ligne sur le guichet numérique de votre commune, ou en mairie en deux exemplaires. Délai

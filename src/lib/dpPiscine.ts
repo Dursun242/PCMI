@@ -29,6 +29,8 @@ export const MATERIAUX_LOCAL: Record<MateriauLocal, string> = {
 };
 
 /** Valeurs par défaut (Dursun, 06/11/2026) : margelles de 20 cm, pas de plage. */
+/** Hauteur du local technique : 1,80 m au plus, sans surface de plancher (R.111-22). */
+export const LOCAL_HAUTEUR_M = 1.8;
 export const MARGELLE_DEFAUT_M = 0.2;
 export const PLAGE_DEFAUT_M = 0;
 
@@ -52,7 +54,7 @@ export interface Bassin {
   margelle: number;
   plage: Record<CoteBassin, number>;
   localTechnique: boolean;
-  /** Parement du local technique (DP4) : bois, enduit ou composite. */
+  /** Parement du local technique (DPC4) : bois, enduit ou composite. */
   materiauLocal?: MateriauLocal;
   type: TypeBassin;
   securite: Securite;
@@ -112,12 +114,53 @@ export interface DemandeDp {
   nom: string;
   email: string;
   telephone: string;
+  /** Date (AAAA-MM-JJ), commune, département et pays de naissance : exigés au cadre 1 du Cerfa 16702 (taxe d'aménagement). */
+  naissance: NaissanceDp;
   residence: "principale" | "secondaire";
   bassin: Bassin;
   photos: PhotosDp;
 }
 
-export type ErreursDp = Partial<Record<"idu" | "voie" | "ville" | "prenom" | "nom" | "email" | "telephone" | "bassin" | "photos" | "consentement", string>>;
+export interface NaissanceDp {
+  date: string;
+  commune: string;
+  departement: string;
+  pays: string;
+}
+
+export type ErreursDp = Partial<
+  Record<"idu" | "voie" | "ville" | "prenom" | "nom" | "email" | "telephone" | "naissance" | "communeNaissance" | "deptNaissance" | "paysNaissance" | "bassin" | "photos" | "consentement", string>
+>;
+
+const AGE_MIN_DECLARANT = 16;
+
+/** Date de naissance AAAA-MM-JJ réelle, entre 1900 et il y a 16 ans. */
+export function dateNaissanceValide(v: string, aujourdhui = new Date()): boolean {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
+  if (!m) return false;
+  const [a, mo, j] = [Number(m[1]), Number(m[2]), Number(m[3])];
+  const d = new Date(Date.UTC(a, mo - 1, j));
+  if (d.getUTCFullYear() !== a || d.getUTCMonth() !== mo - 1 || d.getUTCDate() !== j || a < 1900) return false;
+  const limite = Date.UTC(aujourdhui.getUTCFullYear() - AGE_MIN_DECLARANT, aujourdhui.getUTCMonth(), aujourdhui.getUTCDate());
+  return d.getTime() <= limite;
+}
+
+/** Département de naissance : 01 à 95, 2A, 2B, 971 à 976 ; « 99 » pour une naissance à l'étranger (usage de l'Insee). */
+export const DEPT_NAISSANCE = /^(0[1-9]|[1-8]\d|9[0-5]|2A|2B|97[1-6]|99)$/;
+
+function validerNaissance(corps: Record<string, unknown>, e: ErreursDp): NaissanceDp {
+  const date = typeof corps.naissance === "string" ? corps.naissance.trim() : "";
+  if (!dateNaissanceValide(date)) e.naissance = "Votre date de naissance (obligatoire sur le Cerfa).";
+  const commune = texte(corps.communeNaissance, 80) ?? "";
+  if (!commune) e.communeNaissance = "Votre commune de naissance (obligatoire sur le Cerfa).";
+  const pays = texte(corps.paysNaissance, 60) ?? "France";
+  const enFrance = /^france$/i.test(pays);
+  const brut = typeof corps.deptNaissance === "string" ? corps.deptNaissance.trim().toUpperCase() : "";
+  const departement = brut || (enFrance ? "" : "99");
+  if (!DEPT_NAISSANCE.test(departement) || (enFrance && departement === "99"))
+    e.deptNaissance = enFrance ? "Le numéro du département de naissance (76, 2A, 971…)." : "Département : 99 pour une naissance à l'étranger.";
+  return { date, commune, departement, pays };
+}
 
 export const BORNES = {
   longueur: [2, 25],
@@ -286,7 +329,7 @@ export interface Cote {
 
 /**
  * Cotes du plan de masse : les plus courtes distances du bassin aux limites extérieures, une par direction (deux
- * directions à plus de 35° l'une de l'autre), comme le DP2 officiel (generateur/piscine.distances_limites).
+ * directions à plus de 35° l'une de l'autre), comme le DPC2 officiel (generateur/piscine.distances_limites).
  */
 export function cotesLimites(bassin: [number, number][], anneaux: [number, number][][], n = 2): Cote[] {
   if (bassin.length < 3 || !anneaux.some((r) => r.length >= 3)) return [];
@@ -483,6 +526,7 @@ export function validerDemandeDp(corps: Record<string, unknown>): { demande: Dem
   // « +33 6 79… » ramené à « 06 79… » (format du Cerfa et de l'outil)
   const telephone = typeof corps.telephone === "string" ? corps.telephone.replace(/[^\d+]/g, "").replace(/^\+33(?=\d{9}$)/, "0").replace(/^0033(?=\d{9}$)/, "0") : "";
   if (telephone && !/^\+?\d{9,15}$/.test(telephone)) e.telephone = "Numéro de téléphone invalide.";
+  const naissance = validerNaissance(corps, e);
   const bassin = validerBassin(corps.bassin);
   if (!bassin) e.bassin = "Dimensions ou position du bassin invalides.";
   else if (regimeIndicatif(bassin) !== "dp") e.bassin = "Ce bassin ne relève pas d'une déclaration préalable.";
@@ -503,6 +547,7 @@ export function validerDemandeDp(corps: Record<string, unknown>): { demande: Dem
       nom: (nom as string).toUpperCase(),
       email,
       telephone,
+      naissance,
       residence: corps.residence === "secondaire" ? "secondaire" : "principale",
       bassin: bassin as Bassin,
       photos: photos ?? {},
@@ -520,7 +565,7 @@ export function ficheWorkflow(d: DemandeDp) {
     ville: d.ville,
     parcelle: d.idus.length > 1 ? d.idus : d.idu,
     residence: d.residence,
-    demandeur: { nom: d.nom, prenom: d.prenom, email: d.email, ...(d.telephone ? { telephone: d.telephone } : {}) },
+    demandeur: { nom: d.nom, prenom: d.prenom, email: d.email, ...(d.telephone ? { telephone: d.telephone } : {}), naissance: d.naissance },
     piscine: {
       longueur: b.longueur,
       largeur: b.largeur,
@@ -530,7 +575,7 @@ export function ficheWorkflow(d: DemandeDp) {
       type: b.type,
       securite: b.securite,
       visible_rue: b.visibleRue,
-      local_technique: b.localTechnique ? { longueur: 2, largeur: 1.5, hauteur: 2, materiau: b.materiauLocal ?? "bois" } : null,
+      local_technique: b.localTechnique ? { longueur: 2, largeur: 1.5, hauteur: LOCAL_HAUTEUR_M, materiau: b.materiauLocal ?? "bois" } : null,
       centre_wgs84: b.centre,
       // point à 5 m dans l'axe du grand côté : le générateur en tire l'angle exact en Lambert 93
       axe_wgs84: decaler(b.centre, 5 * Math.cos(a), 5 * Math.sin(a)),

@@ -138,11 +138,11 @@ export default function ReglagesBassin({ bassin: b, onChange, depasse, distance 
       </div>
       <label className="flex cursor-pointer items-center gap-3 text-[0.95rem]">
         <input type="checkbox" className="accent-ink h-4 w-4" checked={b.localTechnique} onChange={(e) => maj({ localTechnique: e.target.checked })} />
-        Local technique (2,00 x 1,50 m, hauteur 2,00 m, au bout du bassin)
+        Local technique (2,00 x 1,50 m, hauteur 1,80 m, au bout du bassin)
       </label>
       {b.localTechnique && (
         <div className="field">
-          <label htmlFor="dp-local-mat">Aspect du local technique (plan des façades DP4)</label>
+          <label htmlFor="dp-local-mat">Aspect du local technique (plan des façades DPC4)</label>
           <select id="dp-local-mat" className="min-h-12 border border-stone-2 bg-paper px-3" value={b.materiauLocal ?? "bois"} onChange={(e) => maj({ materiauLocal: e.target.value as MateriauLocal })}>
             {Object.entries(MATERIAUX_LOCAL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
           </select>

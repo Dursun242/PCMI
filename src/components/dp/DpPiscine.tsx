@@ -37,9 +37,17 @@ interface Brouillon {
   idus: string[];
   bassin: Bassin;
   photos?: Photos;
-  contact: { prenom: string; nom: string; email: string; telephone: string };
+  contact: { prenom: string; nom: string; email: string; telephone: string } & Partial<Naissance>;
   residence: "principale" | "secondaire";
 }
+
+interface Naissance {
+  naissance: string;
+  communeNaissance: string;
+  deptNaissance: string;
+  paysNaissance: string;
+}
+const NAISSANCE_VIDE: Naissance = { naissance: "", communeNaissance: "", deptNaissance: "", paysNaissance: "France" };
 
 function lireBrouillon(): Brouillon | null {
   try {
@@ -99,7 +107,7 @@ export default function DpPiscine() {
   };
   const allerA = (id: string) => requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" }));
   const [photos, setPhotos] = useState<Photos>({});
-  const [contact, setContact] = useState({ prenom: "", nom: "", email: "", telephone: "", site_web: "" });
+  const [contact, setContact] = useState({ prenom: "", nom: "", email: "", telephone: "", ...NAISSANCE_VIDE, site_web: "" });
   const [residence, setResidence] = useState<"principale" | "secondaire">("principale");
   const [consentement, setConsentement] = useState(false);
   const [erreurs, setErreurs] = useState<ErreursDp>({});
@@ -218,8 +226,9 @@ export default function DpPiscine() {
     setErreurs({});
     setErreurEnvoi(null);
     try {
-      const { prenom, nom, email, telephone } = contact;
-      localStorage.setItem(BROUILLON, JSON.stringify({ q, idus: parcelles.map((p) => p.idu), bassin, photos, contact: { prenom, nom, email, telephone }, residence } satisfies Brouillon));
+      const { prenom, nom, email, telephone, naissance, communeNaissance, deptNaissance, paysNaissance } = contact;
+      const garde = { prenom, nom, email, telephone, naissance, communeNaissance, deptNaissance, paysNaissance };
+      localStorage.setItem(BROUILLON, JSON.stringify({ q, idus: parcelles.map((p) => p.idu), bassin, photos, contact: garde, residence } satisfies Brouillon));
     } catch {
       /* navigation privée : pas de brouillon, le client ressaisira */
     }
@@ -377,6 +386,27 @@ export default function DpPiscine() {
                 {erreurs[k] && <p className="text-sm text-alert">{erreurs[k]}</p>}
               </div>
             ))}
+            <div className="field">
+              <label htmlFor="dp-naissance">Date de naissance</label>
+              <input id="dp-naissance" type="date" className="min-h-12" autoComplete="bday" max={new Date().toISOString().slice(0, 10)} value={contact.naissance} onChange={(e) => setContact({ ...contact, naissance: e.target.value })} aria-invalid={Boolean(erreurs.naissance)} />
+              {erreurs.naissance && <p className="text-sm text-alert">{erreurs.naissance}</p>}
+            </div>
+            <div className="field">
+              <label htmlFor="dp-communeNaissance">Commune de naissance</label>
+              <input id="dp-communeNaissance" type="text" className="min-h-12" value={contact.communeNaissance} onChange={(e) => setContact({ ...contact, communeNaissance: e.target.value })} aria-invalid={Boolean(erreurs.communeNaissance)} />
+              {erreurs.communeNaissance && <p className="text-sm text-alert">{erreurs.communeNaissance}</p>}
+            </div>
+            <div className="field">
+              <label htmlFor="dp-deptNaissance">Département de naissance</label>
+              <input id="dp-deptNaissance" type="text" inputMode="numeric" maxLength={3} className="min-h-12" placeholder="76" value={contact.deptNaissance} onChange={(e) => setContact({ ...contact, deptNaissance: e.target.value })} aria-invalid={Boolean(erreurs.deptNaissance)} />
+              {erreurs.deptNaissance ? <p className="text-sm text-alert">{erreurs.deptNaissance}</p> : <p className="hint">Né(e) à l&apos;étranger : 99.</p>}
+            </div>
+            <div className="field">
+              <label htmlFor="dp-paysNaissance">Pays de naissance</label>
+              <input id="dp-paysNaissance" type="text" className="min-h-12" autoComplete="country-name" value={contact.paysNaissance} onChange={(e) => setContact({ ...contact, paysNaissance: e.target.value })} aria-invalid={Boolean(erreurs.paysNaissance)} />
+              {erreurs.paysNaissance && <p className="text-sm text-alert">{erreurs.paysNaissance}</p>}
+            </div>
+            <p className="hint sm:col-span-2">La date et le lieu de naissance sont obligatoires sur le Cerfa : sans eux, la mairie déclare le dossier incomplet.</p>
             <input type="text" name="site_web" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" value={contact.site_web} onChange={(e) => setContact({ ...contact, site_web: e.target.value })} />
           </div>
           <fieldset className="flex flex-wrap gap-6 text-[0.95rem]">
