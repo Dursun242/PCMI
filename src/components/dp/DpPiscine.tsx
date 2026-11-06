@@ -367,7 +367,7 @@ export default function DpPiscine() {
       {bassin?.visibleRue && (
         <Etape n={4} titre="Photos et photomontage" actif={valide >= 2}>
           <div id="dp-etape-4" className="grid scroll-mt-24 gap-5">
-            <PhotosDp photos={photos} onChange={(p) => { setPhotos(p); if (valide >= 3) setValide(2); }} bassin={bassin} />
+            <PhotosDp photos={photos} onChange={(p) => { setPhotos(p); if (valide >= 3) setValide(2); }} bassin={bassin} contours={anneaux} />
             <div>
               <button type="button" className="btn btn-ink" disabled={!photosCompletes(photos) || valide >= 3} onClick={() => { setValide(3); trackEvent("dp_piscine_etape", { etape: "photomontage" }); allerA("dp-etape-5"); }}>
                 {valide >= 3 ? "Photomontage validé ✓" : "Je valide le photomontage"}

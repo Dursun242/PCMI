@@ -136,6 +136,16 @@ describe("photos (piscine visible de la rue)", () => {
   const u = "https://abc123.public.blob.vercel-storage.com/dp-piscine-photos/1-proche.jpeg";
   const photos = { proche: u, lointaine: u.replace("proche", "lointaine"), coins: [[10, 900], [1100, 880], [950, 560], [200, 570]], repere: [1600, 1200] };
 
+  test("points de vue des photos transmis à l'outil, refusés à plus de 500 m du bassin", () => {
+    const vues = { proche: [bassin.centre[0] + 0.0003, bassin.centre[1]] as [number, number] };
+    const v = validerDemandeDp(demande({ bassin: { ...bassin, visibleRue: true }, photos: { ...photos, vues } }));
+    if (!("demande" in v)) throw new Error("demande refusée");
+    const f = ficheWorkflow(v.demande) as ReturnType<typeof ficheWorkflow> & { photos?: { points_de_vue_wgs84?: unknown } };
+    expect(f.photos?.points_de_vue_wgs84).toEqual(vues);
+    const loin = { proche: [bassin.centre[0] + 0.02, bassin.centre[1]] as [number, number] };
+    expect("erreurs" in validerDemandeDp(demande({ bassin: { ...bassin, visibleRue: true }, photos: { ...photos, vues: loin } }))).toBe(true);
+  });
+
   test("visible de la rue sans photos : refusé ; avec photos et 4 coins : accepté et transmis", () => {
     const sans = validerDemandeDp(demande({ bassin: { ...bassin, visibleRue: true } }));
     expect("erreurs" in sans && sans.erreurs.photos).toBeTruthy();

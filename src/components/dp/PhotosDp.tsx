@@ -1,13 +1,18 @@
 "use client";
 
 import { envoyerFichier } from "@/lib/envoiFichier";
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { matrice3d, type Bassin, type PhotosDp as Photos } from "@/lib/dpPiscine";
+
+const CartePointsDeVue = dynamic(() => import("@/components/dp/CartePointsDeVue"), { ssr: false });
 
 interface Props {
   photos: Photos;
   onChange: (p: Photos) => void;
   bassin: Bassin;
+  /** Contours du terrain, en [longitude, latitude] (carte des points de vue). */
+  contours: [number, number][][];
 }
 
 const TEX_L = 1000;
@@ -18,7 +23,7 @@ const COINS = ["le coin proche à gauche", "le coin proche à droite", "le coin 
  * Photos exigées quand la piscine se voit de la rue : DPC7 (environnement proche), DPC8 (paysage lointain), et DPC6
  * (insertion) : sur la photo proche, le client touche les 4 coins du futur bassin, l'outil y pose la piscine.
  */
-export default function PhotosDp({ photos, onChange, bassin }: Props) {
+export default function PhotosDp({ photos, onChange, bassin, contours }: Props) {
   const [envoi, setEnvoi] = useState<"proche" | "lointaine" | null>(null);
   const [erreur, setErreur] = useState<string | null>(null);
   const [apercu, setApercu] = useState<Record<string, string>>({});
@@ -127,6 +132,15 @@ export default function PhotosDp({ photos, onChange, bassin }: Props) {
             <div><button type="button" className="btn btn-line" onClick={() => onChange({ ...photos, coins: [] })}>Recommencer les coins</button></div>
           )}
         </div>
+      )}
+      {(photos.proche || photos.lointaine) && (
+        <CartePointsDeVue
+          contours={contours}
+          bassin={bassin}
+          vues={photos.vues ?? {}}
+          photos={{ proche: Boolean(photos.proche), lointaine: Boolean(photos.lointaine) }}
+          onChange={(vues) => onChange({ ...photos, vues })}
+        />
       )}
     </div>
   );
