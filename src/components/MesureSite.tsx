@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { cibleLien, domaine, libelleTemps, niveauxNouveaux, pourcentLu, resumer } from "@/lib/mesure";
 import { visiteAds } from "@/lib/suiviClient";
+import { sansMesureTierce } from "@/lib/mesureTierce";
 
 /** Démontage plus rapide que ça : double montage de React en développement, pas une page vue. */
 const DEMONTAGE_MIN_MS = 300;
@@ -48,7 +49,7 @@ export default function MesureSite() {
   const page = usePathname();
 
   useEffect(() => {
-    if (page.startsWith("/admin")) return;
+    if (sansMesureTierce(page)) return;
     // Retient pour la session une arrivée par annonce Google (gclid), relue par les compteurs Express et Commandes.
     visiteAds();
     const debut = performance.now();

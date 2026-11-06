@@ -3,7 +3,6 @@ import "./globals.css";
 import { cormorant, cormorantTampon, lato } from "./fonts";
 import { plans, site } from "@/config/site";
 import { formatEuro } from "@/lib/format";
-import { Analytics } from "@vercel/analytics/next";
 import UmamiScript from "@/components/UmamiScript";
 import MesureSite from "@/components/MesureSite";
 import GoogleAds from "@/components/GoogleAds";
@@ -20,6 +19,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 import JsonLd from "@/components/JsonLd";
 import { withSeo } from "@/lib/seo";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
+import AnalyticsVercel from "@/components/AnalyticsVercel";
 
 const home = withSeo("/", {
   title: "Permis de construire en ligne pour votre maison, à prix fixe",
@@ -97,7 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SuiteExpress />
         <ScrollReveal />
         {/* Mesure d'audience sans cookie ni identifiant individuel (Vercel Web Analytics). */}
-        <Analytics />
+        <AnalyticsVercel />
         <UmamiScript />
         {/* Parcours page par page (lecture, temps, clics, FAQ, vidéos, formulaires), envoyé à Umami. */}
         <MesureSite />
