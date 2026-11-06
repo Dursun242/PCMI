@@ -51,7 +51,10 @@ export interface Bassin {
 }
 
 export interface DemandeDp {
+  /** Première parcelle du terrain (référence du dossier). */
   idu: string;
+  /** Toutes les parcelles du terrain (1 à 6), la première en tête. */
+  idus: string[];
   voie: string;
   ville: string;
   commune: string;
@@ -177,23 +180,49 @@ function pointSegment(p: [number, number], a: [number, number], b: [number, numb
   return [Math.hypot(p[0] - q[0], p[1] - q[1]), q];
 }
 
+type Segment = [[number, number], [number, number]];
+
+/** Anneau fermé (le dernier point répète le premier) : ses côtés. */
+function cotesAnneau(r: [number, number][]): Segment[] {
+  const pts = r.length > 1 && r[0][0] === r.at(-1)?.[0] && r[0][1] === r.at(-1)?.[1] ? r.slice(0, -1) : r;
+  return pts.map((p, i) => [p, pts[(i + 1) % pts.length]] as Segment);
+}
+
 /**
- * Plus courte distance (m) du bassin aux limites du terrain, et ses deux extrémités [lon, lat] : affichée en direct au
- * client et tracée sur la carte (même calcul que le contrôle du générateur, à quelques centimètres près).
+ * Limites extérieures d'un terrain de plusieurs parcelles, en mètres autour de o : un côté commun à deux parcelles du
+ * terrain (son milieu à moins de 0,5 m d'une autre parcelle) n'est pas une limite séparative.
  */
-export function distanceLimites(bassin: [number, number][], contour: [number, number][]): { d: number; de: [number, number]; a: [number, number] } | null {
-  if (bassin.length < 3 || contour.length < 3) return null;
-  const o = bassin[0];
+function limitesExterieures(anneaux: [number, number][][], o: [number, number]): Segment[] {
   const m = (p: [number, number]) => ecart(o, p);
+  const cotes = anneaux.map((r) => cotesAnneau(r).map(([a, b]) => [m(a), m(b)] as Segment));
+  return cotes.flatMap((liste, i) =>
+    liste.filter(([a, b]) => {
+      const mil: [number, number] = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+      return !cotes.some((autre, j) => j !== i && autre.some(([c, d]) => pointSegment(mil, c, d)[0] < 0.5));
+    }),
+  );
+}
+
+/** Le point est-il sur le terrain (dans l'une de ses parcelles) ? */
+export const dansTerrain = (pt: [number, number], anneaux: [number, number][][]): boolean => anneaux.some((r) => dansPolygone(pt, r));
+
+/**
+ * Plus courte distance (m) du bassin aux limites extérieures du terrain (une ou plusieurs parcelles), et ses deux
+ * extrémités [lon, lat] : affichée en direct au client et tracée sur la carte (même calcul que le contrôle du
+ * générateur, à quelques centimètres près).
+ */
+export function distanceLimites(bassin: [number, number][], anneaux: [number, number][][]): { d: number; de: [number, number]; a: [number, number] } | null {
+  if (bassin.length < 3 || !anneaux.some((r) => r.length >= 3)) return null;
+  const o = bassin[0];
   const lonlat = ([x, y]: [number, number]) => decaler(o, x, y);
-  const B = bassin.map(m);
-  const C = contour.map(m);
+  const B = bassin.map((p) => ecart(o, p));
+  const lim = limitesExterieures(anneaux.filter((r) => r.length >= 3), o);
   let best: { d: number; de: [number, number]; a: [number, number] } | null = null;
   const essayer = (d: number, de: [number, number], a: [number, number]) => {
     if (!best || d < best.d) best = { d, de, a };
   };
-  for (let i = 0; i + 1 < C.length; i++) for (const p of B) { const [d, q] = pointSegment(p, C[i], C[i + 1]); essayer(d, p, q); }
-  for (let i = 0; i < B.length; i++) for (const p of C) { const [d, q] = pointSegment(p, B[i], B[(i + 1) % B.length]); essayer(d, q, p); }
+  for (const [c, d] of lim) for (const p of B) { const [x, q] = pointSegment(p, c, d); essayer(x, p, q); }
+  for (let i = 0; i < B.length; i++) for (const [c] of lim) { const [x, q] = pointSegment(c, B[i], B[(i + 1) % B.length]); essayer(x, q, c); }
   const r = best as { d: number; de: [number, number]; a: [number, number] } | null;
   return r ? { d: Math.round(r.d * 100) / 100, de: lonlat(r.de), a: lonlat(r.a) } : null;
 }
@@ -252,8 +281,10 @@ function validerBassin(v: unknown): Bassin | null {
 
 export function validerDemandeDp(corps: Record<string, unknown>): { demande: DemandeDp } | { erreurs: ErreursDp } {
   const e: ErreursDp = {};
-  const idu = typeof corps.idu === "string" ? corps.idu.toUpperCase() : "";
-  if (!estIdu(idu)) e.idu = "Choisissez votre parcelle sur la carte.";
+  const brutes = Array.isArray(corps.idus) ? corps.idus : [corps.idu];
+  const idus = [...new Set(brutes.filter((x): x is string => typeof x === "string").map((x) => x.toUpperCase()))];
+  const idu = idus[0] ?? "";
+  if (!idus.length || idus.length > 6 || !idus.every(estIdu)) e.idu = "Choisissez la ou les parcelles de votre terrain sur la carte (6 au plus).";
   const voie = texte(corps.voie, 120);
   const ville = texte(corps.ville, 80);
   if (!voie) e.voie = "Adresse du terrain manquante.";
@@ -274,6 +305,7 @@ export function validerDemandeDp(corps: Record<string, unknown>): { demande: Dem
   return {
     demande: {
       idu,
+      idus,
       voie: voie as string,
       ville: ville as string,
       commune: texte(corps.commune, 80) ?? (ville as string),
@@ -295,7 +327,7 @@ export function ficheWorkflow(d: DemandeDp) {
     client: `${d.prenom} ${d.nom}`,
     adresse: d.voie,
     ville: d.ville,
-    parcelle: d.idu,
+    parcelle: d.idus.length > 1 ? d.idus : d.idu,
     residence: d.residence,
     demandeur: { nom: d.nom, prenom: d.prenom, email: d.email, ...(d.telephone ? { telephone: d.telephone } : {}) },
     piscine: {

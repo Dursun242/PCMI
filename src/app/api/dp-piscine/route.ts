@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     maj: maintenant,
     statut: "en_cours",
     commune: d.commune,
-    reference: referenceCourte(d.idu),
+    reference: d.idus.map(referenceCourte).join(", "),
     contact: chiffrer(JSON.stringify(contact), secret),
   };
   try {
