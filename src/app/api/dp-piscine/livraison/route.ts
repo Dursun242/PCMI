@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { envoyer, lireContact, secretDp, suiviDuClient } from "@/lib/dpPiscineServeur";
-import { lireDp, majDp, rangerFichier, type ResumeDp, type StatutDp } from "@/lib/dpPiscineStore";
+import { ecrireFacette, lireDp, majDp, rangerFichier, type ResumeDp, type StatutDp } from "@/lib/dpPiscineStore";
 import { emailClientPret, emailClientVerification, emailInterne } from "@/lib/emailsDpPiscine";
 import { sendInternal, sendToClient } from "@/lib/mailer";
 import { verifierRappel } from "@/lib/plancheSecret";
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
   if (part === "erreur" || part === "resultat") {
     const r = (await req.json().catch(() => ({}))) as ResultatOutil & { erreur?: string };
     if (part === "erreur") {
-      const maj = await majDp(id, secret, { statut: "echec", erreur: String(r.erreur ?? "erreur inconnue").slice(0, 500) });
+      const maj = await majDp(id, secret, "erreur", { statut: "echec", erreur: String(r.erreur ?? "erreur inconnue").slice(0, 500) });
       if (c && maj) await envoyer("alerte d'échec", () => sendInternal({ ...emailInterne("ÉCHEC de l'outil", c, maj, suiviAdmin, String(r.erreur ?? "")), replyTo: c.email }));
       return NextResponse.json({ ok: true });
     }
@@ -68,7 +68,7 @@ export async function POST(req: Request) {
       distances: (r.implantation?.distances ?? []).map(Number).slice(0, 4),
       arase: typeof r.implantation?.arase_ngf === "number" ? r.implantation.arase_ngf : null,
     };
-    const maj = await majDp(id, secret, { statut, resume, apercus, guide: String(r.guide ?? "").slice(0, 8000) });
+    const maj = await majDp(id, secret, "resultat", { statut, resume, apercus, guide: String(r.guide ?? "").slice(0, 8000) });
     if (c && maj) {
       const suivi = suiviDuClient(maj, secret);
       if (statut === "pret" || statut === "a_verifier") {
@@ -90,8 +90,7 @@ export async function POST(req: Request) {
     }
     const nom = part === "dossier" ? "DP_piscine_plans.pdf" : "DP_piscine_Cerfa13703.pdf";
     const url = await rangerFichier(id, secret, nom, pdf, "application/pdf");
-    const courant = await lireDp(id, secret);
-    await majDp(id, secret, { fichiers: { ...(courant?.fichiers ?? {}), [part]: url } });
+    await ecrireFacette(id, secret, part === "dossier" ? "fichier-dossier" : "fichier-cerfa", { fichiers: { [part]: url } });
     return NextResponse.json({ ok: true });
   }
   return NextResponse.json({ ok: false, error: "part inconnue" }, { status: 400 });

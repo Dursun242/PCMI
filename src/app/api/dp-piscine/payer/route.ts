@@ -38,7 +38,7 @@ export async function POST(req: Request) {
       prixHt: prixHt(PRIX_DP_PISCINE_TTC, TVA_DP_PISCINE),
       tva: String(TVA_DP_PISCINE),
     });
-    await majDp(e.id, secret, { paiement: { lienId: lien.id, url: lien.url, cree: Date.now() } });
+    await majDp(e.id, secret, "paiement", { paiement: { lienId: lien.id, url: lien.url, cree: Date.now() } });
     return NextResponse.json({ ok: true, url: lien.url });
   } catch (err) {
     console.error("[dp-piscine] lien de paiement impossible", err);

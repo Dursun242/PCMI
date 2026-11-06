@@ -60,7 +60,7 @@ export const payable = (e: EntreeDp) =>
 
 /** Paiement reçu : le dossier est débloqué, le client et ID Maîtrise prévenus. */
 export async function marquerPaye(e: EntreeDp, secret: string, mode: "qonto" | "test"): Promise<EntreeDp> {
-  const maj = (await majDp(e.id, secret, { paye: { le: Date.now(), mode } })) ?? e;
+  const maj = (await majDp(e.id, secret, "paye", { paye: { le: Date.now(), mode } })) ?? e;
   const c = lireContact(maj, secret);
   if (c) {
     const suivi = suiviDuClient(maj, secret);
