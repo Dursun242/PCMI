@@ -33,6 +33,9 @@ export async function POST(req: Request) {
   }
   // Les demandes ne passent pas par ici : elles sont comptées à l'envoi réel.
   if (!estTypeSuivi(body.type) || body.type.startsWith("demande")) return vide;
+  // vues, bilans, suites et tranches de temps : comptés par Umami seulement (quota Vercel Blob, 06/11/2026) ;
+  // ignorés ici aussi, pour les onglets restés ouverts avec l'ancienne version de la page
+  if (!["formulaire", "appel", "whatsapp"].includes(body.type)) return vide;
   const source = body.ads === true ? "ads" : "direct";
 
   if (body.type === "bilan") {
