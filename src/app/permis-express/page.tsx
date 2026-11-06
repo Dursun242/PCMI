@@ -6,7 +6,7 @@ import ExpressForm from "@/components/ExpressForm";
 import ExpressPiecesDossier from "@/components/ExpressPiecesDossier";
 import BandeauDefilant from "@/components/BandeauDefilant";
 import ExpressBarre from "@/components/ExpressBarre";
-import ExpressConfiance, { AVIS_GOOGLE, NOTE_GOOGLE } from "@/components/ExpressConfiance";
+import ExpressConfiance, { AVIS_GOOGLE, ExpressPanneaux, NOTE_GOOGLE } from "@/components/ExpressConfiance";
 import ExpressVue from "@/components/ExpressVue";
 import TelLink from "@/components/TelLink";
 import WhatsAppLink from "@/components/WhatsAppLink";
@@ -86,7 +86,7 @@ export default function PermisExpressPage() {
 
   return (
     <>
-      {/* Hero et formulaire côte à côte sur grand écran : l'action est visible sans défiler. */}
+      {/* Haut de page : l’offre et ses boutons, puis tout de suite les panneaux (à côté sur grand écran) et les réalisations. */}
       <section className="bg-forest text-paper">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 pt-8 pb-12 sm:py-20 grid gap-12 lg:grid-cols-[1.05fr_1fr] lg:items-start">
           <div data-zone="hero" className="min-w-0">
@@ -136,41 +136,53 @@ export default function PermisExpressPage() {
                 Écrire sur WhatsApp
               </WhatsAppLink>
             </div>
-
-            {/* Réalisations dès le haut de page : sur téléphone avant le formulaire, sur ordinateur à côté. */}
-            <div data-section="maisons" className="mt-10 sm:mt-12" aria-labelledby="realises">
-              <h2 id="realises" className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">
-                Nos réalisations en Normandie
-              </h2>
-              <p className="mt-2 text-sm leading-relaxed text-paper/80 max-w-[52ch]">
-                Plans, permis et études : notre bureau. Ces maisons ont été construites à partir de nos plans.
-              </p>
-              <BandeauDefilant className="mt-5 -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-3 sm:-mx-8 sm:scroll-px-8 sm:px-8 lg:mx-0 lg:scroll-px-0 lg:px-0">
-                {maisons.map((c, i) => (
-                  <li key={c.photo} className="w-[78%] shrink-0 snap-start sm:w-[45%]">
-                    <figure>
-                      <div className="relative aspect-[4/3] overflow-hidden bg-paper/10">
-                        <Image
-                          src={c.photo}
-                          alt={`${c.titre}, ${c.commune}, construite sur les plans du bureau`}
-                          fill
-                          loading={i < 2 ? "eager" : "lazy"}
-                          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 78vw"
-                          className="object-cover"
-                        />
-                      </div>
-                      <figcaption className="mt-2 text-sm leading-snug">
-                        <strong>{c.titre}</strong>
-                        <span className="block text-paper/70">{c.commune}</span>
-                      </figcaption>
-                    </figure>
-                  </li>
-                ))}
-              </BandeauDefilant>
-              <p className="mt-1 text-xs text-paper/60 [@media(pointer:fine)]:hidden" aria-hidden="true">Faites glisser pour voir les autres maisons →</p>
-            </div>
           </div>
 
+          {/* Juste après la formule : les permis obtenus, la preuve la plus forte (visites souvent de moins de 30 s). */}
+          <ExpressPanneaux />
+        </div>
+
+        <div className="mx-auto max-w-7xl px-5 pb-12 sm:px-8 sm:pb-20">
+          {/* Réalisations sous l’offre et les panneaux, sur toute la largeur. */}
+          <div data-section="maisons" aria-labelledby="realises">
+            <h2 id="realises" className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">
+              Nos réalisations en Normandie
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-paper/80 max-w-[52ch]">
+              Plans, permis et études : notre bureau. Ces maisons ont été construites à partir de nos plans.
+            </p>
+            <BandeauDefilant className="mt-5 -mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-3 sm:-mx-8 sm:scroll-px-8 sm:px-8">
+              {maisons.map((c, i) => (
+                <li key={c.photo} className="w-[78%] shrink-0 snap-start sm:w-[45%] lg:w-[30%]">
+                  <figure>
+                    <div className="relative aspect-[4/3] overflow-hidden bg-paper/10">
+                      <Image
+                        src={c.photo}
+                        alt={`${c.titre}, ${c.commune}, construite sur les plans du bureau`}
+                        fill
+                        loading={i < 2 ? "eager" : "lazy"}
+                        sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 78vw"
+                        className="object-cover"
+                      />
+                    </div>
+                    <figcaption className="mt-2 text-sm leading-snug">
+                      <strong>{c.titre}</strong>
+                      <span className="block text-paper/70">{c.commune}</span>
+                    </figcaption>
+                  </figure>
+                </li>
+              ))}
+            </BandeauDefilant>
+            <p className="mt-1 text-xs text-paper/60 [@media(pointer:fine)]:hidden" aria-hidden="true">Faites glisser pour voir les autres maisons →</p>
+          </div>
+        </div>
+      </section>
+
+      <ExpressConfiance />
+
+      {/* Formulaire après la preuve (panneaux, réalisations, bureau, avis) : les boutons du haut et la barre du bas restent là pour agir tout de suite. */}
+      <section className="bg-forest text-paper">
+        <div className="mx-auto max-w-3xl px-5 py-12 sm:px-8 sm:py-20">
           <div id="devis" data-section="formulaire" className="scroll-mt-24 bg-paper text-ink px-6 py-8 sm:px-9 sm:py-10 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)]">
             <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">Commande en ligne</p>
             <h2 className="display mt-3 text-4xl leading-tight">Votre permis Express, {formatEuro(express.prixTTC)} TTC</h2>
@@ -203,8 +215,6 @@ export default function PermisExpressPage() {
           </div>
         </div>
       </section>
-
-      <ExpressConfiance />
 
       <section data-section="deroule" className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24" aria-labelledby="deroule">
         <span className="rule" aria-hidden="true" />

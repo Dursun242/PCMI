@@ -110,7 +110,7 @@ export default function AnalyseExpress({ a, s }: { a: Analyse; s: AnalyseSuites 
       </ul>
       <Note>
         Part des {a.visites} visites détaillées qui ont fait défiler la page jusqu&apos;à chaque partie, dans
-        l&apos;ordre du téléphone. Sur ordinateur, photos et formulaire sont côte à côte, vus ensemble.
+        l&apos;ordre de la page. « Panneaux de chantier » est mesuré depuis le 6 novembre 2026 : avant, ils étaient comptés avec le bureau.
       </Note>
 
       <h2 className={titre}>Questions ouvertes</h2>
