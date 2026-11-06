@@ -21,6 +21,9 @@ export const SCOPES_QONTO = [
   "sepa_direct_debit.write",
   // PDF des devis, joints aux e-mails de confirmation.
   "attachment.read",
+  // DP piscine en ligne : lien de paiement par carte, puis lecture de son statut (payé ou non).
+  "payment_link.read",
+  "payment_link.write",
 ] as const;
 
 export interface ConfigOAuth {

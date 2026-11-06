@@ -73,19 +73,27 @@ async function statutDepot(depot: string, jeton: string): Promise<number | null>
 
 /** Renvoie false sans jeton (en local) ; lève une erreur lisible si GitHub refuse. */
 export async function declencherPlanche(e: EntreesWorkflow): Promise<boolean> {
+  return declencherWorkflow(WORKFLOW, { ...e });
+}
+
+/**
+ * Lance un workflow d'id-plans (planche gratuite, DP piscine…). Renvoie false
+ * sans jeton (en local) ; lève une erreur lisible si GitHub refuse.
+ */
+export async function declencherWorkflow(fichier: string, inputs: Record<string, string>): Promise<boolean> {
   const jeton = process.env.IDPLANS_GITHUB_TOKEN?.trim();
   if (!jeton) {
-    console.warn("[planche] IDPLANS_GITHUB_TOKEN absent : planche non lancée", e.planche, e.parcelle);
+    console.warn(`[github] IDPLANS_GITHUB_TOKEN absent : ${fichier} non lancé`);
     // En développement, les entrées complètes permettent de lancer l'outil à la main (essai de bout en bout).
-    if (process.env.NODE_ENV !== "production") console.info("[planche] entrées du workflow", JSON.stringify(e));
+    if (process.env.NODE_ENV !== "production") console.info(`[github] entrées de ${fichier}`, JSON.stringify(inputs));
     return false;
   }
   const depot = process.env.IDPLANS_GITHUB_REPO?.trim() || "Dursun242/id-plans";
   const ref = process.env.IDPLANS_GITHUB_REF?.trim() || "main";
-  const r = await fetch(`${API}/repos/${depot}/actions/workflows/${WORKFLOW}/dispatches`, {
+  const r = await fetch(`${API}/repos/${depot}/actions/workflows/${fichier}/dispatches`, {
     method: "POST",
     headers: { ...entetes(jeton), "Content-Type": "application/json" },
-    body: JSON.stringify({ ref, inputs: { ...e } }),
+    body: JSON.stringify({ ref, inputs }),
     signal: AbortSignal.timeout(10_000),
   });
   if (r.status === 204) return true;
