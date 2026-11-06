@@ -65,9 +65,9 @@ export default function ReglagesBassin({ bassin: b, onChange, depasse, distance 
       <div className="field">
         <label htmlFor="dp-angle">Orientation du bassin : {Math.round(((b.angle % 180) + 180) % 180)}°</label>
         <div className="flex items-center gap-3">
-          <button type="button" className="btn btn-line min-h-12 px-4" onClick={() => maj({ angle: b.angle - 5 })} aria-label="Tourner de 5° dans le sens des aiguilles d'une montre">↻</button>
+          <button type="button" className="btn btn-line min-h-12 px-4" onClick={() => maj({ angle: b.angle - 1 })} aria-label="Tourner de 1° dans le sens des aiguilles d'une montre">↻ 1°</button>
           <input id="dp-angle" type="range" min={0} max={179} step={1} className="w-full accent-ink" value={Math.round(((b.angle % 180) + 180) % 180)} onChange={(e) => maj({ angle: Number(e.target.value) })} />
-          <button type="button" className="btn btn-line min-h-12 px-4" onClick={() => maj({ angle: b.angle + 5 })} aria-label="Tourner de 5° dans le sens inverse">↺</button>
+          <button type="button" className="btn btn-line min-h-12 px-4" onClick={() => maj({ angle: b.angle + 1 })} aria-label="Tourner de 1° dans le sens inverse">↺ 1°</button>
         </div>
         <p className="hint">Placez le bassin avec la poignée noire sur la carte, ou touchez la carte à l&apos;endroit voulu.</p>
       </div>
