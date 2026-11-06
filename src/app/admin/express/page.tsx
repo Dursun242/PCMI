@@ -185,6 +185,13 @@ export default async function CompteurExpress() {
         <Cartouche depuis={depuis} />
       </header>
 
+      <p className="mt-6 border border-stone-2 bg-paper p-3 text-sm text-ink-2">
+        Depuis le 6 novembre 2026, les vues, les bilans de visite et la suite du parcours sont comptés dans Umami
+        (événements « express_vue », « express_bilan », « express_suite ») et non plus ici : chaque visite coûtait deux
+        opérations du stockage Vercel Blob (2 000 par mois sur le plan gratuit). Formulaires, appels, WhatsApp et
+        demandes restent comptés ci-dessous.
+      </p>
+
       {tronque && (
         <p className="mt-6 border border-alert/40 bg-paper p-3 text-sm text-alert">
           Plus de 20 000 événements : les plus récents peuvent manquer

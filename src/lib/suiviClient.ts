@@ -80,7 +80,28 @@ export function suivreSuite(genre: GenreSuite, valeur: string | null) {
   envoyer("suite", { suite: { genre, valeur } });
 }
 
+/**
+ * Vues, bilans de visite et suites du parcours : comptés par Umami seulement, plus par Vercel Blob (06/11/2026 :
+ * deux fichiers par visiteur avaient consommé 75 % des 2 000 opérations Blob du mois). Les contacts (formulaire,
+ * appel, WhatsApp) et les demandes restent dans le compteur Express.
+ */
+const VERS_UMAMI = new Set<string>(["vue", "bilan", "suite"]);
+
+function versUmami(type: TypeSuivi, extra: Record<string, unknown>) {
+  const b = extra.bilan as Bilan | undefined;
+  const s = extra.suite as { genre?: string; valeur?: string } | undefined;
+  const donnees: Record<string, string> = { ads: visiteAds() ? "oui" : "non" };
+  if (b) Object.assign(donnees, { temps: String(b.temps), appareil: String(b.appareil), envoye: b.envoye ? "oui" : "non", abandon: b.abandon ?? "" });
+  if (s) Object.assign(donnees, { genre: String(s.genre ?? ""), valeur: String(s.valeur ?? "").slice(0, 60) });
+  try {
+    window.umami?.track(`express_${type}`, donnees);
+  } catch {
+    /* script bloqué : rien */
+  }
+}
+
 function envoyer(type: TypeSuivi, extra: Record<string, unknown> = {}) {
+  if (VERS_UMAMI.has(type)) return versUmami(type, extra);
   try {
     const corps = JSON.stringify({ type, ads: visiteAds(), ...extra });
     // sendBeacon survit à l'ouverture de l'appli Téléphone ou WhatsApp, contrairement à fetch.
