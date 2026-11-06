@@ -5,18 +5,23 @@ import { upload } from "@vercel/blob/client";
  * R2 n'est pas configuré (501), l'ancien envoi vers Vercel Blob (/api/upload).
  */
 export async function envoyerFichier(dossier: "envois" | "dp-piscine-photos", nom: string, f: File): Promise<string> {
+  const viaBlob = async () =>
+    (await upload(`${dossier}/${Date.now()}-${nom}`, f, { access: "public", handleUploadUrl: "/api/upload" })).url;
   const r = await fetch("/api/envoi", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ dossier, nom, type: f.type, taille: f.size }),
   });
-  if (r.status === 501) {
-    const b = await upload(`${dossier}/${Date.now()}-${nom}`, f, { access: "public", handleUploadUrl: "/api/upload" });
-    return b.url;
-  }
+  if (r.status === 501) return viaBlob();
   const json = (await r.json().catch(() => ({}))) as { envoi?: string; url?: string; error?: string };
-  if (!r.ok || !json.envoi || !json.url) throw new Error(json.error ?? `Envoi refusé (${r.status})`);
-  const put = await fetch(json.envoi, { method: "PUT", body: f, headers: { "Content-Type": f.type } });
-  if (!put.ok) throw new Error(`Envoi du fichier impossible (${put.status})`);
-  return json.url;
+  if (r.status === 400 || r.status === 429) throw new Error(json.error ?? `Envoi refusé (${r.status})`);
+  // R2 indisponible (clés refusées, réseau) : le client ne doit pas rester bloqué, envoi par Vercel Blob
+  if (!r.ok || !json.envoi || !json.url) return viaBlob();
+  try {
+    const put = await fetch(json.envoi, { method: "PUT", body: f, headers: { "Content-Type": f.type } });
+    if (put.ok) return json.url;
+  } catch {
+    /* CORS ou réseau : Blob en secours */
+  }
+  return viaBlob();
 }

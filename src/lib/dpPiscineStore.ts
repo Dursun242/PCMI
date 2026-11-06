@@ -169,7 +169,15 @@ export async function rangerFichier(
 ): Promise<string> {
   const dossier = type === "image/jpeg" ? `dp-piscine-apercus/${id}` : `dp-piscine-fichiers/${signe(id, "fichiers", secret)}`;
   const cheminFichier = `${dossier}/${randomBytes(8).toString("hex")}-${nom}`;
-  if (r2Configure()) return r2Ecrire(cheminFichier, contenu, type);
+  if (r2Configure()) {
+    try {
+      return await r2Ecrire(cheminFichier, contenu, type);
+    } catch (err) {
+      // R2 refusé (clés invalides, panne) : le dossier ne doit jamais échouer pour autant, Blob prend le relais
+      console.error("[dp-piscine] R2 indisponible, fichier rangé dans Blob :", err);
+      if (!vercel()) throw err;
+    }
+  }
   if (!vercel()) {
     fichiersEnMemoire().set(cheminFichier, contenu);
     return `/api/dp-piscine/fichier-local?p=${encodeURIComponent(cheminFichier)}`;
