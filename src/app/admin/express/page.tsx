@@ -5,6 +5,7 @@ import { express } from "@/config/site";
 import { analyser } from "@/lib/bilan";
 import { analyserSuites } from "@/lib/suite";
 import { compter, contacts, jourParis, joursAvant, parJour, tauxContact, TRANCHES_TEMPS, type Compteurs } from "@/lib/suivi";
+import { d1Configure } from "@/lib/d1";
 import { lireEvenements, suiviConfigure } from "@/lib/suiviStore";
 
 /** Toujours à jour : les chiffres sont relus à chaque ouverture de la page. */
@@ -185,12 +186,18 @@ export default async function CompteurExpress() {
         <Cartouche depuis={depuis} />
       </header>
 
-      <p className="mt-6 border border-stone-2 bg-paper p-3 text-sm text-ink-2">
-        Depuis le 6 novembre 2026, les vues, les bilans de visite et la suite du parcours sont comptés dans Umami
-        (événements « express_vue », « express_bilan », « express_suite ») et non plus ici : chaque visite coûtait deux
-        opérations du stockage Vercel Blob (2 000 par mois sur le plan gratuit). Formulaires, appels, WhatsApp et
-        demandes restent comptés ci-dessous.
-      </p>
+      {d1Configure() ? (
+        <p className="mt-6 border border-stone-2 bg-paper p-3 text-sm text-ink-2">
+          Visites comptées dans Cloudflare D1. Le 6 novembre 2026, de midi jusqu&apos;au soir, elles n&apos;ont été comptées
+          que dans Umami (quota Vercel Blob) : ces quelques heures manquent ici.
+        </p>
+      ) : (
+        <p className="mt-6 border border-alert/40 bg-paper p-3 text-sm text-alert">
+          Cloudflare D1 n&apos;est pas relié : les vues, les bilans de visite et la suite du parcours ne sont comptés que
+          dans Umami (événements « express_vue », « express_bilan », « express_suite »). Formulaires, appels, WhatsApp et
+          demandes restent comptés ci-dessous.
+        </p>
+      )}
 
       {tronque && (
         <p className="mt-6 border border-alert/40 bg-paper p-3 text-sm text-alert">

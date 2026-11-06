@@ -4,12 +4,16 @@ import { appareilDeLAdmin } from "@/lib/adminAuth";
 import { nettoyerBilan } from "@/lib/bilan";
 import { estTypeSuivi } from "@/lib/suivi";
 import { nettoyerSuite } from "@/lib/suite";
+import { d1Configure } from "@/lib/d1";
 import { enregistrer } from "@/lib/suiviStore";
 
 export const runtime = "nodejs";
 
 /** Une vraie visite ne déclenche que quelques événements ; au-delà, c'est un abus. */
 const MAX_PAR_FENETRE = 30;
+/** Contacts : toujours comptés. Visites (vue, bilan, suite) : seulement avec D1. */
+const TYPES_COMPTES: string[] = ["formulaire", "appel", "whatsapp"];
+const TYPES_VISITE: string[] = ["vue", "bilan", "suite"];
 const ROBOTS = /bot|crawl|spider|slurp|preview|lighthouse|headless|monitor/i;
 
 /**
@@ -33,9 +37,9 @@ export async function POST(req: Request) {
   }
   // Les demandes ne passent pas par ici : elles sont comptées à l'envoi réel.
   if (!estTypeSuivi(body.type) || body.type.startsWith("demande")) return vide;
-  // vues, bilans, suites et tranches de temps : comptés par Umami seulement (quota Vercel Blob, 06/11/2026) ;
-  // ignorés ici aussi, pour les onglets restés ouverts avec l'ancienne version de la page
-  if (!["formulaire", "appel", "whatsapp"].includes(body.type)) return vide;
+  // Vues, bilans et suites : enregistrés seulement dans Cloudflare D1 (le quota de Vercel Blob ne les supporte
+  // pas : 75 % consommés le 06/11/2026). Les anciennes tranches de temps envoyées seules ne servent plus.
+  if (!TYPES_COMPTES.includes(body.type) && !(d1Configure() && TYPES_VISITE.includes(body.type))) return vide;
   const source = body.ads === true ? "ads" : "direct";
 
   if (body.type === "bilan") {
