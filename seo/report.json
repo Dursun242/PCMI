@@ -1,8 +1,85 @@
 {
-  "generatedAt": "2026-11-02T16:34:22.686Z",
+  "generatedAt": "2026-11-06T13:26:42.244Z",
   "mode": "seed",
   "articles": 13,
   "opportunities": [
+    {
+      "query": "plan de masse gratuit en ligne",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 100,
+      "source": "seed",
+      "intent": "commercial"
+    },
+    {
+      "query": "plan cadastral gratuit de mon terrain",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 100,
+      "source": "seed",
+      "intent": "commercial"
+    },
+    {
+      "query": "plan de situation gratuit permis de construire",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 100,
+      "source": "seed",
+      "intent": "commercial"
+    },
+    {
+      "query": "comment faire un plan de masse soi-même",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 90,
+      "source": "seed",
+      "intent": "info"
+    },
+    {
+      "query": "plan de coupe du terrain gratuit",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 90,
+      "source": "seed",
+      "intent": "commercial"
+    },
+    {
+      "query": "obtenir le plan de son terrain gratuitement",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 90,
+      "source": "seed",
+      "intent": "info"
+    },
+    {
+      "query": "plan de masse gratuit Le Havre",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 90,
+      "source": "seed",
+      "intent": "commercial"
+    },
     {
       "query": "marnière permis de construire Seine-Maritime",
       "impressions": 0,
@@ -35,6 +112,17 @@
       "score": 80,
       "source": "seed",
       "intent": "commercial"
+    },
+    {
+      "query": "dessiner un plan de masse pour un permis",
+      "impressions": 0,
+      "clicks": 0,
+      "position": null,
+      "pages": [],
+      "covered": false,
+      "score": 80,
+      "source": "seed",
+      "intent": "info"
     },
     {
       "query": "PLUi Le Havre Seine Métropole zone UB",
