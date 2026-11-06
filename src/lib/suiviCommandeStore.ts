@@ -1,6 +1,7 @@
 import "server-only";
 import { list, put } from "@vercel/blob";
 import { enCache } from "./cacheMemoire";
+import { d1Configure, evtAjouter, evtChemins } from "./d1";
 import { appareilDeLAdmin } from "./adminAuth";
 import { jourParis } from "./suivi";
 import {
@@ -40,6 +41,7 @@ export async function suivreCommande(req: Request, etape: EtapeCommande, detail:
       formule: nettoyerFormule(detail.formule),
       echeances: nettoyerEcheances(detail.echeances),
     };
+    if (d1Configure()) return await evtAjouter(cheminCommande(evenement, crypto.randomUUID()), evenement.instant);
     await put(cheminCommande(evenement, crypto.randomUUID()), "1", {
       access: "public",
       contentType: "text/plain",
@@ -59,6 +61,10 @@ export function lireEvenementsCommande(): Promise<{ evenements: EvenementCommand
 }
 
 async function lireEvenementsCommandeStockage(): Promise<{ evenements: EvenementCommande[]; tronque: boolean }> {
+  if (d1Configure()) {
+    const { chemins, tronque } = await evtChemins(PREFIXE_SUIVI_COMMANDE);
+    return { evenements: chemins.map(lireCheminCommande).filter((e): e is EvenementCommande => e !== null), tronque };
+  }
   const evenements: EvenementCommande[] = [];
   let cursor: string | undefined;
   for (let page = 0; page < PAGES_MAX; page++) {

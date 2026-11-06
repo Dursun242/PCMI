@@ -2,6 +2,7 @@ import "server-only";
 import { createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { put } from "@vercel/blob";
 import { lireJsonPublic } from "@/lib/blobPublic";
+import { d1Configure, docEcrire, docLister } from "@/lib/d1";
 
 /**
  * Registre des DP piscine en ligne (Vercel Blob) : une entrée par dossier.
@@ -10,8 +11,8 @@ import { lireJsonPublic } from "@/lib/blobPublic";
  * que l'empreinte. Les chemins de l'entrée et des fichiers payants portent une
  * signature du serveur : connaître l'identifiant du dossier ne suffit pas à
  * retrouver le PDF sans avoir payé. Coordonnées du client chiffrées
- * (plancheSecret.chiffrer). En local, sans BLOB_READ_WRITE_TOKEN, tout vit en
- * mémoire.
+ * (plancheSecret.chiffrer). Les facettes vont dans Cloudflare D1 (d1.ts) quand il est configuré (06/11/2026, quota
+ * Blob), sinon dans Blob ; les fichiers restent dans Blob. En local, sans BLOB_READ_WRITE_TOKEN, tout vit en mémoire.
  */
 
 export type StatutDp = "en_cours" | "pret" | "a_verifier" | "bloque" | "hors_dp" | "echec";
@@ -100,8 +101,13 @@ const FACETTES: NomFacette[] = ["base", "erreur", "resultat", "fichier-dossier",
  */
 export async function lireDp(id: string, secret: string, frais = false): Promise<EntreeDp | null> {
   if (!/^[0-9a-f-]{36}$/.test(id)) return null;
-  if (!vercel()) return fusionner([...(enMemoire().get(id)?.values() ?? [])]);
   const p = prefixe(id, secret);
+  if (d1Configure()) {
+    // même clé qu'avant dans Blob ; un dossier commencé avant la bascule est relu dans Blob tant qu'il n'a rien dans D1
+    const docs = await docLister<Partial<EntreeDp> & { _le?: number }>(`${p}/`, FACETTES.length);
+    if (docs.length) return fusionner(docs.map((d) => ({ donnees: d.valeur, le: d.valeur._le ?? d.maj })));
+  }
+  if (!vercel()) return fusionner([...(enMemoire().get(id)?.values() ?? [])]);
   // l'ancienne entrée d'un seul fichier (« <prefixe>.json », dossiers d'avant le 06/11/2026) compte comme la base
   const chemins = [`${p}.json`, ...FACETTES.map((n) => `${p}/${n}.json`)];
   const lues = await Promise.all(
@@ -115,6 +121,15 @@ export async function lireDp(id: string, secret: string, frais = false): Promise
 
 /** Écrit une facette du dossier (elle remplace la précédente du même nom, jamais les autres). */
 export async function ecrireFacette(id: string, secret: string, nom: NomFacette, donnees: Partial<EntreeDp>): Promise<void> {
+  if (d1Configure()) {
+    const le = Date.now();
+    // dossier commencé dans Blob : sa base est recopiée dans D1 à la première écriture, pour que D1 suffise ensuite
+    if (nom !== "base" && vercel() && !(await docLister(`${prefixe(id, secret)}/`, 1)).length) {
+      const avant = await lireDp(id, secret, true);
+      if (avant) await docEcrire(`${prefixe(id, secret)}/base.json`, { ...avant, _le: le - 1 }, le - 1);
+    }
+    return docEcrire(`${prefixe(id, secret)}/${nom}.json`, { ...donnees, _le: le }, le);
+  }
   if (!vercel()) {
     const m = enMemoire().get(id) ?? new Map<string, Facette>();
     m.set(nom, { donnees, le: Date.now() + m.size * 1e-3 });

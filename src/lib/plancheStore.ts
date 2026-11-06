@@ -1,6 +1,7 @@
 import "server-only";
 import { list, put } from "@vercel/blob";
 import { lireJsonPublic } from "@/lib/blobPublic";
+import { d1Configure, docEcrire, docLire, docLister } from "@/lib/d1";
 import type { Planche } from "@/lib/planche";
 import { empreinteDemande, empreinteParcelle, memeDemandeur } from "@/lib/plancheSecret";
 
@@ -10,8 +11,9 @@ import { empreinteDemande, empreinteParcelle, memeDemandeur } from "@/lib/planch
  * C'est lui qui garantit « une planche par terrain et par personne » ; les
  * entrées plus anciennes sont nommées par la parcelle seule. Les coordonnées du visiteur y sont
  * chiffrées ; le reste (commune, référence cadastrale, planche, statut) est
- * public par nature. Stockage Vercel Blob (BLOB_READ_WRITE_TOKEN) ; en local,
- * sans jeton, le registre vit en mémoire.
+ * public par nature. Stockage Cloudflare D1 (d1.ts) dès que ses variables sont posées, sinon Vercel Blob
+ * (BLOB_READ_WRITE_TOKEN) ; en local, sans l'un ni l'autre, le registre vit en mémoire. Une demande enregistrée
+ * dans Blob avant la bascule reste lue (lecture directe, sans opération comptée).
  */
 
 export type StatutPlanche = "en_cours" | "livree" | "echec";
@@ -44,12 +46,18 @@ async function lireBlob(url: string, version: Date): Promise<EntreePlanche | nul
 }
 
 export async function lirePlanche(empreinte: string): Promise<EntreePlanche | null> {
+  if (d1Configure()) {
+    const e = await docLire<EntreePlanche>(chemin(empreinte));
+    if (e || !vercel()) return e;
+    return lireJsonPublic<EntreePlanche>(chemin(empreinte), true);
+  }
   if (!vercel()) return enMemoire().get(empreinte) ?? null;
   // lecture directe, sans list() (06/11/2026, quota Blob) ; fraîche : la livraison doit voir la demande enregistrée
   return lireJsonPublic<EntreePlanche>(chemin(empreinte), true);
 }
 
 export async function ecrirePlanche(e: EntreePlanche): Promise<void> {
+  if (d1Configure()) return docEcrire(chemin(e.empreinte), e, e.maj);
   if (!vercel()) {
     enMemoire().set(e.empreinte, e);
     return;
@@ -73,6 +81,7 @@ export async function majPlanche(empreinte: string, patch: Partial<Pick<EntreePl
 
 /** Les planches les plus récentes d'abord (espace d'administration). */
 export async function listerPlanches(max = 200): Promise<EntreePlanche[]> {
+  if (d1Configure()) return (await docLister<EntreePlanche>(PREFIXE, max)).map((d) => d.valeur).sort((a, b) => b.cree - a.cree);
   if (!vercel()) return [...enMemoire().values()].sort((a, b) => b.cree - a.cree).slice(0, max);
   const { blobs } = await list({ prefix: PREFIXE, limit: max });
   const entrees = await Promise.all(blobs.map((b) => lireBlob(b.url, b.uploadedAt).catch(() => null)));
