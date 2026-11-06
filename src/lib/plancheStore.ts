@@ -1,5 +1,6 @@
 import "server-only";
 import { list, put } from "@vercel/blob";
+import { lireJsonPublic } from "@/lib/blobPublic";
 import type { Planche } from "@/lib/planche";
 import { empreinteDemande, empreinteParcelle, memeDemandeur } from "@/lib/plancheSecret";
 
@@ -44,8 +45,8 @@ async function lireBlob(url: string, version: Date): Promise<EntreePlanche | nul
 
 export async function lirePlanche(empreinte: string): Promise<EntreePlanche | null> {
   if (!vercel()) return enMemoire().get(empreinte) ?? null;
-  const { blobs } = await list({ prefix: chemin(empreinte), limit: 1 });
-  return blobs[0] ? lireBlob(blobs[0].url, blobs[0].uploadedAt) : null;
+  // lecture directe, sans list() (06/11/2026, quota Blob) ; fraîche : la livraison doit voir la demande enregistrée
+  return lireJsonPublic<EntreePlanche>(chemin(empreinte), true);
 }
 
 export async function ecrirePlanche(e: EntreePlanche): Promise<void> {
