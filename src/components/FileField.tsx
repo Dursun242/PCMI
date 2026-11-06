@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { upload } from "@vercel/blob/client";
+import { envoyerFichier } from "@/lib/envoiFichier";
 
 export interface PickedFile {
   name: string;
@@ -55,8 +55,8 @@ export default function FileField({
       }
       set([...filesRef.current, { name: file.name, size: file.size, file, status: "uploading" }]);
       try {
-        const blob = await upload(`envois/${Date.now()}-${file.name}`, file, { access: "public", handleUploadUrl: "/api/upload" });
-        patch(file.name, { url: blob.url, file: undefined, status: "stored" });
+        const url = await envoyerFichier("envois", file.name, file);
+        patch(file.name, { url, file: undefined, status: "stored" });
       } catch {
         // stockage direct indisponible : pièce jointe directe si le total le permet
         const inlineTotal = filesRef.current.filter((f) => f.status === "inline").reduce((a, f) => a + f.size, 0) + file.size;

@@ -1,6 +1,6 @@
 "use client";
 
-import { upload } from "@vercel/blob/client";
+import { envoyerFichier } from "@/lib/envoiFichier";
 import { useEffect, useRef, useState } from "react";
 import { matrice3d, type Bassin, type PhotosDp as Photos } from "@/lib/dpPiscine";
 
@@ -33,9 +33,9 @@ export default function PhotosDp({ photos, onChange, bassin }: Props) {
     setEnvoi(cle);
     const local = URL.createObjectURL(f);
     try {
-      const b = await upload(`dp-piscine-photos/${Date.now()}-${cle}.${f.type.split("/")[1]}`, f, { access: "public", handleUploadUrl: "/api/upload" });
+      const url = await envoyerFichier("dp-piscine-photos", `${cle}.${f.type.split("/")[1]}`, f);
       setApercu((a) => ({ ...a, [cle]: local }));
-      onChange({ ...photos, [cle]: b.url, ...(cle === "proche" ? { coins: [], repere: undefined } : {}) });
+      onChange({ ...photos, [cle]: url, ...(cle === "proche" ? { coins: [], repere: undefined } : {}) });
     } catch {
       setErreur("La photo n'a pas pu être envoyée. Réessayez (25 Mo au plus).");
     }
