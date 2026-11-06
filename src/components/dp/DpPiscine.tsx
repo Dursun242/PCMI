@@ -3,13 +3,15 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import ChampAdresse from "@/components/ChampAdresse";
 import CarteParcelles from "@/components/planche/CarteParcelles";
+import CoupeLive from "@/components/dp/CoupeLive";
+import PlanMasseLive from "@/components/dp/PlanMasseLive";
 import PhotosDp from "@/components/dp/PhotosDp";
 import ReglagesBassin from "@/components/dp/ReglagesBassin";
 import { trackEvent } from "@/lib/analytics";
-import { PRIX_DP_PISCINE_TTC, RECUL_CONSEILLE_M, photosCompletes, type PhotosDp as Photos, angleTerrain, distanceLimites, centreContour, dansTerrain, formesBassin, regimeIndicatif, type Bassin, type ErreursDp } from "@/lib/dpPiscine";
+import { PRIX_DP_PISCINE_TTC, RECUL_CONSEILLE_M, placementInitial, surBati, photosCompletes, type PhotosDp as Photos, angleTerrain, distanceLimites, centreContour, dansTerrain, formesBassin, regimeIndicatif, type Bassin, type ErreursDp } from "@/lib/dpPiscine";
 import { referenceCourte, type ParcelleCandidate, type RechercheTerrain } from "@/lib/planche";
 
 const CartePiscine = dynamic(() => import("@/components/dp/CartePiscine"), { ssr: false });
@@ -79,7 +81,22 @@ export default function DpPiscine() {
   const [parcelles, setParcelles] = useState<ParcelleCandidate[]>([]);
   const [plusieurs, setPlusieurs] = useState(false);
   const parcelle = parcelles[0] ?? null;
-  const [bassin, setBassin] = useState<Bassin | null>(null);
+  const [bassin, setBassinBrut] = useState<Bassin | null>(null);
+  /** Étapes validées par le client : 1 emplacement, 2 coupe, 3 photomontage. */
+  const [valide, setValide] = useState(0);
+  const [vue, setVue] = useState<"plan" | "aerien">("plan");
+  const [batis, setBatis] = useState<[number, number][][]>([]);
+  /** Bassin encore à la place proposée (le client ne l'a pas déplacé) : on peut le replacer quand le bâti arrive. */
+  const placeAuto = useRef(true);
+  /** Un changement du bassin par le client : les étapes déjà validées sont à revoir. */
+  const setBassin = (v: Bassin | null | ((b: Bassin | null) => Bassin | null), parLeClient = true) => {
+    setBassinBrut(v);
+    if (parLeClient) {
+      placeAuto.current = false;
+      setValide(0);
+    }
+  };
+  const allerA = (id: string) => requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" }));
   const [photos, setPhotos] = useState<Photos>({});
   const [contact, setContact] = useState({ prenom: "", nom: "", email: "", telephone: "", site_web: "" });
   const [residence, setResidence] = useState<"principale" | "secondaire">("principale");
@@ -93,7 +110,9 @@ export default function DpPiscine() {
   function choisir(p: ParcelleCandidate) {
     if (!plusieurs || !parcelles.length) {
       setParcelles([p]);
-      setBassin(bassinInitial(p));
+      placeAuto.current = true;
+      setBassin(bassinInitial(p), false);
+      setValide(0);
       return;
     }
     if (parcelles.some((x) => x.idu === p.idu)) {
@@ -108,7 +127,7 @@ export default function DpPiscine() {
         const grande = toutes.reduce((g, x) => (x.contenance > g.contenance ? x : g));
         const { centre, angle } = bassinInitial(grande);
         return { ...b, centre, angle };
-      });
+      }, false);
     }
   }
 
@@ -130,11 +149,13 @@ export default function DpPiscine() {
       if (deja.length && reprise) {
         setParcelles(deja);
         setPlusieurs(deja.length > 1);
-        setBassin(reprise.bassin);
+        placeAuto.current = false;
+        setBassin(reprise.bassin, false);
         setPhotos(reprise.photos ?? {});
       } else if (liste[0]) {
         setParcelles([liste[0]]);
-        setBassin(bassinInitial(liste[0]));
+        placeAuto.current = true;
+        setBassin(bassinInitial(liste[0]), false);
       }
       trackEvent("dp_piscine_terrain", {});
     } catch {
@@ -152,14 +173,42 @@ export default function DpPiscine() {
     setContact((c) => ({ ...c, ...b.contact }));
     setResidence(b.residence);
     void chercher(b.q, b);
+    // une seule fois, à l'arrivée sur la page
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const anneaux = parcelles.flatMap((p) => p.contours);
+  const cleTerrain = parcelles.map((p) => p.idu).join(",");
+
+  // Bâtiments autour du terrain (BD TOPO) : dessinés sur le plan, et premier emplacement hors de la maison.
+  useEffect(() => {
+    const pts = parcelles.flatMap((p) => p.contours.flat());
+    if (!pts.length) return;
+    const ctl = new AbortController();
+    const m = 0.0004;
+    const bbox = [Math.min(...pts.map((q) => q[0])) - m, Math.min(...pts.map((q) => q[1])) - m, Math.max(...pts.map((q) => q[0])) + m, Math.max(...pts.map((q) => q[1])) + m];
+    fetch(`/api/dp-piscine/bati?${new URLSearchParams({ bbox: bbox.map((v) => v.toFixed(6)).join(",") })}`, { signal: ctl.signal })
+      .then((r) => r.json())
+      .then((j: { batiments?: [number, number][][] }) => {
+        const bt = j.batiments ?? [];
+        setBatis(bt);
+        const ann = parcelles.flatMap((p) => p.contours);
+        if (placeAuto.current) setBassinBrut((b) => (b ? { ...b, ...placementInitial(b, ann, bt) } : b));
+      })
+      .catch(() => setBatis([]));
+    return () => ctl.abort();
+    // la clé du terrain résume la sélection des parcelles
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cleTerrain]);
   const distance = bassin && anneaux.length ? distanceLimites(formesBassin(bassin).bassin, anneaux) : null;
   const depasse = Boolean(bassin && anneaux.length && formesBassin(bassin).plage.some((pt) => !dansTerrain(pt, anneaux)));
   const contenance = parcelles.reduce((s, p) => s + p.contenance, 0);
   const photosManquantes = Boolean(bassin?.visibleRue && !photosCompletes(photos));
-  const pret = Boolean(parcelle && bassin && regimeIndicatif(bassin) === "dp" && !depasse && !photosManquantes);
+  const empiete = Boolean(bassin && surBati(formesBassin(bassin).plage, batis));
+  const emplacementOk = Boolean(parcelle && bassin && regimeIndicatif(bassin) === "dp" && !depasse && !empiete);
+  const etapesFaites = valide >= (bassin?.visibleRue ? 3 : 2);
+  const pret = emplacementOk && etapesFaites && !photosManquantes;
+  const voisines = (recherche?.parcelles ?? []).filter((p) => !parcelles.some((x) => x.idu === p.idu)).flatMap((p) => p.contours);
 
   async function envoyer(e: FormEvent) {
     e.preventDefault();
@@ -248,25 +297,77 @@ export default function DpPiscine() {
         )}
       </Etape>
 
-      <Etape n={2} titre="Votre piscine" actif={Boolean(bassin)}>
+      <Etape n={2} titre="Placez votre piscine" actif={Boolean(bassin)}>
         {parcelle && bassin && (
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)]">
-            <CartePiscine
-              key={parcelles.map((p) => p.idu).join("-")}
-              contours={anneaux}
-              bassin={bassin}
-              onDeplacer={(centre) => setBassin((b) => (b ? { ...b, centre } : b))}
-              distance={distance}
-              tropPres={Boolean(distance && distance.d < RECUL_CONSEILLE_M)}
-            />
-            <ReglagesBassin bassin={bassin} onChange={setBassin} depasse={depasse} distance={distance?.d ?? null} />
+          <div id="dp-etape-2" className="grid scroll-mt-24 gap-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)]">
+            <div className="grid content-start gap-3">
+              <div className="flex gap-2" role="tablist" aria-label="Vue du terrain">
+                {(["plan", "aerien"] as const).map((v) => (
+                  <button key={v} type="button" role="tab" aria-selected={vue === v} className={`btn min-h-10 px-4 ${vue === v ? "btn-ink" : "btn-line"}`} onClick={() => setVue(v)}>
+                    {v === "plan" ? "Plan de masse coté" : "Vue aérienne"}
+                  </button>
+                ))}
+              </div>
+              {vue === "plan" ? (
+                <PlanMasseLive anneaux={anneaux} voisines={voisines} batis={batis} bassin={bassin} onChange={(b) => setBassin(b)} />
+              ) : (
+                <CartePiscine
+                  key={parcelles.map((p) => p.idu).join("-")}
+                  contours={anneaux}
+                  bassin={bassin}
+                  onDeplacer={(centre) => setBassin((b) => (b ? { ...b, centre } : b))}
+                  distance={distance}
+                  tropPres={Boolean(distance && distance.d < RECUL_CONSEILLE_M)}
+                />
+              )}
+            </div>
+            <div className="grid content-start gap-6">
+              <ReglagesBassin bassin={bassin} onChange={(b) => setBassin(b)} depasse={depasse} distance={distance?.d ?? null} />
+              {empiete && <p role="alert" className="border-l-2 border-alert pl-4 text-sm text-alert">Le bassin ou sa plage touche un bâtiment : déplacez-le.</p>}
+              <div>
+                <button type="button" className="btn btn-ink" disabled={!emplacementOk || valide >= 1} onClick={() => { setValide(1); trackEvent("dp_piscine_etape", { etape: "emplacement" }); allerA("dp-etape-3"); }}>
+                  {valide >= 1 ? "Emplacement validé ✓" : "Je valide l'emplacement"}
+                </button>
+              </div>
+            </div>
           </div>
         )}
-        {bassin?.visibleRue && <PhotosDp photos={photos} onChange={setPhotos} />}
       </Etape>
 
+      <Etape n={3} titre="Vérifiez la coupe sur votre terrain" actif={valide >= 1}>
+        <div id="dp-etape-3" className="grid scroll-mt-24 gap-5">
+          {valide >= 1 && bassin && <CoupeLive anneaux={anneaux} bassin={bassin} />}
+          {valide >= 1 && bassin && (
+            <div className="flex flex-wrap items-end gap-4">
+              <div className="field">
+                <label htmlFor="dp-prof2">Profondeur (m)</label>
+                <input id="dp-prof2" type="number" inputMode="decimal" min={0.6} max={3} step={0.05} className="min-h-12 w-28" value={bassin.profondeur}
+                  onChange={(e) => { const n = Number(e.target.value); if (n >= 0.6 && n <= 3) setBassinBrut({ ...bassin, profondeur: n }); }} />
+              </div>
+              <button type="button" className="btn btn-ink" disabled={valide >= 2} onClick={() => { setValide(2); trackEvent("dp_piscine_etape", { etape: "coupe" }); allerA(bassin.visibleRue ? "dp-etape-4" : "dp-etape-5"); }}>
+                {valide >= 2 ? "Coupe validée ✓" : "Je valide la coupe"}
+              </button>
+            </div>
+          )}
+        </div>
+      </Etape>
+
+      {bassin?.visibleRue && (
+        <Etape n={4} titre="Photos et photomontage" actif={valide >= 2}>
+          <div id="dp-etape-4" className="grid scroll-mt-24 gap-5">
+            <PhotosDp photos={photos} onChange={(p) => { setPhotos(p); if (valide >= 3) setValide(2); }} bassin={bassin} />
+            <div>
+              <button type="button" className="btn btn-ink" disabled={!photosCompletes(photos) || valide >= 3} onClick={() => { setValide(3); trackEvent("dp_piscine_etape", { etape: "photomontage" }); allerA("dp-etape-5"); }}>
+                {valide >= 3 ? "Photomontage validé ✓" : "Je valide le photomontage"}
+              </button>
+            </div>
+          </div>
+        </Etape>
+      )}
+
       <form onSubmit={envoyer} className="grid gap-10" noValidate>
-        <Etape n={3} titre="Vos coordonnées (le déclarant)" actif={pret}>
+        <Etape n={bassin?.visibleRue ? 5 : 4} titre="Vos coordonnées (le déclarant)" actif={pret}>
+          <span id="dp-etape-5" className="-mt-5 block scroll-mt-24" aria-hidden="true" />
           <div className="grid gap-6 sm:grid-cols-2">
             {([["prenom", "Prénom", "given-name"], ["nom", "Nom", "family-name"], ["email", "E-mail", "email"], ["telephone", "Téléphone (facultatif)", "tel"]] as const).map(([k, label, auto]) => (
               <div key={k} className="field">

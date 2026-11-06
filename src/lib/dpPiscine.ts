@@ -263,6 +263,139 @@ export function distanceLimites(bassin: [number, number][], anneaux: [number, nu
   return r ? { d: Math.round(r.d * 100) / 100, de: lonlat(r.de), a: lonlat(r.a) } : null;
 }
 
+export interface Cote {
+  d: number;
+  de: [number, number];
+  a: [number, number];
+}
+
+/**
+ * Cotes du plan de masse : les plus courtes distances du bassin aux limites extérieures, une par direction (deux
+ * directions à plus de 35° l'une de l'autre), comme le DP2 officiel (generateur/piscine.distances_limites).
+ */
+export function cotesLimites(bassin: [number, number][], anneaux: [number, number][][], n = 2): Cote[] {
+  if (bassin.length < 3 || !anneaux.some((r) => r.length >= 3)) return [];
+  const o = bassin[0];
+  const lonlat = ([x, y]: [number, number]) => decaler(o, x, y);
+  const B = bassin.map((p) => ecart(o, p));
+  const lim = limitesExterieures(anneaux.filter((r) => r.length >= 3), o);
+  const parSegment = lim.map(([c, d]) => {
+    let best: [number, [number, number], [number, number]] = [Infinity, [0, 0], [0, 0]];
+    for (const p of B) {
+      const [x, q] = pointSegment(p, c, d);
+      if (x < best[0]) best = [x, p, q];
+    }
+    for (let i = 0; i < B.length; i++)
+      for (const e of [c, d]) {
+        const [x, q] = pointSegment(e, B[i], B[(i + 1) % B.length]);
+        if (x < best[0]) best = [x, q, e];
+      }
+    return best;
+  });
+  parSegment.sort((x, y) => x[0] - y[0]);
+  const out: [number, [number, number], [number, number]][] = [];
+  for (const c of parSegment) {
+    const ang = Math.atan2(c[2][1] - c[1][1], c[2][0] - c[1][0]);
+    const proche = out.some((o2) => {
+      const a2 = Math.atan2(o2[2][1] - o2[1][1], o2[2][0] - o2[1][0]);
+      return Math.abs(((ang - a2 + 3 * Math.PI) % (2 * Math.PI)) - Math.PI) < (35 * Math.PI) / 180;
+    });
+    if (!proche && c[0] > 1e-6) out.push(c);
+    if (out.length === n) break;
+  }
+  return out.map(([d, de, a2]) => ({ d: Math.round(d * 100) / 100, de: lonlat(de), a: lonlat(a2) }));
+}
+
+/** Plus courte distance du bassin aux bâtiments (BD TOPO), ou null sans bâtiment. */
+export function distanceBati(bassin: [number, number][], batis: [number, number][][]): Cote | null {
+  const proches = batis.filter((b) => b.length >= 3);
+  if (!proches.length || bassin.length < 3) return null;
+  const o = bassin[0];
+  const B = bassin.map((p) => ecart(o, p));
+  let best: [number, [number, number], [number, number]] | null = null;
+  for (const bt of proches) {
+    const C = bt.map((p) => ecart(o, p));
+    const cs = cotesAnneau(C);
+    for (const p of B) for (const [c, d] of cs) { const [x, q] = pointSegment(p, c, d); if (!best || x < best[0]) best = [x, p, q]; }
+    for (let i = 0; i < B.length; i++) for (const [c] of cs) { const [x, q] = pointSegment(c, B[i], B[(i + 1) % B.length]); if (!best || x < best[0]) best = [x, q, c]; }
+  }
+  if (!best) return null;
+  return { d: Math.round(best[0] * 100) / 100, de: decaler(o, ...best[1]), a: decaler(o, ...best[2]) };
+}
+
+/** Le bassin (ou sa plage) chevauche-t-il un bâtiment ? */
+export function surBati(forme: [number, number][], batis: [number, number][][]): boolean {
+  return batis.some((bt) => bt.length >= 3 && (forme.some((p) => dansPolygone(p, bt)) || bt.some((p) => dansPolygone(p, forme))));
+}
+
+export const DIST_MAISON_MIN_M = 1.5;
+
+/**
+ * Premier emplacement proposé : dans le terrain, plage hors des bâtiments, bassin à 1,50 m au moins de la maison, au
+ * plus près de 3 m des limites, puis le plus près de la maison (jardin attenant). Recherche sur une grille d'un mètre.
+ */
+export function placementInitial(b: Bassin, anneaux: [number, number][][], batis: [number, number][][]): Pick<Bassin, "centre" | "angle"> {
+  const pts = anneaux.flat();
+  if (!pts.length) return { centre: b.centre, angle: b.angle };
+  const o = pts[0];
+  const ms = pts.map((p) => ecart(o, p));
+  const [x0, x1] = [Math.min(...ms.map((m) => m[0])), Math.max(...ms.map((m) => m[0]))];
+  const [y0, y1] = [Math.min(...ms.map((m) => m[1])), Math.max(...ms.map((m) => m[1]))];
+  const pas = Math.max(1, Math.max(x1 - x0, y1 - y0) / 60);
+  let best: { sc: number; centre: [number, number]; angle: number } | null = null;
+  for (const angle of [b.angle, b.angle + 90]) {
+    for (let x = x0; x <= x1; x += pas) {
+      for (let y = y0; y <= y1; y += pas) {
+        const centre = decaler(o, x, y);
+        if (!dansTerrain(centre, anneaux)) continue;
+        const essai = { ...b, centre, angle };
+        const f = formesBassin(essai);
+        if (!f.plage.every((p) => dansTerrain(p, anneaux)) || surBati(f.plage, batis)) continue;
+        const dLim = distanceLimites(f.bassin, anneaux)?.d ?? 0;
+        const dBati = distanceBati(f.bassin, batis)?.d ?? 20;
+        if (dBati < DIST_MAISON_MIN_M) continue;
+        const sc = Math.min(dLim, RECUL_CONSEILLE_M + 0.5) * 10 - Math.min(dBati, 30) * 0.3;
+        if (!best || sc > best.sc) best = { sc, centre, angle };
+      }
+    }
+  }
+  return best ? { centre: best.centre, angle: ((best.angle % 180) + 180) % 180 } : { centre: b.centre, angle: b.angle };
+}
+
+/** Arase des margelles prévue : TN moyen sous le bassin, aux 5 cm, + 5 cm (comme le générateur). */
+export function arasePrevue(zs: number[]): number | null {
+  const v = zs.filter(Number.isFinite);
+  if (!v.length) return null;
+  return Math.round((Math.round(v.reduce((s, z) => s + z, 0) / v.length / 0.05) * 0.05 + 0.05) * 100) / 100;
+}
+
+/**
+ * Matrice CSS matrix3d qui envoie les 4 coins d'un rectangle (src) sur 4 points de la photo (dst) : photomontage en
+ * direct, la piscine posée en perspective sur la photo du client. Homographie résolue par élimination de Gauss.
+ */
+export function matrice3d(src: [number, number][], dst: [number, number][]): string | null {
+  const A: number[][] = [];
+  for (let i = 0; i < 4; i++) {
+    const [x, y] = src[i];
+    const [u, v] = dst[i];
+    A.push([x, y, 1, 0, 0, 0, -u * x, -u * y, u]);
+    A.push([0, 0, 0, x, y, 1, -v * x, -v * y, v]);
+  }
+  for (let c = 0; c < 8; c++) {
+    let piv = c;
+    for (let r = c + 1; r < 8; r++) if (Math.abs(A[r][c]) > Math.abs(A[piv][c])) piv = r;
+    if (Math.abs(A[piv][c]) < 1e-12) return null;
+    [A[c], A[piv]] = [A[piv], A[c]];
+    for (let r = 0; r < 8; r++) {
+      if (r === c) continue;
+      const k = A[r][c] / A[c][c];
+      for (let j = c; j < 9; j++) A[r][j] -= k * A[c][j];
+    }
+  }
+  const h = A.map((row, i) => row[8] / row[i]);
+  return `matrix3d(${[h[0], h[3], 0, h[6], h[1], h[4], 0, h[7], 0, 0, 1, 0, h[2], h[5], 0, 1].map((x) => +x.toFixed(10)).join(",")})`;
+}
+
 /* ---------- Validation (serveur) ---------- */
 
 const TEXTE = /^[\p{L}\p{N}\s'’\-.,/°()&]+$/u;
