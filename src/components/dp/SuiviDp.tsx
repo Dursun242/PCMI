@@ -34,6 +34,10 @@ interface Vue {
 const etiquette = "text-[0.72rem] font-bold uppercase tracking-[0.2em] text-bronze";
 const lien = "text-ink underline decoration-brass underline-offset-4";
 const euros = (n: number) => n.toLocaleString("fr-FR", { maximumFractionDigits: 0 }) + " €";
+/** Rythme de relecture du dossier (voir l'effet d'attente dans SuiviDp). */
+const PAS_PREPARATION_MS = 10_000;
+const PAS_PAIEMENT_MS = 20_000;
+const ATTENTE_MAX_MS = 15 * 60_000;
 const TITRES = ["DP1 · Plan de situation", "DP2 · Plan de masse", "DP3 · Plan en coupe"];
 
 /** Suivi d'une DP piscine : préparation, aperçu, paiement, téléchargement. */
@@ -65,13 +69,42 @@ export default function SuiviDp() {
     void charger();
   }, [charger]);
 
-  // On interroge le serveur tant que le dossier se prépare ou qu'un paiement est en cours.
+  // On interroge le serveur tant que le dossier se prépare ou qu'un paiement est en cours. Chaque relecture coûte
+  // une opération Vercel Blob (2 000 par mois en offre gratuite, tout le site confondu) : jamais quand l'onglet est
+  // caché, et arrêt au bout de ATTENTE_MAX_MS (bouton « Actualiser », ou retour sur l'onglet).
   const attendre = v?.statut === "en_cours" || Boolean(v?.paiementEnCours);
+  const preparation = v?.statut === "en_cours";
+  const [enPause, setEnPause] = useState(false);
   useEffect(() => {
     if (!attendre) return;
-    const t = setInterval(() => void charger(), 5000);
-    return () => clearInterval(t);
-  }, [attendre, charger]);
+    let debut = Date.now();
+    setEnPause(false);
+    const t = setInterval(
+      () => {
+        if (document.visibilityState !== "visible") return;
+        if (Date.now() - debut > ATTENTE_MAX_MS) return setEnPause(true);
+        void charger();
+      },
+      preparation ? PAS_PREPARATION_MS : PAS_PAIEMENT_MS,
+    );
+    const auRetour = () => {
+      if (document.visibilityState !== "visible") return;
+      debut = Date.now();
+      setEnPause(false);
+      void charger();
+    };
+    document.addEventListener("visibilitychange", auRetour);
+    return () => {
+      clearInterval(t);
+      document.removeEventListener("visibilitychange", auRetour);
+    };
+  }, [attendre, preparation, charger]);
+
+  const actualiser = (
+    <button type="button" className="btn btn-line w-fit" onClick={() => { setEnPause(false); void charger(); }}>
+      Actualiser
+    </button>
+  );
 
   useEffect(() => {
     if (v && v.statut !== "en_cours") trackEvent("dp_piscine_apercu", { statut: v.statut });
@@ -116,6 +149,7 @@ export default function SuiviDp() {
           seule ; vous pouvez aussi la fermer, le lien est dans votre e-mail.
         </p>
         <div className="h-1 w-full max-w-md overflow-hidden bg-stone-2"><div className="h-full w-1/3 animate-pulse bg-brass" /></div>
+        {enPause && actualiser}
       </div>
     );
   }
@@ -221,6 +255,7 @@ export default function SuiviDp() {
               est reçu.{v.urlPaiement && <> <a href={v.urlPaiement} target="_blank" rel="noopener noreferrer" className={lien}>Rouvrir le paiement</a></>}
             </p>
           )}
+          {v.paiementEnCours && enPause && actualiser}
         </div>
       )}
 

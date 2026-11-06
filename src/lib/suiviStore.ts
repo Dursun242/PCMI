@@ -1,5 +1,6 @@
 import "server-only";
 import { list, put } from "@vercel/blob";
+import { enCache, oublier } from "./cacheMemoire";
 import {
   cheminEvenement,
   cheminZero,
@@ -49,11 +50,18 @@ const PAGES_MAX = 20;
 export async function remettreAZero(): Promise<number> {
   const instant = Date.now();
   await put(cheminZero(instant), "1", { access: "public", contentType: "text/plain", addRandomSuffix: false });
+  oublier(CLE_CACHE);
   return instant;
 }
 
-/** Événements comptés depuis la dernière remise à zéro, et l'instant de cette remise (0 si aucune). */
-export async function lireEvenements(): Promise<{ evenements: Evenement[]; tronque: boolean; zero: number }> {
+const CLE_CACHE = "suivi-express";
+
+/** Événements comptés depuis la dernière remise à zéro, et l'instant de cette remise (0 si aucune). Gardés quelques minutes (cacheMemoire). */
+export function lireEvenements(): Promise<{ evenements: Evenement[]; tronque: boolean; zero: number }> {
+  return enCache(CLE_CACHE, lireEvenementsStockage);
+}
+
+async function lireEvenementsStockage(): Promise<{ evenements: Evenement[]; tronque: boolean; zero: number }> {
   const zeros = await list({ prefix: PREFIXE_ZERO, limit: 1000 });
   const zero = derniereRemise(zeros.blobs.map((b) => b.pathname));
   const { evenements, tronque } = await lireTous();

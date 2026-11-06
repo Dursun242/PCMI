@@ -1,5 +1,6 @@
 import "server-only";
 import { list, put } from "@vercel/blob";
+import { enCache } from "./cacheMemoire";
 import { appareilDeLAdmin } from "./adminAuth";
 import { jourParis } from "./suivi";
 import {
@@ -52,7 +53,12 @@ export async function suivreCommande(req: Request, etape: EtapeCommande, detail:
 /** Plafond de pages lues (1 000 événements chacune) : au-delà, le compteur est tronqué. */
 const PAGES_MAX = 20;
 
-export async function lireEvenementsCommande(): Promise<{ evenements: EvenementCommande[]; tronque: boolean }> {
+/** Événements du tunnel de commande, gardés quelques minutes (cacheMemoire). */
+export function lireEvenementsCommande(): Promise<{ evenements: EvenementCommande[]; tronque: boolean }> {
+  return enCache("suivi-commande", lireEvenementsCommandeStockage);
+}
+
+async function lireEvenementsCommandeStockage(): Promise<{ evenements: EvenementCommande[]; tronque: boolean }> {
   const evenements: EvenementCommande[] = [];
   let cursor: string | undefined;
   for (let page = 0; page < PAGES_MAX; page++) {
