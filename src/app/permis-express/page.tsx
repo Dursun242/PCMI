@@ -180,7 +180,22 @@ export default function PermisExpressPage() {
 
       <ExpressConfiance />
 
-      {/* Formulaire après la preuve (panneaux, réalisations, bureau, avis) : les boutons du haut et la barre du bas restent là pour agir tout de suite. */}
+      <section data-section="deroule" className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24" aria-labelledby="deroule">
+        <span className="rule" aria-hidden="true" />
+        <h2 id="deroule" className="h-section mt-6">Du premier appel au dépôt</h2>
+        <ol data-stagger className="mt-10 grid gap-px border border-stone-2 bg-stone-2 sm:grid-cols-2 lg:grid-cols-4">
+          {etapes.map(([quand, titre, texte], i) => (
+            <li key={titre} className="bg-paper p-5 sm:p-6">
+              <span className="numeral text-2xl text-bronze">{String(i + 1).padStart(2, "0")}</span>
+              <p className="mt-3 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">{quand}</p>
+              <p className="display mt-1 text-2xl leading-tight">{titre}</p>
+              <p className="mt-2 text-sm text-ink-2 leading-relaxed">{texte}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* Formulaire après la preuve et les étapes (panneaux, réalisations, bureau, avis, déroulé) : les boutons du haut et la barre du bas restent là pour agir tout de suite. */}
       <section className="bg-forest text-paper">
         <div className="mx-auto max-w-3xl px-5 py-12 sm:px-8 sm:py-20">
           <div id="devis" data-section="formulaire" className="scroll-mt-24 bg-paper text-ink px-6 py-8 sm:px-9 sm:py-10 shadow-[0_30px_60px_-30px_rgba(0,0,0,0.5)]">
@@ -216,22 +231,9 @@ export default function PermisExpressPage() {
         </div>
       </section>
 
-      <section data-section="deroule" className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24" aria-labelledby="deroule">
-        <span className="rule" aria-hidden="true" />
-        <h2 id="deroule" className="h-section mt-6">Du premier appel au dépôt</h2>
-        <ol data-stagger className="mt-10 grid gap-px border border-stone-2 bg-stone-2 sm:grid-cols-2 lg:grid-cols-4">
-          {etapes.map(([quand, titre, texte], i) => (
-            <li key={titre} className="bg-paper p-5 sm:p-6">
-              <span className="numeral text-2xl text-bronze">{String(i + 1).padStart(2, "0")}</span>
-              <p className="mt-3 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">{quand}</p>
-              <p className="display mt-1 text-2xl leading-tight">{titre}</p>
-              <p className="mt-2 text-sm text-ink-2 leading-relaxed">{texte}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <RelanceDevis zone="relance1" titre="Votre maison sera la prochaine." />
+      <div className="pt-16 sm:pt-24">
+        <RelanceDevis zone="relance1" titre="Votre maison sera la prochaine." />
+      </div>
 
       <section data-section="compris" className="mt-16 sm:mt-24 bg-stone">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24">
