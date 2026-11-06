@@ -37,8 +37,8 @@ export const SECTIONS = [
   ["panneaux", "Panneaux de chantier"],
   ["maisons", "Nos réalisations (photos)"],
   ["confiance", "Bureau et avis Google"],
-  ["formulaire", "Formulaire de devis"],
   ["deroule", "Étapes, du premier appel au dépôt"],
+  ["formulaire", "Formulaire de devis"],
   ["compris", "Ce qui est compris"],
   ["questions", "Questions"],
   ["fin", "Bas de page"],
@@ -49,7 +49,7 @@ export type Section = (typeof SECTIONS)[number][0];
 export const ZONES = [
   ["entete", "Menu du site"],
   ["hero", "Haut de page"],
-  ["relance1", "Encadré après les étapes"],
+  ["relance1", "Encadré après le formulaire"],
   ["relance2", "Encadré après « Compris »"],
   ["bureau", "Adresse du bureau"],
   ["bas", "Bas de page"],
