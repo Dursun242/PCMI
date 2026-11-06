@@ -144,7 +144,7 @@ export default function ReglagesBassin({ bassin: b, onChange, depasse, distance 
         <input type="checkbox" className="accent-ink mt-1 h-4 w-4" checked={b.visibleRue} onChange={(e) => maj({ visibleRue: e.target.checked })} />
         <span>
           La piscine sera visible depuis la rue
-          <span className="block text-sm text-ink-2">Il faudra alors joindre des photos : nous vous les demanderons.</span>
+          <span className="block text-sm text-ink-2">Il faut alors deux photos prises de la rue et un photomontage : on vous guide juste en dessous.</span>
         </span>
       </label>
     </div>

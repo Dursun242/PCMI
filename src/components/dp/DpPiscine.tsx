@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import ChampAdresse from "@/components/ChampAdresse";
 import CarteParcelles from "@/components/planche/CarteParcelles";
+import PhotosDp from "@/components/dp/PhotosDp";
 import ReglagesBassin from "@/components/dp/ReglagesBassin";
 import { trackEvent } from "@/lib/analytics";
-import { PRIX_DP_PISCINE_TTC, RECUL_CONSEILLE_M, angleTerrain, distanceLimites, centreContour, dansTerrain, formesBassin, regimeIndicatif, type Bassin, type ErreursDp } from "@/lib/dpPiscine";
+import { PRIX_DP_PISCINE_TTC, RECUL_CONSEILLE_M, photosCompletes, type PhotosDp as Photos, angleTerrain, distanceLimites, centreContour, dansTerrain, formesBassin, regimeIndicatif, type Bassin, type ErreursDp } from "@/lib/dpPiscine";
 import { referenceCourte, type ParcelleCandidate, type RechercheTerrain } from "@/lib/planche";
 
 const CartePiscine = dynamic(() => import("@/components/dp/CartePiscine"), { ssr: false });
@@ -33,6 +34,7 @@ interface Brouillon {
   q: string;
   idus: string[];
   bassin: Bassin;
+  photos?: Photos;
   contact: { prenom: string; nom: string; email: string; telephone: string };
   residence: "principale" | "secondaire";
 }
@@ -78,6 +80,7 @@ export default function DpPiscine() {
   const [plusieurs, setPlusieurs] = useState(false);
   const parcelle = parcelles[0] ?? null;
   const [bassin, setBassin] = useState<Bassin | null>(null);
+  const [photos, setPhotos] = useState<Photos>({});
   const [contact, setContact] = useState({ prenom: "", nom: "", email: "", telephone: "", site_web: "" });
   const [residence, setResidence] = useState<"principale" | "secondaire">("principale");
   const [consentement, setConsentement] = useState(false);
@@ -128,6 +131,7 @@ export default function DpPiscine() {
         setParcelles(deja);
         setPlusieurs(deja.length > 1);
         setBassin(reprise.bassin);
+        setPhotos(reprise.photos ?? {});
       } else if (liste[0]) {
         setParcelles([liste[0]]);
         setBassin(bassinInitial(liste[0]));
@@ -154,7 +158,8 @@ export default function DpPiscine() {
   const distance = bassin && anneaux.length ? distanceLimites(formesBassin(bassin).bassin, anneaux) : null;
   const depasse = Boolean(bassin && anneaux.length && formesBassin(bassin).plage.some((pt) => !dansTerrain(pt, anneaux)));
   const contenance = parcelles.reduce((s, p) => s + p.contenance, 0);
-  const pret = Boolean(parcelle && bassin && regimeIndicatif(bassin) === "dp" && !depasse);
+  const photosManquantes = Boolean(bassin?.visibleRue && !photosCompletes(photos));
+  const pret = Boolean(parcelle && bassin && regimeIndicatif(bassin) === "dp" && !depasse && !photosManquantes);
 
   async function envoyer(e: FormEvent) {
     e.preventDefault();
@@ -164,7 +169,7 @@ export default function DpPiscine() {
     setErreurEnvoi(null);
     try {
       const { prenom, nom, email, telephone } = contact;
-      localStorage.setItem(BROUILLON, JSON.stringify({ q, idus: parcelles.map((p) => p.idu), bassin, contact: { prenom, nom, email, telephone }, residence } satisfies Brouillon));
+      localStorage.setItem(BROUILLON, JSON.stringify({ q, idus: parcelles.map((p) => p.idu), bassin, photos, contact: { prenom, nom, email, telephone }, residence } satisfies Brouillon));
     } catch {
       /* navigation privée : pas de brouillon, le client ressaisira */
     }
@@ -181,6 +186,7 @@ export default function DpPiscine() {
           residence,
           consentement,
           bassin,
+          photos: bassin.visibleRue ? photos : {},
         }),
       });
       const json = await r.json();
@@ -256,6 +262,7 @@ export default function DpPiscine() {
             <ReglagesBassin bassin={bassin} onChange={setBassin} depasse={depasse} distance={distance?.d ?? null} />
           </div>
         )}
+        {bassin?.visibleRue && <PhotosDp photos={photos} onChange={setPhotos} />}
       </Etape>
 
       <form onSubmit={envoyer} className="grid gap-10" noValidate>
@@ -286,7 +293,10 @@ export default function DpPiscine() {
               <Link href="/confidentialite" className={lien}>politique de confidentialité</Link>.
             </span>
           </label>
-          {(erreurs.consentement || erreurs.bassin || erreurs.idu) && <p role="alert" className="text-sm text-alert">{erreurs.consentement ?? erreurs.bassin ?? erreurs.idu}</p>}
+          {(erreurs.consentement || erreurs.bassin || erreurs.idu || erreurs.photos) && (
+            <p role="alert" className="text-sm text-alert">{erreurs.consentement ?? erreurs.bassin ?? erreurs.idu ?? erreurs.photos}</p>
+          )}
+          {photosManquantes && <p className="text-sm text-ink-2">Piscine visible de la rue : ajoutez la photo de près, la photo de loin et les 4 coins du bassin (étape 2).</p>}
           {erreurEnvoi && <p role="alert" className="border-l-2 border-alert pl-4 text-sm text-alert">{erreurEnvoi}</p>}
           <div className="grid gap-2">
             <div><button type="submit" className="btn btn-ink" disabled={!pret || envoi}>{envoi ? "Envoi…" : "Préparer mon dossier"}</button></div>
