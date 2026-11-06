@@ -317,3 +317,52 @@ export async function pdfDevis(cfg: ConfigQonto, pieceJointeId: string | undefin
     return null;
   }
 }
+
+/* ---------- Liens de paiement (DP piscine en ligne) ---------- */
+
+export interface LienPaiement {
+  id: string;
+  url: string;
+  status: string;
+}
+
+/**
+ * Lien de paiement Qonto (carte, Apple Pay) pour une prestation à prix fixe :
+ * prix unitaire hors taxe + taux de TVA, comme une ligne de facture.
+ */
+export async function creerLienPaiement(
+  cfg: ConfigQonto,
+  p: { titre: string; description: string; prixHt: string; tva: string },
+  f: typeof fetch = fetch,
+): Promise<LienPaiement> {
+  const { payment_link } = await appel<{ payment_link: LienPaiement }>(
+    cfg,
+    "POST",
+    "/v2/payment_links",
+    {
+      payment_link: {
+        items: [
+          {
+            title: p.titre,
+            description: p.description,
+            type: "service",
+            quantity: 1,
+            measure_unit: "unit",
+            unit_price: { value: p.prixHt, currency: "EUR" },
+            vat_rate: p.tva,
+          },
+        ],
+        potential_payment_methods: ["credit_card", "apple_pay"],
+        reusable: false,
+      },
+    },
+    f,
+  );
+  return payment_link;
+}
+
+/** Statut d'un lien de paiement (« paid » une fois réglé). */
+export async function lireLienPaiement(cfg: ConfigQonto, id: string, f: typeof fetch = fetch): Promise<LienPaiement> {
+  const { payment_link } = await appel<{ payment_link: LienPaiement }>(cfg, "GET", `/v2/payment_links/${encodeURIComponent(id)}`, null, f);
+  return payment_link;
+}

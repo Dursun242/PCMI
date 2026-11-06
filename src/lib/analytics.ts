@@ -36,6 +36,12 @@ type Events = {
   planche_terrain_trouve: { parcelles: string };
   /** Demande de planche gratuite : envoyée, ou refusée car la parcelle a déjà eu la sienne. */
   planche_demande: { planche: string; resultat: "envoyee" | "deja_servie" };
+  /** DP piscine en ligne : terrain trouvé, dossier lancé, aperçu vu, paiement demandé, dossier payé. */
+  dp_piscine_terrain: Record<string, never>;
+  dp_piscine_lancee: Record<string, never>;
+  dp_piscine_apercu: { statut: string };
+  dp_piscine_payer: Record<string, never>;
+  dp_piscine_paye: Record<string, never>;
   /** Aperçu de la fiche terrain affiché (zone et voyants). */
   fiche_terrain_apercu: { zone: string; alertes: string };
   /** Fiche terrain complète demandée (PDF envoyé par e-mail). */
