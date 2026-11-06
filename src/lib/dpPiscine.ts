@@ -59,6 +59,8 @@ export interface Bassin {
   type: TypeBassin;
   securite: Securite;
   visibleRue: boolean;
+  /** Des arbres seront abattus pour la piscine (à reporter sur le plan de masse, notice du Cerfa 16702). */
+  arbresAbattus?: boolean;
   /** Centre du bassin, [longitude, latitude]. */
   centre: [number, number];
   /** Orientation du grand côté, en degrés depuis l'est, sens trigonométrique. */
@@ -116,6 +118,8 @@ export interface DemandeDp {
   telephone: string;
   /** Date (AAAA-MM-JJ), commune, département et pays de naissance : exigés au cadre 1 du Cerfa 16702 (taxe d'aménagement). */
   naissance: NaissanceDp;
+  /** Adresse du déclarant quand elle n'est pas celle du terrain (cadre 3 du Cerfa). */
+  adresseDeclarant?: string;
   residence: "principale" | "secondaire";
   bassin: Bassin;
   photos: PhotosDp;
@@ -129,7 +133,7 @@ export interface NaissanceDp {
 }
 
 export type ErreursDp = Partial<
-  Record<"idu" | "voie" | "ville" | "prenom" | "nom" | "email" | "telephone" | "naissance" | "communeNaissance" | "deptNaissance" | "paysNaissance" | "bassin" | "photos" | "consentement", string>
+  Record<"idu" | "voie" | "ville" | "prenom" | "nom" | "email" | "telephone" | "naissance" | "adresseDeclarant" | "communeNaissance" | "deptNaissance" | "paysNaissance" | "bassin" | "photos" | "consentement", string>
 >;
 
 const AGE_MIN_DECLARANT = 16;
@@ -502,6 +506,7 @@ function validerBassin(v: unknown): Bassin | null {
     type,
     securite,
     visibleRue: b.visibleRue === true,
+    arbresAbattus: b.arbresAbattus === true,
     centre,
     angle: angle as number,
   };
@@ -527,6 +532,10 @@ export function validerDemandeDp(corps: Record<string, unknown>): { demande: Dem
   const telephone = typeof corps.telephone === "string" ? corps.telephone.replace(/[^\d+]/g, "").replace(/^\+33(?=\d{9}$)/, "0").replace(/^0033(?=\d{9}$)/, "0") : "";
   if (telephone && !/^\+?\d{9,15}$/.test(telephone)) e.telephone = "Numéro de téléphone invalide.";
   const naissance = validerNaissance(corps, e);
+  const brutAdresse = typeof corps.adresseDeclarant === "string" ? corps.adresseDeclarant.trim() : "";
+  const adresseDeclarant = brutAdresse ? texte(brutAdresse, 160) : null;
+  if (brutAdresse && (!adresseDeclarant || !/\b\d{5}\b/.test(adresseDeclarant)))
+    e.adresseDeclarant = "Votre adresse complète : numéro, rue, code postal et commune.";
   const bassin = validerBassin(corps.bassin);
   if (!bassin) e.bassin = "Dimensions ou position du bassin invalides.";
   else if (regimeIndicatif(bassin) !== "dp") e.bassin = "Ce bassin ne relève pas d'une déclaration préalable.";
@@ -548,6 +557,7 @@ export function validerDemandeDp(corps: Record<string, unknown>): { demande: Dem
       email,
       telephone,
       naissance,
+      ...(adresseDeclarant ? { adresseDeclarant } : {}),
       residence: corps.residence === "secondaire" ? "secondaire" : "principale",
       bassin: bassin as Bassin,
       photos: photos ?? {},
@@ -565,7 +575,7 @@ export function ficheWorkflow(d: DemandeDp) {
     ville: d.ville,
     parcelle: d.idus.length > 1 ? d.idus : d.idu,
     residence: d.residence,
-    demandeur: { nom: d.nom, prenom: d.prenom, email: d.email, ...(d.telephone ? { telephone: d.telephone } : {}), naissance: d.naissance },
+    demandeur: { nom: d.nom, prenom: d.prenom, email: d.email, ...(d.telephone ? { telephone: d.telephone } : {}), naissance: d.naissance, ...(d.adresseDeclarant ? { adresse: d.adresseDeclarant } : {}) },
     piscine: {
       longueur: b.longueur,
       largeur: b.largeur,
@@ -575,6 +585,7 @@ export function ficheWorkflow(d: DemandeDp) {
       type: b.type,
       securite: b.securite,
       visible_rue: b.visibleRue,
+      arbres_abattus: b.arbresAbattus === true,
       local_technique: b.localTechnique ? { longueur: 2, largeur: 1.5, hauteur: LOCAL_HAUTEUR_M, materiau: b.materiauLocal ?? "bois" } : null,
       centre_wgs84: b.centre,
       // point à 5 m dans l'axe du grand côté : le générateur en tire l'angle exact en Lambert 93
