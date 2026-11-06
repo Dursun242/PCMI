@@ -1,6 +1,6 @@
 "use client";
 
-import { BORNES, COTES, RECUL_CONSEILLE_M, SECURITES, TYPES_BASSIN, orientationCote, regimeIndicatif, surfaceBassin, type Bassin, type CoteBassin, type Securite, type TypeBassin } from "@/lib/dpPiscine";
+import { BORNES, COTES, MATERIAUX_LOCAL, type MateriauLocal, RECUL_CONSEILLE_M, SECURITES, TYPES_BASSIN, orientationCote, regimeIndicatif, surfaceBassin, type Bassin, type CoteBassin, type Securite, type TypeBassin } from "@/lib/dpPiscine";
 
 interface Props {
   bassin: Bassin;
@@ -138,8 +138,16 @@ export default function ReglagesBassin({ bassin: b, onChange, depasse, distance 
       </div>
       <label className="flex cursor-pointer items-center gap-3 text-[0.95rem]">
         <input type="checkbox" className="accent-ink h-4 w-4" checked={b.localTechnique} onChange={(e) => maj({ localTechnique: e.target.checked })} />
-        Local technique (2,00 x 1,50 m, au bout du bassin)
+        Local technique (2,00 x 1,50 m, hauteur 2,00 m, au bout du bassin)
       </label>
+      {b.localTechnique && (
+        <div className="field">
+          <label htmlFor="dp-local-mat">Aspect du local technique (plan des façades DP4)</label>
+          <select id="dp-local-mat" className="min-h-12 border border-stone-2 bg-paper px-3" value={b.materiauLocal ?? "bois"} onChange={(e) => maj({ materiauLocal: e.target.value as MateriauLocal })}>
+            {Object.entries(MATERIAUX_LOCAL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+          </select>
+        </div>
+      )}
       <label className="flex cursor-pointer items-start gap-3 text-[0.95rem]">
         <input type="checkbox" className="accent-ink mt-1 h-4 w-4" checked={b.visibleRue} onChange={(e) => maj({ visibleRue: e.target.checked })} />
         <span>

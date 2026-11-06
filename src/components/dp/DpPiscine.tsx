@@ -11,7 +11,7 @@ import PlanMasseLive from "@/components/dp/PlanMasseLive";
 import PhotosDp from "@/components/dp/PhotosDp";
 import ReglagesBassin from "@/components/dp/ReglagesBassin";
 import { trackEvent } from "@/lib/analytics";
-import { PRIX_DP_PISCINE_TTC, RECUL_CONSEILLE_M, placementInitial, surBati, photosCompletes, type PhotosDp as Photos, angleTerrain, distanceLimites, centreContour, dansTerrain, formesBassin, regimeIndicatif, type Bassin, type ErreursDp } from "@/lib/dpPiscine";
+import { MARGELLE_DEFAUT_M, PLAGE_DEFAUT_M, PRIX_DP_PISCINE_TTC, RECUL_CONSEILLE_M, placementInitial, surBati, photosCompletes, type PhotosDp as Photos, angleTerrain, distanceLimites, centreContour, dansTerrain, formesBassin, regimeIndicatif, type Bassin, type ErreursDp } from "@/lib/dpPiscine";
 import { referenceCourte, type ParcelleCandidate, type RechercheTerrain } from "@/lib/planche";
 
 const CartePiscine = dynamic(() => import("@/components/dp/CartePiscine"), { ssr: false });
@@ -56,9 +56,10 @@ function bassinInitial(p: ParcelleCandidate): Bassin {
     longueur: 8,
     largeur: 4,
     profondeur: 1.5,
-    margelle: 0.3,
-    plage: { petit_cote_1: 1, petit_cote_2: 1, grand_cote_1: 1, grand_cote_2: 1 },
+    margelle: MARGELLE_DEFAUT_M,
+    plage: { petit_cote_1: PLAGE_DEFAUT_M, petit_cote_2: PLAGE_DEFAUT_M, grand_cote_1: PLAGE_DEFAUT_M, grand_cote_2: PLAGE_DEFAUT_M },
     localTechnique: true,
+    materiauLocal: "bois",
     type: "enterree",
     securite: "alarme",
     visibleRue: false,
