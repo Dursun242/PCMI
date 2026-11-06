@@ -74,7 +74,12 @@ export interface PhotosDp {
   coins?: [number, number][];
   /** Taille de la photo proche (px) sur laquelle les coins ont été relevés. */
   repere?: [number, number];
+  /** Où le client se tenait pour chaque photo, [longitude, latitude] (reporté sur le plan de masse). */
+  vues?: { proche?: [number, number]; lointaine?: [number, number] };
 }
+
+/** Une photo prise à plus de 500 m du bassin n'est pas une photo de son environnement. */
+export const VUE_MAX_M = 500;
 
 export const photosCompletes = (p: PhotosDp | undefined): boolean =>
   Boolean(p?.proche && p.lointaine && p.coins?.length === 4 && p.repere);
@@ -100,6 +105,17 @@ function validerPhotos(v: unknown): PhotosDp | null {
     if (!c.every((x) => x.length === 2 && x.every((n, i) => Number.isFinite(n) && n >= 0 && n <= rep[i]))) return null;
     out.coins = c as [number, number][];
     out.repere = rep as [number, number];
+  }
+  if (p.vues && typeof p.vues === "object") {
+    const v = p.vues as Record<string, unknown>;
+    const vues: NonNullable<PhotosDp["vues"]> = {};
+    for (const k of ["proche", "lointaine"] as const) {
+      if (v[k] === undefined || v[k] === null) continue;
+      const c = Array.isArray(v[k]) ? (v[k] as unknown[]).map(Number) : [];
+      if (c.length !== 2 || !(c[0] >= -6 && c[0] <= 10 && c[1] >= 41 && c[1] <= 52)) return null;
+      if (out[k]) vues[k] = c as [number, number];
+    }
+    if (Object.keys(vues).length) out.vues = vues;
   }
   return out;
 }
@@ -196,6 +212,9 @@ export function decaler([lon, lat]: [number, number], dx: number, dy: number): [
 }
 
 /** Écart (dx, dy) en mètres de a vers b. */
+/** Distance en mètres entre deux points [longitude, latitude] (petites distances). */
+export const distanceM = (a: [number, number], b: [number, number]): number => Math.hypot(...ecart(a, b));
+
 export function ecart(a: [number, number], b: [number, number]): [number, number] {
   return [(b[0] - a[0]) * mParDegLon(a[1]), (b[1] - a[1]) * M_PAR_DEG_LAT];
 }
@@ -541,6 +560,8 @@ export function validerDemandeDp(corps: Record<string, unknown>): { demande: Dem
   else if (regimeIndicatif(bassin) !== "dp") e.bassin = "Ce bassin ne relève pas d'une déclaration préalable.";
   const photos = validerPhotos(corps.photos);
   if (!photos) e.photos = "Photos invalides : reprenez-les.";
+  else if (bassin && Object.values(photos.vues ?? {}).some((v) => distanceM(v, bassin.centre) > VUE_MAX_M))
+    e.photos = "L'endroit d'une photo est à plus de 500 m de la piscine : touchez la carte là où vous vous teniez.";
   else if (bassin?.visibleRue && !photosCompletes(photos))
     e.photos = "Piscine visible de la rue : photo de près, photo de loin et les 4 coins du bassin sont nécessaires.";
   if (corps.consentement !== true) e.consentement = "Merci d'accepter l'utilisation de vos informations pour votre dossier.";
@@ -597,6 +618,7 @@ export function ficheWorkflow(d: DemandeDp) {
             ...(d.photos.proche ? { proche: d.photos.proche } : {}),
             ...(d.photos.lointaine ? { lointaine: d.photos.lointaine } : {}),
             ...(d.photos.proche && d.photos.coins?.length === 4 ? { insertion: { photo: "proche", coins_px: d.photos.coins, repere_px: d.photos.repere } } : {}),
+            ...(d.photos.vues ? { points_de_vue_wgs84: d.photos.vues } : {}),
           },
         }
       : {}),
