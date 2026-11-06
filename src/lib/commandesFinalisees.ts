@@ -1,14 +1,15 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { del, list, put } from "@vercel/blob";
+import { d1Configure, docEcrire, docLire, docSupprimer } from "@/lib/d1";
 
 /**
  * Marque des commandes déjà confirmées, pour ne jamais envoyer deux fois la
  * confirmation et la fiche : deux onglets ouverts (le tunnel et le lien de
  * reprise), un double clic ou un rechargement peuvent finaliser la même
  * commande. Le nom du fichier est une empreinte du mandat : aucune donnée
- * personnelle n'est écrite. Sans stockage Vercel (en local), la marque est
- * gardée en mémoire.
+ * personnelle n'est écrite. Stockage Cloudflare D1 (d1.ts) quand il est configuré, sinon Vercel Blob ; en local,
+ * la marque est gardée en mémoire.
  */
 
 const PREFIXE = "commandes-finalisees/";
@@ -20,6 +21,7 @@ const stockageVercel = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 
 export async function dejaFinalisee(mandatId: string): Promise<boolean> {
   const cle = empreinte(mandatId);
+  if (d1Configure()) return (await docLire<number>(`${PREFIXE}${cle}`)) !== null;
   if (!stockageVercel()) return enMemoire().has(cle);
   return (await list({ prefix: `${PREFIXE}${cle}`, limit: 1 })).blobs.length > 0;
 }
@@ -27,6 +29,10 @@ export async function dejaFinalisee(mandatId: string): Promise<boolean> {
 /** Pose la marque ; renvoie de quoi l'ôter si l'envoi des e-mails échoue ensuite. */
 export async function marquerFinalisee(mandatId: string): Promise<() => Promise<void>> {
   const cle = empreinte(mandatId);
+  if (d1Configure()) {
+    await docEcrire(`${PREFIXE}${cle}`, Date.now());
+    return () => docSupprimer(`${PREFIXE}${cle}`);
+  }
   if (!stockageVercel()) {
     enMemoire().add(cle);
     return async () => void enMemoire().delete(cle);

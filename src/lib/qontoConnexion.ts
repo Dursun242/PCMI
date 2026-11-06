@@ -1,6 +1,7 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { del, list, put } from "@vercel/blob";
+import { d1Configure, docEcrire, docLire } from "@/lib/d1";
 import { site } from "@/config/site";
 import { sendToClient } from "@/lib/mailer";
 import { configQonto, type ConfigQonto } from "@/lib/qonto";
@@ -81,7 +82,39 @@ const stockageMemoire: StockageJetons = {
   ecrire: async (j) => void (memoire.__pcmiJetonsQonto = j),
 };
 
+/**
+ * Jetons dans Cloudflare D1 (06/11/2026, quota Blob : chaque renouvellement coûtait un put, un list et un del), un
+ * seul document chiffré. À la première lecture, les jetons encore dans Blob y sont repris puis recopiés dans D1.
+ */
+function stockageD1Brut(secret: string): StockageJetons {
+  const cle = `${dossier(secret)}jetons`;
+  const blob = process.env.BLOB_READ_WRITE_TOKEN ? stockageBlobBrut(secret) : null;
+  return {
+    async lire() {
+      const chiffre = await docLire<string>(cle);
+      if (chiffre) {
+        const clair = dechiffrer(chiffre, secret);
+        return clair ? (JSON.parse(clair) as Jetons) : null;
+      }
+      const anciens = blob ? await blob.lire() : null;
+      if (anciens) await docEcrire(cle, chiffrer(JSON.stringify(anciens), secret));
+      return anciens;
+    },
+    async ecrire(jetons) {
+      await docEcrire(cle, chiffrer(JSON.stringify(jetons), secret));
+    },
+  };
+}
+
+const stockagesD1 = new Map<string, StockageJetons>();
+
 export function stockageJetons(secret: string): StockageJetons {
+  if (d1Configure()) {
+    const k = dossier(secret);
+    let s = stockagesD1.get(k);
+    if (!s) stockagesD1.set(k, (s = stockageAvecCache(stockageD1Brut(secret), DUREE_CACHE_JETONS_MS)));
+    return s;
+  }
   return process.env.BLOB_READ_WRITE_TOKEN ? stockageBlob(secret) : stockageMemoire;
 }
 
