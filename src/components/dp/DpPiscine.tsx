@@ -3,12 +3,12 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import ChampAdresse from "@/components/ChampAdresse";
 import CarteParcelles from "@/components/planche/CarteParcelles";
 import ReglagesBassin from "@/components/dp/ReglagesBassin";
 import { trackEvent } from "@/lib/analytics";
-import { PRIX_DP_PISCINE_TTC, angleTerrain, centreContour, dansPolygone, formesBassin, regimeIndicatif, type Bassin, type ErreursDp } from "@/lib/dpPiscine";
+import { PRIX_DP_PISCINE_TTC, RECUL_CONSEILLE_M, angleTerrain, distanceLimites, centreContour, dansPolygone, formesBassin, regimeIndicatif, type Bassin, type ErreursDp } from "@/lib/dpPiscine";
 import { referenceCourte, type ParcelleCandidate, type RechercheTerrain } from "@/lib/planche";
 
 const CartePiscine = dynamic(() => import("@/components/dp/CartePiscine"), { ssr: false });
@@ -25,6 +25,25 @@ function Etape({ n, titre, children, actif = true }: { n: number; titre: string;
       {children}
     </section>
   );
+}
+
+/** Brouillon gardé dans le navigateur : le client corrige son bassin après un contrôle bloquant, sans tout ressaisir. */
+const BROUILLON = "dp-piscine-brouillon";
+interface Brouillon {
+  q: string;
+  idu: string;
+  bassin: Bassin;
+  contact: { prenom: string; nom: string; email: string; telephone: string };
+  residence: "principale" | "secondaire";
+}
+
+function lireBrouillon(): Brouillon | null {
+  try {
+    const b = JSON.parse(localStorage.getItem(BROUILLON) ?? "null") as Brouillon | null;
+    return b && typeof b.q === "string" && b.bassin ? b : null;
+  } catch {
+    return null;
+  }
 }
 
 function bassinInitial(p: ParcelleCandidate): Bassin {
@@ -69,7 +88,7 @@ export default function DpPiscine() {
     setBassin(bassinInitial(p));
   }
 
-  async function chercher(texte: string) {
+  async function chercher(texte: string, reprise?: Brouillon) {
     setQ(texte);
     setCherche(true);
     setErreurRecherche(null);
@@ -82,7 +101,12 @@ export default function DpPiscine() {
         return;
       }
       setRecherche(json as RechercheTerrain);
-      if (json.parcelles[0]) choisir(json.parcelles[0]);
+      const liste = json.parcelles as ParcelleCandidate[];
+      const deja = reprise ? liste.find((x) => x.idu === reprise.idu) : undefined;
+      if (deja && reprise) {
+        setParcelle(deja);
+        setBassin(reprise.bassin);
+      } else if (liste[0]) choisir(liste[0]);
       trackEvent("dp_piscine_terrain", {});
     } catch {
       setErreurRecherche("Recherche impossible. Vérifiez votre connexion.");
@@ -91,7 +115,19 @@ export default function DpPiscine() {
     }
   }
 
+  // Retour depuis la page de suivi (« Corriger mon bassin ») : on reprend le brouillon.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("reprendre") !== "1") return;
+    const b = lireBrouillon();
+    if (!b) return;
+    setContact((c) => ({ ...c, ...b.contact }));
+    setResidence(b.residence);
+    void chercher(b.q, b);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const contour = parcelle?.contours[0] ?? [];
+  const distance = bassin && contour.length ? distanceLimites(formesBassin(bassin).bassin, contour) : null;
   const depasse = Boolean(bassin && contour.length && formesBassin(bassin).plage.some((pt) => !dansPolygone(pt, contour)));
   const pret = Boolean(parcelle && bassin && regimeIndicatif(bassin) === "dp" && !depasse);
 
@@ -101,6 +137,12 @@ export default function DpPiscine() {
     setEnvoi(true);
     setErreurs({});
     setErreurEnvoi(null);
+    try {
+      const { prenom, nom, email, telephone } = contact;
+      localStorage.setItem(BROUILLON, JSON.stringify({ q, idu: parcelle.idu, bassin, contact: { prenom, nom, email, telephone }, residence } satisfies Brouillon));
+    } catch {
+      /* navigation privée : pas de brouillon, le client ressaisira */
+    }
     try {
       const r = await fetch("/api/dp-piscine", {
         method: "POST",
@@ -157,8 +199,15 @@ export default function DpPiscine() {
       <Etape n={2} titre="Votre piscine" actif={Boolean(bassin)}>
         {parcelle && bassin && (
           <div className="grid gap-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)]">
-            <CartePiscine key={parcelle.idu} contours={parcelle.contours} bassin={bassin} onDeplacer={(centre) => setBassin((b) => (b ? { ...b, centre } : b))} />
-            <ReglagesBassin bassin={bassin} onChange={setBassin} depasse={depasse} />
+            <CartePiscine
+              key={parcelle.idu}
+              contours={parcelle.contours}
+              bassin={bassin}
+              onDeplacer={(centre) => setBassin((b) => (b ? { ...b, centre } : b))}
+              distance={distance}
+              tropPres={Boolean(distance && distance.d < RECUL_CONSEILLE_M)}
+            />
+            <ReglagesBassin bassin={bassin} onChange={setBassin} depasse={depasse} distance={distance?.d ?? null} />
           </div>
         )}
       </Etape>

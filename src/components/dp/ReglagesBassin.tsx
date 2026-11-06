@@ -1,11 +1,13 @@
 "use client";
 
-import { BORNES, COTES, SECURITES, TYPES_BASSIN, orientationCote, regimeIndicatif, surfaceBassin, type Bassin, type CoteBassin, type Securite, type TypeBassin } from "@/lib/dpPiscine";
+import { BORNES, COTES, RECUL_CONSEILLE_M, SECURITES, TYPES_BASSIN, orientationCote, regimeIndicatif, surfaceBassin, type Bassin, type CoteBassin, type Securite, type TypeBassin } from "@/lib/dpPiscine";
 
 interface Props {
   bassin: Bassin;
   onChange: (b: Bassin) => void;
   depasse: boolean;
+  /** Plus courte distance du bassin aux limites du terrain (m). */
+  distance: number | null;
 }
 
 const fmt = (n: number) => n.toLocaleString("fr-FR", { maximumFractionDigits: 2 });
@@ -42,7 +44,7 @@ function Nombre({ id, label, valeur, bornes, pas, onChange, aide }: {
 }
 
 /** Dimensions, orientation, margelles, plage, local technique et sécurité du bassin. */
-export default function ReglagesBassin({ bassin: b, onChange, depasse }: Props) {
+export default function ReglagesBassin({ bassin: b, onChange, depasse, distance }: Props) {
   const maj = (p: Partial<Bassin>) => onChange({ ...b, ...p });
   const uniforme = COTES.every((k) => b.plage[k] === b.plage.petit_cote_1);
   const regime = regimeIndicatif(b);
@@ -70,6 +72,13 @@ export default function ReglagesBassin({ bassin: b, onChange, depasse }: Props) 
         <p className="hint">Placez le bassin avec la poignée noire sur la carte, ou touchez la carte à l&apos;endroit voulu.</p>
       </div>
       {depasse && <p role="alert" className="border-l-2 border-alert pl-4 text-sm text-alert">La plage ou le bassin dépasse de votre terrain : déplacez-le ou réduisez-le.</p>}
+      {!depasse && distance !== null && (
+        <p aria-live="polite" className={distance < RECUL_CONSEILLE_M ? "border-l-2 border-alert pl-4 text-sm text-alert" : "text-sm text-ink-2"}>
+          Bassin à <strong>{fmt(distance)} m</strong> de la limite la plus proche (trait pointillé sur la carte).
+          {distance < RECUL_CONSEILLE_M &&
+            ` La plupart des PLU demandent ${RECUL_CONSEILLE_M} m : éloignez le bassin de la limite, sinon le dossier risque d'être refusé.`}
+        </p>
+      )}
 
       <div className="grid gap-6 sm:grid-cols-2">
         <Nombre id="dp-m" label="Margelles (m)" valeur={b.margelle} bornes={BORNES.margelle} pas={0.05} onChange={(n) => maj({ margelle: n })} aide="Largeur de la margelle autour du bassin." />

@@ -3,6 +3,7 @@ import {
   angleTerrain,
   dansPolygone,
   decaler,
+  distanceLimites,
   ecart,
   ficheWorkflow,
   formesBassin,
@@ -87,6 +88,17 @@ describe("géométrie du bassin sur la carte", () => {
     const c = [centre, decaler(centre, 30, 0), decaler(centre, 30, 10), decaler(centre, 0, 10)];
     expect(dansPolygone(decaler(centre, 5, 5), c)).toBe(true);
     expect(dansPolygone(decaler(centre, 35, 5), c)).toBe(false);
+  });
+});
+
+describe("distance du bassin aux limites", () => {
+  test("bassin de 8 x 4 à 2 m de la limite ouest d'un terrain de 30 x 20", () => {
+    const terrain = [centre, decaler(centre, 30, 0), decaler(centre, 30, 20), decaler(centre, 0, 20), centre];
+    const g = formesBassin({ ...bassin, angle: 0, centre: decaler(centre, 6, 10) });
+    const r = distanceLimites(g.bassin, terrain);
+    expect(r?.d).toBeCloseTo(2, 2);
+    const [dx, dy] = ecart(r!.de, r!.a);
+    expect(Math.hypot(dx, dy)).toBeCloseTo(2, 2);
   });
 });
 

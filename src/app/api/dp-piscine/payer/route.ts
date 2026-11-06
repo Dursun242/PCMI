@@ -1,6 +1,4 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { ADMIN_COOKIE_NAME, verifySessionToken } from "@/lib/adminAuth";
 import { PRIX_DP_PISCINE_TTC, TVA_DP_PISCINE, prixHt } from "@/lib/dpPiscine";
 import { dossierDuClient, envoyer, marquerPaye, payable, vueClient } from "@/lib/dpPiscineServeur";
 import { majDp } from "@/lib/dpPiscineStore";
@@ -18,8 +16,7 @@ export const runtime = "nodejs";
 export async function POST(req: Request) {
   if (rateLimited(`dp-payer:${ipOf(req)}`, 10)) return NextResponse.json({ ok: false }, { status: 429 });
   const corps = (await req.json().catch(() => ({}))) as { id?: string; k?: string; test?: boolean; cgv?: boolean };
-  const k = String(corps.k ?? "");
-  const d = await dossierDuClient(String(corps.id ?? ""), k);
+  const d = await dossierDuClient(String(corps.id ?? ""), String(corps.k ?? ""));
   if (!d) return NextResponse.json({ ok: false, error: "Dossier introuvable." }, { status: 404 });
   const { e, secret } = d;
   if (e.paye) return NextResponse.json({ ok: true, ...vueClient(e) });
@@ -27,10 +24,10 @@ export async function POST(req: Request) {
   if (corps.cgv !== true) return NextResponse.json({ ok: false, error: "Merci d'accepter les conditions générales de vente." }, { status: 400 });
 
   if (corps.test === true) {
-    if (!(await verifySessionToken((await cookies()).get(ADMIN_COOKIE_NAME)?.value))) {
+    if (!d.admin) {
       return NextResponse.json({ ok: false, error: "Paiement test réservé à l'administrateur." }, { status: 403 });
     }
-    return NextResponse.json({ ok: true, ...vueClient(await marquerPaye(e, secret, k, "test")) });
+    return NextResponse.json({ ok: true, ...vueClient(await marquerPaye(e, secret, "test")) });
   }
 
   if (e.paiement) return NextResponse.json({ ok: true, url: e.paiement.url });

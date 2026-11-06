@@ -166,6 +166,38 @@ export function dansPolygone([x, y]: [number, number], poly: [number, number][])
   return dedans;
 }
 
+/** Recul aux limites demandé par la plupart des PLU (le générateur applique la règle lue dans le PLU du terrain). */
+export const RECUL_CONSEILLE_M = 3;
+
+function pointSegment(p: [number, number], a: [number, number], b: [number, number]): [number, [number, number]] {
+  const [abx, aby] = [b[0] - a[0], b[1] - a[1]];
+  const l2 = abx * abx + aby * aby;
+  const t = l2 ? Math.max(0, Math.min(1, ((p[0] - a[0]) * abx + (p[1] - a[1]) * aby) / l2)) : 0;
+  const q: [number, number] = [a[0] + t * abx, a[1] + t * aby];
+  return [Math.hypot(p[0] - q[0], p[1] - q[1]), q];
+}
+
+/**
+ * Plus courte distance (m) du bassin aux limites du terrain, et ses deux extrémités [lon, lat] : affichée en direct au
+ * client et tracée sur la carte (même calcul que le contrôle du générateur, à quelques centimètres près).
+ */
+export function distanceLimites(bassin: [number, number][], contour: [number, number][]): { d: number; de: [number, number]; a: [number, number] } | null {
+  if (bassin.length < 3 || contour.length < 3) return null;
+  const o = bassin[0];
+  const m = (p: [number, number]) => ecart(o, p);
+  const lonlat = ([x, y]: [number, number]) => decaler(o, x, y);
+  const B = bassin.map(m);
+  const C = contour.map(m);
+  let best: { d: number; de: [number, number]; a: [number, number] } | null = null;
+  const essayer = (d: number, de: [number, number], a: [number, number]) => {
+    if (!best || d < best.d) best = { d, de, a };
+  };
+  for (let i = 0; i + 1 < C.length; i++) for (const p of B) { const [d, q] = pointSegment(p, C[i], C[i + 1]); essayer(d, p, q); }
+  for (let i = 0; i < B.length; i++) for (const p of C) { const [d, q] = pointSegment(p, B[i], B[(i + 1) % B.length]); essayer(d, q, p); }
+  const r = best as { d: number; de: [number, number]; a: [number, number] } | null;
+  return r ? { d: Math.round(r.d * 100) / 100, de: lonlat(r.de), a: lonlat(r.a) } : null;
+}
+
 /* ---------- Validation (serveur) ---------- */
 
 const TEXTE = /^[\p{L}\p{N}\s'’\-.,/°()&]+$/u;

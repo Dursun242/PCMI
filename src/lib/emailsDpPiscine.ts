@@ -44,14 +44,16 @@ export function emailClientPret(c: ContactDp, e: Pick<EntreeDp, "reference" | "c
   };
 }
 
-export function emailClientVerification(c: ContactDp, e: Pick<EntreeDp, "reference" | "commune">) {
+export function emailClientVerification(c: ContactDp, e: Pick<EntreeDp, "reference" | "commune">, echecs: string[], suivi: string) {
   return {
-    subject: "Votre déclaration de piscine : une vérification de notre part",
+    subject: "Votre déclaration de piscine : un point à corriger",
     html: clientWrap(
       `<p>Bonjour ${esc(c.prenom)},</p>
-       <p>Votre terrain (parcelle ${esc(e.reference)}, ${esc(e.commune)}) demande une vérification par notre bureau d'études avant de
-       finaliser le dossier (secteur protégé, photos nécessaires, recul à confirmer…). Nous revenons vers vous sous 24 h ouvrées.</p>
-       <p>Rien n'est à régler pour le moment.</p>`,
+       <p>Votre dossier (parcelle ${esc(e.reference)}, ${esc(e.commune)}) ne passe pas encore tous nos contrôles :</p>
+       <ul>${echecs.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
+       <p>Le plus souvent, il suffit de déplacer ou de réduire le bassin : corrigez-le depuis votre page de suivi et relancez,
+       c'est gratuit. Si le point demande notre avis (secteur protégé, photos), nous revenons vers vous sous 24 h ouvrées.</p>
+       ${bouton(suivi, "Corriger mon dossier")}`,
     ),
   };
 }

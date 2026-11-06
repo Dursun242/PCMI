@@ -1,7 +1,7 @@
 "use client";
 
 import "leaflet/dist/leaflet.css";
-import type { Map as CarteLeaflet, Marker, Polygon } from "leaflet";
+import type { Map as CarteLeaflet, Marker, Polygon, Polyline } from "leaflet";
 import { useEffect, useRef, useState } from "react";
 import { formesBassin, type Bassin } from "@/lib/dpPiscine";
 
@@ -10,6 +10,10 @@ interface Props {
   contours: [number, number][][];
   bassin: Bassin;
   onDeplacer: (centre: [number, number]) => void;
+  /** Plus courte distance du bassin aux limites, tracée en pointillé. */
+  distance: { d: number; de: [number, number]; a: [number, number] } | null;
+  /** Distance trop courte (sous le recul conseillé) : trait rouge. */
+  tropPres: boolean;
 }
 
 const TUILES =
@@ -24,11 +28,11 @@ const ll = (pts: [number, number][]) => pts.map(([lon, lat]) => [lat, lon] as [n
  * la carte) pour placer le bassin ; dimensions et orientation se règlent dans
  * le formulaire, le dessin suit.
  */
-export default function CartePiscine({ contours, bassin, onDeplacer }: Props) {
+export default function CartePiscine({ contours, bassin, onDeplacer, distance, tropPres }: Props) {
   const conteneur = useRef<HTMLDivElement>(null);
   const carte = useRef<CarteLeaflet | null>(null);
   const L = useRef<typeof import("leaflet") | null>(null);
-  const formes = useRef<{ plage: Polygon; margelles: Polygon; bassin: Polygon; local: Polygon; poignee: Marker } | null>(null);
+  const formes = useRef<{ plage: Polygon; margelles: Polygon; bassin: Polygon; local: Polygon; poignee: Marker; recul: Polyline } | null>(null);
   const rappel = useRef(onDeplacer);
   const [pret, setPret] = useState(false);
   rappel.current = onDeplacer;
@@ -60,6 +64,7 @@ export default function CartePiscine({ contours, bassin, onDeplacer }: Props) {
         margelles: l.polygon([], style("#cdbf9f", 0.95)).addTo(m),
         bassin: l.polygon([], { ...style("#2b8fd1", 0.85), color: "#ffffff" }).addTo(m),
         local: l.polygon([], style("#6b6f6c", 0.9)).addTo(m),
+        recul: l.polyline([], { color: "#ffffff", weight: 3, dashArray: "6 6", interactive: false }).addTo(m),
         poignee: poignee.addTo(m),
       };
       poignee.on("drag", (ev) => {
@@ -87,9 +92,11 @@ export default function CartePiscine({ contours, bassin, onDeplacer }: Props) {
     f.margelles.setLatLngs(ll(g.margelles));
     f.bassin.setLatLngs(ll(g.bassin));
     f.local.setLatLngs(g.local ? ll(g.local) : []);
+    f.recul.setLatLngs(distance ? ll([distance.de, distance.a]) : []);
+    f.recul.setStyle({ color: tropPres ? "#e0533d" : "#ffffff" });
     const [lon, lat] = bassin.centre;
     if (!f.poignee.getLatLng().equals([lat, lon])) f.poignee.setLatLng([lat, lon]);
-  }, [pret, bassin]);
+  }, [pret, bassin, distance, tropPres]);
 
   return (
     <div className="relative self-start overflow-hidden border border-ink bg-forest">
