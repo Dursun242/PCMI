@@ -62,7 +62,9 @@ export interface PhotosDp {
 export const photosCompletes = (p: PhotosDp | undefined): boolean =>
   Boolean(p?.proche && p.lointaine && p.coins?.length === 4 && p.repere);
 
-const URL_BLOB = /^https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\/[\w\-./%]+$/i;
+// photos du client : Vercel Blob (avant le 06/11/2026) ou fichiers R2 servis par le site (/api/fichiers/…)
+const URL_BLOB =
+  /^https:\/\/(?:[a-z0-9]+\.public\.blob\.vercel-storage\.com|(?:www\.)?permis-maison-individuelle\.fr\/api\/fichiers)\/[\w\-./%]+$/i;
 
 function validerPhotos(v: unknown): PhotosDp | null {
   if (!v || typeof v !== "object") return {};

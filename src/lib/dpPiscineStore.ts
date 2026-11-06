@@ -3,6 +3,7 @@ import { createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypt
 import { put } from "@vercel/blob";
 import { lireJsonPublic } from "@/lib/blobPublic";
 import { d1Configure, docEcrire, docLister } from "@/lib/d1";
+import { r2Configure, r2Ecrire } from "@/lib/r2";
 
 /**
  * Registre des DP piscine en ligne (Vercel Blob) : une entrée par dossier.
@@ -168,6 +169,7 @@ export async function rangerFichier(
 ): Promise<string> {
   const dossier = type === "image/jpeg" ? `dp-piscine-apercus/${id}` : `dp-piscine-fichiers/${signe(id, "fichiers", secret)}`;
   const cheminFichier = `${dossier}/${randomBytes(8).toString("hex")}-${nom}`;
+  if (r2Configure()) return r2Ecrire(cheminFichier, contenu, type);
   if (!vercel()) {
     fichiersEnMemoire().set(cheminFichier, contenu);
     return `/api/dp-piscine/fichier-local?p=${encodeURIComponent(cheminFichier)}`;
