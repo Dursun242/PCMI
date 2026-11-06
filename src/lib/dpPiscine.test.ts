@@ -1,6 +1,11 @@
 import { describe, expect, test } from "vitest";
 import {
   angleTerrain,
+  arasePrevue,
+  cotesLimites,
+  distanceBati,
+  matrice3d,
+  placementInitial,
   dansPolygone,
   decaler,
   distanceLimites,
@@ -176,5 +181,38 @@ describe("fiche transmise à l'outil", () => {
 
   test("prix HT d'un prix TTC de 100 € à 20 %", () => {
     expect(prixHt(100, 0.2)).toBe("83.33");
+  });
+});
+
+describe("étapes en direct", () => {
+  const terrain = [centre, decaler(centre, 30, 0), decaler(centre, 30, 20), decaler(centre, 0, 20), centre];
+  const maison = [decaler(centre, 2, 2), decaler(centre, 12, 2), decaler(centre, 12, 10), decaler(centre, 2, 10), decaler(centre, 2, 2)];
+
+  test("deux cotes aux limites, dans deux directions différentes", () => {
+    const g = formesBassin({ ...bassin, angle: 0, centre: decaler(centre, 8, 15) });
+    const c = cotesLimites(g.bassin, [terrain]);
+    expect(c.map((x) => x.d)).toEqual([3, 4]); // nord (20 - 17) puis ouest (8 - 4)
+  });
+
+  test("premier emplacement : dans le terrain, hors de la maison, à 1,50 m au moins", () => {
+    const pl = placementInitial({ ...bassin, localTechnique: false, plage: { petit_cote_1: 1, petit_cote_2: 1, grand_cote_1: 1, grand_cote_2: 1 } }, [terrain], [maison]);
+    const g = formesBassin({ ...bassin, ...pl, localTechnique: false, plage: { petit_cote_1: 1, petit_cote_2: 1, grand_cote_1: 1, grand_cote_2: 1 } });
+    expect(distanceBati(g.bassin, [maison])!.d).toBeGreaterThanOrEqual(1.5);
+  });
+
+  test("photomontage : la matrice envoie les coins de la texture sur les 4 points de la photo", () => {
+    const src: [number, number][] = [[0, 400], [1000, 400], [1000, 0], [0, 0]];
+    const dst: [number, number][] = [[43, 300], [380, 290], [320, 180], [90, 185]];
+    const m = matrice3d(src, dst)!.replace(/^matrix3d\(|\)$/g, "").split(",").map(Number);
+    for (let i = 0; i < 4; i++) {
+      const [x, y] = src[i];
+      const w = m[3] * x + m[7] * y + m[15];
+      expect((m[0] * x + m[4] * y + m[12]) / w).toBeCloseTo(dst[i][0], 4);
+      expect((m[1] * x + m[5] * y + m[13]) / w).toBeCloseTo(dst[i][1], 4);
+    }
+  });
+
+  test("margelles : TN moyen aux 5 cm, + 5 cm", () => {
+    expect(arasePrevue([85.21, 85.28, 85.3])).toBe(85.3); // moyenne 85,263 -> 85,25 + 0,05
   });
 });

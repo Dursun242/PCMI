@@ -39,6 +39,7 @@ type Events = {
   /** DP piscine en ligne : terrain trouvé, dossier lancé, aperçu vu, paiement demandé, dossier payé. */
   dp_piscine_terrain: Record<string, never>;
   dp_piscine_lancee: Record<string, never>;
+  dp_piscine_etape: { etape: "emplacement" | "coupe" | "photomontage" };
   dp_piscine_apercu: { statut: string };
   dp_piscine_payer: Record<string, never>;
   dp_piscine_paye: Record<string, never>;
