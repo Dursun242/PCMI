@@ -77,7 +77,11 @@ export async function verifierPaiement(e: EntreeDp, secret: string): Promise<Ent
   if (e.paye || !e.paiement) return e;
   try {
     const lien = await lireLienPaiement(await ouvrirQonto(), e.paiement.lienId);
-    if (lien.status === "paid") return marquerPaye(e, secret, "qonto");
+    if (lien.status !== "paid") return e;
+    // lecture fraîche avant d'écrire : deux actualisations rapprochées ne doivent pas envoyer deux e-mails de paiement
+    const frais = await lireDp(e.id, secret, true);
+    if (frais?.paye) return frais;
+    return marquerPaye(e, secret, "qonto");
   } catch (err) {
     console.error("[dp-piscine] statut du paiement illisible", err);
   }

@@ -1,6 +1,7 @@
 import "server-only";
 import { createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypto";
-import { list, put } from "@vercel/blob";
+import { put } from "@vercel/blob";
+import { lireJsonPublic } from "@/lib/blobPublic";
 
 /**
  * Registre des DP piscine en ligne (Vercel Blob) : une entrée par dossier.
@@ -85,19 +86,28 @@ function fusionner(facettes: Facette[]): EntreeDp | null {
   if (!triees.length) return null;
   let e = {} as EntreeDp;
   for (const f of triees) e = { ...e, ...f.donnees, fichiers: { ...e.fichiers, ...f.donnees.fichiers } };
+  delete (e as Partial<EntreeDp> & { _le?: number })._le;
   if (!e.id) return null;
   return { ...e, maj: triees.at(-1)!.le };
 }
 
-export async function lireDp(id: string, secret: string): Promise<EntreeDp | null> {
+const FACETTES: NomFacette[] = ["base", "erreur", "resultat", "fichier-dossier", "fichier-cerfa", "paiement", "paye"];
+
+/**
+ * Le dossier, facettes lues directement par leur adresse (opérations simples, cache du CDN d'une minute au plus) :
+ * plus aucun `list()` à chaque actualisation de la page de suivi (06/11/2026, quota Blob). Chaque facette porte
+ * l'instant de son écriture (« _le ») pour les réunir dans l'ordre. `frais` : sans le cache du CDN.
+ */
+export async function lireDp(id: string, secret: string, frais = false): Promise<EntreeDp | null> {
   if (!/^[0-9a-f-]{36}$/.test(id)) return null;
   if (!vercel()) return fusionner([...(enMemoire().get(id)?.values() ?? [])]);
-  // le préfixe couvre aussi l'ancienne entrée d'un seul fichier (« <prefixe>.json », dossiers d'avant le 06/11/2026)
-  const { blobs } = await list({ prefix: prefixe(id, secret), limit: 50 });
+  const p = prefixe(id, secret);
+  // l'ancienne entrée d'un seul fichier (« <prefixe>.json », dossiers d'avant le 06/11/2026) compte comme la base
+  const chemins = [`${p}.json`, ...FACETTES.map((n) => `${p}/${n}.json`)];
   const lues = await Promise.all(
-    blobs.map(async (b) => {
-      const r = await fetch(`${b.url}?v=${b.uploadedAt.getTime()}`, { cache: "no-store" });
-      return r.ok ? ({ donnees: (await r.json()) as Partial<EntreeDp>, le: b.uploadedAt.getTime() } satisfies Facette) : null;
+    chemins.map(async (c, i) => {
+      const d = await lireJsonPublic<Partial<EntreeDp> & { _le?: number }>(c, frais).catch(() => null);
+      return d ? ({ donnees: d, le: d._le ?? i } satisfies Facette) : null;
     }),
   );
   return fusionner(lues.filter((f): f is Facette => f !== null));
@@ -111,7 +121,7 @@ export async function ecrireFacette(id: string, secret: string, nom: NomFacette,
     enMemoire().set(id, m);
     return;
   }
-  await put(`${prefixe(id, secret)}/${nom}.json`, JSON.stringify(donnees), {
+  await put(`${prefixe(id, secret)}/${nom}.json`, JSON.stringify({ ...donnees, _le: Date.now() }), {
     access: "public",
     contentType: "application/json",
     addRandomSuffix: false,
@@ -122,10 +132,11 @@ export async function ecrireFacette(id: string, secret: string, nom: NomFacette,
 
 export const ecrireDp = (e: EntreeDp, secret: string) => ecrireFacette(e.id, secret, "base", e);
 
-/** Écrit une facette puis relit le dossier entier. */
+/** Écrit une facette, puis renvoie le dossier relu avec cette facette par-dessus (le CDN peut ne pas l'avoir encore). */
 export async function majDp(id: string, secret: string, nom: NomFacette, patch: Partial<EntreeDp>): Promise<EntreeDp | null> {
   await ecrireFacette(id, secret, nom, patch);
-  return lireDp(id, secret);
+  const e = await lireDp(id, secret);
+  return e ? { ...e, ...patch, fichiers: { ...e.fichiers, ...patch.fichiers }, maj: Date.now() } : null;
 }
 
 /**
