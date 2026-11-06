@@ -37,7 +37,7 @@ interface Brouillon {
   idus: string[];
   bassin: Bassin;
   photos?: Photos;
-  contact: { prenom: string; nom: string; email: string; telephone: string } & Partial<Naissance>;
+  contact: { prenom: string; nom: string; email: string; telephone: string } & Partial<Naissance> & Partial<typeof ADRESSE_VIDE>;
   residence: "principale" | "secondaire";
 }
 
@@ -48,6 +48,7 @@ interface Naissance {
   paysNaissance: string;
 }
 const NAISSANCE_VIDE: Naissance = { naissance: "", communeNaissance: "", deptNaissance: "", paysNaissance: "France" };
+const ADRESSE_VIDE = { autreAdresse: false, adresseDeclarant: "" };
 
 function lireBrouillon(): Brouillon | null {
   try {
@@ -107,7 +108,7 @@ export default function DpPiscine() {
   };
   const allerA = (id: string) => requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" }));
   const [photos, setPhotos] = useState<Photos>({});
-  const [contact, setContact] = useState({ prenom: "", nom: "", email: "", telephone: "", ...NAISSANCE_VIDE, site_web: "" });
+  const [contact, setContact] = useState({ prenom: "", nom: "", email: "", telephone: "", ...NAISSANCE_VIDE, ...ADRESSE_VIDE, site_web: "" });
   const [residence, setResidence] = useState<"principale" | "secondaire">("principale");
   const [consentement, setConsentement] = useState(false);
   const [erreurs, setErreurs] = useState<ErreursDp>({});
@@ -226,8 +227,8 @@ export default function DpPiscine() {
     setErreurs({});
     setErreurEnvoi(null);
     try {
-      const { prenom, nom, email, telephone, naissance, communeNaissance, deptNaissance, paysNaissance } = contact;
-      const garde = { prenom, nom, email, telephone, naissance, communeNaissance, deptNaissance, paysNaissance };
+      const { prenom, nom, email, telephone, naissance, communeNaissance, deptNaissance, paysNaissance, autreAdresse, adresseDeclarant } = contact;
+      const garde = { prenom, nom, email, telephone, naissance, communeNaissance, deptNaissance, paysNaissance, autreAdresse, adresseDeclarant };
       localStorage.setItem(BROUILLON, JSON.stringify({ q, idus: parcelles.map((p) => p.idu), bassin, photos, contact: garde, residence } satisfies Brouillon));
     } catch {
       /* navigation privée : pas de brouillon, le client ressaisira */
@@ -242,6 +243,7 @@ export default function DpPiscine() {
           ville: recherche.adresse.ville,
           commune: parcelle.commune,
           ...contact,
+          adresseDeclarant: contact.autreAdresse ? contact.adresseDeclarant : "",
           residence,
           consentement,
           bassin,
@@ -407,6 +409,17 @@ export default function DpPiscine() {
               {erreurs.paysNaissance && <p className="text-sm text-alert">{erreurs.paysNaissance}</p>}
             </div>
             <p className="hint sm:col-span-2">La date et le lieu de naissance sont obligatoires sur le Cerfa : sans eux, la mairie déclare le dossier incomplet.</p>
+            <label className="flex cursor-pointer items-center gap-3 text-[0.95rem] sm:col-span-2">
+              <input type="checkbox" className="accent-ink h-4 w-4" checked={contact.autreAdresse} onChange={(e) => setContact({ ...contact, autreAdresse: e.target.checked })} />
+              J&apos;habite à une autre adresse que celle du terrain
+            </label>
+            {contact.autreAdresse && (
+              <div className="field sm:col-span-2">
+                <label htmlFor="dp-adresseDeclarant">Votre adresse (numéro, rue, code postal, commune)</label>
+                <input id="dp-adresseDeclarant" type="text" className="min-h-12" autoComplete="street-address" value={contact.adresseDeclarant} onChange={(e) => setContact({ ...contact, adresseDeclarant: e.target.value })} aria-invalid={Boolean(erreurs.adresseDeclarant)} />
+                {erreurs.adresseDeclarant && <p className="text-sm text-alert">{erreurs.adresseDeclarant}</p>}
+              </div>
+            )}
             <input type="text" name="site_web" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" value={contact.site_web} onChange={(e) => setContact({ ...contact, site_web: e.target.value })} />
           </div>
           <fieldset className="flex flex-wrap gap-6 text-[0.95rem]">

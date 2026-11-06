@@ -187,6 +187,21 @@ describe("validation de la demande", () => {
     expect("demande" in validerDemandeDp(demande({ deptNaissance: "2a" }))).toBe(true);
   });
 
+  test("adresse du déclarant différente du terrain : transmise au Cerfa, code postal exigé", () => {
+    const v = validerDemandeDp(demande({ adresseDeclarant: "5 avenue Foch 75016 Paris" }));
+    expect("demande" in v && ficheWorkflow(v.demande).demandeur.adresse).toBe("5 avenue Foch 75016 Paris");
+    expect("erreurs" in validerDemandeDp(demande({ adresseDeclarant: "chez moi" }))).toBe(true);
+    const w = validerDemandeDp(demande({ adresseDeclarant: "" }));
+    expect("demande" in w && "adresse" in ficheWorkflow(w.demande).demandeur).toBe(false);
+  });
+
+  test("arbres abattus transmis à l'outil (plan de masse)", () => {
+    const v = validerDemandeDp(demande({ bassin: { ...bassin, arbresAbattus: true } }));
+    expect("demande" in v && ficheWorkflow(v.demande).piscine.arbres_abattus).toBe(true);
+    const w = validerDemandeDp(demande());
+    expect("demande" in w && ficheWorkflow(w.demande).piscine.arbres_abattus).toBe(false);
+  });
+
   test("refus : dimensions hors bornes ou texte suspect", () => {
     expect("erreurs" in validerDemandeDp(demande({ bassin: { ...bassin, profondeur: 5 } }))).toBe(true);
     expect("erreurs" in validerDemandeDp(demande({ prenom: "<script>" }))).toBe(true);

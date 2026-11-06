@@ -149,6 +149,13 @@ export default function ReglagesBassin({ bassin: b, onChange, depasse, distance 
         </div>
       )}
       <label className="flex cursor-pointer items-start gap-3 text-[0.95rem]">
+        <input type="checkbox" className="accent-ink mt-1 h-4 w-4" checked={b.arbresAbattus === true} onChange={(e) => maj({ arbresAbattus: e.target.checked })} />
+        <span>
+          Des arbres seront abattus pour faire la piscine
+          <span className="block text-sm text-ink-2">La mairie veut les voir sur le plan de masse : nous les y reportons avec vous avant l&apos;envoi.</span>
+        </span>
+      </label>
+      <label className="flex cursor-pointer items-start gap-3 text-[0.95rem]">
         <input type="checkbox" className="accent-ink mt-1 h-4 w-4" checked={b.visibleRue} onChange={(e) => maj({ visibleRue: e.target.checked })} />
         <span>
           La piscine sera visible depuis la rue
