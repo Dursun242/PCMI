@@ -51,14 +51,24 @@ export interface EntreeDp {
 }
 
 const vercel = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN);
-const memoire = globalThis as typeof globalThis & { __pcmiDp?: Map<string, EntreeDp>; __pcmiDpFichiers?: Map<string, Buffer> };
+const memoire = globalThis as typeof globalThis & { __pcmiDp?: Map<string, Map<string, Facette>>; __pcmiDpFichiers?: Map<string, Buffer> };
 const enMemoire = () => (memoire.__pcmiDp ??= new Map());
 export const fichiersEnMemoire = () => (memoire.__pcmiDpFichiers ??= new Map());
 
 const signe = (id: string, usage: string, secret: string) =>
   createHmac("sha256", createHash("sha256").update(`dp-piscine:${usage}:${secret}`).digest()).update(id).digest("hex").slice(0, 32);
 
-const chemin = (id: string, secret: string) => `dp-piscine/${id}-${signe(id, "entree", secret)}.json`;
+/**
+ * Un dossier = plusieurs petits fichiers (« facettes ») sous un même préfixe signé : la fiche de départ, le résultat de
+ * l'outil, chaque fichier livré, le lien de paiement, le paiement. Chaque envoi n'écrit que sa facette : deux envois
+ * rapprochés (résultat puis plans puis Cerfa, 06/11/2026) ne peuvent plus s'écraser en relisant une version périmée.
+ */
+export type NomFacette = "base" | "erreur" | "resultat" | "fichier-dossier" | "fichier-cerfa" | "paiement" | "paye";
+interface Facette {
+  donnees: Partial<EntreeDp>;
+  le: number;
+}
+const prefixe = (id: string, secret: string) => `dp-piscine/${id}-${signe(id, "entree", secret)}`;
 
 export const nouveauJeton = () => randomBytes(24).toString("base64url");
 export const empreinteJeton = (k: string) => createHash("sha256").update(k).digest("hex");
@@ -69,21 +79,39 @@ export function jetonValide(e: EntreeDp, k: string): boolean {
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
-export async function lireDp(id: string, secret: string): Promise<EntreeDp | null> {
-  if (!/^[0-9a-f-]{36}$/.test(id)) return null;
-  if (!vercel()) return enMemoire().get(id) ?? null;
-  const { blobs } = await list({ prefix: chemin(id, secret), limit: 1 });
-  if (!blobs[0]) return null;
-  const r = await fetch(`${blobs[0].url}?v=${blobs[0].uploadedAt.getTime()}`, { cache: "no-store" });
-  return r.ok ? ((await r.json()) as EntreeDp) : null;
+/** Facettes réunies, de la plus ancienne à la plus récente ; les fichiers livrés s'additionnent. */
+function fusionner(facettes: Facette[]): EntreeDp | null {
+  const triees = [...facettes].sort((a, b) => a.le - b.le);
+  if (!triees.length) return null;
+  let e = {} as EntreeDp;
+  for (const f of triees) e = { ...e, ...f.donnees, fichiers: { ...e.fichiers, ...f.donnees.fichiers } };
+  if (!e.id) return null;
+  return { ...e, maj: triees.at(-1)!.le };
 }
 
-export async function ecrireDp(e: EntreeDp, secret: string): Promise<void> {
+export async function lireDp(id: string, secret: string): Promise<EntreeDp | null> {
+  if (!/^[0-9a-f-]{36}$/.test(id)) return null;
+  if (!vercel()) return fusionner([...(enMemoire().get(id)?.values() ?? [])]);
+  // le préfixe couvre aussi l'ancienne entrée d'un seul fichier (« <prefixe>.json », dossiers d'avant le 06/11/2026)
+  const { blobs } = await list({ prefix: prefixe(id, secret), limit: 50 });
+  const lues = await Promise.all(
+    blobs.map(async (b) => {
+      const r = await fetch(`${b.url}?v=${b.uploadedAt.getTime()}`, { cache: "no-store" });
+      return r.ok ? ({ donnees: (await r.json()) as Partial<EntreeDp>, le: b.uploadedAt.getTime() } satisfies Facette) : null;
+    }),
+  );
+  return fusionner(lues.filter((f): f is Facette => f !== null));
+}
+
+/** Écrit une facette du dossier (elle remplace la précédente du même nom, jamais les autres). */
+export async function ecrireFacette(id: string, secret: string, nom: NomFacette, donnees: Partial<EntreeDp>): Promise<void> {
   if (!vercel()) {
-    enMemoire().set(e.id, e);
+    const m = enMemoire().get(id) ?? new Map<string, Facette>();
+    m.set(nom, { donnees, le: Date.now() + m.size * 1e-3 });
+    enMemoire().set(id, m);
     return;
   }
-  await put(chemin(e.id, secret), JSON.stringify(e), {
+  await put(`${prefixe(id, secret)}/${nom}.json`, JSON.stringify(donnees), {
     access: "public",
     contentType: "application/json",
     addRandomSuffix: false,
@@ -92,12 +120,12 @@ export async function ecrireDp(e: EntreeDp, secret: string): Promise<void> {
   });
 }
 
-export async function majDp(id: string, secret: string, patch: Partial<EntreeDp>): Promise<EntreeDp | null> {
-  const e = await lireDp(id, secret);
-  if (!e) return null;
-  const maj = { ...e, ...patch, maj: Date.now() };
-  await ecrireDp(maj, secret);
-  return maj;
+export const ecrireDp = (e: EntreeDp, secret: string) => ecrireFacette(e.id, secret, "base", e);
+
+/** Écrit une facette puis relit le dossier entier. */
+export async function majDp(id: string, secret: string, nom: NomFacette, patch: Partial<EntreeDp>): Promise<EntreeDp | null> {
+  await ecrireFacette(id, secret, nom, patch);
+  return lireDp(id, secret);
 }
 
 /**

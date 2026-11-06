@@ -75,7 +75,7 @@ export async function POST(req: Request) {
   } catch (err) {
     cause = `Lancement du workflow impossible : ${err instanceof Error ? err.message : String(err)}`;
   }
-  const maj = cause ? ((await majDp(id, secret, { statut: "echec", erreur: cause.slice(0, 300) })) ?? e) : e;
+  const maj = cause ? ((await majDp(id, secret, "erreur", { statut: "echec", erreur: cause.slice(0, 300) })) ?? e) : e;
   await envoyer("accusé au client", () => sendToClient({ to: d.email, ...emailClientDemarre(contact, e, suivi) }));
   await envoyer("alerte interne", () =>
     sendInternal({ ...emailInterne(cause ? "Lancement en échec" : "Nouveau dossier", contact, maj, suivi, cause ?? ""), replyTo: d.email }),
