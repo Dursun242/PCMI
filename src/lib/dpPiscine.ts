@@ -464,7 +464,8 @@ export function validerDemandeDp(corps: Record<string, unknown>): { demande: Dem
   if (!nom) e.nom = "Votre nom.";
   const email = typeof corps.email === "string" ? corps.email.trim() : "";
   if (!EMAIL.test(email)) e.email = "Une adresse e-mail valide : votre dossier y est envoyé.";
-  const telephone = typeof corps.telephone === "string" ? corps.telephone.replace(/[^\d+]/g, "") : "";
+  // « +33 6 79… » ramené à « 06 79… » (format du Cerfa et de l'outil)
+  const telephone = typeof corps.telephone === "string" ? corps.telephone.replace(/[^\d+]/g, "").replace(/^\+33(?=\d{9}$)/, "0").replace(/^0033(?=\d{9}$)/, "0") : "";
   if (telephone && !/^\+?\d{9,15}$/.test(telephone)) e.telephone = "Numéro de téléphone invalide.";
   const bassin = validerBassin(corps.bassin);
   if (!bassin) e.bassin = "Dimensions ou position du bassin invalides.";
