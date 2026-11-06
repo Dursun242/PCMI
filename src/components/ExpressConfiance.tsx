@@ -55,10 +55,10 @@ const PHOTOS = [
 ];
 
 /**
- * /permis-express, juste après le formulaire : qui fait le permis (portrait, avis
- * Google), comment (chronologie, du PLU à l'accord), où (bureau, voiture) et la
- * preuve de permis obtenus (panneaux). Les visiteurs lisent rarement plus bas que
- * la vidéo : la confiance doit venir avant.
+ * /permis-express, juste après le haut de page : qui fait le permis (portrait,
+ * avis Google), comment (chronologie, du PLU à l'accord) et où (bureau,
+ * voiture). Les panneaux de chantier sont plus haut (ExpressPanneaux) : les
+ * visites durent souvent moins de 30 secondes, la preuve doit venir tout de suite.
  */
 export default function ExpressConfiance() {
   return (
@@ -177,32 +177,44 @@ export default function ExpressConfiance() {
             </figcaption>
           </figure>
         </div>
-
-        <h3 className="mt-12 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-bronze">
-          Permis et déclarations obtenus : nos panneaux sur les chantiers
-        </h3>
-        <ul data-stagger className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
-          {PANNEAUX.map((p) => (
-            <li key={p.photo}>
-              <figure>
-                <div className="group relative aspect-[3/4] overflow-hidden bg-stone-2">
-                  <Image
-                    src={p.photo}
-                    alt={`Panneau ${site.parent} : ${p.titre.toLowerCase()}, ${p.lieu}`}
-                    fill
-                    sizes="(min-width: 1024px) 15vw, (min-width: 768px) 30vw, 46vw"
-                    className="object-cover transition-transform duration-700 ease-out motion-safe:group-hover:scale-105"
-                  />
-                </div>
-                <figcaption className="mt-2 text-sm leading-snug">
-                  <strong>{p.titre}</strong>
-                  <span className="block text-ink-2">{p.lieu}</span>
-                </figcaption>
-              </figure>
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
+  );
+}
+
+/**
+ * Permis obtenus : les panneaux de chantier, en haut de /permis-express, juste
+ * après la formule et ses boutons (fond vert). Grille fixe de trois colonnes,
+ * pour ne pas faire un second bandeau défilant au-dessus des réalisations.
+ */
+export function ExpressPanneaux() {
+  return (
+    <div data-section="panneaux" aria-labelledby="panneaux">
+      <h2 id="panneaux" className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brass-2">
+        Permis obtenus : nos panneaux sur les chantiers
+      </h2>
+      <ul data-stagger className="mt-4 grid grid-cols-3 gap-2 sm:gap-3">
+        {PANNEAUX.map((p, i) => (
+          <li key={p.photo}>
+            <figure>
+              <div className="group relative aspect-[3/4] overflow-hidden bg-paper/10">
+                <Image
+                  src={p.photo}
+                  alt={`Panneau ${site.parent} : ${p.titre.toLowerCase()}, ${p.lieu}`}
+                  fill
+                  loading={i < 3 ? "eager" : "lazy"}
+                  sizes="(min-width: 1024px) 15vw, 31vw"
+                  className="object-cover transition-transform duration-700 ease-out motion-safe:group-hover:scale-105"
+                />
+              </div>
+              <figcaption className="mt-1.5 text-xs leading-snug sm:text-sm">
+                <span className="block text-paper first-letter:uppercase">{p.titre.replace("Permis · ", "")}</span>
+                <span className="block text-paper/65">{p.lieu}</span>
+              </figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

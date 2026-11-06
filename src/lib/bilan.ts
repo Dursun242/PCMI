@@ -30,13 +30,14 @@ export type Appareil = (typeof APPAREILS)[number][0];
 
 /**
  * Sections de la page, dans leur ordre d'apparition sur téléphone (attribut
- * data-section). Sur ordinateur, réalisations et formulaire sont côte à côte.
+ * data-section). Sur ordinateur, les panneaux sont à côté de l'offre.
  * L'ordre ne sert qu'à l'affichage : les clés, elles, ne doivent pas changer.
  */
 export const SECTIONS = [
+  ["panneaux", "Panneaux de chantier"],
   ["maisons", "Nos réalisations (photos)"],
+  ["confiance", "Bureau et avis Google"],
   ["formulaire", "Formulaire de devis"],
-  ["confiance", "Bureau et panneaux de chantier"],
   ["deroule", "Étapes, du premier appel au dépôt"],
   ["compris", "Ce qui est compris"],
   ["questions", "Questions"],
