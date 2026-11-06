@@ -9,6 +9,8 @@ interface Props {
   /** Parcelles autour de l'adresse (la première est la plus proche). */
   parcelles: ParcelleCandidate[];
   choisie: string;
+  /** Autres parcelles du même terrain, surlignées aussi (DP piscine : terrain de plusieurs parcelles). */
+  aussi?: string[];
   onChoisir: (p: ParcelleCandidate) => void;
 }
 
@@ -41,7 +43,7 @@ const etiquette = (numero: string, actif: boolean) =>
  * touche la sienne pour la choisir. Sur téléphone, la carte se déplace à deux
  * doigts, pour que la page reste facile à faire défiler.
  */
-export default function CarteParcelles({ parcelles, choisie, onChoisir }: Props) {
+export default function CarteParcelles({ parcelles, choisie, onChoisir, aussi = [] }: Props) {
   const conteneur = useRef<HTMLDivElement>(null);
   const carte = useRef<CarteLeaflet | null>(null);
   const L = useRef<typeof import("leaflet") | null>(null);
@@ -53,13 +55,15 @@ export default function CarteParcelles({ parcelles, choisie, onChoisir }: Props)
 
   rappel.current = onChoisir;
   choix.current = choisie;
+  const aussiRef = useRef(aussi);
+  aussiRef.current = aussi;
   // Les effets appellent ces fonctions par une référence : elles lisent toujours l'état courant.
   const actions = useRef<{ ajouter: (liste: ParcelleCandidate[]) => void; styler: (idu: string) => void } | null>(null);
 
   const styler = (idu: string) => {
     const c = couches.current.get(idu);
     if (!c || !L.current) return;
-    const actif = idu === choix.current;
+    const actif = idu === choix.current || aussiRef.current.includes(idu);
     c.poly.setStyle(actif ? STYLE_CHOISIE : STYLE_AUTRE);
     if (actif && carte.current?.hasLayer(c.poly)) c.poly.bringToFront();
     (c.num as Marker).setIcon(L.current.divIcon({ className: "", html: etiquette(c.p.numero, actif), iconSize: [0, 0] }));
@@ -86,7 +90,7 @@ export default function CarteParcelles({ parcelles, choisie, onChoisir }: Props)
     if (couches.current.size > PARCELLES_GARDEES) {
       for (const [idu, c] of couches.current) {
         if (couches.current.size <= PARCELLES_GARDEES) break;
-        if (idu === choix.current) continue;
+        if (idu === choix.current || aussiRef.current.includes(idu)) continue;
         c.poly.remove();
         c.num.remove();
         couches.current.delete(idu);
@@ -200,7 +204,7 @@ export default function CarteParcelles({ parcelles, choisie, onChoisir }: Props)
   // Changement de parcelle choisie : style à jour (et la nouvelle passe devant).
   useEffect(() => {
     for (const idu of couches.current.keys()) actions.current?.styler(idu);
-  }, [choisie]);
+  }, [choisie, aussi.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Liste de secours (clavier, lecteur d'écran) : les voisines de l'adresse, plus la parcelle choisie sur la carte.
   const choisieAilleurs = couches.current.get(choisie)?.p;

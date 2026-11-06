@@ -47,7 +47,8 @@ export default function CartePiscine({ contours, bassin, onDeplacer, distance, t
       const m = l.map(conteneur.current, { dragging: !tactile, touchZoom: true, scrollWheelZoom: false, zoomSnap: 0.5, maxZoom: 22 });
       m.attributionControl.setPrefix(false);
       l.tileLayer(TUILES, { maxNativeZoom: 19, maxZoom: 22, attribution: "© IGN · cadastre DGFiP" }).addTo(m);
-      const terrain = l.polygon(contours.map(ll), { color: "#d9c69d", weight: 3, fillOpacity: 0.08, interactive: false }).addTo(m);
+      // une parcelle = un polygone (plusieurs anneaux dans un même polygone seraient lus comme des trous)
+      const terrain = l.polygon(contours.map((r) => [ll(r)]), { color: "#d9c69d", weight: 3, fillOpacity: 0.08, interactive: false }).addTo(m);
       m.fitBounds(terrain.getBounds().pad(0.25), { maxZoom: 20, animate: false });
       const style = (couleur: string, fond: number) => ({ color: couleur, weight: 1.5, fillColor: couleur, fillOpacity: fond, interactive: false });
       const poignee = l.marker([0, 0], {

@@ -95,10 +95,28 @@ describe("distance du bassin aux limites", () => {
   test("bassin de 8 x 4 à 2 m de la limite ouest d'un terrain de 30 x 20", () => {
     const terrain = [centre, decaler(centre, 30, 0), decaler(centre, 30, 20), decaler(centre, 0, 20), centre];
     const g = formesBassin({ ...bassin, angle: 0, centre: decaler(centre, 6, 10) });
-    const r = distanceLimites(g.bassin, terrain);
+    const r = distanceLimites(g.bassin, [terrain]);
     expect(r?.d).toBeCloseTo(2, 2);
     const [dx, dy] = ecart(r!.de, r!.a);
     expect(Math.hypot(dx, dy)).toBeCloseTo(2, 2);
+  });
+});
+
+describe("terrain de deux parcelles", () => {
+  test("la limite commune aux deux parcelles ne compte pas", () => {
+    const a = [centre, decaler(centre, 15, 0), decaler(centre, 15, 20), decaler(centre, 0, 20), centre];
+    const b = [decaler(centre, 15, 0), decaler(centre, 30, 0), decaler(centre, 30, 20), decaler(centre, 15, 20), decaler(centre, 15, 0)];
+    // bassin de x = 5 à 13 dans la parcelle a : 2 m de la limite commune (x = 15), 5 m de la limite ouest
+    const g = formesBassin({ ...bassin, angle: 0, centre: decaler(centre, 9, 10) });
+    expect(distanceLimites(g.bassin, [a])?.d).toBeCloseTo(2, 2);
+    expect(distanceLimites(g.bassin, [a, b])?.d).toBeCloseTo(5, 2);
+  });
+
+  test("demande à deux parcelles acceptée, la fiche les transmet toutes", () => {
+    const v = validerDemandeDp(demande({ idus: ["76351000PM0096", "76351000PM0097"] }));
+    if (!("demande" in v)) throw new Error("demande refusée");
+    expect(v.demande.idus).toEqual(["76351000PM0096", "76351000PM0097"]);
+    expect(ficheWorkflow(v.demande).parcelle).toEqual(["76351000PM0096", "76351000PM0097"]);
   });
 });
 

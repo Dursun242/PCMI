@@ -8,7 +8,7 @@ import ChampAdresse from "@/components/ChampAdresse";
 import CarteParcelles from "@/components/planche/CarteParcelles";
 import ReglagesBassin from "@/components/dp/ReglagesBassin";
 import { trackEvent } from "@/lib/analytics";
-import { PRIX_DP_PISCINE_TTC, RECUL_CONSEILLE_M, angleTerrain, distanceLimites, centreContour, dansPolygone, formesBassin, regimeIndicatif, type Bassin, type ErreursDp } from "@/lib/dpPiscine";
+import { PRIX_DP_PISCINE_TTC, RECUL_CONSEILLE_M, angleTerrain, distanceLimites, centreContour, dansTerrain, formesBassin, regimeIndicatif, type Bassin, type ErreursDp } from "@/lib/dpPiscine";
 import { referenceCourte, type ParcelleCandidate, type RechercheTerrain } from "@/lib/planche";
 
 const CartePiscine = dynamic(() => import("@/components/dp/CartePiscine"), { ssr: false });
@@ -31,7 +31,7 @@ function Etape({ n, titre, children, actif = true }: { n: number; titre: string;
 const BROUILLON = "dp-piscine-brouillon";
 interface Brouillon {
   q: string;
-  idu: string;
+  idus: string[];
   bassin: Bassin;
   contact: { prenom: string; nom: string; email: string; telephone: string };
   residence: "principale" | "secondaire";
@@ -40,7 +40,7 @@ interface Brouillon {
 function lireBrouillon(): Brouillon | null {
   try {
     const b = JSON.parse(localStorage.getItem(BROUILLON) ?? "null") as Brouillon | null;
-    return b && typeof b.q === "string" && b.bassin ? b : null;
+    return b && typeof b.q === "string" && b.bassin && Array.isArray(b.idus) ? b : null;
   } catch {
     return null;
   }
@@ -73,7 +73,10 @@ export default function DpPiscine() {
   const [recherche, setRecherche] = useState<RechercheTerrain | null>(null);
   const [erreurRecherche, setErreurRecherche] = useState<string | null>(null);
   const [cherche, setCherche] = useState(false);
-  const [parcelle, setParcelle] = useState<ParcelleCandidate | null>(null);
+  /** Parcelles du terrain : la première sert de référence (cartouche, dossier). */
+  const [parcelles, setParcelles] = useState<ParcelleCandidate[]>([]);
+  const [plusieurs, setPlusieurs] = useState(false);
+  const parcelle = parcelles[0] ?? null;
   const [bassin, setBassin] = useState<Bassin | null>(null);
   const [contact, setContact] = useState({ prenom: "", nom: "", email: "", telephone: "", site_web: "" });
   const [residence, setResidence] = useState<"principale" | "secondaire">("principale");
@@ -83,9 +86,27 @@ export default function DpPiscine() {
   const [erreurEnvoi, setErreurEnvoi] = useState<string | null>(null);
   const router = useRouter();
 
+  /** Une parcelle touchée : elle remplace la sélection, ou s'ajoute / se retire si le terrain en compte plusieurs. */
   function choisir(p: ParcelleCandidate) {
-    setParcelle(p);
-    setBassin(bassinInitial(p));
+    if (!plusieurs || !parcelles.length) {
+      setParcelles([p]);
+      setBassin(bassinInitial(p));
+      return;
+    }
+    if (parcelles.some((x) => x.idu === p.idu)) {
+      if (parcelles.length > 1) setParcelles(parcelles.filter((x) => x.idu !== p.idu));
+    } else if (parcelles.length < 6) {
+      const toutes = [...parcelles, p];
+      setParcelles(toutes);
+      // bassin qui ne tient pas sur le terrain agrandi : recentré sur la plus grande parcelle
+      const anneauxT = toutes.flatMap((x) => x.contours);
+      setBassin((b) => {
+        if (!b || formesBassin(b).plage.every((pt) => dansTerrain(pt, anneauxT))) return b;
+        const grande = toutes.reduce((g, x) => (x.contenance > g.contenance ? x : g));
+        const { centre, angle } = bassinInitial(grande);
+        return { ...b, centre, angle };
+      });
+    }
   }
 
   async function chercher(texte: string, reprise?: Brouillon) {
@@ -102,11 +123,15 @@ export default function DpPiscine() {
       }
       setRecherche(json as RechercheTerrain);
       const liste = json.parcelles as ParcelleCandidate[];
-      const deja = reprise ? liste.find((x) => x.idu === reprise.idu) : undefined;
-      if (deja && reprise) {
-        setParcelle(deja);
+      const deja = reprise ? reprise.idus.map((i) => liste.find((x) => x.idu === i)).filter((x): x is ParcelleCandidate => Boolean(x)) : [];
+      if (deja.length && reprise) {
+        setParcelles(deja);
+        setPlusieurs(deja.length > 1);
         setBassin(reprise.bassin);
-      } else if (liste[0]) choisir(liste[0]);
+      } else if (liste[0]) {
+        setParcelles([liste[0]]);
+        setBassin(bassinInitial(liste[0]));
+      }
       trackEvent("dp_piscine_terrain", {});
     } catch {
       setErreurRecherche("Recherche impossible. Vérifiez votre connexion.");
@@ -123,12 +148,12 @@ export default function DpPiscine() {
     setContact((c) => ({ ...c, ...b.contact }));
     setResidence(b.residence);
     void chercher(b.q, b);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const contour = parcelle?.contours[0] ?? [];
-  const distance = bassin && contour.length ? distanceLimites(formesBassin(bassin).bassin, contour) : null;
-  const depasse = Boolean(bassin && contour.length && formesBassin(bassin).plage.some((pt) => !dansPolygone(pt, contour)));
+  const anneaux = parcelles.flatMap((p) => p.contours);
+  const distance = bassin && anneaux.length ? distanceLimites(formesBassin(bassin).bassin, anneaux) : null;
+  const depasse = Boolean(bassin && anneaux.length && formesBassin(bassin).plage.some((pt) => !dansTerrain(pt, anneaux)));
+  const contenance = parcelles.reduce((s, p) => s + p.contenance, 0);
   const pret = Boolean(parcelle && bassin && regimeIndicatif(bassin) === "dp" && !depasse);
 
   async function envoyer(e: FormEvent) {
@@ -139,7 +164,7 @@ export default function DpPiscine() {
     setErreurEnvoi(null);
     try {
       const { prenom, nom, email, telephone } = contact;
-      localStorage.setItem(BROUILLON, JSON.stringify({ q, idu: parcelle.idu, bassin, contact: { prenom, nom, email, telephone }, residence } satisfies Brouillon));
+      localStorage.setItem(BROUILLON, JSON.stringify({ q, idus: parcelles.map((p) => p.idu), bassin, contact: { prenom, nom, email, telephone }, residence } satisfies Brouillon));
     } catch {
       /* navigation privée : pas de brouillon, le client ressaisira */
     }
@@ -148,7 +173,7 @@ export default function DpPiscine() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          idu: parcelle.idu,
+          idus: parcelles.map((p) => p.idu),
           voie: recherche.adresse.voie,
           ville: recherche.adresse.ville,
           commune: parcelle.commune,
@@ -185,11 +210,32 @@ export default function DpPiscine() {
         </form>
         {recherche && (
           <div className="grid gap-3">
-            <div className="max-w-3xl"><CarteParcelles parcelles={recherche.parcelles} choisie={parcelle?.idu ?? ""} onChoisir={choisir} /></div>
+            <div className="max-w-3xl">
+              <CarteParcelles parcelles={recherche.parcelles} choisie={parcelle?.idu ?? ""} aussi={parcelles.slice(1).map((p) => p.idu)} onChoisir={choisir} />
+            </div>
+            <label className="flex cursor-pointer items-start gap-3 text-[0.95rem]">
+              <input
+                type="checkbox"
+                className="accent-ink mt-1 h-4 w-4"
+                checked={plusieurs}
+                onChange={(e) => {
+                  setPlusieurs(e.target.checked);
+                  if (!e.target.checked) setParcelles(parcelles.slice(0, 1));
+                }}
+              />
+              <span>
+                Mon terrain compte plusieurs parcelles
+                <span className="block text-sm text-ink-2">Touchez-les toutes sur la carte (touchez de nouveau pour en retirer une).</span>
+              </span>
+            </label>
             {parcelle && (
               <p className="text-[0.95rem]" aria-live="polite">
-                <strong>Parcelle {referenceCourte(parcelle.idu)}</strong> · {parcelle.contenance.toLocaleString("fr-FR")} m² · {parcelle.commune}
-                <span className="block text-sm text-ink-2">Ce n&apos;est pas votre terrain ? Touchez la bonne parcelle sur la carte.</span>
+                <strong>
+                  {parcelles.length > 1 ? "Parcelles " : "Parcelle "}
+                  {parcelles.map((p) => referenceCourte(p.idu)).join(", ")}
+                </strong>{" "}
+                · {contenance.toLocaleString("fr-FR")} m² · {parcelle.commune}
+                {!plusieurs && <span className="block text-sm text-ink-2">Ce n&apos;est pas votre terrain ? Touchez la bonne parcelle sur la carte.</span>}
               </p>
             )}
           </div>
@@ -200,8 +246,8 @@ export default function DpPiscine() {
         {parcelle && bassin && (
           <div className="grid gap-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)]">
             <CartePiscine
-              key={parcelle.idu}
-              contours={parcelle.contours}
+              key={parcelles.map((p) => p.idu).join("-")}
+              contours={anneaux}
               bassin={bassin}
               onDeplacer={(centre) => setBassin((b) => (b ? { ...b, centre } : b))}
               distance={distance}
