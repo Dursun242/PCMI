@@ -5,14 +5,14 @@ import { PRIX_DP_PISCINE_TTC } from "@/lib/dpPiscine";
 // Page en essai : hors du menu, du plan du site et des moteurs de recherche tant que le parcours n'est pas validé.
 export const metadata: Metadata = {
   title: "Déclaration préalable de piscine en ligne",
-  description: "Faites vous-même la déclaration préalable de votre piscine : plans DPC1, DPC2, DPC3 et Cerfa 16702 en 10 minutes.",
+  description: "Faites vous-même la déclaration préalable de votre piscine : plans DP1, DP2, DP3 (DPC1 à DPC3) et Cerfa 16702 en 10 minutes.",
   robots: { index: false, follow: false },
 };
 
 const POINTS = [
-  "Plan de situation (DPC1)",
-  "Plan de masse coté, distances aux limites (DPC2)",
-  "Plan en coupe sur le terrain (DPC3)",
+  "Plan de situation (DP1 / DPC1)",
+  "Plan de masse coté, distances aux limites (DP2 / DPC2)",
+  "Plan en coupe sur le terrain (DP3 / DPC3)",
   "Cerfa 16702 pré-rempli",
   "Guide de dépôt en mairie",
 ];

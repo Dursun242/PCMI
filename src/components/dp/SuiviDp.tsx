@@ -41,7 +41,7 @@ const euros = (n: number) => n.toLocaleString("fr-FR", { maximumFractionDigits: 
 const PAS_PREPARATION_MS = 10_000;
 const PAS_PAIEMENT_MS = 20_000;
 const ATTENTE_MAX_MS = 15 * 60_000;
-const TITRES = ["DPC1 · Plan de situation", "DPC2 · Plan de masse", "DPC3 · Plan en coupe"];
+const TITRES = ["DP1 / DPC1 · Plan de situation", "DP2 / DPC2 · Plan de masse", "DP3 / DPC3 · Plan en coupe"];
 
 /** Suivi d'une DP piscine : préparation, aperçu, paiement, téléchargement. */
 export default function SuiviDp() {
@@ -194,7 +194,7 @@ export default function SuiviDp() {
         <p className="display text-4xl">{v.paye ? "Votre dossier est à vous." : "Votre dossier est prêt."}</p>
         {r && (
           <p className="max-w-[64ch] leading-relaxed text-ink-2">
-            {r.motifRegime.charAt(0).toUpperCase() + r.motifRegime.slice(1)}. Pièces : {r.pieces.join(", ")} et Cerfa 16702 pré-rempli. Délai d&apos;instruction en mairie : {r.delai}.
+            {r.motifRegime.charAt(0).toUpperCase() + r.motifRegime.slice(1)}. Pièces : {r.pieces.map((p) => (p.startsWith("DPC") ? `${p.replace("DPC", "DP")} / ${p}` : p)).join(", ")} et Cerfa 16702 pré-rempli. Délai d&apos;instruction en mairie : {r.delai}.
           </p>
         )}
       </div>
@@ -234,7 +234,7 @@ export default function SuiviDp() {
         <div className="grid gap-4 bg-stone px-5 py-7 sm:px-8">
           <p className="display text-3xl">{PRIX_DP_PISCINE_TTC} € TTC</p>
           <p className="max-w-[60ch] text-[0.95rem] leading-relaxed">
-            Le dossier complet, sans filigrane, prêt à déposer : plans DPC1, DPC2, DPC3 en PDF, Cerfa 16702 pré-rempli, et le guide pour
+            Le dossier complet, sans filigrane, prêt à déposer : plans DP1, DP2, DP3 (DPC1 à DPC3 sur le Cerfa) en PDF, Cerfa 16702 pré-rempli, et le guide pour
             le déposer en ligne ou en mairie.
           </p>
           <label className="flex cursor-pointer items-start gap-3 text-[0.95rem]">

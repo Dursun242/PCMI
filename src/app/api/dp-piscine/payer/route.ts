@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   try {
     const lien = await creerLienPaiement(await ouvrirQonto(), {
       titre: "Déclaration préalable de piscine",
-      description: `Dossier DPC1, DPC2, DPC3 et Cerfa 16702 pré-rempli, parcelle ${e.reference} (${e.commune})`,
+      description: `Dossier DP1, DP2, DP3 (DPC1 à DPC3) et Cerfa 16702 pré-rempli, parcelle ${e.reference} (${e.commune})`,
       prixHt: prixHt(PRIX_DP_PISCINE_TTC, TVA_DP_PISCINE),
       tva: String(TVA_DP_PISCINE),
     });
