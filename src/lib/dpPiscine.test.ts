@@ -120,6 +120,25 @@ describe("terrain de deux parcelles", () => {
   });
 });
 
+describe("photos (piscine visible de la rue)", () => {
+  const u = "https://abc123.public.blob.vercel-storage.com/dp-piscine-photos/1-proche.jpeg";
+  const photos = { proche: u, lointaine: u.replace("proche", "lointaine"), coins: [[10, 900], [1100, 880], [950, 560], [200, 570]], repere: [1600, 1200] };
+
+  test("visible de la rue sans photos : refusé ; avec photos et 4 coins : accepté et transmis", () => {
+    const sans = validerDemandeDp(demande({ bassin: { ...bassin, visibleRue: true } }));
+    expect("erreurs" in sans && sans.erreurs.photos).toBeTruthy();
+    const avec = validerDemandeDp(demande({ bassin: { ...bassin, visibleRue: true }, photos }));
+    if (!("demande" in avec)) throw new Error("demande refusée");
+    const f = ficheWorkflow(avec.demande) as ReturnType<typeof ficheWorkflow> & { photos?: { insertion?: { coins_px: number[][] } } };
+    expect(f.photos?.insertion?.coins_px).toEqual(photos.coins);
+  });
+
+  test("photo hors du stockage du site ou coin hors de la photo : refusé", () => {
+    expect("erreurs" in validerDemandeDp(demande({ photos: { ...photos, proche: "https://exemple.com/x.jpg" } }))).toBe(true);
+    expect("erreurs" in validerDemandeDp(demande({ photos: { ...photos, coins: [[10, 900], [1100, 880], [950, 560], [2000, 570]] } }))).toBe(true);
+  });
+});
+
 describe("validation de la demande", () => {
   test("demande complète acceptée, nom en majuscules", () => {
     const v = validerDemandeDp(demande());

@@ -50,6 +50,41 @@ export interface Bassin {
   angle: number;
 }
 
+/** Photos du client (piscine visible de la rue) : adresses Vercel Blob, 4 coins du bassin sur la photo proche. */
+export interface PhotosDp {
+  proche?: string;
+  lointaine?: string;
+  coins?: [number, number][];
+  /** Taille de la photo proche (px) sur laquelle les coins ont été relevés. */
+  repere?: [number, number];
+}
+
+export const photosCompletes = (p: PhotosDp | undefined): boolean =>
+  Boolean(p?.proche && p.lointaine && p.coins?.length === 4 && p.repere);
+
+const URL_BLOB = /^https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\/[\w\-./%]+$/i;
+
+function validerPhotos(v: unknown): PhotosDp | null {
+  if (!v || typeof v !== "object") return {};
+  const p = v as Record<string, unknown>;
+  const out: PhotosDp = {};
+  for (const k of ["proche", "lointaine"] as const) {
+    if (p[k] === undefined || p[k] === null || p[k] === "") continue;
+    if (typeof p[k] !== "string" || !URL_BLOB.test(p[k] as string)) return null;
+    out[k] = p[k] as string;
+  }
+  const rep = Array.isArray(p.repere) ? p.repere.map(Number) : [];
+  const coins = Array.isArray(p.coins) ? p.coins : [];
+  if (coins.length) {
+    if (coins.length !== 4 || rep.length !== 2 || !rep.every((n) => Number.isFinite(n) && n > 0 && n <= 20000)) return null;
+    const c = coins.map((x) => (Array.isArray(x) ? x.map(Number) : []));
+    if (!c.every((x) => x.length === 2 && x.every((n, i) => Number.isFinite(n) && n >= 0 && n <= rep[i]))) return null;
+    out.coins = c as [number, number][];
+    out.repere = rep as [number, number];
+  }
+  return out;
+}
+
 export interface DemandeDp {
   /** Première parcelle du terrain (référence du dossier). */
   idu: string;
@@ -64,9 +99,10 @@ export interface DemandeDp {
   telephone: string;
   residence: "principale" | "secondaire";
   bassin: Bassin;
+  photos: PhotosDp;
 }
 
-export type ErreursDp = Partial<Record<"idu" | "voie" | "ville" | "prenom" | "nom" | "email" | "telephone" | "bassin" | "consentement", string>>;
+export type ErreursDp = Partial<Record<"idu" | "voie" | "ville" | "prenom" | "nom" | "email" | "telephone" | "bassin" | "photos" | "consentement", string>>;
 
 export const BORNES = {
   longueur: [2, 25],
@@ -300,6 +336,10 @@ export function validerDemandeDp(corps: Record<string, unknown>): { demande: Dem
   const bassin = validerBassin(corps.bassin);
   if (!bassin) e.bassin = "Dimensions ou position du bassin invalides.";
   else if (regimeIndicatif(bassin) !== "dp") e.bassin = "Ce bassin ne relève pas d'une déclaration préalable.";
+  const photos = validerPhotos(corps.photos);
+  if (!photos) e.photos = "Photos invalides : reprenez-les.";
+  else if (bassin?.visibleRue && !photosCompletes(photos))
+    e.photos = "Piscine visible de la rue : photo de près, photo de loin et les 4 coins du bassin sont nécessaires.";
   if (corps.consentement !== true) e.consentement = "Merci d'accepter l'utilisation de vos informations pour votre dossier.";
   if (Object.keys(e).length) return { erreurs: e };
   return {
@@ -315,6 +355,7 @@ export function validerDemandeDp(corps: Record<string, unknown>): { demande: Dem
       telephone,
       residence: corps.residence === "secondaire" ? "secondaire" : "principale",
       bassin: bassin as Bassin,
+      photos: photos ?? {},
     },
   };
 }
@@ -344,6 +385,15 @@ export function ficheWorkflow(d: DemandeDp) {
       // point à 5 m dans l'axe du grand côté : le générateur en tire l'angle exact en Lambert 93
       axe_wgs84: decaler(b.centre, 5 * Math.cos(a), 5 * Math.sin(a)),
     },
+    ...(d.photos.proche || d.photos.lointaine
+      ? {
+          photos: {
+            ...(d.photos.proche ? { proche: d.photos.proche } : {}),
+            ...(d.photos.lointaine ? { lointaine: d.photos.lointaine } : {}),
+            ...(d.photos.proche && d.photos.coins?.length === 4 ? { insertion: { photo: "proche", coins_px: d.photos.coins, repere_px: d.photos.repere } } : {}),
+          },
+        }
+      : {}),
   };
 }
 
