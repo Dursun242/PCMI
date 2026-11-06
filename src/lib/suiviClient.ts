@@ -81,9 +81,9 @@ export function suivreSuite(genre: GenreSuite, valeur: string | null) {
 }
 
 /**
- * Vues, bilans de visite et suites du parcours : comptés par Umami seulement, plus par Vercel Blob (06/11/2026 :
- * deux fichiers par visiteur avaient consommé 75 % des 2 000 opérations Blob du mois). Les contacts (formulaire,
- * appel, WhatsApp) et les demandes restent dans le compteur Express.
+ * Vues, bilans de visite et suites du parcours : envoyés à Umami (depuis le 06/11/2026) ET au compteur Express,
+ * qui les enregistre dans Cloudflare D1 (06/11/2026 au soir). Le serveur les ignore tant que D1 n'est pas
+ * configuré : dans Vercel Blob, deux fichiers par visiteur avaient consommé 75 % du quota du mois.
  */
 const VERS_UMAMI = new Set<string>(["vue", "bilan", "suite"]);
 
@@ -101,7 +101,7 @@ function versUmami(type: TypeSuivi, extra: Record<string, unknown>) {
 }
 
 function envoyer(type: TypeSuivi, extra: Record<string, unknown> = {}) {
-  if (VERS_UMAMI.has(type)) return versUmami(type, extra);
+  if (VERS_UMAMI.has(type)) versUmami(type, extra);
   try {
     const corps = JSON.stringify({ type, ads: visiteAds(), ...extra });
     // sendBeacon survit à l'ouverture de l'appli Téléphone ou WhatsApp, contrairement à fetch.
