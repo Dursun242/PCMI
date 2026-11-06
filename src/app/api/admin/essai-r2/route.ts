@@ -1,20 +1,31 @@
 import { NextResponse } from "next/server";
-import { r2AdresseEnvoi, r2Configure, r2Ecrire, r2Lire } from "@/lib/r2";
+import { AwsClient } from "aws4fetch";
+import { r2Configure } from "@/lib/r2";
 
 export const runtime = "nodejs";
 
-/** Diagnostic R2 (protégé par le middleware /api/admin) : écriture signée, adresse d'envoi, relecture. */
+/**
+ * Diagnostic R2 temporaire (protégé par le middleware /api/admin) : réponse brute de R2 à une écriture, et forme
+ * des variables (longueurs seulement, jamais les valeurs).
+ */
 export async function GET() {
-  if (!r2Configure()) return NextResponse.json({ ok: false, error: "R2 non configuré" }, { status: 501 });
-  const out: Record<string, unknown> = {};
-  try {
-    out.ecriture = await r2Ecrire("essais/serveur.txt", Buffer.from("essai serveur"), "text/plain");
-    out.lecture = (await r2Lire("essais/serveur.txt"))?.status ?? 404;
-    const { envoi } = await r2AdresseEnvoi("essais/presigne.txt", "text/plain");
-    const p = await fetch(envoi, { method: "PUT", body: "essai presigne", headers: { "Content-Type": "text/plain" } });
-    out.presigne = { status: p.status, corps: (await p.text()).slice(0, 400) };
-  } catch (err) {
-    out.erreur = String(err);
-  }
-  return NextResponse.json(out);
+  const e = process.env;
+  const forme = {
+    compte: (e.CLOUDFLARE_ACCOUNT_ID ?? "").length,
+    idCle: (e.R2_ACCESS_KEY_ID ?? "").length,
+    idCleEspaces: /\s/.test(e.R2_ACCESS_KEY_ID ?? ""),
+    secret: (e.R2_SECRET_ACCESS_KEY ?? "").length,
+    secretEspaces: /\s/.test(e.R2_SECRET_ACCESS_KEY ?? ""),
+    compartiment: e.R2_BUCKET ?? null,
+  };
+  if (!r2Configure()) return NextResponse.json({ ok: false, forme, error: "R2 non configuré" }, { status: 501 });
+  const aws = new AwsClient({
+    accessKeyId: e.R2_ACCESS_KEY_ID!.trim(),
+    secretAccessKey: e.R2_SECRET_ACCESS_KEY!.trim(),
+    service: "s3",
+    region: "auto",
+  });
+  const url = `https://${e.CLOUDFLARE_ACCOUNT_ID!.trim()}.r2.cloudflarestorage.com/${e.R2_BUCKET!.trim()}/essais/serveur.txt`;
+  const r = await aws.fetch(url, { method: "PUT", body: "essai", headers: { "Content-Type": "text/plain" } });
+  return NextResponse.json({ forme, ecriture: r.status, reponse: (await r.text()).slice(0, 600) });
 }
