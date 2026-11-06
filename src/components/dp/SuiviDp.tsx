@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import AttenteDp from "@/components/dp/AttenteDp";
 import { trackEvent } from "@/lib/analytics";
 import { PRIX_DP_PISCINE_TTC } from "@/lib/dpPiscine";
 
@@ -9,6 +10,8 @@ interface Vue {
   ok: boolean;
   error?: string;
   statut: "en_cours" | "pret" | "a_verifier" | "bloque" | "hors_dp" | "echec";
+  cree: number;
+  maintenant: number;
   reference: string;
   commune: string;
   resume: {
@@ -145,10 +148,10 @@ export default function SuiviDp() {
         <p className={etiquette}>Parcelle {v.reference} · {v.commune}</p>
         <p className="display text-4xl">Nous dessinons votre dossier.</p>
         <p className="max-w-[56ch] leading-relaxed text-ink-2">
-          Plan de situation, plan de masse coté, plan en coupe et Cerfa 13703 : comptez 3 minutes. Cette page se met à jour toute
-          seule ; vous pouvez aussi la fermer, le lien est dans votre e-mail.
+          Plan de situation, plan de masse coté, plan en coupe et Cerfa 13703. Cette page se met à jour toute seule ; vous
+          pouvez aussi la fermer, le lien est dans votre e-mail.
         </p>
-        <div className="h-1 w-full max-w-md overflow-hidden bg-stone-2"><div className="h-full w-1/3 animate-pulse bg-brass" /></div>
+        {p && <AttenteDp id={p.id} k={p.k} cree={v.cree} maintenantServeur={v.maintenant} />}
         {enPause && actualiser}
       </div>
     );
