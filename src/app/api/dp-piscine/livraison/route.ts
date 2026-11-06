@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { site } from "@/config/site";
 import { envoyer, lireContact, secretDp, suiviDuClient } from "@/lib/dpPiscineServeur";
 import { lireDp, majDp, rangerFichier, type ResumeDp, type StatutDp } from "@/lib/dpPiscineStore";
 import { emailClientPret, emailClientVerification, emailInterne } from "@/lib/emailsDpPiscine";
@@ -42,7 +41,7 @@ export async function POST(req: Request) {
   const e = await lireDp(id, secret);
   if (!e) return NextResponse.json({ ok: false }, { status: 404 });
   const c = lireContact(e, secret);
-  const suiviAdmin = `${site.url}/dp-piscine/suivi?id=${id}`;
+  const suiviAdmin = suiviDuClient(e, secret);
   const part = q.get("part");
 
   if (part === "erreur" || part === "resultat") {
@@ -71,11 +70,11 @@ export async function POST(req: Request) {
     };
     const maj = await majDp(id, secret, { statut, resume, apercus, guide: String(r.guide ?? "").slice(0, 8000) });
     if (c && maj) {
-      const suivi = `${site.url}/dp-piscine/suivi?id=${id}`;
+      const suivi = suiviDuClient(maj, secret);
       if (statut === "pret" || statut === "a_verifier") {
         await envoyer("e-mail « aperçu prêt »", () => sendToClient({ to: c.email, ...emailClientPret(c, maj, suiviDuClient(maj, secret)) }));
       } else if (statut === "bloque") {
-        await envoyer("e-mail « vérification »", () => sendToClient({ to: c.email, ...emailClientVerification(c, maj) }));
+        await envoyer("e-mail « vérification »", () => sendToClient({ to: c.email, ...emailClientVerification(c, maj, resume.echecs, suiviDuClient(maj, secret)) }));
       }
       await envoyer("copie interne", () =>
         sendInternal({ ...emailInterne(`Dossier ${statut}`, c, maj, suivi, String(r.controles ?? "").slice(0, 6000)), replyTo: c.email }),

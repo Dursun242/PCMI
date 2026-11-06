@@ -121,17 +121,30 @@ export default function SuiviDp() {
   }
 
   if (v.statut === "echec" || v.statut === "bloque" || v.statut === "hors_dp") {
-    const titre = v.statut === "hors_dp" ? "Pas de déclaration préalable pour ce projet." : "Votre dossier demande une vérification.";
-    const texte =
-      v.statut === "hors_dp"
-        ? v.resume?.motifRegime
-        : "Votre terrain demande un regard de notre bureau d'études (secteur protégé, photos à joindre, recul à confirmer…). Nous revenons vers vous sous 24 h ouvrées. Rien n'est à régler pour le moment.";
+    const titres = {
+      hors_dp: "Pas de déclaration préalable pour ce projet.",
+      bloque: "Un point à corriger avant votre dossier.",
+      echec: "La préparation a rencontré un problème.",
+    } as const;
+    const textes = {
+      hors_dp: v.resume?.motifRegime ?? "",
+      bloque:
+        "Le plus souvent, il suffit de déplacer ou de réduire le bassin : corrigez-le et relancez, c'est gratuit. Si le point demande notre avis (secteur protégé, photos à joindre), nous revenons vers vous sous 24 h ouvrées.",
+      echec: "Nous reprenons votre dossier à la main et revenons vers vous rapidement. Vous pouvez aussi le relancer.",
+    } as const;
     return (
-      <div role="alert" className="grid gap-4 border-l-2 border-alert py-2 pl-6">
-        <p className="display text-4xl">{titre}</p>
-        <p className="max-w-[60ch] leading-relaxed text-ink-2">{texte}</p>
-        {v.resume?.echecs.length ? <ul className="list-disc pl-5 text-sm text-ink-2">{v.resume.echecs.map((x) => <li key={x}>{x}</li>)}</ul> : null}
-        <div><Link href="/contact" className="btn btn-line">Nous écrire</Link></div>
+      <div role="alert" className="grid gap-5 border-l-2 border-alert py-2 pl-6">
+        <p className="display text-4xl">{titres[v.statut]}</p>
+        {v.resume?.echecs.length ? (
+          <ul className="grid gap-2 text-[0.95rem]">
+            {v.resume.echecs.map((x) => <li key={x} className="flex gap-3"><span className="mt-2.5 h-px w-4 shrink-0 bg-alert" aria-hidden="true" />{x}</li>)}
+          </ul>
+        ) : null}
+        <p className="max-w-[60ch] leading-relaxed text-ink-2">{textes[v.statut]}</p>
+        <div className="flex flex-wrap gap-3">
+          {v.statut !== "hors_dp" && <Link href="/dp-piscine?reprendre=1" className="btn btn-ink">Corriger mon bassin</Link>}
+          <Link href="/contact" className="btn btn-line">Nous écrire</Link>
+        </div>
       </div>
     );
   }
