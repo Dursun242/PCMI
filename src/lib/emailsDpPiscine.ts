@@ -63,7 +63,7 @@ export function emailClientPaye(c: ContactDp, suivi: string) {
     subject: "Votre déclaration de piscine : dossier à télécharger",
     html: clientWrap(
       `<p>Bonjour ${esc(c.prenom)},</p>
-       <p>Merci pour votre règlement. Votre dossier complet est disponible : les plans (DPC1, DPC2, DPC3) et le Cerfa 16702 pré-rempli,
+       <p>Merci pour votre règlement. Votre dossier complet est disponible : les plans DP1, DP2, DP3 (DPC1 à DPC3 sur le Cerfa) et le Cerfa 16702 pré-rempli,
        à vérifier, dater et signer avant le dépôt en mairie.</p>
        ${bouton(suivi, "Télécharger mon dossier")}
        <p>Le dépôt se fait en ligne sur le guichet numérique de votre commune, ou en mairie en deux exemplaires. Délai

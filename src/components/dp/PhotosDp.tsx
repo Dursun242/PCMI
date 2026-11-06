@@ -90,7 +90,7 @@ export default function PhotosDp({ photos, onChange, bassin, contours }: Props) 
           <div key={cle} className="field">
             <label htmlFor={`dp-photo-${cle}`}>{cle === "proche" ? "Photo de près (le terrain et la future piscine)" : "Photo de loin (le terrain dans le paysage)"}</label>
             <input id={`dp-photo-${cle}`} type="file" accept="image/jpeg,image/png,image/webp" className="min-h-12 text-sm" onChange={(e) => void choisir(cle, e.target.files?.[0])} />
-            <p className="hint">{envoi === cle ? "Envoi…" : photos[cle] ? "Photo reçue." : cle === "proche" ? "Pièce DPC7." : "Pièce DPC8."}</p>
+            <p className="hint">{envoi === cle ? "Envoi…" : photos[cle] ? "Photo reçue." : cle === "proche" ? "Pièce DP7 / DPC7." : "Pièce DP8 / DPC8."}</p>
           </div>
         ))}
       </div>
@@ -98,7 +98,7 @@ export default function PhotosDp({ photos, onChange, bassin, contours }: Props) 
       {srcProche && (
         <div className="grid gap-3">
           <p className="text-[0.95rem]">
-            <strong>Photomontage (DPC6) :</strong>{" "}
+            <strong>Photomontage (DP6 / DPC6) :</strong>{" "}
             {coins.length < 4 ? `touchez sur la photo ${COINS[coins.length]} du futur bassin (${coins.length + 1}/4).` : "les 4 coins sont posés."}
           </p>
           <div ref={cadre} className="relative max-w-2xl overflow-hidden">

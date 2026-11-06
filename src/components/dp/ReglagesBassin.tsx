@@ -142,7 +142,7 @@ export default function ReglagesBassin({ bassin: b, onChange, depasse, distance 
       </label>
       {b.localTechnique && (
         <div className="field">
-          <label htmlFor="dp-local-mat">Aspect du local technique (plan des façades DPC4)</label>
+          <label htmlFor="dp-local-mat">Aspect du local technique (plan des façades DP4 / DPC4)</label>
           <select id="dp-local-mat" className="min-h-12 border border-stone-2 bg-paper px-3" value={b.materiauLocal ?? "bois"} onChange={(e) => maj({ materiauLocal: e.target.value as MateriauLocal })}>
             {Object.entries(MATERIAUX_LOCAL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
           </select>

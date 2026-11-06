@@ -21,7 +21,7 @@ const TUILES =
   "https://data.geopf.fr/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&STYLE=normal" +
   "&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/jpeg";
 const ll = (pts: [number, number][]) => pts.map(([lon, lat]) => [lat, lon] as [number, number]);
-const LIBELLE: Record<Cle, string> = { proche: "Photo de près (DPC7)", lointaine: "Photo de loin (DPC8)" };
+const LIBELLE: Record<Cle, string> = { proche: "Photo de près (DP7 / DPC7)", lointaine: "Photo de loin (DP8 / DPC8)" };
 const NUMERO: Record<Cle, string> = { proche: "7", lointaine: "8" };
 
 /**
