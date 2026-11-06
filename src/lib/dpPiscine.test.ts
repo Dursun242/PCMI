@@ -155,6 +155,11 @@ describe("validation de la demande", () => {
     }
   });
 
+  test("téléphone international ramené au format français", () => {
+    const v = validerDemandeDp(demande({ telephone: "+33 6 79 11 60 85" }));
+    expect("demande" in v && v.demande.telephone).toBe("0679116085");
+  });
+
   test("refus : parcelle, e-mail, consentement, bassin hors DP", () => {
     const v = validerDemandeDp(demande({ idu: "X", email: "pas-un-mail", consentement: false, bassin: { ...bassin, longueur: 3, largeur: 3 } }));
     expect("erreurs" in v && Object.keys(v.erreurs).sort()).toEqual(["bassin", "consentement", "email", "idu"]);
