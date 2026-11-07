@@ -23,6 +23,11 @@ export interface ResumeDp {
   motifRegime: string;
   pieces: string[];
   echecs: string[];
+  /**
+   * Ceux des échecs que le client peut corriger lui-même (implantation, photos). Les autres (mise en page des plans)
+   * sont pour ID Maîtrise : le client n'a rien à faire. Absent pour les dossiers d'avant le 07/11/2026.
+   */
+  echecsClient?: string[];
   aVerifier: string[];
   taxe: { base: number; total: number; tauxCommunal: number; tauxDep: number } | null;
   delai: string;

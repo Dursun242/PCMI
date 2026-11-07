@@ -16,6 +16,7 @@ interface ResultatOutil {
   regime?: { motif?: string };
   pieces?: string[];
   echecs?: string[];
+  echecs_client?: string[];
   a_verifier?: string[];
   taxe?: { base: number; total: number; taux_communal: number; taux_dep: number };
   delai_instruction?: string;
@@ -62,6 +63,7 @@ export async function POST(req: Request) {
       motifRegime: String(r.regime?.motif ?? ""),
       pieces: (r.pieces ?? []).map(String).slice(0, 12),
       echecs: (r.echecs ?? []).map(nettoyer).slice(0, 20),
+      ...(Array.isArray(r.echecs_client) ? { echecsClient: r.echecs_client.map(nettoyer).slice(0, 20) } : {}),
       aVerifier: (r.a_verifier ?? []).map(nettoyer).slice(0, 20),
       taxe: r.taxe ? { base: r.taxe.base, total: r.taxe.total, tauxCommunal: r.taxe.taux_communal, tauxDep: r.taxe.taux_dep } : null,
       delai: String(r.delai_instruction ?? "1 mois"),
@@ -74,7 +76,9 @@ export async function POST(req: Request) {
       if (statut === "pret" || statut === "a_verifier") {
         await envoyer("e-mail « aperçu prêt »", () => sendToClient({ to: c.email, ...emailClientPret(c, maj, suiviDuClient(maj, secret)) }));
       } else if (statut === "bloque") {
-        await envoyer("e-mail « vérification »", () => sendToClient({ to: c.email, ...emailClientVerification(c, maj, resume.echecs, suiviDuClient(maj, secret)) }));
+        // seulement ce que le client peut corriger ; un défaut de mise en page des plans est pour ID Maîtrise
+        const aCorriger = resume.echecsClient ?? resume.echecs;
+        await envoyer("e-mail « vérification »", () => sendToClient({ to: c.email, ...emailClientVerification(c, maj, aCorriger, suiviDuClient(maj, secret)) }));
       }
       await envoyer("copie interne", () =>
         sendInternal({ ...emailInterne(`Dossier ${statut}`, c, maj, suivi, String(r.controles ?? "").slice(0, 6000)), replyTo: c.email }),

@@ -45,6 +45,18 @@ export function emailClientPret(c: ContactDp, e: Pick<EntreeDp, "reference" | "c
 }
 
 export function emailClientVerification(c: ContactDp, e: Pick<EntreeDp, "reference" | "commune">, echecs: string[], suivi: string) {
+  if (!echecs.length) {
+    // rien à corriger côté client : un détail des plans demande l'œil d'ID Maîtrise
+    return {
+      subject: "Votre déclaration de piscine : nous la vérifions",
+      html: clientWrap(
+        `<p>Bonjour ${esc(c.prenom)},</p>
+         <p>Votre dossier (parcelle ${esc(e.reference)}, ${esc(e.commune)}) est dessiné. Un détail de mise en page des plans
+         demande notre vérification : nous le reprenons et revenons vers vous sous 24 h ouvrées. Vous n'avez rien à faire.</p>
+         ${bouton(suivi, "Suivre mon dossier")}`,
+      ),
+    };
+  }
   return {
     subject: "Votre déclaration de piscine : un point à corriger",
     html: clientWrap(
