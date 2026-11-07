@@ -19,6 +19,7 @@ interface Vue {
     pieces: string[];
     aVerifier: string[];
     echecs: string[];
+    echecsClient?: string[];
     taxe: { base: number; total: number; tauxCommunal: number; tauxDep: number } | null;
     delai: string;
     distances: number[];
@@ -157,6 +158,22 @@ export default function SuiviDp() {
     );
   }
 
+  // bloqué seulement pour un défaut des plans (rien à corriger côté client) : ID Maîtrise reprend le dossier
+  if (v.statut === "bloque" && v.resume?.echecsClient && v.resume.echecsClient.length === 0) {
+    return (
+      <div className="grid gap-5 border-l-2 border-ink py-2 pl-6">
+        <p className="display text-4xl">Nous vérifions votre dossier.</p>
+        <p className="max-w-[60ch] leading-relaxed text-ink-2">
+          Votre piscine est bien placée et vos plans sont dessinés. Un détail de mise en page demande notre œil avant de
+          vous les montrer : nous le reprenons et revenons vers vous sous 24 h ouvrées. Vous n&apos;avez rien à faire.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <Link href="/contact" className="btn btn-line">Nous écrire</Link>
+        </div>
+      </div>
+    );
+  }
+
   if (v.statut === "echec" || v.statut === "bloque" || v.statut === "hors_dp") {
     const titres = {
       hors_dp: "Pas de déclaration préalable pour ce projet.",
@@ -172,9 +189,9 @@ export default function SuiviDp() {
     return (
       <div role="alert" className="grid gap-5 border-l-2 border-alert py-2 pl-6">
         <p className="display text-4xl">{titres[v.statut]}</p>
-        {v.resume?.echecs.length ? (
+        {(v.resume?.echecsClient ?? v.resume?.echecs)?.length ? (
           <ul className="grid gap-2 text-[0.95rem]">
-            {v.resume.echecs.map((x) => <li key={x} className="flex gap-3"><span className="mt-2.5 h-px w-4 shrink-0 bg-alert" aria-hidden="true" />{x}</li>)}
+            {(v.resume?.echecsClient ?? v.resume?.echecs ?? []).map((x) => <li key={x} className="flex gap-3"><span className="mt-2.5 h-px w-4 shrink-0 bg-alert" aria-hidden="true" />{x}</li>)}
           </ul>
         ) : null}
         <p className="max-w-[60ch] leading-relaxed text-ink-2">{textes[v.statut]}</p>
